@@ -1,0 +1,24 @@
+.colorInput {
+  width: 100%;
+  height: var(--size-control);
+  padding: var(--space-1);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.colorInput::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.colorInput::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-small) / 2);
+}
+
+/* Kept separate: an unknown vendor pseudo-element would invalidate a combined rule. */
+.colorInput::-moz-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-small) / 2);
+}

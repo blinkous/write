@@ -1,0 +1,105 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100%;
+}
+
+.layout[data-sidebar-open='true'] {
+  grid-template-columns: var(--width-sidebar) 1fr;
+}
+
+.sidebar {
+  padding: var(--space-4);
+  border-right: var(--border-width) solid var(--color-border);
+  background: var(--color-surface);
+  overflow-y: auto;
+}
+
+.backdrop {
+  display: none;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/*
+ * Three columns with the toolbar in the middle, sized and centered like the
+ * page at normal margins, so the toolbar lines up with the start of the text
+ * and stays put when the margins change.
+ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns:
+    minmax(max-content, 1fr)
+    minmax(0, var(--width-page-normal))
+    minmax(max-content, 1fr);
+  align-items: center;
+  justify-items: start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-background);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  /* Pulls the first control's label, not its padded edge, in line with the text. */
+  margin-inline-start: calc(var(--space-control-inline) * -1);
+  /* Scrolls sideways on narrow screens rather than wrapping into a tall header. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.headerActions {
+  display: flex;
+  justify-self: end;
+  gap: var(--space-1);
+}
+
+.main {
+  flex: 1;
+  padding: var(--space-4) var(--space-8);
+}
+
+/* On narrow screens the sidebar overlays the page instead of squeezing it. */
+@media (max-width: 48rem) {
+  .layout[data-sidebar-open='true'] {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 3;
+    width: min(var(--width-sidebar), 85vw);
+    background: var(--color-background);
+    box-shadow: 0 0 2rem color-mix(in srgb, var(--color-text) 20%, transparent);
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: color-mix(in srgb, var(--color-text) 15%, transparent);
+  }
+
+  .main {
+    padding: var(--space-4);
+  }
+}

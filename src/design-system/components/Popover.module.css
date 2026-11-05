@@ -1,0 +1,34 @@
+.anchor {
+  anchor-scope: --popover-anchor;
+}
+
+.anchor > button {
+  anchor-name: --popover-anchor;
+}
+
+.panel {
+  position-anchor: --popover-anchor;
+  position-try-fallbacks: flip-block, flip-inline;
+  top: anchor(bottom);
+  margin: var(--space-2) 0 0;
+  width: max-content;
+  max-width: min(var(--width-popover), calc(100vw - var(--space-8)));
+  max-height: var(--height-popover-max);
+  overflow-y: auto;
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-background);
+  color: var(--color-text);
+  box-shadow: 0 0.5rem 2rem
+    color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+
+.end {
+  right: anchor(right);
+  left: auto;
+}
+
+.start {
+  left: anchor(left);
+}

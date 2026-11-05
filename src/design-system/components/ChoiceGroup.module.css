@@ -1,0 +1,60 @@
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.segmented {
+  padding: var(--space-1);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+}
+
+.segmented .choice {
+  flex: 1;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-small);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.segmented .choice:has(:checked) {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.list {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.list .choice {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-small);
+}
+
+.list .choice:hover,
+.list .choice:has(:checked) {
+  background: var(--color-surface-strong);
+}
+
+.visual {
+  display: contents;
+}
+
+.choice {
+  position: relative;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+}
+
+.choice:has(:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}

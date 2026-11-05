@@ -1,0 +1,7 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: var(--width-popover-narrow);
+  max-width: 100%;
+}

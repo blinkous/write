@@ -1,0 +1,30 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: var(--width-popover);
+  max-width: 100%;
+}
+
+.colorRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.fontTrigger {
+  font-size: var(--text-size-small);
+  font-weight: normal;
+}
+
+.fontPreview {
+  font-size: var(--text-size-medium);
+  font-weight: normal;
+  /* Evens out x-heights so naturally tiny or huge fonts preview comparably. */
+  font-size-adjust: 0.5;
+}
+
+.chevron {
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+}

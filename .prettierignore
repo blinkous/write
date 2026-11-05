@@ -1,0 +1,5 @@
+dist
+node_modules
+package-lock.json
+# Vendored verbatim from @tiptap/core; checked by tiptapBase.test.ts
+src/features/editor/tiptapBase.css

@@ -1,0 +1,115 @@
+.page {
+  width: 100%;
+  max-width: var(--width-page);
+  margin-inline: auto;
+  cursor: text;
+}
+
+.prose {
+  min-height: 60vh;
+  padding-bottom: 40vh;
+  outline: none;
+  font-family: var(--font-editor);
+  font-size: var(--font-size-editor);
+  line-height: var(--line-height-editor);
+  overflow-wrap: break-word;
+}
+
+.prose :where(p, h1, h2, h3, ul, ol, blockquote, pre) {
+  margin-block: 0;
+}
+
+/* After the reset above so block spacing wins at equal specificity. */
+.prose > * + * {
+  margin-top: var(--space-paragraph);
+}
+
+.prose h1 {
+  font-size: 1.6em;
+  line-height: 1.25;
+}
+
+.prose h2 {
+  font-size: 1.3em;
+  line-height: 1.3;
+}
+
+.prose h3 {
+  font-size: 1.1em;
+}
+
+.prose :where(h1, h2, h3) {
+  font-weight: var(--font-weight-bold);
+}
+
+.prose :where(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: 1em;
+  border-left: var(--focus-ring-width) solid var(--color-border);
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.prose a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.prose :where(code, pre) {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.prose code {
+  padding: 0.1em 0.3em;
+  border-radius: var(--radius-small);
+  background: var(--color-surface-strong);
+}
+
+.prose pre {
+  padding: 1em;
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+  overflow-x: auto;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose hr {
+  border: 0;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.prose :global(p.is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* Text case is display-only: the letters typed are unchanged (see journal-document). */
+.prose [data-text-case='upper'] {
+  text-transform: uppercase;
+}
+
+.prose
+  :is(
+    [data-text-case='lower'],
+    [data-text-case='title'],
+    [data-text-case='sentence']
+  ) {
+  text-transform: lowercase;
+}
+
+/* Must match CAPITAL_LETTER_CLASS in journal-document/textCase.ts. */
+.prose :global(.text-case-capital) {
+  text-transform: uppercase;
+}
