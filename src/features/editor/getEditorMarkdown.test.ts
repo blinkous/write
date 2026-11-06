@@ -13,4 +13,17 @@ describe('getEditorMarkdown', () => {
       '# Today\n\nA **good** *day*.\n\n- tea\n\n> quiet\n',
     )
   })
+
+  it('keeps an indent on the very first line', () => {
+    const editor = new Editor({
+      extensions: editorExtensions,
+      content: {
+        type: 'doc',
+        content: [
+          { type: 'paragraph', content: [{ type: 'text', text: '\tFirst' }] },
+        ],
+      },
+    })
+    expect(getEditorMarkdown(editor)).toBe('\u2003\u2003First\n')
+  })
 })

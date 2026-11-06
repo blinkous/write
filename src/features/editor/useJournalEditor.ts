@@ -1,5 +1,6 @@
 import { useEditor, type JSONContent } from '@tiptap/react'
 import { editorExtensions } from './editorExtensions'
+import { KEYBOARD_HINT_ID } from './tabIndent'
 import styles from './JournalPage.module.css'
 import './tiptapBase.css'
 
@@ -26,7 +27,11 @@ export function useJournalEditor({
       // Loaded from tiptapBase.css instead; the CSP blocks inline <style> tags.
       injectCSS: false,
       editorProps: {
-        attributes: { 'aria-label': 'Journal entry', class: styles.prose },
+        attributes: {
+          'aria-label': 'Journal entry',
+          'aria-describedby': KEYBOARD_HINT_ID,
+          class: styles.prose,
+        },
       },
       onUpdate: ({ editor }) => onChange(entryId, editor.getJSON()),
     },

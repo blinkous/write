@@ -12,6 +12,7 @@
   font-family: var(--font-editor);
   font-size: var(--font-size-editor);
   line-height: var(--line-height-editor);
+  tab-size: var(--tab-size);
   overflow-wrap: break-word;
 }
 

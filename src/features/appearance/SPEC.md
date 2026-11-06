@@ -8,8 +8,9 @@ colors. All page-wide.
 - Each control is exported separately (`FontPicker`, `TextSizePicker`, `PageColorsPicker`,
   `MarginsPicker`, `SpacingPicker`) so the app orders them in the toolbar. The font trigger
   shows the font name; the others are icons whose accessible label includes the value.
-- **Spacing** sets line spacing (Tight/Normal/Relaxed/Loose) and paragraph spacing
-  (None/Small/Normal/Large), mapped to `--line-height-*` and `--space-paragraph-*` tokens.
+- **Spacing** sets line spacing (S/M/L/XL) and paragraph spacing (None/S/M/L), mapped to
+  `--line-height-*` and `--space-paragraph-*` tokens. Stored values are names like
+  `relaxed`, separate from the labels, so labels can change without migrating data.
 - The font list shows each name in its own font. Selection applies immediately, so arrow
   keys preview fonts live.
 - Color changes apply instantly: nothing transitions background or text color, so the

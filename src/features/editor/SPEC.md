@@ -27,10 +27,17 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   container moves.
 - Caret navigation (`⌘←/→`, `⌥←/→`, `⌘↑/↓`, with `⇧` to select) is native browser behaviour.
 - `⌘B`, `⌘I`, `⌘Z`, `⌘⇧Z` come from Tiptap's StarterKit.
+- **Tab** inserts a tab (shown 4 spaces wide, `--tab-size`); **Shift+Tab** removes one from
+  the start of the line. In lists, Tab/Shift+Tab indent and outdent the item instead
+  (`TabIndent` has lower priority than list keymaps). To avoid a keyboard trap,
+  **Escape then Tab** moves focus out as usual; a hidden hint linked via
+  `aria-describedby` says so.
 
 ## Decisions
 
 - Copied markdown and exports contain text as typed, not as displayed by text case.
 - Markdown has no color syntax, so copied markdown drops text colors; JSON export keeps them.
+- Copied markdown turns tabs into two em spaces (outside fenced code), because a leading
+  tab or spaces in markdown makes an indented code block. JSON keeps the real tabs.
 - Content is stored as Tiptap JSON rather than markdown because it is lossless; markdown
   is produced on export.

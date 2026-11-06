@@ -23,12 +23,15 @@ export const MARGIN_OPTIONS = [
 export type MarginValue = (typeof MARGIN_OPTIONS)[number]['value']
 export const isMarginValue = createOptionGuard(MARGIN_OPTIONS)
 
-/** Space between lines; each maps to a `--line-height-<value>` design token. */
+/**
+ * Space between lines; each maps to a `--line-height-<value>` design token.
+ * Values are stored, so relabel freely but don't rename them.
+ */
 export const LINE_SPACING_OPTIONS = [
-  { value: 'tight', label: 'Tight' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'relaxed', label: 'Relaxed' },
-  { value: 'loose', label: 'Loose' },
+  { value: 'tight', label: 'S' },
+  { value: 'normal', label: 'M' },
+  { value: 'relaxed', label: 'L' },
+  { value: 'loose', label: 'XL' },
 ] as const
 
 export type LineSpacingValue = (typeof LINE_SPACING_OPTIONS)[number]['value']
@@ -37,9 +40,9 @@ export const isLineSpacingValue = createOptionGuard(LINE_SPACING_OPTIONS)
 /** Space between paragraphs; each maps to a `--space-paragraph-<value>` design token. */
 export const PARAGRAPH_SPACING_OPTIONS = [
   { value: 'none', label: 'None' },
-  { value: 'small', label: 'Small' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'large', label: 'Large' },
+  { value: 'small', label: 'S' },
+  { value: 'normal', label: 'M' },
+  { value: 'large', label: 'L' },
 ] as const
 
 export type ParagraphSpacingValue =

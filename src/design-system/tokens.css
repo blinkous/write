@@ -52,6 +52,8 @@
   --text-size-large: 1.375rem;
   --text-size-extra-large: 1.625rem;
   --line-height-ui: 1.4;
+  /* Width of a tab, in characters */
+  --tab-size: 4;
   --line-height-tight: 1.4;
   --line-height-normal: 1.7;
   --line-height-relaxed: 2;
