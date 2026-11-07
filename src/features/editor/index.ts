@@ -1,4 +1,4 @@
-export { CopyMarkdownButton } from './CopyMarkdownButton'
+export { copyEditorMarkdown } from './getEditorMarkdown'
 export { FormattingToolbar } from './FormattingToolbar'
 export { JournalPage } from './JournalPage'
 export { useJournalEditor } from './useJournalEditor'

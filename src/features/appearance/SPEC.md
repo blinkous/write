@@ -5,8 +5,8 @@ colors. All page-wide.
 
 ## How it works
 
-- Each control is exported separately (`FontPicker`, `TextSizePicker`, `PageColorsPicker`,
-  `MarginsPicker`, `SpacingPicker`) so the app orders them in the toolbar. The font trigger
+- Each control is exported separately (`FontPicker`, `TextSizePicker`, `MarginsPicker`,
+  `SpacingPicker`) so the app orders them in the toolbar. The font trigger
   shows the font name; the others are icons whose accessible label includes the value.
 - **Spacing** sets line spacing (S/M/L/XL) and paragraph spacing (None/S/M/L), mapped to
   `--line-height-*` and `--space-paragraph-*` tokens. Stored values are names like
@@ -17,7 +17,9 @@ colors. All page-wide.
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Page colors** are a free-form background and default text color (default: dusty rose).
+- **Page colors** (`PageColorsPicker`, the palette icon in the sidebar) are a free-form
+  background and default text color (default: dusty rose). They live apart from the
+  toolbar's per-text color so the two aren't confused.
   Surface, border and muted colors derive from them with `color-mix()` in `tokens.css`.
   There are no theme presets.
 - The page text color is the default for all text: text without its own color (see the

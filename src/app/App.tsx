@@ -10,7 +10,7 @@ import {
   useAppearance,
 } from '../features/appearance'
 import {
-  CopyMarkdownButton,
+  copyEditorMarkdown,
   FormattingToolbar,
   JournalPage,
   TextCasePicker,
@@ -69,6 +69,15 @@ export function App() {
     if (!window.matchMedia(WIDE_SCREEN_QUERY).matches) setIsSidebarOpen(false)
   }
 
+  async function copyMarkdown() {
+    const didCopy = await copyEditorMarkdown(editor)
+    setToastMessage(
+      didCopy
+        ? { text: 'Copied as markdown.', tone: 'neutral' }
+        : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
+    )
+  }
+
   function confirmAndDeleteEntry() {
     if (window.confirm('Delete this entry? This can’t be undone.'))
       deleteEntry(selectedEntry.id)
@@ -97,10 +106,17 @@ export function App() {
             }}
             onRename={renameEntry}
             actions={
-              <JournalMenu
-                onExportAll={exportAllEntries}
-                onImport={importEntries}
-              />
+              <>
+                <PageColorsPicker
+                  backgroundColor={backgroundColor}
+                  textColor={textColor}
+                  onChange={updateAppearance}
+                />
+                <JournalMenu
+                  onExportAll={exportAllEntries}
+                  onImport={importEntries}
+                />
+              </>
             }
           />
         </aside>
@@ -143,11 +159,6 @@ export function App() {
               />
               <TextColorPicker editor={editor} pageTextColor={textColor} />
               <TextCasePicker editor={editor} />
-              <PageColorsPicker
-                backgroundColor={backgroundColor}
-                textColor={textColor}
-                onChange={updateAppearance}
-              />
               <MarginsPicker
                 margins={margins}
                 onChange={(value) => updateAppearance({ margins: value })}
@@ -163,8 +174,8 @@ export function App() {
           </div>
 
           <div className={styles.headerActions}>
-            <CopyMarkdownButton editor={editor} />
             <EntryMenu
+              onCopyMarkdown={copyMarkdown}
               onExport={() => exportEntry(selectedEntry)}
               onImport={importEntries}
               onDelete={confirmAndDeleteEntry}

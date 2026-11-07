@@ -14,3 +14,8 @@
   font-size: var(--text-size-caption);
   font-weight: var(--font-weight-medium);
 }
+
+/* A legend sits outside the fieldset's flex flow, so gap can't space it. */
+legend.label {
+  padding-block-end: var(--space-2);
+}

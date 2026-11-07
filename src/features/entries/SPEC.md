@@ -38,7 +38,8 @@ The list of journal entries and which one is open.
 
 - One JSON format for a single entry or the whole journal:
   `{ format: 'write-journal', version: 1, exportedAt, entries: JournalEntry[] }`.
-  Export entry / import live in the ⋯ entry menu; export all / import in the sidebar menu.
+  The entry ⋯ menu has copy as markdown, export entry, import and delete; the sidebar ⋯
+  menu has export all and import.
 - Files are read locally (never uploaded) and treated as untrusted: capped at 20 MB and
   10,000 entries, checked with zod, and each entry's content is validated against the
   document schema and rebuilt from it (`journal-document`). One invalid entry rejects the

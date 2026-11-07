@@ -18,7 +18,7 @@ export function ImportAction({ onImport, closeMenu }: ImportActionProps) {
       }}
     >
       <Upload aria-hidden="true" />
-      Import from JSON…
+      Import from JSON
     </FileInputButton>
   )
 }

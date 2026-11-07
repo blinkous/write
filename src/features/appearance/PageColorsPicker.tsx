@@ -1,6 +1,6 @@
+import { Palette } from 'lucide-react'
 import { ColorInput, Field, Popover } from '../../design-system'
 import type { Appearance } from './appearanceOptions'
-import { ColorSwatch } from './ColorSwatch'
 import styles from './AppearanceControls.module.css'
 
 type PageColorsPickerProps = {
@@ -9,7 +9,10 @@ type PageColorsPickerProps = {
   onChange: (changes: Partial<Appearance>) => void
 }
 
-/** Page-wide background and default text color. Text without its own color follows the latter. */
+/**
+ * Page-wide background and default text color. Text without its own color
+ * (set from the editor toolbar) follows the page text color, as does the UI.
+ */
 export function PageColorsPicker({
   backgroundColor,
   textColor,
@@ -18,9 +21,8 @@ export function PageColorsPicker({
   return (
     <Popover
       label="Page colors"
-      trigger={
-        <ColorSwatch backgroundColor={backgroundColor} textColor={textColor} />
-      }
+      align="start"
+      trigger={<Palette aria-hidden="true" />}
     >
       <div className={styles.colorRow}>
         <Field label="Background">

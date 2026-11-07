@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/core'
+import { copyTextToClipboard } from '../../lib/clipboard'
 
 /* Two em spaces look like a tab but, unlike a tab, never turn a line into a code block. */
 const TAB_REPLACEMENT = '  '
@@ -26,4 +27,9 @@ export function replaceTabsOutsideCode(markdown: string): string {
 export function getEditorMarkdown(editor: Editor): string {
   const markdown = editor.getMarkdown().replace(/^\n+/, '').trimEnd()
   return `${replaceTabsOutsideCode(markdown)}\n`
+}
+
+/** Copies the document as markdown. False if the browser denied clipboard access. */
+export function copyEditorMarkdown(editor: Editor): Promise<boolean> {
+  return copyTextToClipboard(getEditorMarkdown(editor))
 }
