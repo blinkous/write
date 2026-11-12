@@ -15,7 +15,7 @@
   max-width: min(var(--width-popover), calc(100vw - var(--space-8)));
   max-height: var(--height-popover-max);
   overflow-y: auto;
-  padding: var(--space-4);
+  padding: var(--menu-padding);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-medium);
   background: var(--color-background);

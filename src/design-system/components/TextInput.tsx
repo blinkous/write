@@ -1,13 +1,22 @@
 import type { InputHTMLAttributes } from 'react'
 import styles from './TextInput.module.css'
 
-type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
+type TextInputVariant = 'boxed' | 'inline'
 
-export function TextInput({ className = '', ...inputProps }: TextInputProps) {
+type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+  /** "inline" edits text in place: same font and box as the text it replaces, so nothing shifts. */
+  variant?: TextInputVariant
+}
+
+export function TextInput({
+  variant = 'boxed',
+  className = '',
+  ...inputProps
+}: TextInputProps) {
   return (
     <input
       type="text"
-      className={`${styles.textInput} ${className}`}
+      className={`${styles.textInput} ${styles[variant]} ${className}`}
       {...inputProps}
     />
   )

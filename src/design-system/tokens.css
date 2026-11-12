@@ -8,10 +8,17 @@
   --color-background: #f0dfdb;
   --color-text: #4a3236;
   --font-editor: 'Lora Variable', Georgia, serif;
-  --font-size-editor: var(--text-size-medium);
+  /* Body text in the editor; headings scale from it. Overall size is left to browser zoom. */
+  --font-size-editor: 1rem;
+  /* Text styles: heading sizes relative to body text, shared by the editor and its menu. */
+  --scale-heading-1: 1.6;
+  --scale-heading-2: 1.3;
+  --scale-heading-3: 1.1;
+  --scale-small: 0.85;
   --width-page: var(--width-page-normal);
   --line-height-editor: var(--line-height-normal);
-  --space-paragraph: var(--space-paragraph-normal);
+  --space-paragraph: var(--space-paragraph-gap);
+  --paragraph-indent: 0;
 
   /* Derived colors */
   --color-surface: color-mix(
@@ -40,6 +47,14 @@
     var(--color-background)
   );
   --color-danger: color-mix(in srgb, #b3261e 70%, var(--color-text));
+  /* Theme text colors: cozy shades of the page background, set by the appearance feature. */
+  --color-theme-1: var(--color-text);
+  --color-theme-2: var(--color-text);
+  --color-theme-3: var(--color-text);
+  --color-theme-4: var(--color-text);
+  --color-theme-5: var(--color-text);
+  --color-theme-6: var(--color-text);
+  --color-theme-7: var(--color-text);
   --color-warning: color-mix(in srgb, #9a5b00 70%, var(--color-text));
 
   /* Typography */
@@ -49,8 +64,6 @@
   --text-size-ui: 0.875rem;
   --text-size-small: 1rem;
   --text-size-medium: 1.1875rem;
-  --text-size-large: 1.375rem;
-  --text-size-extra-large: 1.625rem;
   --line-height-ui: 1.4;
   /* Width of a tab, in characters */
   --tab-size: 4;
@@ -58,11 +71,10 @@
   --line-height-normal: 1.7;
   --line-height-relaxed: 2;
   --line-height-loose: 2.4;
-  /* Relative to the editor text size */
-  --space-paragraph-none: 0;
-  --space-paragraph-small: 0.35em;
-  --space-paragraph-normal: 0.75em;
-  --space-paragraph-large: 1.5em;
+  /* Gap between paragraphs: half a line of the editor's text. Resolved where used, so em is the editor's size. */
+  --space-paragraph-gap: calc(0.5em * var(--line-height-editor));
+  /* Book-style first-line indent, relative to the editor's text. */
+  --size-paragraph-indent: 2em;
   --font-weight-medium: 500;
   --font-weight-bold: 650;
 
@@ -88,10 +100,18 @@
   --width-sidebar: 16rem;
   --width-popover: 18rem;
   --width-popover-narrow: 13rem;
+  --width-dialog: 36rem;
   --height-popover-max: 70vh;
   --size-control: 2rem;
+  --size-control-small: 1.5rem;
+  /* Menus: inset of the panel, and of each item's content, so all menus align. */
+  --menu-padding: var(--space-1);
+  --menu-item-padding-inline: var(--space-2);
+  /* Swatch grids share one column count so tiles are the same size in every menu. */
+  --swatch-columns: 7;
   --space-control-inline: var(--space-3);
   --size-icon: 1.125rem;
   --size-icon-small: 0.875rem;
+  --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
 }

@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react'
+import menuItemStyles from './MenuItem.module.css'
 import styles from './ChoiceGroup.module.css'
 
 type Choice<Value extends string> = {
@@ -9,24 +10,32 @@ type Choice<Value extends string> = {
 }
 
 type ChoiceGroupProps<Value extends string> = {
+  /** Accessible name for the group; not shown (the menu's trigger names it visually). */
+  label: string
   choices: readonly Choice<Value>[]
   selectedValue: Value | null
   onSelect: (value: Value) => void
-  layout?: 'segmented' | 'list'
 }
 
-/** Single-select group backed by native radio inputs for keyboard and screen reader support. */
+/**
+ * Single-select list of menu rows, backed by native radio inputs for keyboard
+ * (arrow keys) and screen reader support.
+ */
 export function ChoiceGroup<Value extends string>({
+  label,
   choices,
   selectedValue,
   onSelect,
-  layout = 'segmented',
 }: ChoiceGroupProps<Value>) {
   const groupName = useId()
   return (
-    <div className={`${styles.group} ${styles[layout]}`}>
-      {choices.map(({ value, label, visual }) => (
-        <label key={value} className={styles.choice} title={label}>
+    <div role="radiogroup" aria-label={label} className={styles.group}>
+      {choices.map(({ value, label: choiceLabel, visual }) => (
+        <label
+          key={value}
+          className={`${menuItemStyles.item} ${styles.choice}`}
+          data-selected={value === selectedValue}
+        >
           <input
             type="radio"
             className={styles.input}
@@ -40,10 +49,10 @@ export function ChoiceGroup<Value extends string>({
               <span aria-hidden="true" className={styles.visual}>
                 {visual}
               </span>
-              <span className="visually-hidden">{label}</span>
+              <span className="visually-hidden">{choiceLabel}</span>
             </>
           ) : (
-            label
+            choiceLabel
           )}
         </label>
       ))}

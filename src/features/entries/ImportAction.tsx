@@ -1,5 +1,5 @@
 import { Upload } from 'lucide-react'
-import { FileInputButton } from '../../design-system'
+import { FileMenuItem } from '../../design-system'
 import { JOURNAL_FILE_MIME_TYPE } from './entryTransfer'
 
 type ImportActionProps = {
@@ -10,7 +10,7 @@ type ImportActionProps = {
 /** Accepts both single-entry and whole-journal exports. */
 export function ImportAction({ onImport, closeMenu }: ImportActionProps) {
   return (
-    <FileInputButton
+    <FileMenuItem
       accept={`.json,${JOURNAL_FILE_MIME_TYPE}`}
       onFileSelected={(file) => {
         closeMenu()
@@ -19,6 +19,6 @@ export function ImportAction({ onImport, closeMenu }: ImportActionProps) {
     >
       <Upload aria-hidden="true" />
       Import from JSON
-    </FileInputButton>
+    </FileMenuItem>
   )
 }

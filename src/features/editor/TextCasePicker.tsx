@@ -1,6 +1,6 @@
 import { useEditorState, type Editor } from '@tiptap/react'
 import { CaseSensitive } from 'lucide-react'
-import { ActionList, Button, Popover } from '../../design-system'
+import { ActionList, MenuItem, Popover } from '../../design-system'
 import { TEXT_CASE_OPTIONS } from './textCaseOptions'
 
 /**
@@ -26,26 +26,26 @@ export function TextCasePicker({ editor }: { editor: Editor }) {
       {(close) => (
         <ActionList>
           {TEXT_CASE_OPTIONS.map(({ value, label }) => (
-            <Button
+            <MenuItem
               key={value}
-              aria-pressed={activeTextCase?.value === value}
+              isSelected={activeTextCase?.value === value}
               onClick={() => {
                 editor.chain().setTextCase(value).run()
                 close()
               }}
             >
               {label}
-            </Button>
+            </MenuItem>
           ))}
-          <Button
-            aria-pressed={activeTextCase === null}
+          <MenuItem
+            isSelected={activeTextCase === null}
             onClick={() => {
               editor.chain().unsetTextCase().run()
               close()
             }}
           >
             As typed
-          </Button>
+          </MenuItem>
         </ActionList>
       )}
     </Popover>

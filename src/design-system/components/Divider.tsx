@@ -1,12 +1,16 @@
 import styles from './Divider.module.css'
 
-/** Vertical rule separating groups of controls in a row. */
-export function Divider() {
+type DividerProps = {
+  /** "vertical" separates groups in a row (toolbar); "horizontal" separates sections in a menu. */
+  orientation?: 'vertical' | 'horizontal'
+}
+
+export function Divider({ orientation = 'vertical' }: DividerProps) {
   return (
     <div
       role="separator"
-      aria-orientation="vertical"
-      className={styles.divider}
+      aria-orientation={orientation}
+      className={`${styles.divider} ${styles[orientation]}`}
     />
   )
 }

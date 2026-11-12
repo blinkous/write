@@ -1,0 +1,6 @@
+/* A soft tint of the page text color, so highlights suit any palette. */
+.match {
+  border-radius: calc(var(--radius-small) / 2);
+  background: color-mix(in srgb, var(--color-text) 22%, transparent);
+  color: inherit;
+}

@@ -1,0 +1,100 @@
+/*
+ * Equal columns (--swatch-columns) filling the container, so tiles are the same
+ * size in every swatch grid. minmax(0, …): browsers give color inputs a
+ * minimum width that would otherwise widen columns.
+ */
+.row,
+.labeledSwatch {
+  display: grid;
+  grid-template-columns: repeat(var(--swatch-columns), minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+/* The label takes the rest of the row after the swatch. */
+.labeledSwatch {
+  align-items: center;
+}
+
+.swatchLabel {
+  grid-column: 2 / -1;
+  cursor: pointer;
+}
+
+.swatch {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-small);
+  cursor: pointer;
+}
+
+/* Selected: a ring outside the swatch, so the grid doesn't move. */
+.swatch[aria-pressed='true'],
+.swatch[data-selected='true'] {
+  outline: var(--focus-ring-width) solid var(--color-text);
+  outline-offset: var(--focus-ring-width);
+}
+
+/* Invisible, covering the tile, so clicks open the system color picker. */
+.colorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The input is invisible, so its keyboard focus ring is drawn on the tile. */
+.slot:has(.colorInput:focus-visible) .swatch {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
+.swatch[data-empty='true'] {
+  border-style: dashed;
+  background: transparent;
+}
+
+/* Positions the remove button over the swatch's corner. */
+.slot {
+  position: relative;
+  min-width: 0;
+}
+
+.clearButton {
+  position: absolute;
+  top: calc(var(--space-1) * -1.5);
+  right: calc(var(--space-1) * -1.5);
+  display: none;
+  place-items: center;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  padding: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* Shown on hover, and whenever the slot has keyboard focus so it stays reachable. */
+.slot:hover .clearButton,
+.slot:focus-within .clearButton {
+  display: grid;
+}
+
+.clearButton svg {
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+}

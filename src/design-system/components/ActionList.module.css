@@ -1,10 +1,4 @@
 .actionList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-}
-
-/* Element selector outranks the Button's own centering. */
-.actionList > button {
-  justify-content: flex-start;
 }

@@ -1,0 +1,43 @@
+.field {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+}
+
+.icon {
+  position: absolute;
+  left: var(--space-2);
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* Quiet until used: no box, just a hover/focus surface, like the other bar controls. */
+.input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--size-control);
+  padding: 0 var(--space-2) 0 calc(var(--space-2) * 2 + var(--size-icon-small));
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+}
+
+.input::placeholder {
+  color: var(--color-muted);
+}
+
+.input:hover,
+.input:focus {
+  background: var(--color-surface-strong);
+}
+
+/* The browser's clear button doesn't follow the theme; Escape clears instead. */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}

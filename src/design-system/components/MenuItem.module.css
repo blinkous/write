@@ -1,0 +1,45 @@
+/*
+ * The one menu row style, shared by action items (MenuItem) and choice items
+ * (ChoiceGroup), so every menu looks and behaves the same.
+ */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--size-control);
+  padding: 0 var(--menu-item-padding-inline);
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.item:hover,
+.item[data-selected='true'] {
+  background: var(--color-surface-strong);
+}
+
+.item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.item:disabled:hover {
+  background: transparent;
+}
+
+.item svg {
+  flex-shrink: 0;
+  width: var(--size-icon);
+  height: var(--size-icon);
+}
+
+.danger {
+  color: var(--color-danger);
+}

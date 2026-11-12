@@ -1,5 +1,5 @@
 import { Copy, Download, Ellipsis, Trash2 } from 'lucide-react'
-import { ActionList, Button, Popover } from '../../design-system'
+import { ActionList, MenuItem, Popover } from '../../design-system'
 import { ImportAction } from './ImportAction'
 
 type EntryMenuProps = {
@@ -20,7 +20,7 @@ export function EntryMenu({
     <Popover label="Entry actions" trigger={<Ellipsis aria-hidden="true" />}>
       {(closeMenu) => (
         <ActionList>
-          <Button
+          <MenuItem
             onClick={() => {
               closeMenu()
               onCopyMarkdown()
@@ -28,8 +28,8 @@ export function EntryMenu({
           >
             <Copy aria-hidden="true" />
             Copy as markdown
-          </Button>
-          <Button
+          </MenuItem>
+          <MenuItem
             onClick={() => {
               closeMenu()
               onExport()
@@ -37,9 +37,9 @@ export function EntryMenu({
           >
             <Download aria-hidden="true" />
             Export entry as JSON
-          </Button>
+          </MenuItem>
           <ImportAction onImport={onImport} closeMenu={closeMenu} />
-          <Button
+          <MenuItem
             variant="danger"
             onClick={() => {
               closeMenu()
@@ -48,7 +48,7 @@ export function EntryMenu({
           >
             <Trash2 aria-hidden="true" />
             Delete entry
-          </Button>
+          </MenuItem>
         </ActionList>
       )}
     </Popover>

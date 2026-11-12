@@ -1,14 +1,21 @@
-import { Download, Ellipsis } from 'lucide-react'
-import { ActionList, Button, Popover } from '../../design-system'
+import { Download, Ellipsis, FileText, Info } from 'lucide-react'
+import { ActionList, MenuItem, Popover } from '../../design-system'
 import { ImportAction } from './ImportAction'
 
 type JournalMenuProps = {
   onExportAll: () => void
+  onExportAllAsMarkdown: () => void
   onImport: (file: File) => void
+  onShowAbout: () => void
 }
 
 /** Whole-journal actions, shown in the entries sidebar. */
-export function JournalMenu({ onExportAll, onImport }: JournalMenuProps) {
+export function JournalMenu({
+  onExportAll,
+  onExportAllAsMarkdown,
+  onImport,
+  onShowAbout,
+}: JournalMenuProps) {
   return (
     <Popover
       label="Journal actions"
@@ -17,7 +24,7 @@ export function JournalMenu({ onExportAll, onImport }: JournalMenuProps) {
     >
       {(closeMenu) => (
         <ActionList>
-          <Button
+          <MenuItem
             onClick={() => {
               closeMenu()
               onExportAll()
@@ -25,8 +32,26 @@ export function JournalMenu({ onExportAll, onImport }: JournalMenuProps) {
           >
             <Download aria-hidden="true" />
             Export all entries as JSON
-          </Button>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              closeMenu()
+              onExportAllAsMarkdown()
+            }}
+          >
+            <FileText aria-hidden="true" />
+            Export all entries as markdown
+          </MenuItem>
           <ImportAction onImport={onImport} closeMenu={closeMenu} />
+          <MenuItem
+            onClick={() => {
+              closeMenu()
+              onShowAbout()
+            }}
+          >
+            <Info aria-hidden="true" />
+            About
+          </MenuItem>
         </ActionList>
       )}
     </Popover>

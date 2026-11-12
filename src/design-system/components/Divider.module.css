@@ -1,6 +1,14 @@
 .divider {
   flex-shrink: 0;
+  background: var(--color-border);
+}
+
+.vertical {
   width: var(--border-width);
   height: var(--size-divider);
-  background: var(--color-border);
+}
+
+.horizontal {
+  height: var(--border-width);
+  margin: var(--menu-padding) 0;
 }

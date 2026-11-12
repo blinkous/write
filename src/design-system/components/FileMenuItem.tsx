@@ -1,27 +1,25 @@
 import { useRef, type ReactNode } from 'react'
-import { Button } from './Button'
+import { MenuItem } from './MenuItem'
 
-type FileInputButtonProps = {
+type FileMenuItemProps = {
   children: ReactNode
   /** Comma-separated file types, as for <input accept>. */
   accept: string
   onFileSelected: (file: File) => void
-  variant?: 'ghost' | 'subtle'
 }
 
-/** A Button that opens the system file picker. Files are read locally, never uploaded. */
-export function FileInputButton({
+/** A menu row that opens the system file picker. Files are read locally, never uploaded. */
+export function FileMenuItem({
   children,
   accept,
   onFileSelected,
-  variant = 'ghost',
-}: FileInputButtonProps) {
+}: FileMenuItemProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   return (
     <>
-      <Button variant={variant} onClick={() => fileInputRef.current?.click()}>
+      <MenuItem onClick={() => fileInputRef.current?.click()}>
         {children}
-      </Button>
+      </MenuItem>
       <input
         ref={fileInputRef}
         type="file"
