@@ -1,0 +1,221 @@
+import { clampChroma, formatHex, oklch } from 'culori'
+
+/*
+ * Cozy colors derived from the page background, in OKLCH (where lightness and
+ * colorfulness match how they look):
+ *  - Default text color: a step along a tonal ramp of the page (same hue,
+ *    gently contrasting, chroma peaking in the mid-tones).
+ *  - Theme colors: rich, low-contrast tones around the page color, a little
+ *    lighter and darker, leaning to neighbouring hues (see THEME_RECIPES).
+ *  - Never harsh: no near-black or near-white, and chroma is capped so vivid
+ *    pages don't turn neon. Grey pages get a warm tint instead of flat grey.
+ */
+
+/** OKLCH lightness above which a page counts as light (shades go darker). */
+const LIGHT_PAGE_LIGHTNESS = 0.6
+
+/* Never darker than soft charcoal or lighter than soft cream, so mid-tone pages stay gentle. */
+const MIN_LIGHTNESS = 0.26
+const MAX_LIGHTNESS = 0.94
+
+/** Pages less colorful than this are treated as neutral and warmed up. */
+const NEUTRAL_CHROMA = 0.012
+const WARM_NEUTRAL_HUE = 65
+
+/* Peak colorfulness of the ramp, relative to the page's, within cozy bounds. */
+const PEAK_CHROMA_SCALE = 2.2
+const MIN_PEAK_CHROMA = 0.03
+const MAX_PEAK_CHROMA = 0.12
+/** Lightness where colorfulness peaks; it fades with distance from here. */
+const PEAK_CHROMA_LIGHTNESS = 0.55
+const CHROMA_FALLOFF = 1.3
+const MIN_CHROMA_SHARE = 0.25
+
+/* Positions along the text ramp, used to fit mid-tone pages (see fitDistance). */
+const TEXT_RAMP_DISTANCES = [0.2, 0.29, 0.38, 0.47, 0.56] as const
+const TEXT_LIGHTNESS_DISTANCE = 0.5
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
+}
+
+/**
+ * Mid-tone pages have little room before the lightness limits, so the ramp is
+ * compressed to fit, keeping the closest step and the steps distinct.
+ */
+function fitDistance(distance: number, availableRoom: number): number {
+  const [closest] = TEXT_RAMP_DISTANCES
+  const farthest = TEXT_RAMP_DISTANCES[TEXT_RAMP_DISTANCES.length - 1]
+  if (availableRoom >= farthest) return distance
+  if (availableRoom <= closest) return availableRoom
+  return (
+    closest +
+    ((distance - closest) / (farthest - closest)) * (availableRoom - closest)
+  )
+}
+
+function deriveShade(backgroundHex: string, lightnessDistance: number): string {
+  const background = oklch(backgroundHex)
+  if (!background) return backgroundHex
+  const isNeutral = background.c < NEUTRAL_CHROMA
+  const hue = isNeutral ? WARM_NEUTRAL_HUE : (background.h ?? WARM_NEUTRAL_HUE)
+  const direction = background.l > LIGHT_PAGE_LIGHTNESS ? -1 : 1
+  const availableRoom =
+    direction < 0 ? background.l - MIN_LIGHTNESS : MAX_LIGHTNESS - background.l
+  const lightness = clamp(
+    background.l + direction * fitDistance(lightnessDistance, availableRoom),
+    MIN_LIGHTNESS,
+    MAX_LIGHTNESS,
+  )
+  const peakChroma = clamp(
+    background.c * PEAK_CHROMA_SCALE,
+    MIN_PEAK_CHROMA,
+    MAX_PEAK_CHROMA,
+  )
+  const chromaShare = Math.max(
+    1 - Math.abs(lightness - PEAK_CHROMA_LIGHTNESS) * CHROMA_FALLOFF,
+    MIN_CHROMA_SHARE,
+  )
+  const shade = {
+    mode: 'oklch' as const,
+    l: lightness,
+    c: peakChroma * chromaShare,
+    h: hue,
+  }
+  // Pull chroma in (keeping hue and lightness) if the shade can't be shown on screen.
+  return formatHex(clampChroma(shade, 'oklch'))
+}
+
+/** A default text color from the same ramp: matches the page, gently contrasting. */
+export function deriveCozyTextColor(backgroundHex: string): string {
+  return deriveShade(backgroundHex, TEXT_LIGHTNESS_DISTANCE)
+}
+
+type ThemeRecipe = {
+  /** Lightness change toward the text side (lighter on dark pages); negative goes past the page. */
+  lightnessOffset: number
+  /** Multiplier on the page's chroma (with a floor for pale pages). */
+  chromaScale: number
+  /** Degrees around the color wheel from the page hue. */
+  hueShift: number
+}
+
+/*
+ * Six rich, low-contrast tones around the page color, tuned from hand-picked
+ * shades on a burgundy page: a dusty mauve, an orchid leaning toward purple, a
+ * cluster of three close cousins (raspberry, berry, plum) around the page
+ * itself, and a wine a touch deeper than the page. Hues only lean a little
+ * (toward purple for the orchid), so nothing drifts to an unrelated color.
+ */
+const THEME_RECIPES: readonly ThemeRecipe[] = [
+  { lightnessOffset: 0.26, chromaScale: 0.75, hueShift: -1 },
+  { lightnessOffset: 0.25, chromaScale: 1.1, hueShift: -25 },
+  { lightnessOffset: 0.13, chromaScale: 1.35, hueShift: 5 },
+  { lightnessOffset: 0.08, chromaScale: 1.3, hueShift: -2 },
+  { lightnessOffset: 0.03, chromaScale: 1.2, hueShift: -7 },
+  { lightnessOffset: -0.06, chromaScale: 0.8, hueShift: 4 },
+]
+
+/** Pale pages carry little color, so their tones start from at least this chroma. */
+const MIN_THEME_BASE_CHROMA = 0.075
+const NEUTRAL_THEME_BASE_CHROMA = 0.05
+const MAX_THEME_CHROMA = 0.16
+
+function deriveThemeColor(
+  backgroundHex: string,
+  { lightnessOffset, chromaScale, hueShift }: ThemeRecipe,
+): string {
+  const background = oklch(backgroundHex)
+  if (!background) return backgroundHex
+  const isNeutral = background.c < NEUTRAL_CHROMA
+  const hue = isNeutral ? WARM_NEUTRAL_HUE : (background.h ?? WARM_NEUTRAL_HUE)
+  const baseChroma = isNeutral
+    ? NEUTRAL_THEME_BASE_CHROMA
+    : Math.max(background.c, MIN_THEME_BASE_CHROMA)
+  const towardText = background.l > LIGHT_PAGE_LIGHTNESS ? -1 : 1
+  const pastPage = background.l + towardText * lightnessOffset
+  // No room past the page (e.g. deeper than near-white): step toward the text side instead.
+  const lightness =
+    pastPage < MIN_LIGHTNESS || pastPage > MAX_LIGHTNESS
+      ? background.l + towardText * Math.abs(lightnessOffset)
+      : pastPage
+  const shade = {
+    mode: 'oklch' as const,
+    l: clamp(lightness, MIN_LIGHTNESS, MAX_LIGHTNESS),
+    c: Math.min(baseChroma * chromaScale, MAX_THEME_CHROMA),
+    h: (hue + hueShift + 360) % 360,
+  }
+  // Pull chroma in (keeping hue and lightness) if the shade can't be shown on screen.
+  return formatHex(clampChroma(shade, 'oklch'))
+}
+
+function lightnessOf(hex: string): number {
+  return oklch(hex)?.l ?? 0
+}
+
+/* Black, white and grey pages: shades of grey instead of hue-shifted tones. */
+
+/** Neutral pages darker than this (near-black) get only greys, no warm accent. */
+const NEAR_BLACK_LIGHTNESS = 0.2
+/** Where greys sit between the page (0) and the text color (1); spread evenly. */
+const GREY_SPAN = { nearestText: 0.9, nearestPage: 0.4 } as const
+
+function deriveGreys(
+  backgroundLightness: number,
+  textLightness: number,
+  count: number,
+): string[] {
+  const { nearestText, nearestPage } = GREY_SPAN
+  return Array.from({ length: count }, (_, index) => {
+    const share =
+      nearestText -
+      (index * (nearestText - nearestPage)) / Math.max(count - 1, 1)
+    const lightness =
+      backgroundLightness + share * (textLightness - backgroundLightness)
+    return formatHex({ mode: 'oklch', l: lightness, c: 0, h: 0 })
+  })
+}
+
+/**
+ * For a neutral page: a warm light accent (except on near-black pages, where
+ * it reads muddy), then greys between the page and the text color, light to dark.
+ */
+function deriveNeutralTones(
+  backgroundHex: string,
+  pageTextColor: string,
+): string[] {
+  const backgroundLightness = lightnessOf(backgroundHex)
+  const keepsWarmAccent = backgroundLightness >= NEAR_BLACK_LIGHTNESS
+  const toneCount = THEME_RECIPES.length
+  const greys = deriveGreys(
+    backgroundLightness,
+    lightnessOf(pageTextColor),
+    keepsWarmAccent ? toneCount - 1 : toneCount,
+  ).toSorted((first, second) => lightnessOf(second) - lightnessOf(first))
+  // The first recipe is the lightest, softest tone: a warm beige on neutral pages.
+  return keepsWarmAccent
+    ? [deriveThemeColor(backgroundHex, THEME_RECIPES[0]), ...greys]
+    : greys
+}
+
+function isNeutralColor(hex: string): boolean {
+  return (oklch(hex)?.c ?? 0) < NEUTRAL_CHROMA
+}
+
+/**
+ * The seven theme colors: first the page text color (so the default is always
+ * one click away), then six tones around the page color, ordered light to
+ * dark. Neutral pages (black, white, greys) get greys instead of hue shifts.
+ */
+export function deriveCozyThemeColors(
+  backgroundHex: string,
+  pageTextColor: string,
+): string[] {
+  if (isNeutralColor(backgroundHex)) {
+    return [pageTextColor, ...deriveNeutralTones(backgroundHex, pageTextColor)]
+  }
+  const tones = THEME_RECIPES.map((recipe) =>
+    deriveThemeColor(backgroundHex, recipe),
+  ).toSorted((first, second) => lightnessOf(second) - lightnessOf(first))
+  return [pageTextColor, ...tones]
+}

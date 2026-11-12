@@ -1,45 +1,86 @@
-import { Palette } from 'lucide-react'
-import { ColorInput, Field, Popover } from '../../design-system'
-import type { Appearance } from './appearanceOptions'
-import styles from './AppearanceControls.module.css'
+import { Palette, Redo2, Undo2 } from 'lucide-react'
+import { useId } from 'react'
+import {
+  Button,
+  LabeledSwatch,
+  MenuFooter,
+  Popover,
+  PopoverPanel,
+  SwatchColorInput,
+} from '../../design-system'
+import type { usePageColors } from './usePageColors'
 
 type PageColorsPickerProps = {
-  backgroundColor: string
-  textColor: string
-  onChange: (changes: Partial<Appearance>) => void
+  pageColors: ReturnType<typeof usePageColors>
 }
 
 /**
- * Page-wide background and default text color. Text without its own color
- * (set from the editor toolbar) follows the page text color, as does the UI.
+ * Page-wide background and default text color, as swatches like the text
+ * color menu. Picking a background also picks a matching text color, which
+ * can then be changed. Small undo/redo icons cover recent color changes.
  */
-export function PageColorsPicker({
-  backgroundColor,
-  textColor,
-  onChange,
-}: PageColorsPickerProps) {
+export function PageColorsPicker({ pageColors }: PageColorsPickerProps) {
+  const {
+    backgroundColor,
+    textColor,
+    changeBackground,
+    changeText,
+    commit,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+  } = pageColors
+  const backgroundInputId = useId()
+  const textInputId = useId()
+
   return (
     <Popover
       label="Page colors"
       align="start"
       trigger={<Palette aria-hidden="true" />}
+      onClose={commit}
     >
-      <div className={styles.colorRow}>
-        <Field label="Background">
-          <ColorInput
+      <PopoverPanel>
+        <LabeledSwatch inputId={backgroundInputId} label="Background">
+          <SwatchColorInput
+            id={backgroundInputId}
             value={backgroundColor}
-            onChange={({ target }) =>
-              onChange({ backgroundColor: target.value })
-            }
+            label="Background"
+            onChange={changeBackground}
+            onCommit={commit}
           />
-        </Field>
-        <Field label="Text">
-          <ColorInput
+        </LabeledSwatch>
+        <LabeledSwatch inputId={textInputId} label="Text">
+          <SwatchColorInput
+            id={textInputId}
             value={textColor}
-            onChange={({ target }) => onChange({ textColor: target.value })}
+            label="Text"
+            onChange={changeText}
+            onCommit={commit}
           />
-        </Field>
-      </div>
+        </LabeledSwatch>
+        <MenuFooter>
+          <Button
+            iconOnly
+            aria-label="Undo color change"
+            title="Undo color change"
+            disabled={!canUndo}
+            onClick={undo}
+          >
+            <Undo2 aria-hidden="true" />
+          </Button>
+          <Button
+            iconOnly
+            aria-label="Redo color change"
+            title="Redo color change"
+            disabled={!canRedo}
+            onClick={redo}
+          >
+            <Redo2 aria-hidden="true" />
+          </Button>
+        </MenuFooter>
+      </PopoverPanel>
     </Popover>
   )
 }
