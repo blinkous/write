@@ -4,7 +4,8 @@ import { JOURNAL_FILE_MIME_TYPE } from './entryTransfer'
 
 type ImportActionProps = {
   onImport: (file: File) => void
-  closeMenu: () => void
+  /** Closes the menu it's in, if any, before the import runs. */
+  closeMenu?: () => void
 }
 
 /** Accepts both single-entry and whole-journal exports. */
@@ -13,7 +14,7 @@ export function ImportAction({ onImport, closeMenu }: ImportActionProps) {
     <FileMenuItem
       accept={`.json,${JOURNAL_FILE_MIME_TYPE}`}
       onFileSelected={(file) => {
-        closeMenu()
+        closeMenu?.()
         onImport(file)
       }}
     >

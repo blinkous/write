@@ -20,7 +20,8 @@
   width: 100%;
   min-width: 0;
   min-height: var(--size-control);
-  padding: 0 var(--space-2) 0 calc(var(--space-2) * 2 + var(--size-icon-small));
+  padding: 0 calc(var(--space-2) * 2 + var(--size-icon-small)) 0
+    calc(var(--space-2) * 2 + var(--size-icon-small));
   border: 0;
   border-radius: var(--radius-small);
   background: transparent;
@@ -40,4 +41,33 @@
 /* The browser's clear button doesn't follow the theme; Escape clears instead. */
 .input::-webkit-search-cancel-button {
   appearance: none;
+}
+
+/* Only while the field is in use. */
+.clear {
+  position: absolute;
+  right: var(--space-1);
+  display: none;
+  place-items: center;
+  width: var(--size-control-small);
+  height: var(--size-control-small);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.clear:hover {
+  color: var(--color-text);
+}
+
+.clear svg {
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+}
+
+.field:focus-within .clear {
+  display: grid;
 }

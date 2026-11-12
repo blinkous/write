@@ -8,11 +8,15 @@
   grid-template-columns: var(--width-sidebar) 1fr;
 }
 
+/* Entries on top, filling what's left; the settings drawer and its toggle at the bottom. */
 .sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   padding: var(--space-4);
   border-right: var(--border-width) solid var(--color-border);
   background: var(--color-surface);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .backdrop {

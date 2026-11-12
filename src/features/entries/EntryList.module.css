@@ -1,13 +1,44 @@
 .entryList {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: var(--space-4);
+  /* Shrinks to make room (e.g. for the settings drawer); the list scrolls instead. */
+  min-height: 0;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: var(--space-1);
+}
+
+/*
+ * Searching takes the whole bar: the buttons beside the field (icon-only, so
+ * one control wide) slide away, taking their gap with them, and come back
+ * when focus leaves it. Hidden buttons are also out of the tab order.
+ */
+.header > :not(:has(input[type='search'])) {
+  max-width: var(--size-control);
+}
+
+/* Clipped only while hidden, so focus rings show normally. */
+.header:has(input[type='search']:focus) > :not(:has(input[type='search'])) {
+  max-width: 0;
+  overflow: hidden;
+  margin-left: calc(-1 * var(--space-1));
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .header > :not(:has(input[type='search'])) {
+    transition:
+      max-width var(--duration-quick) var(--easing-standard),
+      margin-left var(--duration-quick) var(--easing-standard),
+      opacity var(--duration-quick) var(--easing-standard),
+      visibility var(--duration-quick) allow-discrete;
+  }
 }
 
 .emptyResults {
@@ -29,8 +60,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  margin: 0;
-  padding: 0;
+  min-height: 0;
+  /* Room for focus rings, which scrolling would otherwise clip; pulled back so items line up. */
+  --focus-ring-room: calc(var(--focus-ring-width) * 2);
+  margin: calc(var(--focus-ring-room) * -1);
+  padding: var(--focus-ring-room);
+  overflow-y: auto;
   list-style: none;
 }
 

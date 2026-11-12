@@ -8,12 +8,17 @@
 
 .panel {
   position-anchor: --popover-anchor;
+  /*
+   * Below the trigger, or above it when there's more room there (e.g. near the
+   * bottom of the screen); either way no taller than the room it has, so it
+   * never runs off screen. Percentages resolve against that room.
+   */
   position-try-fallbacks: flip-block, flip-inline;
-  top: anchor(bottom);
-  margin: var(--space-2) 0 0;
+  position-try-order: most-block-size;
+  margin: var(--space-2) 0;
   width: max-content;
   max-width: min(var(--width-popover), calc(100vw - var(--space-8)));
-  max-height: var(--height-popover-max);
+  max-height: min(var(--height-popover-max), 100%);
   overflow-y: auto;
   padding: var(--menu-padding);
   border: var(--border-width) solid var(--color-border);
@@ -24,11 +29,11 @@
     color-mix(in srgb, var(--color-text) 14%, transparent);
 }
 
+/* Lines up with the trigger's start or end edge. */
 .end {
-  right: anchor(right);
-  left: auto;
+  position-area: block-end span-inline-start;
 }
 
 .start {
-  left: anchor(left);
+  position-area: block-end span-inline-end;
 }

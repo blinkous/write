@@ -3,21 +3,10 @@
  * size in every swatch grid. minmax(0, …): browsers give color inputs a
  * minimum width that would otherwise widen columns.
  */
-.row,
-.labeledSwatch {
+.row {
   display: grid;
   grid-template-columns: repeat(var(--swatch-columns), minmax(0, 1fr));
   gap: var(--space-2);
-}
-
-/* The label takes the rest of the row after the swatch. */
-.labeledSwatch {
-  align-items: center;
-}
-
-.swatchLabel {
-  grid-column: 2 / -1;
-  cursor: pointer;
 }
 
 .swatch {

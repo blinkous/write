@@ -58,7 +58,7 @@ type SwatchColorInputProps = {
   onCommit?: () => void
   /** Empties the slot; shown as a small × on hover or focus when the slot is filled. */
   onClear?: () => void
-  /** For pairing with a visible label (see LabeledSwatch). */
+  /** For pairing with a visible label (see LabeledRow's `controlId`). */
   id?: string
 }
 
@@ -132,30 +132,6 @@ export function SwatchColorInput({
           <X aria-hidden="true" />
         </button>
       )}
-    </div>
-  )
-}
-
-type LabeledSwatchProps = {
-  /** Id of the swatch input, so clicking the label opens its picker. */
-  inputId: string
-  label: string
-  /** The swatch, e.g. a SwatchColorInput with the same id. */
-  children: ReactNode
-}
-
-/** A swatch with its label beside it, on the same grid as a SwatchRow so tiles line up. */
-export function LabeledSwatch({
-  inputId,
-  label,
-  children,
-}: LabeledSwatchProps) {
-  return (
-    <div className={styles.labeledSwatch}>
-      {children}
-      <label htmlFor={inputId} className={styles.swatchLabel}>
-        {label}
-      </label>
     </div>
   )
 }

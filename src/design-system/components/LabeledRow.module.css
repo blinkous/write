@@ -1,0 +1,28 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--size-control);
+}
+
+.label {
+  flex-shrink: 0;
+}
+
+.clickable {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* The control's padded edge sits outside the row, so its content lines up with the edge. */
+.button {
+  margin-inline-end: calc(
+    (var(--space-control-inline) + var(--border-width)) * -1
+  );
+}
+
+/* A swatch tile, as tall as a control. */
+.swatch {
+  width: var(--size-control);
+}

@@ -2,3 +2,8 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Inside a drawer section, rows pull out by their padding so their icons line up with the section. */
+.actionList {
+  margin-inline: calc(var(--row-outdent, 0rem) * -1);
+}

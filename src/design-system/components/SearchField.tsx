@@ -1,4 +1,5 @@
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
+import { useRef } from 'react'
 import styles from './SearchField.module.css'
 
 type SearchFieldProps = {
@@ -10,17 +11,22 @@ type SearchFieldProps = {
   onChange: (value: string) => void
 }
 
-/** A compact search box. Escape clears it. */
+/**
+ * A compact search box. Escape clears it; while it's focused, a small × clears
+ * it and steps out (for pointers; keyboard users have Escape and Tab).
+ */
 export function SearchField({
   label,
   placeholder = 'Search',
   value,
   onChange,
 }: SearchFieldProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
   return (
     <div className={styles.field}>
       <Search aria-hidden="true" className={styles.icon} />
       <input
+        ref={inputRef}
         type="search"
         className={styles.input}
         aria-label={label}
@@ -34,6 +40,21 @@ export function SearchField({
           onChange('')
         }}
       />
+      <button
+        type="button"
+        className={styles.clear}
+        aria-label="Clear search"
+        title="Clear search"
+        tabIndex={-1}
+        // Keep focus in the field until the click lands, so the field doesn't close first.
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={() => {
+          onChange('')
+          inputRef.current?.blur()
+        }}
+      >
+        <X aria-hidden="true" />
+      </button>
     </div>
   )
 }

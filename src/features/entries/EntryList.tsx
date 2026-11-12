@@ -1,8 +1,10 @@
 import { SquarePen } from 'lucide-react'
-import { useId, useState, type ReactNode } from 'react'
+import { useId, useState } from 'react'
 import { Button, SearchField } from '../../design-system'
+import { EntrySortMenu } from './EntrySortMenu'
 import { searchEntries } from './entrySearch'
 import { EntryListItem } from './EntryListItem'
+import type { EntrySort } from './entrySort'
 import type { JournalEntry } from './journalEntry'
 import styles from './EntryList.module.css'
 
@@ -12,8 +14,9 @@ type EntryListProps = {
   onSelect: (entryId: string) => void
   onCreate: () => void
   onRename: (entry: JournalEntry, rawTitle: string) => void
-  /** Extra controls shown beside "New entry", e.g. a journal menu. */
-  actions?: ReactNode
+  /** The list's order (entries come sorted); last-edited shows edit dates. */
+  sort: EntrySort
+  onSortChange: (sort: EntrySort) => void
 }
 
 export function EntryList({
@@ -22,7 +25,8 @@ export function EntryList({
   onSelect,
   onCreate,
   onRename,
-  actions,
+  sort,
+  onSortChange,
 }: EntryListProps) {
   const renameHintId = useId()
   const [query, setQuery] = useState('')
@@ -33,6 +37,7 @@ export function EntryList({
     <nav aria-label="Journal entries" className={styles.entryList}>
       <div className={styles.header}>
         <SearchField label="Search entries" value={query} onChange={setQuery} />
+        <EntrySortMenu sort={sort} onSortChange={onSortChange} />
         <Button
           iconOnly
           aria-label="New entry"
@@ -45,7 +50,6 @@ export function EntryList({
         >
           <SquarePen aria-hidden="true" />
         </Button>
-        {actions}
       </div>
       <p id={renameHintId} className="visually-hidden">
         Activate the open entry to rename it.
@@ -72,6 +76,7 @@ export function EntryList({
               renameHintId={renameHintId}
               onSelect={() => onSelect(match.entry.id)}
               onRename={(rawTitle) => onRename(match.entry, rawTitle)}
+              showsEditedDate={sort === 'last-edited'}
             />
           </li>
         ))}

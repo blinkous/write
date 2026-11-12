@@ -13,6 +13,8 @@ type EntryListItemProps = {
   renameHintId: string
   onSelect: () => void
   onRename: (rawTitle: string) => void
+  /** Show when it was last edited instead of when it was made (e.g. when sorted that way). */
+  showsEditedDate?: boolean
 }
 
 function placeCaretAtEnd(input: HTMLInputElement) {
@@ -27,6 +29,7 @@ export function EntryListItem({
   renameHintId,
   onSelect,
   onRename,
+  showsEditedDate = false,
 }: EntryListItemProps) {
   const { entry, title: highlightedTitle, snippet } = match
   const [isRenaming, setIsRenaming] = useState(false)
@@ -64,7 +67,11 @@ export function EntryListItem({
   }
 
   const dateCaption = (
-    <Text variant="caption">{formatEntryDate(entry.createdAt)}</Text>
+    <Text variant="caption">
+      {showsEditedDate
+        ? `Edited ${formatEntryDate(entry.updatedAt)}`
+        : formatEntryDate(entry.createdAt)}
+    </Text>
   )
 
   if (isRenaming) {

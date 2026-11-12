@@ -1,0 +1,7 @@
+/* Just the toggle, at the end of the row, tucked close to the sidebar's bottom edge. */
+.bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: calc(var(--space-2) * -1);
+  margin-inline-end: calc(var(--space-2) * -1);
+}
