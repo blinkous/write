@@ -1,19 +1,28 @@
 import { getSchema, type JSONContent } from '@tiptap/core'
-import { Node as ProseMirrorNode } from '@tiptap/pm/model'
+import { Node as ProseMirrorNode, type Schema } from '@tiptap/pm/model'
 import { documentExtensions } from './documentExtensions'
+import { titleExtensions } from './titleExtensions'
 
 const documentSchema = getSchema(documentExtensions)
+const titleSchema = getSchema(titleExtensions)
 
-function toDocumentNode(content: unknown): ProseMirrorNode | null {
+function toNode(schema: Schema, content: unknown): ProseMirrorNode | null {
   try {
-    const documentNode = ProseMirrorNode.fromJSON(documentSchema, content)
-    documentNode.check()
-    return documentNode.type === documentSchema.topNodeType
-      ? documentNode
-      : null
+    const node = ProseMirrorNode.fromJSON(schema, content)
+    node.check()
+    return node.type === schema.topNodeType ? node : null
   } catch {
     return null
   }
+}
+
+function toDocumentNode(content: unknown): ProseMirrorNode | null {
+  return toNode(documentSchema, content)
+}
+
+/** A clean copy of a styled title if it is valid for the title schema, otherwise null. */
+export function parseTitleContent(content: unknown): JSONContent | null {
+  return toNode(titleSchema, content)?.toJSON() ?? null
 }
 
 /**

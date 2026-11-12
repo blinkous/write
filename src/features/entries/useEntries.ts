@@ -3,39 +3,52 @@ import { useEffect, useReducer } from 'react'
 import { createEntriesState, entriesReducer } from './entriesReducer'
 import {
   loadEntries,
+  loadEntrySort,
   loadSelectedEntryId,
   saveEntries,
+  saveEntrySort,
   saveSelectedEntryId,
 } from './entriesStorage'
+import type { EntrySort } from './entrySort'
 import {
   createJournalEntry,
-  resolveRenamedTitle,
+  readTitleDocument,
+  renameEntryTitle,
   type JournalEntry,
 } from './journalEntry'
 
-function loadInitialState() {
-  return createEntriesState(
-    loadEntries(),
-    loadSelectedEntryId(),
-    createJournalEntry(),
-  )
+type UseEntriesOptions = {
+  /** What an empty journal starts with (e.g. a welcome entry); a blank entry by default. */
+  createFirstEntry?: () => JournalEntry
 }
 
-export function useEntries() {
-  const [{ entries, selectedEntryId }, dispatch] = useReducer(
+export function useEntries({
+  createFirstEntry = createJournalEntry,
+}: UseEntriesOptions = {}) {
+  const [{ entries, selectedEntryId, sort }, dispatch] = useReducer(
     entriesReducer,
-    undefined,
-    loadInitialState,
+    createFirstEntry,
+    (createFallbackEntry) =>
+      createEntriesState(
+        loadEntries(),
+        loadSelectedEntryId(),
+        createFallbackEntry(),
+        loadEntrySort(),
+      ),
   )
   const selectedEntry =
     entries.find(({ id }) => id === selectedEntryId) ?? entries[0]
 
   useEffect(() => saveEntries(entries), [entries])
   useEffect(() => saveSelectedEntryId(selectedEntryId), [selectedEntryId])
+  useEffect(() => saveEntrySort(sort), [sort])
 
   return {
     entries,
     selectedEntry,
+    sort,
+    setSort: (nextSort: EntrySort) =>
+      dispatch({ type: 'sort', sort: nextSort }),
     createEntry: () =>
       dispatch({ type: 'create', newEntry: createJournalEntry() }),
     selectEntry: (entryId: string) => dispatch({ type: 'select', entryId }),
@@ -50,7 +63,15 @@ export function useEntries() {
       dispatch({
         type: 'rename',
         entryId: entry.id,
-        title: resolveRenamedTitle(entry, rawTitle),
+        ...renameEntryTitle(entry, rawTitle),
+        updatedAt: new Date().toISOString(),
+      }),
+    /** Sets the title as typed and styled on the page (text trimmed). */
+    setEntryTitle: (entryId: string, titleDocument: JSONContent) =>
+      dispatch({
+        type: 'rename',
+        entryId,
+        ...readTitleDocument(titleDocument),
         updatedAt: new Date().toISOString(),
       }),
     addEntries: (newEntries: readonly JournalEntry[]) =>

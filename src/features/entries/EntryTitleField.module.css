@@ -1,0 +1,15 @@
+/* In the editor font, at title size; `#` in markdown. One line; long titles wrap. */
+.title {
+  color: var(--color-text);
+  font-family: var(--font-editor);
+  font-size: calc(var(--scale-title) * var(--font-size-editor));
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  outline: none;
+  cursor: text;
+}
+
+.title p {
+  margin: 0;
+}

@@ -1,5 +1,6 @@
 import type { JSONContent } from '@tiptap/react'
 import { z } from 'zod'
+import { parseTitleContent } from '../../journal-document'
 
 export type JournalEntry = {
   id: string
@@ -7,6 +8,11 @@ export type JournalEntry = {
   updatedAt: string
   /** Custom name. When null, the entry is named by its first line of text. */
   title: string | null
+  /**
+   * The title's styling (fonts, colors, bold…) as a one-line title document.
+   * Null when the title is plain; its text always matches `title`.
+   */
+  titleContent: JSONContent | null
   /** Tiptap document JSON; lossless, and convertible to markdown on export. */
   content: JSONContent
 }
@@ -23,8 +29,58 @@ export function createJournalEntry(now = new Date()): JournalEntry {
     createdAt: timestamp,
     updatedAt: timestamp,
     title: null,
+    titleContent: null,
     content: EMPTY_DOCUMENT,
   }
+}
+
+/** A title as a title document, keeping its styling when it has any. */
+export function getTitleDocument({
+  title,
+  titleContent,
+}: JournalEntry): JSONContent {
+  if (titleContent) return titleContent
+  return {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: title ? [{ type: 'text', text: title }] : [],
+      },
+    ],
+  }
+}
+
+function hasMarks({ marks = [], content = [] }: JSONContent): boolean {
+  return marks.length > 0 || content.some(hasMarks)
+}
+
+/**
+ * What to store for a title typed on the page: its text as the title, and its
+ * document only if something is styled (a plain title is just its text).
+ */
+export function readTitleDocument(
+  titleDocument: JSONContent,
+): Pick<JournalEntry, 'title' | 'titleContent'> {
+  const title = normalizeEntryTitle(collectText(titleDocument))
+  return {
+    title,
+    titleContent:
+      title !== null && hasMarks(titleDocument) ? titleDocument : null,
+  }
+}
+
+/** Keeps stored title styling only if it's valid and still matches the title's text. */
+export function reconcileTitleContent(
+  title: string | null,
+  rawTitleContent: unknown,
+): JSONContent | null {
+  const titleContent = parseTitleContent(rawTitleContent)
+  return titleContent &&
+    title !== null &&
+    normalizeEntryTitle(collectText(titleContent)) === title
+    ? titleContent
+    : null
 }
 
 function collectText({ text = '', content = [] }: JSONContent): string {
@@ -53,7 +109,7 @@ export function getEntryTitle(entry: JournalEntry): string | null {
 export const MAX_ENTRY_TITLE_LENGTH = 200
 
 /** Trimmed, length-capped title; blank means "no custom title". */
-function normalizeEntryTitle(rawTitle: string): string | null {
+export function normalizeEntryTitle(rawTitle: string): string | null {
   const title = rawTitle.trim().slice(0, MAX_ENTRY_TITLE_LENGTH)
   return title === '' ? null : title
 }
@@ -68,6 +124,21 @@ export function resolveRenamedTitle(
 ): string | null {
   const title = normalizeEntryTitle(rawTitle)
   return entry.title === null && title === getFirstLine(entry) ? null : title
+}
+
+/**
+ * A rename from the sidebar: plain text, so styling is kept only if the text
+ * didn't change.
+ */
+export function renameEntryTitle(
+  entry: JournalEntry,
+  rawTitle: string,
+): Pick<JournalEntry, 'title' | 'titleContent'> {
+  const title = resolveRenamedTitle(entry, rawTitle)
+  return {
+    title,
+    titleContent: title === entry.title ? entry.titleContent : null,
+  }
 }
 
 /**

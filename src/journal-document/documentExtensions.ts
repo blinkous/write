@@ -1,8 +1,11 @@
 import StarterKit from '@tiptap/starter-kit'
+import './documentDisplay.css'
+import { JournalHeading } from './journalHeading'
+import { JournalStrike } from './journalStrike'
 import { MarkdownSafeParagraph } from './markdownSafeParagraph'
 import { ParagraphSize } from './paragraphSize'
 import { TextCaseMark } from './textCase'
-import { textColorExtensions } from './textColor'
+import { textStyleExtensions } from './textColor'
 
 /**
  * Extensions that define what a journal document can contain. Anything that
@@ -11,11 +14,16 @@ import { textColorExtensions } from './textColor'
 export const documentExtensions = [
   StarterKit.configure({
     link: { openOnClick: false, autolink: true },
-    // Replaced below so paragraph text can't be misread as markdown structure.
+    // Replaced below: paragraphs that can't be misread as markdown, and headings
+    // that leave level 1 for the entry's title.
     paragraph: false,
+    heading: false,
+    strike: false,
   }),
   MarkdownSafeParagraph,
-  ...textColorExtensions,
+  JournalHeading,
+  JournalStrike,
+  ...textStyleExtensions,
   TextCaseMark,
   ParagraphSize,
 ]

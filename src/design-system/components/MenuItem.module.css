@@ -14,7 +14,8 @@
   background: transparent;
   color: var(--color-text);
   font: inherit;
-  font-weight: var(--font-weight-medium);
+  /* Medium in menus; a drawer section sets regular, to match its other rows. */
+  font-weight: var(--row-font-weight, var(--font-weight-medium));
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
@@ -42,4 +43,12 @@
 
 .danger {
   color: var(--color-danger);
+}
+
+.shortcut {
+  margin-left: auto;
+  padding-left: var(--space-4);
+  color: var(--color-muted);
+  font: inherit;
+  font-weight: normal;
 }

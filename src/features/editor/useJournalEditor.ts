@@ -1,14 +1,7 @@
 import { useEditor, type JSONContent } from '@tiptap/react'
 import { editorExtensions } from './editorExtensions'
+import { WRITING_ASSISTANT_OPT_OUT } from '../../lib/writingAssistants'
 import { KEYBOARD_HINT_ID } from './tabIndent'
-
-/** Opt-out markers for Grammarly and LanguageTool. They can't stop a malicious extension. */
-const WRITING_ASSISTANT_OPT_OUT = {
-  'data-gramm': 'false',
-  'data-gramm_editor': 'false',
-  'data-enable-grammarly': 'false',
-  'data-lt-active': 'false',
-}
 import styles from './JournalPage.module.css'
 import './tiptapBase.css'
 

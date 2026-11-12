@@ -1,4 +1,5 @@
 import type { JSONContent } from '@tiptap/react'
+import { DEFAULT_ENTRY_SORT, sortEntries, type EntrySort } from './entrySort'
 import {
   isEntryEmpty,
   sortEntriesNewestFirst,
@@ -6,9 +7,10 @@ import {
 } from './journalEntry'
 
 type EntriesState = {
-  /** Always sorted newest first and never empty. */
+  /** Never empty, and always in `sort` order (the order the list shows). */
   entries: JournalEntry[]
   selectedEntryId: string
+  sort: EntrySort
 }
 
 /* Actions carry generated ids and timestamps so the reducer stays pure. */
@@ -23,15 +25,24 @@ type EntriesAction =
     }
   | { type: 'delete'; entryId: string; replacementEntry: JournalEntry }
   | { type: 'add'; newEntries: readonly JournalEntry[] }
-  | { type: 'rename'; entryId: string; title: string | null; updatedAt: string }
+  | { type: 'sort'; sort: EntrySort }
+  | {
+      type: 'rename'
+      entryId: string
+      title: string | null
+      titleContent: JSONContent | null
+      updatedAt: string
+    }
 
 export function createEntriesState(
   storedEntries: readonly JournalEntry[],
   storedSelectedEntryId: string | null,
   fallbackEntry: JournalEntry,
+  sort: EntrySort = DEFAULT_ENTRY_SORT,
 ): EntriesState {
-  const entries = sortEntriesNewestFirst(
+  const entries = sortEntries(
     storedEntries.length > 0 ? storedEntries : [fallbackEntry],
+    sort,
   )
   const [newestEntry] = entries
   const hasStoredSelection = entries.some(
@@ -43,10 +54,25 @@ export function createEntriesState(
       hasStoredSelection && storedSelectedEntryId
         ? storedSelectedEntryId
         : newestEntry.id,
+    sort,
   }
 }
 
+/** Applies the action, then keeps the entries in the chosen order. */
 export function entriesReducer(
+  state: EntriesState,
+  action: EntriesAction,
+): EntriesState {
+  const nextState = reduceEntries(state, action)
+  if (nextState.entries === state.entries && nextState.sort === state.sort)
+    return nextState
+  return {
+    ...nextState,
+    entries: sortEntries(nextState.entries, nextState.sort),
+  }
+}
+
+function reduceEntries(
   state: EntriesState,
   action: EntriesAction,
 ): EntriesState {
@@ -56,7 +82,8 @@ export function entriesReducer(
       const blankEntry = state.entries.find(isEntryEmpty)
       if (blankEntry) return { ...state, selectedEntryId: blankEntry.id }
       return {
-        entries: sortEntriesNewestFirst([action.newEntry, ...state.entries]),
+        ...state,
+        entries: [action.newEntry, ...state.entries],
         selectedEntryId: action.newEntry.id,
       }
     }
@@ -78,8 +105,15 @@ export function entriesReducer(
       return {
         ...state,
         entries: state.entries.map((entry) =>
-          entry.id === action.entryId && entry.title !== action.title
-            ? { ...entry, title: action.title, updatedAt: action.updatedAt }
+          entry.id === action.entryId &&
+          (entry.title !== action.title ||
+            entry.titleContent !== action.titleContent)
+            ? {
+                ...entry,
+                title: action.title,
+                titleContent: action.titleContent,
+                updatedAt: action.updatedAt,
+              }
             : entry,
         ),
       }
@@ -88,10 +122,8 @@ export function entriesReducer(
       if (action.newEntries.length === 0) return state
       const [newestAddedEntry] = sortEntriesNewestFirst(action.newEntries)
       return {
-        entries: sortEntriesNewestFirst([
-          ...state.entries,
-          ...action.newEntries,
-        ]),
+        ...state,
+        entries: [...state.entries, ...action.newEntries],
         selectedEntryId: newestAddedEntry.id,
       }
     }
@@ -105,6 +137,7 @@ export function entriesReducer(
       )
       if (remainingEntries.length === 0) {
         return {
+          ...state,
           entries: [action.replacementEntry],
           selectedEntryId: action.replacementEntry.id,
         }
@@ -115,9 +148,13 @@ export function entriesReducer(
       const nextSelectedEntry =
         remainingEntries[Math.min(deletedIndex, remainingEntries.length - 1)]
       return {
+        ...state,
         entries: remainingEntries,
         selectedEntryId: nextSelectedEntry.id,
       }
+    }
+    case 'sort': {
+      return { ...state, sort: action.sort }
     }
   }
 }

@@ -1,0 +1,28 @@
+/* How any journal editor (the writing and the title) displays its content. */
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* Text case is display-only: the letters typed are unchanged (see textCase.ts). */
+.tiptap [data-text-case='upper'] {
+  text-transform: uppercase;
+}
+
+.tiptap
+  :is(
+    [data-text-case='lower'],
+    [data-text-case='title'],
+    [data-text-case='sentence']
+  ) {
+  text-transform: lowercase;
+}
+
+/* Must match CAPITAL_LETTER_CLASS in textCase.ts. */
+.tiptap .text-case-capital {
+  text-transform: uppercase;
+}

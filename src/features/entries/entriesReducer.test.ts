@@ -88,6 +88,7 @@ describe('entriesReducer', () => {
     expect(nextState).toEqual({
       entries: [replacementEntry],
       selectedEntryId: replacementEntry.id,
+      sort: 'newest',
     })
   })
 })
@@ -131,6 +132,7 @@ describe('entriesReducer rename', () => {
       type: 'rename',
       entryId: olderEntry.id,
       title: 'Winter',
+      titleContent: null,
       updatedAt: '2026-12-01T00:00:00.000Z',
     })
     const renamed = nextState.entries.find(({ id }) => id === olderEntry.id)
@@ -153,8 +155,30 @@ describe('entriesReducer rename', () => {
       type: 'rename',
       entryId: olderEntry.id,
       title: null,
+      titleContent: null,
       updatedAt: '2026-12-01T00:00:00.000Z',
     })
     expect(nextState.entries[0]).toBe(olderEntry)
+  })
+
+  it('keeps entries in the chosen order as they change', () => {
+    const state = createEntriesState(
+      [olderEntry, newerEntry],
+      olderEntry.id,
+      createJournalEntry(),
+      'last-edited',
+    )
+    const edited = entriesReducer(state, {
+      type: 'updateContent',
+      entryId: olderEntry.id,
+      content: { type: 'doc', content: [{ type: 'paragraph' }] },
+      updatedAt: '2099-01-01T00:00:00.000Z',
+    })
+    expect(edited.entries[0].id).toBe(olderEntry.id)
+    const resorted = entriesReducer(edited, { type: 'sort', sort: 'oldest' })
+    expect(resorted.entries.map(({ id }) => id)).toEqual([
+      olderEntry.id,
+      newerEntry.id,
+    ])
   })
 })
