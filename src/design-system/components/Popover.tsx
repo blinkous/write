@@ -12,16 +12,23 @@ type PopoverProps = {
   /** Content, or a function receiving `close` for actions that should dismiss the panel. */
   children: ReactNode | ((close: () => void) => ReactNode)
   align?: 'start' | 'end'
+  /** Turns the trigger off, e.g. when the menu doesn't apply right now. */
+  isDisabled?: boolean
   onClose?: () => void
 }
 
-/* The selected choice if there is one, otherwise the first control. */
-const INITIAL_FOCUS_SELECTOR =
-  'input:checked, button, input, select, [tabindex]'
+/* In order of preference: the selected choice, otherwise the first control. */
+const INITIAL_FOCUS_SELECTORS = [
+  'input:checked',
+  'button, input, select, [tabindex]',
+]
 
 /** Moves focus into the panel on open, as expected for a dialog. */
-function focusFirstControl(panel: HTMLDivElement) {
-  panel.querySelector<HTMLElement>(INITIAL_FOCUS_SELECTOR)?.focus()
+function focusInitialControl(panel: HTMLDivElement) {
+  for (const selector of INITIAL_FOCUS_SELECTORS) {
+    const control = panel.querySelector<HTMLElement>(selector)
+    if (control) return control.focus()
+  }
 }
 
 /**
@@ -34,6 +41,7 @@ export function Popover({
   isTriggerIconOnly = true,
   children,
   align = 'end',
+  isDisabled = false,
   onClose,
 }: PopoverProps) {
   const popoverId = useId()
@@ -41,9 +49,12 @@ export function Popover({
 
   function handleToggle({
     newState,
+    target,
     currentTarget,
   }: ToggleEvent<HTMLDivElement>) {
-    if (newState === 'open') focusFirstControl(currentTarget)
+    // React bubbles toggle events: ignore those from a menu nested inside this one.
+    if (target !== currentTarget) return
+    if (newState === 'open') focusInitialControl(currentTarget)
     else onClose?.()
   }
 
@@ -54,6 +65,7 @@ export function Popover({
         aria-label={label}
         title={label}
         popoverTarget={popoverId}
+        disabled={isDisabled}
       >
         {trigger}
       </Button>
