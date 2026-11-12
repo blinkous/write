@@ -1,5 +1,9 @@
 export { documentExtensions } from './documentExtensions'
-export { createDocumentComparer, parseDocument } from './validateDocument'
+export {
+  createDocumentComparer,
+  parseDocument,
+  parseTitleContent,
+} from './validateDocument'
 export { type TextCase } from './capitalization'
 export { CAPITAL_LETTER_CLASS } from './textCase'
 export {
@@ -9,3 +13,11 @@ export {
   type ThemeTextColor,
 } from './textColor'
 export { type ParagraphSize, PARAGRAPH_SIZE_ATTRIBUTE } from './paragraphSize'
+export {
+  CONTENT_HEADING_LEVELS,
+  shiftHeadingsDown,
+  TITLE_HEADING_LEVEL,
+  type ContentHeadingLevel,
+} from './headingLevels'
+export { resolveTextFont } from './textFont'
+export { titleExtensions } from './titleExtensions'

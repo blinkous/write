@@ -12,12 +12,17 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`. Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
-  1–3. Headings survive Copy as markdown; Small copies as a plain paragraph (markdown has no
-  small text). The toolbar shows only the current style's icon (T, ¶, H1, H2, H3); the menu repeats that icon beside each spelled-out name,
-  previewed at its size (`--scale-heading-*` tokens, shared with the editor). ⌘⇧> / ⌘⇧<
-  step Small → Body → H3 → H2 → H1 and back, stopping at the ends. Enter after a heading or
-  Small paragraph starts a Body one. Body text is a fixed 16 px
-  (`--font-size-editor`); overall size is left to browser zoom.
+  2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
+  isn't a content style: typing `# ` stays text, `## ` … `###### ` make that level, and pasted
+  `#` headings become H2 (`journal-document/journalHeading.ts`). Small copies to markdown as a
+  plain paragraph. The toolbar shows only the current style's icon; the menu repeats it beside
+  each name, previewed at its size (`--scale-*` tokens shared with the editor). ⇧⌘> / ⇧⌘< step
+  Small → Body → H6 … H2 and back, stopping at the ends. Body text is a fixed 16 px; overall
+  size is left to browser zoom.
+- **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
+  to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
+  first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font
+  at the cursor. Fonts don't carry into markdown.
 - **Text color** (`TextColorPicker`) colors the selection, or the text about to be typed
   when nothing is selected. Closing the menu returns focus to the text so typing
   continues in that color. The menu has (no titles; rows have accessible names):
@@ -40,9 +45,20 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   unless the selection fills the container (e.g. a one-paragraph quote), in which case the
   container moves.
 - Caret navigation (`⌘←/→`, `⌥←/→`, `⌘↑/↓`, with `⇧` to select) is native browser behaviour.
-- `⌘B`, `⌘I`, `⌘Z`, `⌘⇧Z` come from Tiptap's StarterKit.
-- `⌘⇧>` / `⌘⇧<` step the current paragraph's text style up / down (`textStyleShortcuts.ts`).
-  `⌘⇧+` is left to the browser, where it zooms the page.
+- **Every styling shortcut has a visible control** (and nothing hides in a shortcut only):
+  the toolbar's buttons (`formattingActions.ts`: bold ⌘B, italic ⌘I, underline ⌘U,
+  strikethrough ⇧⌘X, code ⌘E, bulleted ⇧⌘8 / numbered ⇧⌘7 lists, quote ⇧⌘B, code block ⌥⌘C)
+  show their shortcut in the tooltip and `aria-keyshortcuts`; text styles show theirs in the
+  menu (Body ⌥⌘0, Heading 2–6 ⌥⌘2–6). Shortcuts are written once in Tiptap form and
+  displayed by `utils/shortcuts.ts` (Mac symbols in Apple's order, or Ctrl+… elsewhere).
+  Strikethrough moved off Tiptap's ⇧⌘S, which saves all entries.
+- Buttons and menus whose node or mark the focused editor lacks are off (e.g. lists and text
+  styles in the title), by checking the editor's schema (`editorSupports`).
+- **The toolbar acts on the last-focused editor** (`useActiveEditor`): the writing or the
+  title.
+- `⌘Z` / `⇧⌘Z` (undo / redo) come from Tiptap's StarterKit.
+- `⇧⌘>` / `⇧⌘<` step the current paragraph's text style up / down (`textStyleShortcuts.ts`).
+  `⇧⌘+` is left to the browser, where it zooms the page.
 - **Tab** inserts a tab (shown 4 spaces wide, `--tab-size`); **Shift+Tab** removes one from
   the start of the line. In lists, Tab/Shift+Tab indent and outdent the item instead
   (`TabIndent` has lower priority than list keymaps). To avoid a keyboard trap,
@@ -52,9 +68,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 ## Decisions
 
 - **Title in markdown:** when the entry has a custom name, Copy as markdown puts it first as
-  the one `#` heading and moves the content's headings down a level (Heading 1 → `##`), like
-  Notion's page title above Heading 1. A name taken from the first line isn't added (it would
-  duplicate that line), so that content copies as written.
+  the one `#` heading; content headings already start at `##`, so nothing moves.
 - Copied markdown and exports contain text as typed, not as displayed by text case.
 - Markdown export is checked by round-trip tests (`markdownRoundTrip.test.ts`): export, read
   back as markdown, and structure and text must match. Paragraph text that looks like

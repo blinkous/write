@@ -1,19 +1,23 @@
 /*
- * Design tokens. Colors that the user can change (background, text, editor
- * font and size) are set at runtime by the appearance feature; everything
+ * Design tokens. Colors that the user can change (background, text, page
+ * font) are set at runtime by the appearance feature; everything
  * else derives from them so custom palettes stay coherent.
  */
 :root {
   /* User-controlled (defaults match the "Dusty rose" preset) */
   --color-background: #f0dfdb;
   --color-text: #4a3236;
+  /* Two fonts: the editor's (writing and title) and the interface's (everything around them). */
   --font-editor: 'Lora Variable', Georgia, serif;
   /* Body text in the editor; headings scale from it. Overall size is left to browser zoom. */
   --font-size-editor: 1rem;
-  /* Text styles: heading sizes relative to body text, shared by the editor and its menu. */
-  --scale-heading-1: 1.6;
-  --scale-heading-2: 1.3;
-  --scale-heading-3: 1.1;
+  /* Text styles, relative to body text, shared by the editor and its menu. The title is `#`. */
+  --scale-title: 1.8;
+  --scale-heading-2: 1.5;
+  --scale-heading-3: 1.3;
+  --scale-heading-4: 1.15;
+  --scale-heading-5: 1.05;
+  --scale-heading-6: 1;
   --scale-small: 0.85;
   --width-page: var(--width-page-normal);
   --line-height-editor: var(--line-height-normal);
@@ -92,7 +96,14 @@
   --border-width: 1px;
   --focus-ring-width: 2px;
 
+  /* Motion: small UI changes only (color changes stay instant). */
+  --duration-quick: 180ms;
+  --duration-medium: 260ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
   /* Layout */
+  /* The settings drawer never takes more than this, so the entries above stay usable. */
+  --height-drawer-max: 60vh;
   --width-page-wide: 36rem;
   --width-page-normal: 44rem;
   --width-page-narrow: 60rem;
@@ -112,6 +123,8 @@
   --space-control-inline: var(--space-3);
   --size-icon: 1.125rem;
   --size-icon-small: 0.875rem;
+  /* Lighter lines for small icons beside text (chevrons), so they read as the same weight. */
+  --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
 }

@@ -11,14 +11,17 @@ servers, no analytics, and no network requests at all, fonts included.
   shades follow it automatically, with undo/redo for your last 50 color changes.
 - **Text color and case** for the selection or what you type next. Case (UPPERCASE,
   lowercase, Title Case, Sentence case) is display-only, so your original text is kept.
-- **Text styles** like markdown: Small, Body and Heading 1–3, from a menu or `⌘⇧>` / `⌘⇧<`.
-- **Page appearance:** 19 bundled open-source fonts with live previews, margins, line and
-  paragraph spacing, and page background/text colors.
-- **Entries** listed newest first, with search. Name them, or let the first line be the name.
+- **Text styles** like markdown: the title is `#`, then Heading 2–6, Body and Small, from a
+  menu or `⇧⌘>` / `⇧⌘<`.
+- **Settings drawer** at the bottom of the sidebar: one font for the app and one for the
+  editor (19 bundled open-source fonts with live previews), page colors with undo/redo, and
+  backups. Margins and line/paragraph spacing sit in the toolbar.
+- **Text fonts and colors:** give any text its own font or color, or leave it on the page's.
+- **Entries** with search, sorted newest, oldest, last edited or by name. Name them, or let the first line be the name.
 - **Export / import:** copy an entry as markdown, export the whole journal as one markdown
   file, or save JSON backups (you choose where) and import them back. Imports never
   overwrite existing writing.
-- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, `⌘⇧>` / `⌘⇧<` change text style,
+- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, `⇧⌘>` / `⇧⌘<` change text style, `⌘S` / `⇧⌘S` save backups,
   and everything is reachable by keyboard.
 
 ## Privacy and security
@@ -57,7 +60,7 @@ Specs describing each part of the app live next to the code: start with
 ### Adding a font
 
 Fonts come from [Fontsource](https://fontsource.org), which packages Google Fonts for
-self-hosting. See the comment at the top of `src/features/appearance/fontOptions.ts`.
+self-hosting. See the comment at the top of `src/fonts/fontOptions.ts`.
 
 ## Built with
 

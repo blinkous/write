@@ -8,12 +8,13 @@ import {
   type ToastMessage,
 } from '../design-system'
 import {
-  FontPicker,
   MarginsMenu,
-  PageColorsPicker,
+  ColorSettings,
+  FontSettings,
+  ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
-  usePageColors,
+  usePageTheme,
 } from '../features/appearance'
 import {
   copyEditorMarkdown,
@@ -21,29 +22,42 @@ import {
   FormattingToolbar,
   JournalPage,
   TextCasePicker,
+  TextFontMenu,
+  useActiveEditor,
   TextColorPicker,
   TextStyleMenu,
   useJournalEditor,
 } from '../features/editor'
 import {
+  createJournalEntry,
   EntryList,
+  EntryTitleField,
   EntryMenu,
-  JournalMenu,
+  DataSettings,
   useEntries,
   useEntryTransfer,
+  useTitleEditor,
+  useExportShortcuts,
 } from '../features/entries'
-import { PrivacyNotice, usePrivacyNotice } from '../features/privacy'
+import {
+  getWelcomeEntry,
+  PrivacyNotice,
+  useFirstVisit,
+  usePrivacyNotice,
+} from '../features/privacy'
+import { SettingsDrawer } from '../features/settings'
 import styles from './App.module.css'
 
 const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
 
 export function App() {
   const { appearance, updateAppearance } = useAppearance()
-  const pageColors = usePageColors(appearance, updateAppearance)
+  const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
+  const isFirstVisit = useFirstVisit()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const {
-    font,
+    editorFont,
     margins,
     lineSpacing,
     hasParagraphSpacing,
@@ -54,18 +68,37 @@ export function App() {
   const {
     entries,
     selectedEntry,
+    sort,
+    setSort,
     createEntry,
     selectEntry,
     updateEntryContent,
     renameEntry,
+    setEntryTitle,
     addEntries,
     deleteEntry,
-  } = useEntries()
+  } = useEntries({
+    // A first visit starts with the welcome entry instead of a blank page.
+    createFirstEntry: isFirstVisit
+      ? () => ({ ...createJournalEntry(), ...getWelcomeEntry() })
+      : undefined,
+  })
   const editor = useJournalEditor({
     entryId: selectedEntry.id,
     initialContent: selectedEntry.content,
     onChange: updateEntryContent,
   })
+  const titleEditor = useTitleEditor({
+    entry: selectedEntry,
+    onChange: setEntryTitle,
+    onContinue: () => {
+      // Focus right away (Tiptap's focus waits a frame), so the next keystroke lands in the writing.
+      editor.view.focus()
+      editor.commands.focus('start')
+    },
+  })
+  // The toolbar styles whichever was typed in last: the writing or the title.
+  const activeEditor = useActiveEditor(editor, titleEditor)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
   const { exportEntry, exportAllEntries, exportAllAsMarkdown, importEntries } =
@@ -76,6 +109,10 @@ export function App() {
       addEntries,
       onStatus: setToastMessage,
     })
+  useExportShortcuts({
+    exportEntry: () => exportEntry(selectedEntry),
+    exportAllEntries,
+  })
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.matchMedia(WIDE_SCREEN_QUERY).matches,
   )
@@ -116,17 +153,35 @@ export function App() {
               closeSidebarOnNarrowScreens()
             }}
             onRename={renameEntry}
-            actions={
-              <>
-                <PageColorsPicker pageColors={pageColors} />
-                <JournalMenu
-                  onExportAll={exportAllEntries}
-                  onExportAllAsMarkdown={exportAllAsMarkdown}
-                  onImport={importEntries}
-                  onShowAbout={privacyNotice.open}
-                />
-              </>
-            }
+            sort={sort}
+            onSortChange={setSort}
+          />
+          <SettingsDrawer
+            headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
+            sections={[
+              {
+                id: 'fonts',
+                title: 'Fonts',
+                content: <FontSettings pageTheme={pageTheme} />,
+              },
+              {
+                id: 'colors',
+                title: 'Colors',
+                content: <ColorSettings pageTheme={pageTheme} />,
+              },
+              {
+                id: 'data',
+                title: 'Data',
+                content: (
+                  <DataSettings
+                    onExportAll={exportAllEntries}
+                    onExportAllAsMarkdown={exportAllAsMarkdown}
+                    onImport={importEntries}
+                    onShowAbout={privacyNotice.open}
+                  />
+                ),
+              },
+            ]}
           />
         </aside>
       )}
@@ -158,20 +213,17 @@ export function App() {
               aria-label="Text and page style"
               className={styles.toolbarGroup}
             >
-              <FontPicker
-                font={font}
-                onChange={(value) => updateAppearance({ font: value })}
-              />
-              <TextStyleMenu editor={editor} />
+              <TextFontMenu editor={activeEditor} editorFont={editorFont} />
+              <TextStyleMenu editor={activeEditor} />
               <TextColorPicker
-                editor={editor}
+                editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={(colors) =>
                   updateAppearance({ customTextColors: colors })
                 }
               />
-              <TextCasePicker editor={editor} />
+              <TextCasePicker editor={activeEditor} />
               <MarginsMenu
                 value={margins}
                 onChange={(value) => updateAppearance({ margins: value })}
@@ -184,7 +236,7 @@ export function App() {
               />
             </div>
             <Divider />
-            <FormattingToolbar editor={editor} />
+            <FormattingToolbar editor={activeEditor} />
           </div>
 
           <div className={styles.headerActions}>
@@ -198,7 +250,10 @@ export function App() {
         </header>
 
         <main className={styles.main}>
-          <JournalPage editor={editor} />
+          <JournalPage
+            editor={editor}
+            header={<EntryTitleField editor={titleEditor} />}
+          />
         </main>
       </div>
 
@@ -219,7 +274,7 @@ export function App() {
         isOpen={privacyNotice.isOpen}
         onClose={() => {
           privacyNotice.close()
-          // "Let's write": land in the entry, ready to type.
+          // "Write away!": back to the entry, ready to type.
           editor.commands.focus()
         }}
       />

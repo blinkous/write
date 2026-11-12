@@ -8,6 +8,8 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 - `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
   code, links, bold/italic/etc.) plus per-text color, text case, and a paragraph `size`
   attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
+- Headings are `JournalHeading`, levels 2–6: level 1 is the entry's title, which lives outside
+  the document (`headingLevels.ts`). Pasted `#` / `<h1>` headings become level 2.
 - Paragraphs are `MarkdownSafeParagraph`: markdown structure at the start of any line of
   paragraph text (headings, bullets, numbered items, rules, fences, 4-space indents) is
   escaped on export, so text stays text when pasted into a markdown app.
