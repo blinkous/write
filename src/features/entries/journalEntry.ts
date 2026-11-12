@@ -36,6 +36,11 @@ function getBlockTexts({ content = [] }: JSONContent): string[] {
   return content.map((block) => collectText(block).trim()).filter(Boolean)
 }
 
+/** All of an entry's text, one space between blocks, for searching. */
+export function getEntryText({ content }: JournalEntry): string {
+  return getBlockTexts(content).join(' ')
+}
+
 function getFirstLine({ content }: JournalEntry): string | null {
   const [firstBlockText] = getBlockTexts(content)
   return firstBlockText ?? null

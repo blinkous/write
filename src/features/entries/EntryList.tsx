@@ -1,6 +1,7 @@
 import { SquarePen } from 'lucide-react'
-import { useId, type ReactNode } from 'react'
-import { Button } from '../../design-system'
+import { useId, useState, type ReactNode } from 'react'
+import { Button, SearchField } from '../../design-system'
+import { searchEntries } from './entrySearch'
 import { EntryListItem } from './EntryListItem'
 import type { JournalEntry } from './journalEntry'
 import styles from './EntryList.module.css'
@@ -24,14 +25,23 @@ export function EntryList({
   actions,
 }: EntryListProps) {
   const renameHintId = useId()
+  const [query, setQuery] = useState('')
+  const matches = searchEntries(entries, query)
+  const isSearching = query.trim() !== ''
+
   return (
     <nav aria-label="Journal entries" className={styles.entryList}>
       <div className={styles.header}>
+        <SearchField label="Search entries" value={query} onChange={setQuery} />
         <Button
           iconOnly
           aria-label="New entry"
           title="New entry"
-          onClick={onCreate}
+          onClick={() => {
+            // A new, empty entry wouldn't match the search, so show everything again.
+            setQuery('')
+            onCreate()
+          }}
         >
           <SquarePen aria-hidden="true" />
         </Button>
@@ -40,15 +50,28 @@ export function EntryList({
       <p id={renameHintId} className="visually-hidden">
         Activate the open entry to rename it.
       </p>
+      <p
+        role="status"
+        className={
+          isSearching && matches.length === 0
+            ? styles.emptyResults
+            : 'visually-hidden'
+        }
+      >
+        {isSearching &&
+          (matches.length === 0
+            ? 'No matching entries'
+            : `${matches.length} matching ${matches.length === 1 ? 'entry' : 'entries'}`)}
+      </p>
       <ul className={styles.items}>
-        {entries.map((entry) => (
-          <li key={entry.id}>
+        {matches.map((match) => (
+          <li key={match.entry.id}>
             <EntryListItem
-              entry={entry}
-              isSelected={entry.id === selectedEntryId}
+              match={match}
+              isSelected={match.entry.id === selectedEntryId}
               renameHintId={renameHintId}
-              onSelect={() => onSelect(entry.id)}
-              onRename={(rawTitle) => onRename(entry, rawTitle)}
+              onSelect={() => onSelect(match.entry.id)}
+              onRename={(rawTitle) => onRename(match.entry, rawTitle)}
             />
           </li>
         ))}

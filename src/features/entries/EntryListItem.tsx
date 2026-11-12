@@ -1,15 +1,13 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { Text, TextInput } from '../../design-system'
+import { HighlightedText, Text, TextInput } from '../../design-system'
 import { formatEntryDate } from '../../utils/date'
-import {
-  getEntryTitle,
-  MAX_ENTRY_TITLE_LENGTH,
-  type JournalEntry,
-} from './journalEntry'
+import { getEntryTitle, MAX_ENTRY_TITLE_LENGTH } from './journalEntry'
+import type { EntryMatch } from './entrySearch'
 import styles from './EntryList.module.css'
 
 type EntryListItemProps = {
-  entry: JournalEntry
+  /** The entry, with search highlights (none when not searching). */
+  match: EntryMatch
   isSelected: boolean
   /** Id of the element explaining that the selected entry can be renamed. */
   renameHintId: string
@@ -17,14 +15,20 @@ type EntryListItemProps = {
   onRename: (rawTitle: string) => void
 }
 
+function placeCaretAtEnd(input: HTMLInputElement) {
+  const { length } = input.value
+  input.setSelectionRange(length, length)
+}
+
 /** Clicking an entry opens it; clicking the open entry renames it in place. */
 export function EntryListItem({
-  entry,
+  match,
   isSelected,
   renameHintId,
   onSelect,
   onRename,
 }: EntryListItemProps) {
+  const { entry, title: highlightedTitle, snippet } = match
   const [isRenaming, setIsRenaming] = useState(false)
   const itemButtonRef = useRef<HTMLButtonElement>(null)
   // Enter/Escape return focus to the entry; clicking elsewhere leaves it there.
@@ -66,18 +70,22 @@ export function EntryListItem({
   if (isRenaming) {
     return (
       <div className={styles.item} aria-current="page">
-        <TextInput
-          aria-label="Entry name"
-          placeholder="Name this entry"
-          defaultValue={title ?? ''}
-          maxLength={MAX_ENTRY_TITLE_LENGTH}
-          autoFocus
-          onFocus={({ currentTarget }) => currentTarget.select()}
-          onKeyDown={handleRenameKeyDown}
-          onBlur={({ currentTarget }) =>
-            finishRenaming(currentTarget.value, false)
-          }
-        />
+        {/* Same wrapper as the title it replaces, so font and position match exactly. */}
+        <span className={styles.title}>
+          <TextInput
+            variant="inline"
+            aria-label="Entry name"
+            placeholder="Name this entry"
+            defaultValue={title ?? ''}
+            maxLength={MAX_ENTRY_TITLE_LENGTH}
+            autoFocus
+            onFocus={({ currentTarget }) => placeCaretAtEnd(currentTarget)}
+            onKeyDown={handleRenameKeyDown}
+            onBlur={({ currentTarget }) =>
+              finishRenaming(currentTarget.value, false)
+            }
+          />
+        </span>
         {dateCaption}
       </div>
     )
@@ -93,8 +101,19 @@ export function EntryListItem({
       title={isSelected ? 'Click to rename' : undefined}
       onClick={() => (isSelected ? setIsRenaming(true) : onSelect())}
     >
-      <span className={styles.title}>{title ?? 'Untitled'}</span>
-      {dateCaption}
+      <span className={styles.title}>
+        <HighlightedText
+          text={highlightedTitle.text}
+          ranges={highlightedTitle.ranges}
+        />
+      </span>
+      {snippet ? (
+        <span className={styles.snippet}>
+          <HighlightedText text={snippet.text} ranges={snippet.ranges} />
+        </span>
+      ) : (
+        dateCaption
+      )}
     </button>
   )
 }
