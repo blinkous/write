@@ -1,0 +1,27 @@
+.chevron {
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+}
+
+/* Each name previews its style, on the same scale as the editor's headings. */
+.heading-1,
+.heading-2,
+.heading-3 {
+  font-weight: var(--font-weight-bold);
+}
+
+.heading-1 {
+  font-size: calc(var(--scale-heading-1) * 1em);
+}
+
+.heading-2 {
+  font-size: calc(var(--scale-heading-2) * 1em);
+}
+
+.heading-3 {
+  font-size: calc(var(--scale-heading-3) * 1em);
+}
+
+.small {
+  font-size: calc(var(--scale-small) * 1em);
+}

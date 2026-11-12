@@ -1,4 +1,6 @@
 import StarterKit from '@tiptap/starter-kit'
+import { MarkdownSafeParagraph } from './markdownSafeParagraph'
+import { ParagraphSize } from './paragraphSize'
 import { TextCaseMark } from './textCase'
 import { textColorExtensions } from './textColor'
 
@@ -9,7 +11,11 @@ import { textColorExtensions } from './textColor'
 export const documentExtensions = [
   StarterKit.configure({
     link: { openOnClick: false, autolink: true },
+    // Replaced below so paragraph text can't be misread as markdown structure.
+    paragraph: false,
   }),
+  MarkdownSafeParagraph,
   ...textColorExtensions,
   TextCaseMark,
+  ParagraphSize,
 ]

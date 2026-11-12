@@ -1,8 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import {
   Bold,
-  Heading1,
-  Heading2,
   Italic,
   List,
   ListOrdered,
@@ -19,7 +17,7 @@ type FormattingAction = {
   run: (editor: Editor) => void
 }
 
-/* Markdown shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing. */
+/* Markdown shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing. Headings live in TextStyleMenu. */
 export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
@@ -34,20 +32,6 @@ export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
     icon: Italic,
     isActive: (editor) => editor.isActive('italic'),
     run: (editor) => editor.chain().focus().toggleItalic().run(),
-  },
-  {
-    name: 'heading-1',
-    label: 'Heading',
-    icon: Heading1,
-    isActive: (editor) => editor.isActive('heading', { level: 1 }),
-    run: (editor) => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-  },
-  {
-    name: 'heading-2',
-    label: 'Subheading',
-    icon: Heading2,
-    isActive: (editor) => editor.isActive('heading', { level: 2 }),
-    run: (editor) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
   },
   {
     name: 'bullet-list',
