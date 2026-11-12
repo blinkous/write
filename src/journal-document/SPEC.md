@@ -6,7 +6,11 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## How it works
 
 - `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
-  code, links, bold/italic/etc.) plus per-text color and text case.
+  code, links, bold/italic/etc.) plus per-text color, text case, and a paragraph `size`
+  attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
+- Paragraphs are `MarkdownSafeParagraph`: markdown structure at the start of any line of
+  paragraph text (headings, bullets, numbered items, rules, fences, 4-space indents) is
+  escaped on export, so text stays text when pasted into a markdown app.
 - `parseDocument` validates untrusted JSON (e.g. an import) against the schema and returns
   a clean copy, or null. Unknown node/mark types are rejected; unknown attributes dropped.
 - `createDocumentComparer` checks content equality (including formatting) using
@@ -16,6 +20,10 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 
 - Text with no color mark inherits the page text color (`--color-text`), so changing the
   page color later recolors it automatically. A color mark overrides it for that text.
+- A color mark stores either a hex color or a theme name (`theme-1`…`theme-7`). Theme
+  names render as `var(--color-theme-N)`, cozy shades derived from the page background by
+  the appearance feature, so theme-colored text follows background changes. `resolveTextColor`
+  accepts only these two forms; anything else (e.g. from an import) is ignored.
 - Colors are applied through a mark view using the CSSOM (`element.style.color`), because
   the app's CSP blocks inline `style` attributes, which is how Tiptap renders them by default.
 

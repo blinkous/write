@@ -1,4 +1,4 @@
-import type { Editor } from '@tiptap/core'
+import type { Editor, JSONContent } from '@tiptap/core'
 import { copyTextToClipboard } from '../../lib/clipboard'
 
 /* Two em spaces look like a tab but, unlike a tab, never turn a line into a code block. */
@@ -20,16 +20,88 @@ export function replaceTabsOutsideCode(markdown: string): string {
     .join('\n')
 }
 
+const MAX_HEADING_LEVEL = 6
+
+/** Moves every heading one level down (h1 → h2 …), stopping at h6. */
+function shiftHeadingsDown(node: JSONContent): JSONContent {
+  const { type, attrs, content } = node
+  const shifted = content
+    ? { ...node, content: content.map(shiftHeadingsDown) }
+    : node
+  if (type !== 'heading') return shifted
+  const level = typeof attrs?.level === 'number' ? attrs.level : 1
+  return {
+    ...shifted,
+    attrs: { ...attrs, level: Math.min(level + 1, MAX_HEADING_LEVEL) },
+  }
+}
+
+/** What to put above the content: a title and/or a line saying when it was written. */
+export type MarkdownHeader = { title: string | null; dateLine?: string }
+
 /**
- * Markdown for the whole document, ending in a single newline. Only blank
- * lines are trimmed from the start: a plain trim would eat a leading tab.
+ * With a title, the document gets it as its one `#` heading, and the content's
+ * headings move down a level so the outline stays correct (Heading 1 → `##`).
+ * A date line goes under the title, in italics.
  */
-export function getEditorMarkdown(editor: Editor): string {
-  const markdown = editor.getMarkdown().replace(/^\n+/, '').trimEnd()
+function withHeader(
+  document: JSONContent,
+  { title, dateLine }: MarkdownHeader,
+): JSONContent {
+  const header: JSONContent[] = []
+  if (title)
+    header.push({
+      type: 'heading',
+      attrs: { level: 1 },
+      content: [{ type: 'text', text: title }],
+    })
+  if (dateLine) {
+    header.push({
+      type: 'paragraph',
+      content: [{ type: 'text', text: dateLine, marks: [{ type: 'italic' }] }],
+    })
+  }
+  const body = title ? shiftHeadingsDown(document) : document
+  return { ...document, content: [...header, ...(body.content ?? [])] }
+}
+
+/**
+ * Markdown for any journal document (e.g. an entry's content), ending in a
+ * single newline. Only blank lines are trimmed from the start: a plain trim
+ * would eat a leading tab.
+ */
+export function documentToMarkdown(
+  editor: Editor,
+  document: JSONContent,
+  header: MarkdownHeader = { title: null },
+): string {
+  const { markdown: markdownManager } = editor
+  if (!markdownManager)
+    throw new Error(
+      'The editor needs the Markdown extension to export markdown.',
+    )
+  const markdown = markdownManager
+    .serialize(withHeader(document, header))
+    .replace(/^\n+/, '')
+    .trimEnd()
   return `${replaceTabsOutsideCode(markdown)}\n`
 }
 
-/** Copies the document as markdown. False if the browser denied clipboard access. */
-export function copyEditorMarkdown(editor: Editor): Promise<boolean> {
-  return copyTextToClipboard(getEditorMarkdown(editor))
+/** Markdown for the open document, under a title when given. */
+export function getEditorMarkdown(
+  editor: Editor,
+  title: string | null = null,
+): string {
+  return documentToMarkdown(editor, editor.getJSON(), { title })
+}
+
+/**
+ * Copies the document as markdown, under the entry's name when it has a custom
+ * one. False if the browser denied clipboard access.
+ */
+export function copyEditorMarkdown(
+  editor: Editor,
+  title: string | null = null,
+): Promise<boolean> {
+  return copyTextToClipboard(getEditorMarkdown(editor, title))
 }
