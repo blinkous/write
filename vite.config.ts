@@ -59,7 +59,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
-    // Real contents for the vendored Tiptap CSS so its drift test can compare it.
-    css: { include: [/tiptapBase\.css/] },
+    // Real contents for CSS that tests compare against (vendored Tiptap CSS, design tokens).
+    css: { include: [/tiptapBase\.css/, /tokens\.css/] },
   },
 })

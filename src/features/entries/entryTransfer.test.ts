@@ -25,7 +25,28 @@ describe('serializeEntries / parseEntriesFile', () => {
   it('round-trips entries', () => {
     const entries = [createWrittenEntry('one'), createWrittenEntry('two')]
     const result = parseEntriesFile(serializeEntries(entries))
-    expect(result).toEqual({ ok: true, entries })
+    // Validation fills in schema defaults (e.g. paragraph size), so compare content, not exact JSON.
+    expect(result).toMatchObject({ ok: true, entries })
+  })
+
+  it('keeps small paragraphs through export and import', () => {
+    const entry = {
+      ...createWrittenEntry('unused'),
+      content: {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            attrs: { size: 'small' },
+            content: [{ type: 'text', text: 'a note' }],
+          },
+        ],
+      },
+    }
+    const result = parseEntriesFile(serializeEntries([entry]))
+    expect(result.ok && result.entries[0].content.content?.[0].attrs).toEqual({
+      size: 'small',
+    })
   })
 
   it('rejects malformed JSON, other files, and invalid content', () => {

@@ -10,11 +10,33 @@ import {
   serializeEntries,
 } from './entryTransfer'
 import type { JournalEntry } from './journalEntry'
+import {
+  getJournalMarkdownFileName,
+  journalToMarkdown,
+  type ContentToMarkdown,
+} from './journalMarkdown'
 
 type UseEntryTransferOptions = {
   entries: readonly JournalEntry[]
+  /** Turns entry content into markdown (provided by the editor, which owns the format). */
+  contentToMarkdown: ContentToMarkdown
   addEntries: (newEntries: readonly JournalEntry[]) => void
   onStatus: (message: ToastMessage) => void
+}
+
+const MARKDOWN_MIME_TYPE = 'text/markdown'
+
+function jsonExport(
+  entriesToExport: readonly JournalEntry[],
+  suggestedName: string,
+) {
+  return {
+    suggestedName,
+    text: serializeEntries(entriesToExport),
+    mimeType: JOURNAL_FILE_MIME_TYPE,
+    description: 'Journal export',
+    extension: '.json',
+  } as const
 }
 
 /** What to tell the user after an export; nothing if they cancelled the dialog. */
@@ -34,22 +56,14 @@ function describeSave(result: SaveFileResult): ToastMessage | null {
 
 export function useEntryTransfer({
   entries,
+  contentToMarkdown,
   addEntries,
   onStatus,
 }: UseEntryTransferOptions) {
   // Called straight from the menu click: the save dialog needs a user action.
-  async function exportEntries(
-    entriesToExport: readonly JournalEntry[],
-    suggestedName: string,
-  ) {
+  async function saveExport(file: Parameters<typeof saveTextFile>[0]) {
     try {
-      const result = await saveTextFile({
-        suggestedName,
-        text: serializeEntries(entriesToExport),
-        mimeType: JOURNAL_FILE_MIME_TYPE,
-        description: 'Journal export',
-        extension: '.json',
-      })
+      const result = await saveTextFile(file)
       const message = describeSave(result)
       if (message) onStatus(message)
     } catch {
@@ -59,8 +73,17 @@ export function useEntryTransfer({
 
   return {
     exportEntry: (entry: JournalEntry) =>
-      exportEntries([entry], getEntryFileName(entry)),
-    exportAllEntries: () => exportEntries(entries, getJournalFileName()),
+      saveExport(jsonExport([entry], getEntryFileName(entry))),
+    exportAllEntries: () =>
+      saveExport(jsonExport(entries, getJournalFileName())),
+    exportAllAsMarkdown: () =>
+      saveExport({
+        suggestedName: getJournalMarkdownFileName(),
+        text: journalToMarkdown(entries, contentToMarkdown),
+        mimeType: MARKDOWN_MIME_TYPE,
+        description: 'Markdown',
+        extension: '.md',
+      }),
 
     /** Accepts a single-entry or whole-journal export; both use the same format. */
     async importEntries(file: File) {

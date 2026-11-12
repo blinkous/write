@@ -1,20 +1,28 @@
 import { PanelLeft } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { Button, Divider, Toast, type ToastMessage } from '../design-system'
+import {
+  Button,
+  ConfirmDialog,
+  Divider,
+  Toast,
+  type ToastMessage,
+} from '../design-system'
 import {
   FontPicker,
-  MarginsPicker,
+  MarginsMenu,
   PageColorsPicker,
-  SpacingPicker,
-  TextSizePicker,
+  SpacingMenu,
   useAppearance,
+  usePageColors,
 } from '../features/appearance'
 import {
   copyEditorMarkdown,
+  documentToMarkdown,
   FormattingToolbar,
   JournalPage,
   TextCasePicker,
   TextColorPicker,
+  TextStyleMenu,
   useJournalEditor,
 } from '../features/editor'
 import {
@@ -24,20 +32,24 @@ import {
   useEntries,
   useEntryTransfer,
 } from '../features/entries'
+import { PrivacyNotice, usePrivacyNotice } from '../features/privacy'
 import styles from './App.module.css'
 
 const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
 
 export function App() {
   const { appearance, updateAppearance } = useAppearance()
+  const pageColors = usePageColors(appearance, updateAppearance)
+  const privacyNotice = usePrivacyNotice()
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const {
     font,
-    textSize,
     margins,
     lineSpacing,
-    paragraphSpacing,
-    backgroundColor,
+    hasParagraphSpacing,
+    hasParagraphIndent,
     textColor,
+    customTextColors,
   } = appearance
   const {
     entries,
@@ -56,11 +68,14 @@ export function App() {
   })
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
-  const { exportEntry, exportAllEntries, importEntries } = useEntryTransfer({
-    entries,
-    addEntries,
-    onStatus: setToastMessage,
-  })
+  const { exportEntry, exportAllEntries, exportAllAsMarkdown, importEntries } =
+    useEntryTransfer({
+      entries,
+      contentToMarkdown: (content, header) =>
+        documentToMarkdown(editor, content, header),
+      addEntries,
+      onStatus: setToastMessage,
+    })
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.matchMedia(WIDE_SCREEN_QUERY).matches,
   )
@@ -70,17 +85,13 @@ export function App() {
   }
 
   async function copyMarkdown() {
-    const didCopy = await copyEditorMarkdown(editor)
+    // A custom entry name becomes the markdown title; a name taken from the first line doesn't.
+    const didCopy = await copyEditorMarkdown(editor, selectedEntry.title)
     setToastMessage(
       didCopy
         ? { text: 'Copied as markdown.', tone: 'neutral' }
         : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
     )
-  }
-
-  function confirmAndDeleteEntry() {
-    if (window.confirm('Delete this entry? This can’t be undone.'))
-      deleteEntry(selectedEntry.id)
   }
 
   return (
@@ -107,14 +118,12 @@ export function App() {
             onRename={renameEntry}
             actions={
               <>
-                <PageColorsPicker
-                  backgroundColor={backgroundColor}
-                  textColor={textColor}
-                  onChange={updateAppearance}
-                />
+                <PageColorsPicker pageColors={pageColors} />
                 <JournalMenu
                   onExportAll={exportAllEntries}
+                  onExportAllAsMarkdown={exportAllAsMarkdown}
                   onImport={importEntries}
+                  onShowAbout={privacyNotice.open}
                 />
               </>
             }
@@ -153,19 +162,24 @@ export function App() {
                 font={font}
                 onChange={(value) => updateAppearance({ font: value })}
               />
-              <TextSizePicker
-                textSize={textSize}
-                onChange={(value) => updateAppearance({ textSize: value })}
+              <TextStyleMenu editor={editor} />
+              <TextColorPicker
+                editor={editor}
+                pageTextColor={textColor}
+                customTextColors={customTextColors}
+                onCustomTextColorsChange={(colors) =>
+                  updateAppearance({ customTextColors: colors })
+                }
               />
-              <TextColorPicker editor={editor} pageTextColor={textColor} />
               <TextCasePicker editor={editor} />
-              <MarginsPicker
-                margins={margins}
+              <MarginsMenu
+                value={margins}
                 onChange={(value) => updateAppearance({ margins: value })}
               />
-              <SpacingPicker
+              <SpacingMenu
                 lineSpacing={lineSpacing}
-                paragraphSpacing={paragraphSpacing}
+                hasParagraphSpacing={hasParagraphSpacing}
+                hasParagraphIndent={hasParagraphIndent}
                 onChange={updateAppearance}
               />
             </div>
@@ -178,7 +192,7 @@ export function App() {
               onCopyMarkdown={copyMarkdown}
               onExport={() => exportEntry(selectedEntry)}
               onImport={importEntries}
-              onDelete={confirmAndDeleteEntry}
+              onDelete={() => setIsConfirmingDelete(true)}
             />
           </div>
         </header>
@@ -189,6 +203,26 @@ export function App() {
       </div>
 
       <Toast message={toastMessage} onDismiss={dismissToast} />
+      <ConfirmDialog
+        isOpen={isConfirmingDelete}
+        title="Delete this entry?"
+        message="It’ll be gone for good. Export it first if you might want it back."
+        confirmLabel="Delete"
+        tone="danger"
+        onConfirm={() => {
+          deleteEntry(selectedEntry.id)
+          setIsConfirmingDelete(false)
+        }}
+        onCancel={() => setIsConfirmingDelete(false)}
+      />
+      <PrivacyNotice
+        isOpen={privacyNotice.isOpen}
+        onClose={() => {
+          privacyNotice.close()
+          // "Let's write": land in the entry, ready to type.
+          editor.commands.focus()
+        }}
+      />
     </div>
   )
 }

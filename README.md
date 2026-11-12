@@ -7,15 +7,19 @@ servers, no analytics, and no network requests at all, fonts included.
 
 - **Rich text** with a clean toolbar: headings, bold/italic, lists, quotes, and markdown
   shortcuts while typing (`# `, `- `, `> `, `**bold**`).
+- **Cozy colors:** pick a page background and a matching text color and seven cozy theme
+  shades follow it automatically, with undo/redo for your last 50 color changes.
 - **Text color and case** for the selection or what you type next. Case (UPPERCASE,
   lowercase, Title Case, Sentence case) is display-only, so your original text is kept.
-- **Page appearance:** 19 bundled open-source fonts with live previews, text size, margins,
-  line and paragraph spacing, and page background/text colors.
-- **Entries** listed newest first. Name them, or let the first line be the name.
-- **Export / import:** copy an entry as markdown, or save one entry or the whole journal as
-  JSON (you choose where) and import it back. Imports never overwrite existing writing.
-- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, and everything is reachable
-  by keyboard.
+- **Text styles** like markdown: Small, Body and Heading 1–3, from a menu or `⌘⇧>` / `⌘⇧<`.
+- **Page appearance:** 19 bundled open-source fonts with live previews, margins, line and
+  paragraph spacing, and page background/text colors.
+- **Entries** listed newest first, with search. Name them, or let the first line be the name.
+- **Export / import:** copy an entry as markdown, export the whole journal as one markdown
+  file, or save JSON backups (you choose where) and import them back. Imports never
+  overwrite existing writing.
+- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, `⌘⇧>` / `⌘⇧<` change text style,
+  and everything is reachable by keyboard.
 
 ## Privacy and security
 
@@ -58,7 +62,8 @@ self-hosting. See the comment at the top of `src/features/appearance/fontOptions
 ## Built with
 
 [React](https://react.dev), [Tiptap](https://tiptap.dev) (ProseMirror),
-[Vite](https://vite.dev), [Zod](https://zod.dev) and [Lucide](https://lucide.dev) icons.
+[Vite](https://vite.dev), [Zod](https://zod.dev), [Culori](https://culorijs.org) and
+[Lucide](https://lucide.dev) icons.
 
 Fonts are licensed under the SIL Open Font License 1.1, except Permanent Marker (Apache
 2.0). `src/features/editor/tiptapBase.css` is copied from Tiptap (MIT).
