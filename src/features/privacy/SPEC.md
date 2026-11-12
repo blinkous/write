@@ -1,23 +1,29 @@
 # Privacy
 
-The welcome note: what the journal is and how it keeps your writing.
+The welcome: what the journal is and how it keeps your writing.
 
 ## How it works
 
-- `PrivacyNotice` is one dialog, "Welcome!": the author's intro (what this is and why), then
-  three icon notes (data is
-  stored only in this browser, cleared with browser data, so export it and import it back;
-  works offline once loaded; browser extensions may read data on all sites, so disable them
-  or use another profile or browser for full privacy).
-  Each sentence sits on its own line; icons center vertically on their note.
-- It opens by itself on a fresh browser (no `write.privacyNoticeSeen.v1` key) and is marked
-  seen when closed ("Write away!" or Escape), then focus goes to the entry, ready to
-  type. The sidebar ⋯ menu → About reopens the same dialog.
+- `privacyNotes.ts` holds the author's copy: the title ("Welcome!"), intro, the privacy notes
+  (data is stored only in this browser and cleared with browser data, so export it and import
+  it back; works offline once loaded; browser extensions may read data on all sites, so
+  disable them or use another profile or browser) and the sign-off ("Write away!"). The
+  dialog and the welcome entry both use it, so the wording lives in one place.
+- **First visit** (`useFirstVisit`, no `write.privacyNoticeSeen.v1` key): the journal starts
+  with the **welcome entry** (`welcomeEntry.ts`), a real entry the person can edit or delete:
+  the intro, the privacy notes as a list, a quick tour that uses what it describes (title,
+  headings, lists, code), and the sign-off. The visit is then remembered. Returning visitors,
+  including anyone who saw the old welcome dialog, never get it.
+- **About** (settings drawer → Data) opens `PrivacyNotice`, a dialog with the same intro and the notes
+  as icon rows (each sentence on its own line, icons centered on their note). Closing it
+  returns focus to the entry.
 
 ## Decisions
 
-- The copy is the author's own; edits are for grammar only, keeping the voice.
+- The copy is the author's own; edits are for grammar only, keeping the voice. The tour lines
+  and the welcome entry's two headings are drafts for the author to rewrite (marked in code).
+- Shortcuts in the tour come from `utils/shortcuts.ts`, so they match the reader's platform.
 - Kept generic: the app can't detect the browser, and the advice should suit everyone.
-- If browser storage is cleared, the welcome reappears, which is the right moment for it.
-- The editor carries Grammarly/LanguageTool opt-out attributes (editor feature). They only
-  stop well-behaved writing assistants.
+- If browser storage is cleared, the welcome entry comes back, which is the right moment for it.
+- The editors carry Grammarly/LanguageTool opt-out attributes (`lib/writingAssistants.ts`).
+  They only stop well-behaved writing assistants.
