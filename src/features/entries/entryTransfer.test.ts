@@ -72,6 +72,7 @@ describe('serializeEntries / parseEntriesFile', () => {
       'createdAt',
       'id',
       'title',
+      'titleContent',
       'updatedAt',
     ])
   })
@@ -152,5 +153,32 @@ describe('getEntryFileName', () => {
     expect(getEntryFileName(createWrittenEntry('Rain & ../../soup!'))).toBe(
       'journal-2026-11-05-rain-soup.json',
     )
+  })
+})
+
+describe('importing older backups', () => {
+  it('migrates version 1 files: a leading # heading becomes the title', () => {
+    const file = JSON.parse(serializeEntries([createWrittenEntry('unused')]))
+    file.version = 1
+    file.entries[0].content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'heading',
+          attrs: { level: 1 },
+          content: [{ type: 'text', text: 'Sunday' }],
+        },
+        { type: 'paragraph', content: [{ type: 'text', text: 'Rain.' }] },
+      ],
+    }
+    const result = parseEntriesFile(JSON.stringify(file))
+    expect(result.ok && result.entries[0].title).toBe('Sunday')
+    expect(
+      result.ok && result.entries[0].content.content?.map(({ type }) => type),
+    ).toEqual(['paragraph'])
+  })
+
+  it('exports as version 2', () => {
+    expect(JSON.parse(serializeEntries([])).version).toBe(2)
   })
 })

@@ -1,19 +1,19 @@
 import type { Editor } from '@tiptap/react'
 import {
-  Heading1,
   Heading2,
   Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
   Pilcrow,
   Type,
   type LucideIcon,
 } from 'lucide-react'
-import type { ParagraphSize } from '../../journal-document'
-
-type HeadingLevel = 1 | 2 | 3
+import type { ContentHeadingLevel, ParagraphSize } from '../../journal-document'
 
 /** What a style is in the document: a heading level, or a paragraph (body or a size). */
 type TextStyleBlock =
-  | { kind: 'heading'; level: HeadingLevel }
+  | { kind: 'heading'; level: ContentHeadingLevel }
   | { kind: 'paragraph'; size: ParagraphSize | null }
 
 export type TextStyle = {
@@ -22,9 +22,14 @@ export type TextStyle = {
   /** Shown in the toolbar for the current style, and beside the label in the menu. */
   icon: LucideIcon
   block: TextStyleBlock
+  /** Keyboard shortcut (Tiptap form), registered by TextStyleShortcuts and shown in the menu. */
+  shortcut?: string
 }
 
-/** Paragraph styles, smallest to largest; ⌘⇧> / ⌘⇧< step through them in this order. */
+/**
+ * Paragraph styles, smallest to largest; ⇧⌘> / ⇧⌘< step through them in this
+ * order. Heading 1 is the entry's title, so content headings start at 2.
+ */
 export const TEXT_STYLES: readonly TextStyle[] = [
   {
     name: 'small',
@@ -37,28 +42,47 @@ export const TEXT_STYLES: readonly TextStyle[] = [
     label: 'Body',
     icon: Pilcrow,
     block: { kind: 'paragraph', size: null },
+    shortcut: 'Mod-Alt-0',
+  },
+  {
+    name: 'heading-6',
+    label: 'Heading 6',
+    icon: Heading6,
+    block: { kind: 'heading', level: 6 },
+    shortcut: 'Mod-Alt-6',
+  },
+  {
+    name: 'heading-5',
+    label: 'Heading 5',
+    icon: Heading5,
+    block: { kind: 'heading', level: 5 },
+    shortcut: 'Mod-Alt-5',
+  },
+  {
+    name: 'heading-4',
+    label: 'Heading 4',
+    icon: Heading4,
+    block: { kind: 'heading', level: 4 },
+    shortcut: 'Mod-Alt-4',
   },
   {
     name: 'heading-3',
     label: 'Heading 3',
     icon: Heading3,
     block: { kind: 'heading', level: 3 },
+    shortcut: 'Mod-Alt-3',
   },
   {
     name: 'heading-2',
     label: 'Heading 2',
     icon: Heading2,
     block: { kind: 'heading', level: 2 },
-  },
-  {
-    name: 'heading-1',
-    label: 'Heading 1',
-    icon: Heading1,
-    block: { kind: 'heading', level: 1 },
+    shortcut: 'Mod-Alt-2',
   },
 ]
 
-const BODY_STYLE =
+/** The everyday style: plain paragraphs. */
+export const BODY_STYLE =
   TEXT_STYLES.find(({ name }) => name === 'body') ?? TEXT_STYLES[0]
 
 function isActive(editor: Editor, block: TextStyleBlock): boolean {

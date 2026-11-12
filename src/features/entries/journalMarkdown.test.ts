@@ -27,7 +27,7 @@ describe('journalToMarkdown', () => {
   ) => documentToMarkdown(editor, content, header)
 
   const newer = entry('2026-11-12T09:00:00.000Z', 'Sunday', [
-    { type: 'heading', attrs: { level: 1 }, content: text('Morning') },
+    { type: 'heading', attrs: { level: 2 }, content: text('Morning') },
     { type: 'paragraph', content: text('Rain all day.') },
   ])
   const older = entry('2026-11-10T20:30:00.000Z', null, [

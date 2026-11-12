@@ -1,7 +1,13 @@
 .page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
   width: 100%;
   max-width: var(--width-page);
   margin-inline: auto;
+}
+
+.writing {
   cursor: text;
 }
 
@@ -16,7 +22,7 @@
   overflow-wrap: break-word;
 }
 
-.prose :where(p, h1, h2, h3, ul, ol, blockquote, pre) {
+.prose :where(p, h2, h3, h4, h5, h6, ul, ol, blockquote, pre) {
   margin-block: 0;
 }
 
@@ -30,18 +36,26 @@
   text-indent: var(--paragraph-indent);
 }
 
-.prose h1 {
-  font-size: calc(var(--scale-heading-1) * 1em);
-  line-height: 1.25;
-}
-
 .prose h2 {
   font-size: calc(var(--scale-heading-2) * 1em);
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .prose h3 {
   font-size: calc(var(--scale-heading-3) * 1em);
+  line-height: 1.3;
+}
+
+.prose h4 {
+  font-size: calc(var(--scale-heading-4) * 1em);
+}
+
+.prose h5 {
+  font-size: calc(var(--scale-heading-5) * 1em);
+}
+
+.prose h6 {
+  font-size: calc(var(--scale-heading-6) * 1em);
 }
 
 /* Must match PARAGRAPH_SIZE_ATTRIBUTE in journal-document/paragraphSize.ts. */
@@ -49,7 +63,7 @@
   font-size: calc(var(--scale-small) * 1em);
 }
 
-.prose :where(h1, h2, h3) {
+.prose :where(h2, h3, h4, h5, h6) {
   font-weight: var(--font-weight-bold);
 }
 
@@ -96,31 +110,4 @@
 .prose hr {
   border: 0;
   border-top: var(--border-width) solid var(--color-border);
-}
-
-.prose :global(p.is-editor-empty:first-child::before) {
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  color: var(--color-muted);
-  pointer-events: none;
-}
-
-/* Text case is display-only: the letters typed are unchanged (see journal-document). */
-.prose [data-text-case='upper'] {
-  text-transform: uppercase;
-}
-
-.prose
-  :is(
-    [data-text-case='lower'],
-    [data-text-case='title'],
-    [data-text-case='sentence']
-  ) {
-  text-transform: lowercase;
-}
-
-/* Must match CAPITAL_LETTER_CLASS in journal-document/textCase.ts. */
-.prose :global(.text-case-capital) {
-  text-transform: uppercase;
 }

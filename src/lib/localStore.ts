@@ -33,6 +33,15 @@ export function readStoredValue<Value>(
   return fallback
 }
 
+/** Whether anything is stored under the key (even if it wouldn't validate). */
+export function hasStoredValue(key: string): boolean {
+  try {
+    return window.localStorage.getItem(key) !== null
+  } catch {
+    return false
+  }
+}
+
 /** Overwrites the stored value. Returns false if storage is unavailable or full. */
 export function writeStoredValue(key: string, value: unknown): boolean {
   return writeRawValue(key, JSON.stringify(value))

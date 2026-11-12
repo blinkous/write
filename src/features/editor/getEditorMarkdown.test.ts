@@ -10,7 +10,8 @@ describe('getEditorMarkdown', () => {
         '<h1>Today</h1><p>A <strong>good</strong> <em>day</em>.</p><ul><li><p>tea</p></li></ul><blockquote><p>quiet</p></blockquote>',
     })
     expect(getEditorMarkdown(editor)).toBe(
-      '# Today\n\nA **good** *day*.\n\n- tea\n\n> quiet\n',
+      // A pasted <h1> becomes a content heading: `#` is reserved for the title.
+      '## Today\n\nA **good** *day*.\n\n- tea\n\n> quiet\n',
     )
   })
 
@@ -34,19 +35,19 @@ describe('getEditorMarkdown with a title', () => {
     content: [
       {
         type: 'heading',
-        attrs: { level: 1 },
+        attrs: { level: 2 },
         content: [{ type: 'text', text: 'Morning' }],
       },
       { type: 'paragraph', content: [{ type: 'text', text: 'Rain all day.' }] },
       {
         type: 'heading',
-        attrs: { level: 3 },
+        attrs: { level: 4 },
         content: [{ type: 'text', text: 'Later' }],
       },
     ],
   }
 
-  it('puts the title first and moves content headings down a level', () => {
+  it('puts the title first, as the one `#` heading, with content headings as written', () => {
     const editor = createTestEditor({ extensions: editorExtensions, content })
     expect(getEditorMarkdown(editor, 'Sunday')).toBe(
       '# Sunday\n\n## Morning\n\nRain all day.\n\n#### Later\n',
@@ -56,7 +57,7 @@ describe('getEditorMarkdown with a title', () => {
   it('leaves the content as written without a title', () => {
     const editor = createTestEditor({ extensions: editorExtensions, content })
     expect(getEditorMarkdown(editor)).toBe(
-      '# Morning\n\nRain all day.\n\n### Later\n',
+      '## Morning\n\nRain all day.\n\n#### Later\n',
     )
   })
 

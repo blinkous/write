@@ -1,17 +1,10 @@
-.chevron {
-  width: var(--size-icon-small);
-  height: var(--size-icon-small);
-}
-
 /* Each name previews its style, on the same scale as the editor's headings. */
-.heading-1,
 .heading-2,
-.heading-3 {
+.heading-3,
+.heading-4,
+.heading-5,
+.heading-6 {
   font-weight: var(--font-weight-bold);
-}
-
-.heading-1 {
-  font-size: calc(var(--scale-heading-1) * 1em);
 }
 
 .heading-2 {
@@ -20,6 +13,18 @@
 
 .heading-3 {
   font-size: calc(var(--scale-heading-3) * 1em);
+}
+
+.heading-4 {
+  font-size: calc(var(--scale-heading-4) * 1em);
+}
+
+.heading-5 {
+  font-size: calc(var(--scale-heading-5) * 1em);
+}
+
+.heading-6 {
+  font-size: calc(var(--scale-heading-6) * 1em);
 }
 
 .small {

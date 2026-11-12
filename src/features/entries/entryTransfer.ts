@@ -1,13 +1,20 @@
 import { z } from 'zod'
 import { createDocumentComparer, parseDocument } from '../../journal-document'
+import { migrateEntryFromFormat1 } from './entryMigration'
 import {
   entryTitleSchema,
+  reconcileTitleContent,
   getEntryTitle,
   type JournalEntry,
 } from './journalEntry'
 
 const EXPORT_FORMAT = 'write-journal'
-const EXPORT_VERSION = 1
+/*
+ * Version 2 reserves `#` headings for entry titles. Version 1 files are still
+ * accepted and migrated on import, like stored entries.
+ */
+const EXPORT_VERSION = 2
+const FORMAT_1_VERSION = 1
 
 /** Large enough for years of writing, small enough not to freeze the tab. */
 const MAX_IMPORT_FILE_BYTES = 20 * 1024 * 1024
@@ -19,7 +26,7 @@ export const JOURNAL_FILE_MIME_TYPE = 'application/json'
 /* Content is validated separately against the document schema. */
 const exportFileSchema = z.object({
   format: z.literal(EXPORT_FORMAT),
-  version: z.literal(EXPORT_VERSION),
+  version: z.union([z.literal(FORMAT_1_VERSION), z.literal(EXPORT_VERSION)]),
   entries: z
     .array(
       z.object({
@@ -27,6 +34,7 @@ const exportFileSchema = z.object({
         createdAt: z.iso.datetime(),
         updatedAt: z.iso.datetime(),
         title: entryTitleSchema,
+        titleContent: z.unknown().optional(),
         content: z.unknown(),
       }),
     )
@@ -70,9 +78,18 @@ export function parseEntriesFile(fileText: string): ParseResult {
         ok: false,
         reason: `Entry ${entryIndex + 1} has invalid content.`,
       }
-    entries.push({ ...rawEntry, content })
+    const { titleContent, ...entry } = rawEntry
+    entries.push({
+      ...entry,
+      titleContent: reconcileTitleContent(entry.title, titleContent),
+      content,
+    })
   }
-  return { ok: true, entries }
+  const isFormat1 = fileResult.data.version === FORMAT_1_VERSION
+  return {
+    ok: true,
+    entries: isFormat1 ? entries.map(migrateEntryFromFormat1) : entries,
+  }
 }
 
 export async function readEntriesFile(file: File): Promise<ParseResult> {

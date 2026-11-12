@@ -1,4 +1,5 @@
 import type { Editor, JSONContent } from '@tiptap/core'
+import { TITLE_HEADING_LEVEL } from '../../journal-document'
 import { copyTextToClipboard } from '../../lib/clipboard'
 
 /* Two em spaces look like a tab but, unlike a tab, never turn a line into a code block. */
@@ -20,29 +21,12 @@ export function replaceTabsOutsideCode(markdown: string): string {
     .join('\n')
 }
 
-const MAX_HEADING_LEVEL = 6
-
-/** Moves every heading one level down (h1 → h2 …), stopping at h6. */
-function shiftHeadingsDown(node: JSONContent): JSONContent {
-  const { type, attrs, content } = node
-  const shifted = content
-    ? { ...node, content: content.map(shiftHeadingsDown) }
-    : node
-  if (type !== 'heading') return shifted
-  const level = typeof attrs?.level === 'number' ? attrs.level : 1
-  return {
-    ...shifted,
-    attrs: { ...attrs, level: Math.min(level + 1, MAX_HEADING_LEVEL) },
-  }
-}
-
 /** What to put above the content: a title and/or a line saying when it was written. */
 export type MarkdownHeader = { title: string | null; dateLine?: string }
 
 /**
- * With a title, the document gets it as its one `#` heading, and the content's
- * headings move down a level so the outline stays correct (Heading 1 → `##`).
- * A date line goes under the title, in italics.
+ * With a title, the document gets it as its one `#` heading (content headings
+ * start at `##`, so nothing moves). A date line goes under it, in italics.
  */
 function withHeader(
   document: JSONContent,
@@ -52,7 +36,7 @@ function withHeader(
   if (title)
     header.push({
       type: 'heading',
-      attrs: { level: 1 },
+      attrs: { level: TITLE_HEADING_LEVEL },
       content: [{ type: 'text', text: title }],
     })
   if (dateLine) {
@@ -61,8 +45,7 @@ function withHeader(
       content: [{ type: 'text', text: dateLine, marks: [{ type: 'italic' }] }],
     })
   }
-  const body = title ? shiftHeadingsDown(document) : document
-  return { ...document, content: [...header, ...(body.content ?? [])] }
+  return { ...document, content: [...header, ...(document.content ?? [])] }
 }
 
 /**
