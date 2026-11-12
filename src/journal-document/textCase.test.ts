@@ -1,9 +1,9 @@
-import { Editor } from '@tiptap/core'
 import { documentExtensions } from './documentExtensions'
 import { CAPITAL_LETTER_CLASS } from './textCase'
+import { createTestEditor } from '../test/createTestEditor'
 
 function renderWithCase(text: string, textCase: string) {
-  const editor = new Editor({
+  const editor = createTestEditor({
     extensions: documentExtensions,
     content: {
       type: 'doc',
@@ -50,7 +50,7 @@ describe('TextCaseMark', () => {
   })
 
   it('applies to text typed after setting it', () => {
-    const editor = new Editor({
+    const editor = createTestEditor({
       extensions: documentExtensions,
       content: '<p></p>',
     })

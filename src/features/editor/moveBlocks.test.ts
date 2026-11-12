@@ -1,8 +1,9 @@
-import { Editor } from '@tiptap/core'
+import { type Editor } from '@tiptap/core'
 import { editorExtensions } from './editorExtensions'
+import { createTestEditor } from '../../test/createTestEditor'
 
 function createEditor(markdown: string) {
-  return new Editor({
+  return createTestEditor({
     extensions: editorExtensions,
     content: markdown,
     contentType: 'markdown',

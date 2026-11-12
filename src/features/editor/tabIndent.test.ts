@@ -1,9 +1,10 @@
-import { Editor, type Content } from '@tiptap/core'
+import { type Editor, type Content } from '@tiptap/core'
 import { editorExtensions } from './editorExtensions'
 import { replaceTabsOutsideCode } from './getEditorMarkdown'
+import { createTestEditor } from '../../test/createTestEditor'
 
 function createEditor(content: Content) {
-  return new Editor({ extensions: editorExtensions, content })
+  return createTestEditor({ extensions: editorExtensions, content })
 }
 
 /** Sends a key through the editor's keyboard handling; true if the editor handled it. */

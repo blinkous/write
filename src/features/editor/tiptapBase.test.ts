@@ -1,6 +1,6 @@
-import { Editor } from '@tiptap/core'
 import vendoredCss from './tiptapBase.css?raw'
 import { editorExtensions } from './editorExtensions'
+import { createTestEditor } from '../../test/createTestEditor'
 
 function normalizeCss(css: string): string {
   return css
@@ -11,7 +11,7 @@ function normalizeCss(css: string): string {
 
 describe('tiptapBase.css', () => {
   it('matches the styles the installed @tiptap/core would inject', () => {
-    new Editor({ extensions: editorExtensions, injectCSS: true })
+    createTestEditor({ extensions: editorExtensions, injectCSS: true })
     const injectedCss =
       document.querySelector('style[data-tiptap-style]')?.textContent ?? ''
     expect(injectedCss).not.toBe('')
