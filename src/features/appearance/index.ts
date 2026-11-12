@@ -1,6 +1,5 @@
 export { FontPicker } from './FontPicker'
-export { MarginsPicker } from './MarginsPicker'
 export { PageColorsPicker } from './PageColorsPicker'
-export { SpacingPicker } from './SpacingPicker'
-export { TextSizePicker } from './TextSizePicker'
+export { MarginsMenu, SpacingMenu } from './settingMenus'
 export { useAppearance } from './useAppearance'
+export { usePageColors } from './usePageColors'

@@ -1,17 +1,6 @@
 import { createOptionGuard } from '../../utils/options'
 import type { FontValue } from './fontOptions'
 
-/** Each size maps to a `--text-size-<value>` design token. */
-export const TEXT_SIZE_OPTIONS = [
-  { value: 'small', label: 'S' },
-  { value: 'medium', label: 'M' },
-  { value: 'large', label: 'L' },
-  { value: 'extra-large', label: 'XL' },
-] as const
-
-export type TextSizeValue = (typeof TEXT_SIZE_OPTIONS)[number]['value']
-export const isTextSizeValue = createOptionGuard(TEXT_SIZE_OPTIONS)
-
 /** Each margin maps to a `--width-page-<value>` design token; the page scrolls endlessly. */
 export const MARGIN_OPTIONS = [
   { value: 'wide', label: 'Wide' },
@@ -24,50 +13,49 @@ export type MarginValue = (typeof MARGIN_OPTIONS)[number]['value']
 export const isMarginValue = createOptionGuard(MARGIN_OPTIONS)
 
 /**
- * Space between lines; each maps to a `--line-height-<value>` design token.
- * Values are stored, so relabel freely but don't rename them.
+ * Line spacing as a multiple of the text size (labels show the real value of
+ * the `--line-height-<value>` token). Values are stored, so relabel freely but
+ * don't rename them.
  */
 export const LINE_SPACING_OPTIONS = [
-  { value: 'tight', label: 'S' },
-  { value: 'normal', label: 'M' },
-  { value: 'relaxed', label: 'L' },
-  { value: 'loose', label: 'XL' },
+  { value: 'tight', label: '1.4' },
+  { value: 'normal', label: '1.7' },
+  { value: 'relaxed', label: '2.0' },
+  { value: 'loose', label: '2.4' },
 ] as const
 
 export type LineSpacingValue = (typeof LINE_SPACING_OPTIONS)[number]['value']
 export const isLineSpacingValue = createOptionGuard(LINE_SPACING_OPTIONS)
 
-/** Space between paragraphs; each maps to a `--space-paragraph-<value>` design token. */
-export const PARAGRAPH_SPACING_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'small', label: 'S' },
-  { value: 'normal', label: 'M' },
-  { value: 'large', label: 'L' },
-] as const
+/** Number of user-filled color boxes in the text color menu. */
+export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 
-export type ParagraphSpacingValue =
-  (typeof PARAGRAPH_SPACING_OPTIONS)[number]['value']
-export const isParagraphSpacingValue = createOptionGuard(
-  PARAGRAPH_SPACING_OPTIONS,
-)
+/** Each slot holds a #rrggbb color, or null while empty. */
+export type CustomTextColors = readonly (string | null)[]
 
 export type Appearance = {
   font: FontValue
-  textSize: TextSizeValue
   margins: MarginValue
   lineSpacing: LineSpacingValue
-  paragraphSpacing: ParagraphSpacingValue
+  /** A half-line gap between paragraphs. */
+  hasParagraphSpacing: boolean
+  /** Book-style first-line indent on paragraphs that follow a paragraph. */
+  hasParagraphIndent: boolean
   backgroundColor: string
   textColor: string
+  customTextColors: CustomTextColors
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
   font: 'lora',
-  textSize: 'medium',
   margins: 'normal',
   lineSpacing: 'normal',
-  paragraphSpacing: 'normal',
+  hasParagraphSpacing: true,
+  hasParagraphIndent: false,
   // Dusty rose
   backgroundColor: '#f0dfdb',
   textColor: '#4a3236',
+  customTextColors: Array<string | null>(CUSTOM_TEXT_COLOR_SLOT_COUNT).fill(
+    null,
+  ),
 }

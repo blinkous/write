@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import { ChoiceGroup, Popover } from '../../design-system'
 import { FONT_OPTIONS, type FontValue } from './fontOptions'
-import styles from './AppearanceControls.module.css'
+import styles from './FontPicker.module.css'
 
 type FontPickerProps = {
   font: FontValue
@@ -40,7 +40,7 @@ export function FontPicker({ font, onChange }: FontPickerProps) {
       }
     >
       <ChoiceGroup
-        layout="list"
+        label="Font"
         choices={FONT_CHOICES}
         selectedValue={font}
         onSelect={onChange}
