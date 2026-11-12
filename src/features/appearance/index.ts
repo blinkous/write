@@ -1,5 +1,8 @@
-export { FontPicker } from './FontPicker'
-export { PageColorsPicker } from './PageColorsPicker'
+export {
+  ColorSettings,
+  FontSettings,
+  ThemeHistoryButtons,
+} from './ThemeSettings'
 export { MarginsMenu, SpacingMenu } from './settingMenus'
 export { useAppearance } from './useAppearance'
-export { usePageColors } from './usePageColors'
+export { usePageTheme } from './usePageTheme'

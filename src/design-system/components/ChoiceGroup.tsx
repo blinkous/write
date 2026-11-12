@@ -15,6 +15,11 @@ type ChoiceGroupProps<Value extends string> = {
   choices: readonly Choice<Value>[]
   selectedValue: Value | null
   onSelect: (value: Value) => void
+  /**
+   * A choice was made on purpose: clicked, or Enter / Space. Arrow keys only
+   * select (previewing live), so a menu can close here without closing on arrows.
+   */
+  onChoose?: () => void
 }
 
 /**
@@ -26,6 +31,7 @@ export function ChoiceGroup<Value extends string>({
   choices,
   selectedValue,
   onSelect,
+  onChoose,
 }: ChoiceGroupProps<Value>) {
   const groupName = useId()
   return (
@@ -35,6 +41,12 @@ export function ChoiceGroup<Value extends string>({
           key={value}
           className={`${menuItemStyles.item} ${styles.choice}`}
           data-selected={value === selectedValue}
+          // A real click on the row has a click count; the clicks arrow keys make on the
+          // radio (bubbling here) don't. Handled on the row, since WebKit forwards a
+          // click on the row's text to the radio without a count.
+          onClick={({ detail }) => {
+            if (detail > 0) onChoose?.()
+          }}
         >
           <input
             type="radio"
@@ -43,6 +55,11 @@ export function ChoiceGroup<Value extends string>({
             value={value}
             checked={value === selectedValue}
             onChange={() => onSelect(value)}
+            onKeyDown={({ key }) => {
+              if (key !== 'Enter' && key !== ' ') return
+              onSelect(value)
+              onChoose?.()
+            }}
           />
           {visual ? (
             <>

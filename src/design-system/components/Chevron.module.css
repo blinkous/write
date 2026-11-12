@@ -1,0 +1,6 @@
+.chevron {
+  flex-shrink: 0;
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+  stroke-width: var(--stroke-width-icon-light);
+}

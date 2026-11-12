@@ -4,34 +4,48 @@ import type { Appearance } from './appearanceOptions'
 import {
   beginEdit,
   commitEdit,
-  redoPageColors,
-  undoPageColors,
-  type PageColors,
-} from './pageColorHistory'
+  redoPageTheme,
+  undoPageTheme,
+  type PageTheme,
+} from './pageThemeHistory'
 import {
-  loadPageColorHistory,
-  savePageColorHistory,
-} from './pageColorHistoryStorage'
+  loadPageThemeHistory,
+  savePageThemeHistory,
+} from './pageThemeHistoryStorage'
 
-/** Page background and text colors, with undo/redo over recent changes (kept across refreshes). */
-export function usePageColors(
-  { backgroundColor, textColor }: Appearance,
+/** The app and entry fonts and page colors, with one shared undo/redo over recent changes (kept across refreshes). */
+export function usePageTheme(
+  { appFont, editorFont, backgroundColor, textColor }: Appearance,
   updateAppearance: (changes: Partial<Appearance>) => void,
 ) {
-  const [history, setHistory] = useState(loadPageColorHistory)
+  const [history, setHistory] = useState(() =>
+    loadPageThemeHistory({ appFont, editorFont }),
+  )
 
-  useEffect(() => savePageColorHistory(history), [history])
-  const current: PageColors = { backgroundColor, textColor }
+  useEffect(() => savePageThemeHistory(history), [history])
+  const current: PageTheme = { appFont, editorFont, backgroundColor, textColor }
 
-  function applyStep(step: ReturnType<typeof undoPageColors>) {
+  function applyStep(step: ReturnType<typeof undoPageTheme>) {
     if (!step) return
     setHistory(step.history)
-    updateAppearance(step.colors)
+    updateAppearance(step.theme)
   }
 
   return {
+    appFont,
+    editorFont,
     backgroundColor,
     textColor,
+    /** A font pick (app or entries) is one undo step on its own. */
+    changeFonts(fonts: Partial<Pick<PageTheme, 'appFont' | 'editorFont'>>) {
+      setHistory((currentHistory) =>
+        commitEdit(beginEdit(currentHistory, current), {
+          ...current,
+          ...fonts,
+        }),
+      )
+      updateAppearance(fonts)
+    },
     /** Changing the background also picks a matching default text color. */
     changeBackground(nextBackgroundColor: string) {
       setHistory((currentHistory) => beginEdit(currentHistory, current))
@@ -50,7 +64,7 @@ export function usePageColors(
     },
     canUndo: history.past.length > 0 || history.editStart !== null,
     canRedo: history.future.length > 0 && history.editStart === null,
-    undo: () => applyStep(undoPageColors(history, current)),
-    redo: () => applyStep(redoPageColors(history, current)),
+    undo: () => applyStep(undoPageTheme(history, current)),
+    redo: () => applyStep(redoPageTheme(history, current)),
   }
 }

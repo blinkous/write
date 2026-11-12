@@ -5,11 +5,9 @@ text size is left to browser zoom; size differences come from text styles (edito
 
 ## How it works
 
-- Each control is exported separately so the app orders them in the toolbar: `FontPicker`,
-  `MarginsMenu` (a thin wrapper over the generic `OptionMenu`: an icon
-  trigger opening a list of choices) and `SpacingMenu`. The
-  font trigger shows the font name; the others are icons whose accessible label includes
-  the current value.
+- Each control is exported separately so the app orders them in the toolbar: `MarginsMenu`
+  (a thin wrapper over the generic `OptionMenu`: an icon trigger opening a list of choices)
+  and `SpacingMenu`, icons whose accessible label includes the current value.
 - **Units:** line spacing is shown as real multipliers, like word processors; margins keep
   preset names (Wide/Normal/Narrow/None), as word processors do. A test checks the line
   spacing labels match the design tokens.
@@ -20,19 +18,24 @@ text size is left to browser zoom; size differences come from text styles (edito
   paragraph indent** (book-style first-line indent, `--size-paragraph-indent`, on paragraphs that
   follow a paragraph, so not the first after a heading). Line spacing values are stored as
   names (e.g. `relaxed`), separate from labels, so labels can change freely.
+- **Font migration:** there used to be one stored `font`, always the writing's (and briefly
+  `entryFont`); the newest of these loads as
+  `editorFont`, and `appFont` starts at its default (Inter).
 - **Migration:** paragraph spacing used to be a size (none/small/normal/large); a stored size
   becomes "on" unless it was "none". The old field is dropped on the next save, and loading
   migrated data changes nothing (tested).
-- The font list shows each name in its own font. Selection applies immediately, so arrow
-  keys preview fonts live.
 - Color changes apply instantly: nothing transitions background or text color, so the
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Page colors** (`PageColorsPicker`, the palette icon in the sidebar) are a free-form
-  background and default text color (default: dusty rose). The menu matches the text color
-  menu: same swatch tiles, a tile + label per color (clicking either opens the picker),
-  then small undo/redo icons in the menu footer (rarely used, so kept quiet). They live apart from the
+- **Theme settings** (`ThemeSettings.tsx`, shown in the settings drawer): **Fonts** has two
+  `FontMenu`s (from `src/fonts`): **App**, for everything around the page (sidebar, toolbar,
+  menus; sets `--font-ui`; default Inter) and **Editor**, for the
+  writing and title (sets `--font-editor`; default Lora) that text
+  without its own font uses. **Colors** has the free-form background and default text color
+  (default: dusty rose), as `LabeledRow`s like the font rows: the name, then
+  its swatch tile at the end (clicking either opens the picker). `ThemeHistoryButtons` (the drawer's
+  header) are the undo/redo for both sections. They live apart from the
   toolbar's per-text color so the two aren't confused.
   Surface, border and muted colors derive from them with `color-mix()` in `tokens.css`.
   There are no theme presets.
@@ -58,9 +61,12 @@ text size is left to browser zoom; size differences come from text styles (edito
     `applyAppearance` sets the theme tones as `--color-theme-1…7`.
 - **Changing the background also sets the page text color** to the derived match; the
   text color can still be changed afterwards.
-- **Undo/redo** in the page colors menu covers the last 50 color changes and survives a
-  refresh (`pageColorHistory.ts`, stored under `write.pageColorHistory.v1`; unreadable steps
-  are dropped, never more than 50 kept). A whole drag in a color picker is one step: an edit begins on
+- **Undo/redo** covers fonts and colors together: the last 50
+  changes, surviving a refresh (`pageThemeHistory.ts`, stored under `write.pageThemeHistory.v1`;
+  unreadable steps are dropped, never more than 50 kept). The older color-only history
+  (`write.pageColorHistory.v1`) is read once, its steps given the current font, and left as a
+  backup. A font pick is one step. Steps saved with one font (before the app font) treat it as
+  the editor font. A whole drag in a color picker is one step: an edit begins on
   the first change and is committed on the input's native `change` event or when the
   menu closes.
 - **Custom text colors** (seven slots, `#rrggbb` or empty; older saves get empty slots added) are stored here so they persist;
@@ -74,6 +80,4 @@ text size is left to browser zoom; size differences come from text styles (edito
 
 ## Adding a font
 
-See the header comment in `fontOptions.ts`: install the Fontsource package, import it, add
-an entry to `FONT_OPTIONS`. Fonts are bundled, so nothing is fetched at runtime. Font
-previews normalize x-height (`font-size-adjust`) so every name is legible in the list.
+See `src/fonts/SPEC.md`.

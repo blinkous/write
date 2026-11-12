@@ -16,9 +16,16 @@ describe('loadAppearance', () => {
       'write.appearance.v1',
       JSON.stringify(savedBeforeSpacing),
     )
-    const { textSize: _droppedSetting, ...savedSettings } = savedBeforeSpacing
+    const {
+      textSize: _droppedSetting,
+      font: legacyFont,
+      ...savedSettings
+    } = savedBeforeSpacing
     expect(loadAppearance()).toEqual({
       ...savedSettings,
+      // The one old font was the writing's; the app font starts at its default.
+      editorFont: legacyFont,
+      appFont: DEFAULT_APPEARANCE.appFont,
       lineSpacing: DEFAULT_APPEARANCE.lineSpacing,
       hasParagraphSpacing: DEFAULT_APPEARANCE.hasParagraphSpacing,
       hasParagraphIndent: DEFAULT_APPEARANCE.hasParagraphIndent,
@@ -65,12 +72,12 @@ describe('loadAppearance', () => {
       'write.appearance.v1',
       JSON.stringify({
         ...DEFAULT_APPEARANCE,
-        font: 'comic-sans',
+        appFont: 'comic-sans',
         lineSpacing: 'loose',
       }),
     )
     expect(loadAppearance()).toMatchObject({
-      font: DEFAULT_APPEARANCE.font,
+      appFont: DEFAULT_APPEARANCE.appFont,
       lineSpacing: 'loose',
     })
   })
@@ -87,5 +94,20 @@ describe('loadAppearance', () => {
       '#b03a48',
       ...Array(6).fill(null),
     ])
+  })
+
+  it('prefers a saved entry font over the old single font', () => {
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({
+        font: 'inter',
+        editorFont: 'literata',
+        appFont: 'nunito',
+      }),
+    )
+    expect(loadAppearance()).toMatchObject({
+      editorFont: 'literata',
+      appFont: 'nunito',
+    })
   })
 })

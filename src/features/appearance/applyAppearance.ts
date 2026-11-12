@@ -1,10 +1,11 @@
 import { deriveCozyThemeColors } from '../../lib/cozyPalette'
 import type { Appearance } from './appearanceOptions'
-import { FONT_OPTIONS } from './fontOptions'
+import { getFontOption } from '../../fonts'
 
 /** Pushes the appearance into the design-system CSS variables on the root element. */
 export function applyAppearance({
-  font,
+  appFont,
+  editorFont,
   margins,
   lineSpacing,
   hasParagraphSpacing,
@@ -13,9 +14,8 @@ export function applyAppearance({
   textColor,
 }: Appearance): void {
   const { style } = document.documentElement
-  const fontOption =
-    FONT_OPTIONS.find(({ value }) => value === font) ?? FONT_OPTIONS[0]
-  style.setProperty('--font-editor', fontOption.family)
+  style.setProperty('--font-ui', getFontOption(appFont).family)
+  style.setProperty('--font-editor', getFontOption(editorFont).family)
   style.setProperty('--width-page', `var(--width-page-${margins})`)
   style.setProperty('--line-height-editor', `var(--line-height-${lineSpacing})`)
   style.setProperty(

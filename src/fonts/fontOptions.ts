@@ -6,7 +6,7 @@
  * an entry to FONT_OPTIONS. `family` must match the package's font-family name.
  */
 
-import { createOptionGuard } from '../../utils/options'
+import { createOptionGuard } from '../utils/options'
 
 // Serif
 import '@fontsource-variable/eb-garamond'
@@ -118,6 +118,12 @@ export const FONT_OPTIONS = [
   { value: 'windsong', label: 'WindSong', family: "'WindSong', cursive" },
 ] as const
 
-export type FontValue = (typeof FONT_OPTIONS)[number]['value']
+export type FontOption = (typeof FONT_OPTIONS)[number]
+export type FontValue = FontOption['value']
 
 export const isFontValue = createOptionGuard(FONT_OPTIONS)
+
+/** The option for a stored font value, falling back to the first font. */
+export function getFontOption(font: FontValue) {
+  return FONT_OPTIONS.find(({ value }) => value === font) ?? FONT_OPTIONS[0]
+}

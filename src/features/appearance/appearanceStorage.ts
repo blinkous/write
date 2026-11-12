@@ -10,7 +10,7 @@ import {
   type LineSpacingValue,
   type MarginValue,
 } from './appearanceOptions'
-import { isFontValue, type FontValue } from './fontOptions'
+import { isFontValue, type FontValue } from '../../fonts'
 
 const APPEARANCE_STORAGE_KEY = 'write.appearance.v1'
 
@@ -31,7 +31,12 @@ const customTextColorsSchema = z
 
 /* Each field falls back on its own so one stale value doesn't reset everything. */
 const appearanceSchema = z.object({
-  font: z.custom<FontValue>(isFontValue).catch(DEFAULT_APPEARANCE.font),
+  appFont: z.custom<FontValue>(isFontValue).catch(DEFAULT_APPEARANCE.appFont),
+  editorFont: z.unknown().optional(),
+  /** Briefly saved under this name before "Editor". */
+  entryFont: z.unknown().optional(),
+  /** Legacy (before the app and entries had their own fonts): the writing's font. */
+  font: z.unknown().optional(),
   margins: z
     .custom<MarginValue>(isMarginValue)
     .catch(DEFAULT_APPEARANCE.margins),
@@ -62,8 +67,24 @@ function migrateParagraphSpacing(
   return legacyParagraphSpacing !== 'none'
 }
 
+/*
+ * There used to be one font, always the writing's (for a while it also set the
+ * interface), and briefly `entryFont`. The newest saved one becomes the
+ * editor font; the app font starts at its default.
+ */
+function migrateEditorFont(...savedFonts: unknown[]): FontValue {
+  return savedFonts.find(isFontValue) ?? DEFAULT_APPEARANCE.editorFont
+}
+
 export function loadAppearance(): Appearance {
-  const { hasParagraphSpacing, paragraphSpacing, ...stored } = readStoredValue(
+  const {
+    hasParagraphSpacing,
+    paragraphSpacing,
+    editorFont,
+    entryFont,
+    font,
+    ...stored
+  } = readStoredValue(
     APPEARANCE_STORAGE_KEY,
     appearanceSchema,
     // Every field falls back on its own, so parsing nothing gives all the defaults.
@@ -71,6 +92,7 @@ export function loadAppearance(): Appearance {
   )
   return {
     ...stored,
+    editorFont: migrateEditorFont(editorFont, entryFont, font),
     hasParagraphSpacing: migrateParagraphSpacing(
       hasParagraphSpacing,
       paragraphSpacing,

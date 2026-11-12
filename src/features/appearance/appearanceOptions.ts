@@ -1,5 +1,5 @@
 import { createOptionGuard } from '../../utils/options'
-import type { FontValue } from './fontOptions'
+import type { FontValue } from '../../fonts'
 
 /** Each margin maps to a `--width-page-<value>` design token; the page scrolls endlessly. */
 export const MARGIN_OPTIONS = [
@@ -34,7 +34,10 @@ export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 export type CustomTextColors = readonly (string | null)[]
 
 export type Appearance = {
-  font: FontValue
+  /** The interface around the page: sidebar, toolbar, menus. */
+  appFont: FontValue
+  /** The writing and title; text without its own font uses it ("Default"). */
+  editorFont: FontValue
   margins: MarginValue
   lineSpacing: LineSpacingValue
   /** A half-line gap between paragraphs. */
@@ -47,7 +50,8 @@ export type Appearance = {
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
-  font: 'lora',
+  appFont: 'inter',
+  editorFont: 'lora',
   margins: 'normal',
   lineSpacing: 'normal',
   hasParagraphSpacing: true,

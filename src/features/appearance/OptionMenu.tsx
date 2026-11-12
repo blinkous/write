@@ -27,12 +27,15 @@ export function OptionMenu<Value extends string>({
       label={`${label}: ${selectedLabel}`}
       trigger={<Icon aria-hidden="true" />}
     >
-      <ChoiceGroup
-        label={label}
-        choices={options}
-        selectedValue={value}
-        onSelect={onChange}
-      />
+      {(close) => (
+        <ChoiceGroup
+          label={label}
+          choices={options}
+          selectedValue={value}
+          onSelect={onChange}
+          onChoose={close}
+        />
+      )}
     </Popover>
   )
 }
