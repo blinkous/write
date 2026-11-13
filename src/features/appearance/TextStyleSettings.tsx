@@ -19,7 +19,6 @@ import {
   type TextStyleName,
 } from '../../text-styles'
 import type { CustomTextColors } from './appearanceOptions'
-import { PageColorSettings } from './ThemeSettings'
 import type { usePageTheme } from './usePageTheme'
 import styles from './TextStyleSettings.module.css'
 
@@ -209,25 +208,6 @@ export function EditorSettings({
       >
         Reset all styles
       </Button>
-    </>
-  )
-}
-
-/** Everything around the page: its font, and the page's background and text colors. */
-export function AppSettings({ pageTheme }: { pageTheme: PageTheme }) {
-  const { appFont, changeFonts } = pageTheme
-  return (
-    <>
-      <LabeledRow label="Font" control="button">
-        <FontMenu
-          label="App font"
-          value={appFont}
-          onChange={(nextFont) =>
-            nextFont && changeFonts({ appFont: nextFont })
-          }
-        />
-      </LabeledRow>
-      <PageColorSettings pageTheme={pageTheme} />
     </>
   )
 }

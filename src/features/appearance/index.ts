@@ -1,5 +1,6 @@
 export { ThemeHistoryButtons } from './ThemeSettings'
-export { AppSettings, EditorSettings } from './TextStyleSettings'
+export { AppSettings } from './AppSettings'
+export { EditorSettings } from './TextStyleSettings'
 export { MarginsMenu, SpacingMenu } from './settingMenus'
 export { type Appearance } from './appearanceOptions'
 export { parseAppearance } from './appearanceStorage'
