@@ -6,4 +6,8 @@ export { useEntryTransfer } from './useEntryTransfer'
 export { EntryTitleField } from './EntryTitleField'
 export { useExportShortcuts } from './useExportShortcuts'
 export { useTitleEditor } from './useTitleEditor'
-export { createJournalEntry } from './journalEntry'
+export {
+  createJournalEntry,
+  getEntryTitle,
+  type JournalEntry,
+} from './journalEntry'

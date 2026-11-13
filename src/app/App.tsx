@@ -17,7 +17,6 @@ import {
   usePageTheme,
 } from '../features/appearance'
 import {
-  copyEditorMarkdown,
   documentToMarkdown,
   FormattingToolbar,
   JournalPage,
@@ -31,6 +30,8 @@ import {
 import {
   createJournalEntry,
   EntryList,
+  getEntryTitle,
+  type JournalEntry,
   EntryTitleField,
   EntryMenu,
   DataSettings,
@@ -55,7 +56,8 @@ export function App() {
   const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
   const isFirstVisit = useFirstVisit()
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+  // The entry awaiting delete confirmation, from the page's menu or a list row's.
+  const [entryToDelete, setEntryToDelete] = useState<JournalEntry | null>(null)
   const {
     editorFont,
     margins,
@@ -101,14 +103,19 @@ export function App() {
   const activeEditor = useActiveEditor(editor, titleEditor)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
-  const { exportEntry, exportAllEntries, exportAllAsMarkdown, importEntries } =
-    useEntryTransfer({
-      entries,
-      contentToMarkdown: (content, header) =>
-        documentToMarkdown(editor, content, header),
-      addEntries,
-      onStatus: setToastMessage,
-    })
+  const {
+    copyEntryAsMarkdown,
+    exportEntry,
+    exportAllEntries,
+    exportAllAsMarkdown,
+    importEntries,
+  } = useEntryTransfer({
+    entries,
+    contentToMarkdown: (content, header) =>
+      documentToMarkdown(editor, content, header),
+    addEntries,
+    onStatus: setToastMessage,
+  })
   useExportShortcuts({
     exportEntry: () => exportEntry(selectedEntry),
     exportAllEntries,
@@ -121,13 +128,16 @@ export function App() {
     if (!window.matchMedia(WIDE_SCREEN_QUERY).matches) setIsSidebarOpen(false)
   }
 
-  async function copyMarkdown() {
-    // A custom entry name becomes the markdown title; a name taken from the first line doesn't.
-    const didCopy = await copyEditorMarkdown(editor, selectedEntry.title)
-    setToastMessage(
-      didCopy
-        ? { text: 'Copied as markdown.', tone: 'neutral' }
-        : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
+  /** The same ⋯ menu for the open entry (page header) and each entry in the list. */
+  function renderEntryMenu(entry: JournalEntry, label?: string) {
+    return (
+      <EntryMenu
+        label={label}
+        onCopyMarkdown={() => copyEntryAsMarkdown(entry)}
+        onExport={() => exportEntry(entry)}
+        onImport={importEntries}
+        onDelete={() => setEntryToDelete(entry)}
+      />
     )
   }
 
@@ -155,6 +165,12 @@ export function App() {
             onRename={renameEntry}
             sort={sort}
             onSortChange={setSort}
+            entryActions={(entry) =>
+              renderEntryMenu(
+                entry,
+                `Actions for ${getEntryTitle(entry) ?? 'Untitled'}`,
+              )
+            }
           />
           <SettingsDrawer
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
@@ -240,12 +256,7 @@ export function App() {
           </div>
 
           <div className={styles.headerActions}>
-            <EntryMenu
-              onCopyMarkdown={copyMarkdown}
-              onExport={() => exportEntry(selectedEntry)}
-              onImport={importEntries}
-              onDelete={() => setIsConfirmingDelete(true)}
-            />
+            {renderEntryMenu(selectedEntry)}
           </div>
         </header>
 
@@ -261,16 +272,16 @@ export function App() {
 
       <Toast message={toastMessage} onDismiss={dismissToast} />
       <ConfirmDialog
-        isOpen={isConfirmingDelete}
+        isOpen={entryToDelete !== null}
         title="Delete this entry?"
         message="It’ll be gone for good. Export it first if you might want it back."
         confirmLabel="Delete"
         tone="danger"
         onConfirm={() => {
-          deleteEntry(selectedEntry.id)
-          setIsConfirmingDelete(false)
+          if (entryToDelete) deleteEntry(entryToDelete.id)
+          setEntryToDelete(null)
         }}
-        onCancel={() => setIsConfirmingDelete(false)}
+        onCancel={() => setEntryToDelete(null)}
       />
       <PrivacyNotice
         isOpen={privacyNotice.isOpen}

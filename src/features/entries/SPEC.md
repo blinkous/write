@@ -28,6 +28,10 @@ The list of journal entries and which one is open.
   import; a sidebar rename that changes the text clears it.
 - **⌘S / ⇧⌘S** (`useExportShortcuts`) save a JSON backup of the open entry / all entries via
   the Save dialog, replacing the browser's "save page"; the menus show the shortcuts.
+- **Row ⋯ menu:** each entry in the list has the same ⋯ menu as the open entry (copy as
+  markdown, export, import, delete), acting on that entry and named "Actions for <name>". It
+  shows on hover, keyboard focus or while open (always on touch screens), and the name makes
+  room for it. Delete always confirms first; deleting another entry keeps the open one open.
 - **Sort** (`entrySort.ts`, `EntrySortMenu`: the sort icon in the sidebar's top bar, a
   pick-one menu): Newest first (default), Oldest
   first, Last edited (by `updatedAt`, which edits and renames set; the list then shows "Edited

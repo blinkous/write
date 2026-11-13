@@ -1,4 +1,5 @@
 import type { ToastMessage } from '../../design-system'
+import { copyTextToClipboard } from '../../lib/clipboard'
 import { saveTextFile, type SaveFileResult } from '../../lib/saveFile'
 import {
   describeImport,
@@ -72,6 +73,16 @@ export function useEntryTransfer({
   }
 
   return {
+    /** Copies the entry as markdown, under its name when it has a custom one. */
+    async copyEntryAsMarkdown(entry: JournalEntry) {
+      const markdown = contentToMarkdown(entry.content, { title: entry.title })
+      const didCopy = await copyTextToClipboard(markdown)
+      onStatus(
+        didCopy
+          ? { text: 'Copied as markdown.', tone: 'neutral' }
+          : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
+      )
+    },
     exportEntry: (entry: JournalEntry) =>
       saveExport(jsonExport([entry], getEntryFileName(entry))),
     exportAllEntries: () =>

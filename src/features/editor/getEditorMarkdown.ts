@@ -1,6 +1,5 @@
 import type { Editor, JSONContent } from '@tiptap/core'
 import { TITLE_HEADING_LEVEL } from '../../journal-document'
-import { copyTextToClipboard } from '../../lib/clipboard'
 
 /* Two em spaces look like a tab but, unlike a tab, never turn a line into a code block. */
 const TAB_REPLACEMENT = '  '
@@ -76,15 +75,4 @@ export function getEditorMarkdown(
   title: string | null = null,
 ): string {
   return documentToMarkdown(editor, editor.getJSON(), { title })
-}
-
-/**
- * Copies the document as markdown, under the entry's name when it has a custom
- * one. False if the browser denied clipboard access.
- */
-export function copyEditorMarkdown(
-  editor: Editor,
-  title: string | null = null,
-): Promise<boolean> {
-  return copyTextToClipboard(getEditorMarkdown(editor, title))
 }

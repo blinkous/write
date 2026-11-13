@@ -7,7 +7,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - `useJournalEditor` creates a fresh editor whenever the entry id changes, so each entry
   has its own undo history. It reports every change as Tiptap JSON via `onChange`.
 - The feature exports parts rather than one component (`FormattingToolbar`,
-  `JournalPage`, pickers, `copyEditorMarkdown`) so the app can arrange them.
+  `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`. Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
@@ -35,7 +35,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
     empty it. Text already colored keeps its color (the color is stored on the text).
 - **Text case** (`TextCasePicker`): UPPERCASE, lowercase, Title Case, Sentence case, or
   "As typed". Display-only: the letters typed are stored unchanged (see `journal-document`).
-- **Copy as markdown** (`copyEditorMarkdown`, in the entry ⋯ menu) serializes with
+- **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯
+  menus) serializes with
   `@tiptap/markdown` and writes to the clipboard; the app confirms with a toast.
 
 ## Keyboard

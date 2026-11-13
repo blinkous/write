@@ -3,7 +3,7 @@ import { formatEntryTimestamp } from '../../utils/date'
 import { editorExtensions } from '../editor/editorExtensions'
 import { documentToMarkdown } from '../editor/getEditorMarkdown'
 import { createJournalEntry, type JournalEntry } from './journalEntry'
-import { journalToMarkdown } from './journalMarkdown'
+import { journalToMarkdown, type ContentToMarkdown } from './journalMarkdown'
 
 function entry(
   createdAt: string,
@@ -23,7 +23,7 @@ describe('journalToMarkdown', () => {
   const editor = createTestEditor({ extensions: editorExtensions })
   const toMarkdown = (
     content: JournalEntry['content'],
-    header: { title: string | null; dateLine: string },
+    header: Parameters<ContentToMarkdown>[1],
   ) => documentToMarkdown(editor, content, header)
 
   const newer = entry('2026-11-12T09:00:00.000Z', 'Sunday', [

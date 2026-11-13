@@ -95,3 +95,31 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Each row's ⋯ sits over its end, shown while the row is hovered or has focus (or its menu is open). */
+.row {
+  position: relative;
+}
+
+.rowActions {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+}
+
+@media (hover: hover) {
+  .row:not(:hover, :focus-within) .rowActions {
+    opacity: 0;
+  }
+}
+
+/* Keeps a long name clear of the ⋯ while it shows. */
+.row:is(:hover, :focus-within) .item {
+  padding-right: calc(var(--size-control) + var(--space-2));
+}
+
+@media (hover: none) {
+  .row .item {
+    padding-right: calc(var(--size-control) + var(--space-2));
+  }
+}

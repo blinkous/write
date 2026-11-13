@@ -3,21 +3,24 @@ import { ActionList, MenuItem, Popover } from '../../design-system'
 import { ImportAction } from './ImportAction'
 
 type EntryMenuProps = {
+  /** Names the menu, e.g. "Actions for Rainy Sunday" in the list; "Entry actions" for the open entry. */
+  label?: string
   onCopyMarkdown: () => void
   onExport: () => void
   onImport: (file: File) => void
   onDelete: () => void
 }
 
-/** Actions for the open entry. */
+/** Actions for one entry: the open one (page header) or any in the list (on hover). */
 export function EntryMenu({
+  label = 'Entry actions',
   onCopyMarkdown,
   onExport,
   onImport,
   onDelete,
 }: EntryMenuProps) {
   return (
-    <Popover label="Entry actions" trigger={<Ellipsis aria-hidden="true" />}>
+    <Popover label={label} trigger={<Ellipsis aria-hidden="true" />}>
       {(closeMenu) => (
         <ActionList>
           <MenuItem

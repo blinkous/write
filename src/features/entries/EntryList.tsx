@@ -1,5 +1,5 @@
 import { SquarePen } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { Button, SearchField } from '../../design-system'
 import { EntrySortMenu } from './EntrySortMenu'
 import { searchEntries } from './entrySearch'
@@ -17,6 +17,8 @@ type EntryListProps = {
   /** The list's order (entries come sorted); last-edited shows edit dates. */
   sort: EntrySort
   onSortChange: (sort: EntrySort) => void
+  /** A row's actions (e.g. its ⋯ menu), shown on hover or focus. */
+  entryActions: (entry: JournalEntry) => ReactNode
 }
 
 export function EntryList({
@@ -27,6 +29,7 @@ export function EntryList({
   onRename,
   sort,
   onSortChange,
+  entryActions,
 }: EntryListProps) {
   const renameHintId = useId()
   const [query, setQuery] = useState('')
@@ -69,7 +72,7 @@ export function EntryList({
       </p>
       <ul className={styles.items}>
         {matches.map((match) => (
-          <li key={match.entry.id}>
+          <li key={match.entry.id} className={styles.row}>
             <EntryListItem
               match={match}
               isSelected={match.entry.id === selectedEntryId}
@@ -78,6 +81,7 @@ export function EntryList({
               onRename={(rawTitle) => onRename(match.entry, rawTitle)}
               showsEditedDate={sort === 'last-edited'}
             />
+            <div className={styles.rowActions}>{entryActions(match.entry)}</div>
           </li>
         ))}
       </ul>

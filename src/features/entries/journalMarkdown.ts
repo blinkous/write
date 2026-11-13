@@ -5,7 +5,8 @@ import { isEntryEmpty, type JournalEntry } from './journalEntry'
 /** Turns an entry's content into markdown under an optional title and date line (the editor's job). */
 export type ContentToMarkdown = (
   content: JSONContent,
-  header: { title: string | null; dateLine: string },
+  /** The entry's custom name, and optionally a line saying when it was written. */
+  header: { title: string | null; dateLine?: string },
 ) => string
 
 const ENTRY_SEPARATOR = '\n\n---\n\n'
