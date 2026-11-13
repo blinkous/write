@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { getFontOption, isFontValue, type FontValue } from '../fonts'
 import { resolveTextColor } from '../journal-document'
+import { pxToRem } from '../utils/units'
 
 /*
  * How each text style looks, set by the person (settings → Editor). The
@@ -125,8 +126,6 @@ export const textStylesSchema = z
   })
   .catch(DEFAULT_TEXT_STYLES)
 
-const BASE_FONT_SIZE_PX = 16
-
 function getTextDecoration(underline: boolean, strike: boolean): string {
   const lines = [underline && 'underline', strike && 'line-through'].filter(
     Boolean,
@@ -158,7 +157,7 @@ export function getTextStyleVariables(
       } = textStyles[name]
       const prefix = `--text-style-${name}`
       return [
-        [`${prefix}-size`, `${size / BASE_FONT_SIZE_PX}rem`],
+        [`${prefix}-size`, pxToRem(size)],
         [`${prefix}-scale`, `${size / bodySize}`],
         [
           `${prefix}-weight`,
