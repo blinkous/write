@@ -181,6 +181,10 @@
     calc(var(--space-2) * -1)
     color-mix(in srgb, var(--color-text) 14%, transparent);
 
+  /* Panels over a background picture or video: how much of their color shows, and how much they blur what's behind. */
+  --mix-panel-over-media: 80%;
+  --blur-panel: 1rem;
+
   /* Motion: small UI changes only (color changes stay instant). */
   --duration-quick: 180ms;
   --duration-medium: 260ms;

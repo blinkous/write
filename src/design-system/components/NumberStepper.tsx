@@ -8,17 +8,20 @@ type NumberStepperProps = {
   value: number
   min: number
   max: number
+  /** How far each press moves the value (default 1). */
+  step?: number
   /** Shown after the number, e.g. "px". */
   unit?: string
   onChange: (value: number) => void
 }
 
-/** − value +: steps a number by one, stopping at its limits. */
+/** − value +: steps a number, stopping at its limits. */
 export function NumberStepper({
   label,
   value,
   min,
   max,
+  step = 1,
   unit = '',
   onChange,
 }: NumberStepperProps) {
@@ -30,7 +33,7 @@ export function NumberStepper({
         aria-label={`${label}: smaller`}
         title="Smaller"
         disabled={value <= min}
-        onClick={() => onChange(Math.max(min, value - 1))}
+        onClick={() => onChange(Math.max(min, value - step))}
       >
         <Minus aria-hidden="true" />
       </Button>
@@ -45,7 +48,7 @@ export function NumberStepper({
         aria-label={`${label}: larger`}
         title="Larger"
         disabled={value >= max}
-        onClick={() => onChange(Math.min(max, value + 1))}
+        onClick={() => onChange(Math.min(max, value + step))}
       >
         <Plus aria-hidden="true" />
       </Button>

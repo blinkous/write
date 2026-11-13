@@ -20,7 +20,9 @@ const CONTENT_SECURITY_POLICY = [
   "script-src 'self'",
   "style-src 'self'",
   "font-src 'self'",
-  "img-src 'self' data:",
+  // blob: is the background picture or video, read from this browser's own storage.
+  "img-src 'self' data: blob:",
+  'media-src blob:',
   "connect-src 'none'",
   "base-uri 'none'",
   "form-action 'none'",

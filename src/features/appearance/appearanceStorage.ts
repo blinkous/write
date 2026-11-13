@@ -5,6 +5,8 @@ import { textStylesSchema } from '../../text-styles'
 import { isHexColor } from '../../utils/color'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
+  BACKGROUND_BLUR_RANGE,
+  BACKGROUND_FADE_RANGE,
   CUSTOM_TEXT_COLOR_SLOT_COUNT,
   DEFAULT_APPEARANCE,
   DEFAULT_PAGE_COLORS,
@@ -61,6 +63,18 @@ const appearanceSchema = z.object({
     .string()
     .max(TAB_TITLE_MAX_LENGTH)
     .catch(DEFAULT_APPEARANCE.tabTitle),
+  backgroundBlur: z
+    .number()
+    .int()
+    .min(BACKGROUND_BLUR_RANGE.min)
+    .max(BACKGROUND_BLUR_RANGE.max)
+    .catch(DEFAULT_APPEARANCE.backgroundBlur),
+  backgroundFade: z
+    .number()
+    .int()
+    .min(BACKGROUND_FADE_RANGE.min)
+    .max(BACKGROUND_FADE_RANGE.max)
+    .catch(DEFAULT_APPEARANCE.backgroundFade),
 })
 
 /*

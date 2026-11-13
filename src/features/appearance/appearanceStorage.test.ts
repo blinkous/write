@@ -36,6 +36,8 @@ describe('loadAppearance', () => {
       customTextColors: Array(7).fill(null),
       textStyles: DEFAULT_APPEARANCE.textStyles,
       tabTitle: DEFAULT_APPEARANCE.tabTitle,
+      backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
+      backgroundFade: DEFAULT_APPEARANCE.backgroundFade,
     })
   })
 
@@ -98,6 +100,28 @@ describe('loadAppearance', () => {
     expect(loadAppearance().tabTitle).toBe('Morning pages')
     save('x'.repeat(TAB_TITLE_MAX_LENGTH + 1))
     expect(loadAppearance().tabTitle).toBe(DEFAULT_APPEARANCE.tabTitle)
+  })
+
+  it('keeps saved background blur and fade, and drops ones out of range', () => {
+    const save = (backgroundBlur: number, backgroundFade: number) =>
+      window.localStorage.setItem(
+        'write.appearance.v1',
+        JSON.stringify({
+          ...DEFAULT_APPEARANCE,
+          backgroundBlur,
+          backgroundFade,
+        }),
+      )
+    save(12, 70)
+    expect(loadAppearance()).toMatchObject({
+      backgroundBlur: 12,
+      backgroundFade: 70,
+    })
+    save(-4, 140)
+    expect(loadAppearance()).toMatchObject({
+      backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
+      backgroundFade: DEFAULT_APPEARANCE.backgroundFade,
+    })
   })
 
   it('keeps saved custom colors, always as seven slots', () => {

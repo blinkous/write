@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, type ReactNode } from 'react'
 import { LabeledRow, TextInput } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import { APP_NAME, TAB_TITLE_MAX_LENGTH } from './appearanceOptions'
@@ -9,6 +9,8 @@ type AppSettingsProps = {
   pageTheme: ReturnType<typeof usePageTheme>
   tabTitle: string
   onTabTitleChange: (tabTitle: string) => void
+  /** More of the look around the page, after the colors (e.g. the background media). */
+  children?: ReactNode
 }
 
 /** Everything around the page: the tab's title, its font, and the page's background and text colors. */
@@ -16,6 +18,7 @@ export function AppSettings({
   pageTheme,
   tabTitle,
   onTabTitleChange,
+  children,
 }: AppSettingsProps) {
   const { appFont, changeFonts } = pageTheme
   const tabTitleInputId = useId()
@@ -42,6 +45,7 @@ export function AppSettings({
         />
       </LabeledRow>
       <PageColorSettings pageTheme={pageTheme} />
+      {children}
     </>
   )
 }

@@ -1,0 +1,33 @@
+/* Fixed behind everything (above only the page color), filling the window. */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/*
+ * Covers the window, reaching past its edges by the blur, so blurring doesn't
+ * fade the edges into the page color.
+ */
+.media {
+  position: absolute;
+  top: calc(var(--background-media-blur) * -2);
+  left: calc(var(--background-media-blur) * -2);
+  width: calc(100% + var(--background-media-blur) * 4);
+  height: calc(100% + var(--background-media-blur) * 4);
+  object-fit: cover;
+  filter: blur(var(--background-media-blur));
+}
+
+/* The fade: the page color laid over the media, so text stays readable. */
+.layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(
+    in srgb,
+    var(--color-background) var(--background-media-fade),
+    transparent
+  );
+}

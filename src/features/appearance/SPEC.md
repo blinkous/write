@@ -92,6 +92,23 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
 - Each stored field is validated on its own, so one stale value doesn't reset the others,
   and settings added later fall back to their defaults for older saved data.
 
+## Background picture or video
+
+- Chosen in **App**, after the page colors (`BackgroundMediaSettings`): **Add picture or
+  video** (a file picker; any image, including GIFs, or video, up to 100 MB), then while one is
+  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 2) and **Fade**
+  (0–100 %, by 10, default 50: how much page color is laid over it, so writing stays readable).
+  Other files get a warning toast and the current background stays.
+- The file is kept in IndexedDB (`lib/blobStore.ts`, key `background-media.v1`), saved before
+  it's shown, so what's shown is what comes back after a refresh. Blur and fade are appearance
+  fields (localStorage, exported with settings); settings files don't carry the file itself.
+- `BackgroundMediaLayer` draws it behind the whole window (fixed, `object-fit: cover`), oversized
+  by the blur so its blurred edges stay off screen, with the page color laid over at the fade %. Videos
+  loop silently, and stay on their first frame when the system asks for less motion (GIFs
+  can't be paused, so they still play). It's decorative: hidden from screen readers.
+- While it's shown, the sidebar and header are translucent panels (`--mix-panel-over-media`
+  of their color, blurring what's behind by `--blur-panel`); menus and dialogs stay opaque.
+
 ## Decisions
 
 - No contrast warnings: users can see whether their colors are readable.

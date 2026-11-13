@@ -5,13 +5,16 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 
 ## Hard rules
 
-- **Local only.** All data lives in `localStorage`. No accounts, servers or analytics.
+- **Local only.** All data lives in the browser: `localStorage`, plus IndexedDB for files too
+  big for it (the background picture or video, `src/lib/blobStore.ts`). No accounts, servers
+  or analytics.
 - **No network at runtime.** Fonts are open-licensed Google Fonts bundled via Fontsource,
   so the app works offline.
 - **Locked-down origin.** Builds ship a Content Security Policy (`vite.config.ts`) allowing
   only the app's own scripts, styles and fonts and no network connections, so injected
   content can't read the journal or send it anywhere. Nothing may need inline scripts or
   styles, or `data:` fonts (e.g. Tiptap's CSS is vendored, fonts are never inlined).
+  Pictures and videos may be `blob:` URLs: the background, read from IndexedDB.
 - **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
   `localStorage` is per origin: a shared or shifting port would share or "lose" entries.
 - **Never silently lose writing.** Stored data that fails validation is backed up under a
@@ -27,7 +30,7 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 
 ## Out of scope
 
-Sync, sharing, images/attachments, page breaks / print layout (the page scrolls endlessly).
+Sync, sharing, images/attachments in entries, page breaks / print layout (the page scrolls endlessly).
 
 ## Storage keys
 
@@ -36,11 +39,17 @@ Sync, sharing, images/attachments, page breaks / print layout (the page scrolls 
 | `write.entries.v2`                | entries    | Array of journal entries (v1 kept as a backup)                              |
 | `write.selectedEntryId.v1`        | entries    | Last open entry id                                                          |
 | `write.entrySort.v1`              | entries    | How the entries list is sorted                                              |
-| `write.appearance.v1`             | appearance | App and entries fonts, margins, spacing, colors, tab title                  |
+| `write.appearance.v1`             | appearance | Fonts, margins, spacing, colors, tab title, background blur/fade            |
 | `write.settingsOpen.v1`           | settings   | Whether the settings drawer is open                                         |
 | `write.settingsClosedSections.v1` | settings   | Folded settings sections, by id                                             |
 | `write.pageThemeHistory.v1`       | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |
 | `write.privacyNoticeSeen.v1`      | privacy    | This browser has visited (no welcome entry)                                 |
+
+IndexedDB (database `write-files`, store `files`):
+
+| Key                   | Owner      | Contents                                                              |
+| --------------------- | ---------- | --------------------------------------------------------------------- |
+| `background-media.v1` | appearance | The background picture, GIF or video (its bytes and type, max 100 MB) |
 
 Bump the `vN` suffix if a format changes incompatibly, migrating from the old key once and
 leaving it in place as a backup (see entries `SPEC.md`). Fields added later must load from

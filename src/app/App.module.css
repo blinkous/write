@@ -107,3 +107,25 @@
     padding: var(--space-4);
   }
 }
+
+/*
+ * Over a background picture or video, the sidebar and header become
+ * translucent panels, blurring what's behind them so their text stays readable.
+ */
+.layout:has(> [data-background-media]) .sidebar {
+  background: color-mix(
+    in srgb,
+    var(--color-surface) var(--mix-panel-over-media),
+    transparent
+  );
+  backdrop-filter: blur(var(--blur-panel));
+}
+
+.layout:has(> [data-background-media]) .header {
+  background: color-mix(
+    in srgb,
+    var(--color-background) var(--mix-panel-over-media),
+    transparent
+  );
+  backdrop-filter: blur(var(--blur-panel));
+}

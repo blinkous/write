@@ -10,6 +10,9 @@ import {
 import {
   MarginsMenu,
   AppSettings,
+  BackgroundMediaLayer,
+  BackgroundMediaSettings,
+  useBackgroundMedia,
   EditorSettings,
   ThemeHistoryButtons,
   SpacingMenu,
@@ -67,6 +70,8 @@ export function App() {
     textColor,
     customTextColors,
     tabTitle,
+    backgroundBlur,
+    backgroundFade,
   } = appearance
   const {
     entries,
@@ -104,6 +109,7 @@ export function App() {
   const activeEditor = useActiveEditor(editor, titleEditor)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
+  const backgroundMedia = useBackgroundMedia(setToastMessage)
   const {
     copyEntryAsMarkdown,
     exportEntry,
@@ -158,6 +164,9 @@ export function App() {
 
   return (
     <div className={styles.layout} data-sidebar-open={isSidebarOpen}>
+      {backgroundMedia.media && (
+        <BackgroundMediaLayer {...backgroundMedia.media} />
+      )}
       {isSidebarOpen && (
         <aside
           id="entries-sidebar"
@@ -200,7 +209,21 @@ export function App() {
                     onTabTitleChange={(tabTitle) =>
                       updateAppearance({ tabTitle })
                     }
-                  />
+                  >
+                    <BackgroundMediaSettings
+                      hasMedia={backgroundMedia.media !== null}
+                      blur={backgroundBlur}
+                      fade={backgroundFade}
+                      onChooseFile={backgroundMedia.chooseFile}
+                      onRemove={backgroundMedia.remove}
+                      onBlurChange={(blur) =>
+                        updateAppearance({ backgroundBlur: blur })
+                      }
+                      onFadeChange={(fade) =>
+                        updateAppearance({ backgroundFade: fade })
+                      }
+                    />
+                  </AppSettings>
                 ),
               },
               {
