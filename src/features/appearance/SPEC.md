@@ -97,8 +97,8 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
 
 - Chosen in **App**, after the page colors (`BackgroundMediaSettings`): **Add picture or
   video** (a file picker; any image, including GIFs, or video, up to 100 MB), then while one is
-  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 0.5) and **Opacity**
-  (0–100 %, by 10, default 50: how much of the media shows over the page color, so writing stays
+  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 0.5; any tenth can be
+  typed, e.g. 0.2) and **Opacity** (0–100 %, by 10; any whole percent can be typed; default 50: how much of the media shows over the page color, so writing stays
   readable; briefly saved the other way round as a fade, which loads as its opposite).
   Other files get a warning toast and the current background stays.
 - The file is kept in IndexedDB (`lib/blobStore.ts`, key `background-media.v1`), saved before

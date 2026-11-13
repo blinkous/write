@@ -1,4 +1,9 @@
-import { parseTypedNumber, snapToRange } from './numberRange'
+import {
+  parseTypedNumber,
+  snapToRange,
+  snapTypedToRange,
+  stepThroughRange,
+} from './numberRange'
 
 describe('snapToRange', () => {
   const halves = { min: 0, max: 40, step: 0.5 }
@@ -17,6 +22,41 @@ describe('snapToRange', () => {
   it('counts steps from the min', () => {
     expect(snapToRange(14, { min: 10, max: 48, step: 4 })).toBe(14)
     expect(snapToRange(15, { min: 10, max: 48, step: 4 })).toBe(14)
+  })
+})
+
+describe('snapTypedToRange', () => {
+  it('keeps typed values down to the precision, between steps', () => {
+    const blur = { min: 0, max: 40, step: 0.5, precision: 0.1 }
+    expect(snapTypedToRange(0.2, blur)).toBe(0.2)
+    expect(snapTypedToRange(0.24, blur)).toBe(0.2)
+    expect(snapTypedToRange(41, blur)).toBe(40)
+  })
+
+  it('snaps to the step when there is no precision', () => {
+    expect(snapTypedToRange(1.2, { min: 0, max: 40, step: 0.5 })).toBe(1)
+  })
+})
+
+describe('stepThroughRange', () => {
+  const tens = { min: 0, max: 100, step: 10 }
+
+  it('moves one step from a value on a step', () => {
+    expect(stepThroughRange(50, 1, tens)).toBe(60)
+    expect(stepThroughRange(50, -1, tens)).toBe(40)
+    expect(stepThroughRange(0.3, 1, { min: 0, max: 1, step: 0.1 })).toBe(0.4)
+  })
+
+  it('moves from between steps to the next step in that direction', () => {
+    expect(stepThroughRange(55, 1, tens)).toBe(60)
+    expect(stepThroughRange(55, -1, tens)).toBe(50)
+    expect(stepThroughRange(0.2, 1, { min: 0, max: 40, step: 0.5 })).toBe(0.5)
+    expect(stepThroughRange(0.2, -1, { min: 0, max: 40, step: 0.5 })).toBe(0)
+  })
+
+  it('stops at the limits', () => {
+    expect(stepThroughRange(100, 1, tens)).toBe(100)
+    expect(stepThroughRange(0, -1, tens)).toBe(0)
   })
 })
 

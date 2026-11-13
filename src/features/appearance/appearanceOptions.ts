@@ -35,11 +35,24 @@ export const APP_NAME = 'Write'
 /** Long enough for a name or phrase; tabs show far less. */
 export const TAB_TITLE_MAX_LENGTH = 60
 
-/** Blur on the background picture or video, in px at normal zoom; fine steps, since even 1px softens a lot. */
-export const BACKGROUND_BLUR_RANGE = { min: 0, max: 40, step: 0.5 } as const
+/**
+ * Blur on the background picture or video, in px at normal zoom; fine steps,
+ * since even 1px softens a lot, and finer still when typed.
+ */
+export const BACKGROUND_BLUR_RANGE = {
+  min: 0,
+  max: 40,
+  step: 0.5,
+  precision: 0.1,
+} as const
 
-/** How opaque the background media is over the page color, in %. */
-export const BACKGROUND_OPACITY_RANGE = { min: 0, max: 100, step: 10 } as const
+/** How opaque the background media is over the page color, in %; any whole percent can be typed. */
+export const BACKGROUND_OPACITY_RANGE = {
+  min: 0,
+  max: 100,
+  step: 10,
+  precision: 1,
+} as const
 
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7

@@ -1,6 +1,11 @@
 import { Minus, Plus } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
-import { parseTypedNumber, snapToRange } from '../../utils/numberRange'
+import {
+  parseTypedNumber,
+  snapTypedToRange,
+  stepThroughRange,
+  type NumberRange,
+} from '../../utils/numberRange'
 import { Button } from './Button'
 import styles from './NumberStepper.module.css'
 
@@ -10,8 +15,10 @@ type NumberStepperProps = {
   value: number
   min: number
   max: number
-  /** How far each press moves the value (default 1); typed values snap to it. */
+  /** How far each press moves the value (default 1). */
   step?: number
+  /** The finest value that can be typed, e.g. 0.1 (default: the step). */
+  precision?: number
   /** Shown after the number, e.g. "px". */
   unit?: string
   onChange: (value: number) => void
@@ -19,8 +26,8 @@ type NumberStepperProps = {
 
 /**
  * − value +: steps a number, stopping at its limits. The value can also be
- * typed (applied on Enter or leaving the field, kept within the limits and on
- * a step) or stepped with the arrow keys, like a native spin button.
+ * typed (applied on Enter or leaving the field, kept within the limits and to
+ * its precision) or stepped with the arrow keys, like a native spin button.
  */
 export function NumberStepper({
   label,
@@ -28,22 +35,26 @@ export function NumberStepper({
   min,
   max,
   step = 1,
+  precision,
   unit = '',
   onChange,
 }: NumberStepperProps) {
-  const range = { min, max, step }
+  const range: NumberRange = { min, max, step, precision }
   // What's being typed; null while not editing, so the field shows the value.
   const [draft, setDraft] = useState<string | null>(null)
 
   function change(nextValue: number) {
-    const snapped = snapToRange(nextValue, range)
-    if (snapped !== value) onChange(snapped)
+    if (nextValue !== value) onChange(nextValue)
+  }
+
+  function stepBy(direction: 1 | -1) {
+    change(stepThroughRange(value, direction, range))
   }
 
   function applyDraft() {
     if (draft === null) return
     const typed = parseTypedNumber(draft)
-    if (typed !== null) change(typed)
+    if (typed !== null) change(snapTypedToRange(typed, range))
     setDraft(null)
   }
 
@@ -53,7 +64,7 @@ export function NumberStepper({
     if (key === 'ArrowUp' || key === 'ArrowDown') {
       event.preventDefault()
       setDraft(null)
-      return change(value + (key === 'ArrowUp' ? step : -step))
+      return stepBy(key === 'ArrowUp' ? 1 : -1)
     }
     // Back to the value; Escape still closes the menu it's in.
     if (key === 'Escape') setDraft(null)
@@ -67,7 +78,7 @@ export function NumberStepper({
         aria-label={`${label}: smaller`}
         title="Smaller"
         disabled={value <= min}
-        onClick={() => change(value - step)}
+        onClick={() => stepBy(-1)}
       >
         <Minus aria-hidden="true" />
       </Button>
@@ -104,7 +115,7 @@ export function NumberStepper({
         aria-label={`${label}: larger`}
         title="Larger"
         disabled={value >= max}
-        onClick={() => change(value + step)}
+        onClick={() => stepBy(1)}
       >
         <Plus aria-hidden="true" />
       </Button>
