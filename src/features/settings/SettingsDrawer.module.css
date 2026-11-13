@@ -8,7 +8,7 @@
   justify-content: flex-end;
   gap: var(--space-1);
   margin-block-end: calc(var(--space-2) * -1);
-  margin-inline-end: calc(var(--space-2) * -1);
+  margin-inline-end: calc(var(--inset-icon-button) * -1);
 }
 
 .actions {

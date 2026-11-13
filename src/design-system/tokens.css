@@ -205,6 +205,8 @@
   --swatch-columns: 7;
   --space-control-inline: var(--space-3);
   --size-icon: 1.125rem;
+  /* How far an icon button's icon sits in from its edge; pulled out by this, icons line up with text. */
+  --inset-icon-button: calc((var(--size-control) - var(--size-icon)) / 2);
   --size-icon-small: 0.875rem;
   /* Lighter lines for small icons beside text (chevrons), so they read as the same weight. */
   --stroke-width-icon-light: 1.5;
