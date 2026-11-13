@@ -7,14 +7,6 @@
 }
 
 .panel {
-  position-anchor: --popover-anchor;
-  /*
-   * Below the trigger, or above it when there's more room there (e.g. near the
-   * bottom of the screen); either way no taller than the room it has, so it
-   * never runs off screen. Percentages resolve against that room.
-   */
-  position-try-fallbacks: flip-block, flip-inline;
-  position-try-order: most-block-size;
   margin: var(--space-2) 0;
   width: max-content;
   max-width: min(var(--width-popover), calc(100vw - var(--space-8)));
@@ -29,11 +21,26 @@
     color-mix(in srgb, var(--color-text) 14%, transparent);
 }
 
+/*
+ * Anchored only while open: a closed panel is never shown, and WebKit (Safari,
+ * DuckDuckGo) hangs re-resolving closed anchored panels nested in one that's closing.
+ */
+.panel:popover-open {
+  position-anchor: --popover-anchor;
+  /*
+   * Below the trigger, or above it when there's more room there (e.g. near the
+   * bottom of the screen); either way no taller than the room it has, so it
+   * never runs off screen. Percentages resolve against that room.
+   */
+  position-try-fallbacks: flip-block, flip-inline;
+  position-try-order: most-block-size;
+}
+
 /* Lines up with the trigger's start or end edge. */
-.end {
+.end:popover-open {
   position-area: block-end span-inline-start;
 }
 
-.start {
+.start:popover-open {
   position-area: block-end span-inline-end;
 }

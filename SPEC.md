@@ -54,6 +54,8 @@ older data without them (see the storage tests).
   Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
   arrow keys preview without closing. Menus open with focus on the current choice.
+  Panels are anchored to their trigger only while open: WebKit (Safari, DuckDuckGo) hangs
+  when a menu closes with closed, still-anchored menus nested inside it.
 - **The settings drawer** (design-system `Drawer`) is for settings browsed together: it
   slides up from the bottom of the sidebar, stays open until toggled, and shares the space
   with the entries (both stay usable). Sections are `DrawerSection`s (foldable, chevron down to unfold
