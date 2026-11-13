@@ -71,7 +71,9 @@ older data without them (see the storage tests).
   slides up from the bottom of the sidebar, stays open until toggled, and shares the space
   with the entries (both stay usable). Sections are `DrawerSection`s (foldable, chevron down to unfold
   and up to fold). Settings rows are `LabeledRow`s: the name on the left, the control at the
-  end (a menu button, or a swatch tile); action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
+  end (a menu button, text editable in place, a stepper or a swatch tile), its text lined up
+  with the row's edge; text controls there have snugger padding, so their hover stays clear of
+  the panel's edge. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
 - **Dialogs** use the design-system `Dialog` (native `<dialog>`: focus trap, Escape, focus
   return) e.g. the welcome/privacy notice; confirmations use
   `ConfirmDialog` (Cancel first, so Enter never confirms by accident). No browser popups.

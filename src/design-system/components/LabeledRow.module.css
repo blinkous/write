@@ -17,9 +17,14 @@
   cursor: pointer;
 }
 
-/* The control's padded edge sits outside the row, so its content lines up with the edge. */
+/*
+ * The control's padded edge sits outside the row, so its content lines up with
+ * the edge. Its padding is snugger than other buttons', so the hover stays
+ * clear of the panel's edge.
+ */
 .button,
 .text {
+  --space-control-inline: var(--space-row-control-inline);
   margin-inline-end: calc(
     (var(--space-control-inline) + var(--border-width)) * -1
   );

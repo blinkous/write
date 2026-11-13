@@ -206,6 +206,8 @@
   /* Swatch grids share one column count so tiles are the same size in every menu. */
   --swatch-columns: 7;
   --space-control-inline: var(--space-3);
+  /* Text controls at a row's end (LabeledRow): snugger, so their hover stays clear of the panel's edge. */
+  --space-row-control-inline: var(--space-2);
   --size-icon: 1.125rem;
   /* How far an icon button's icon sits in from its edge; pulled out by this, icons line up with text. */
   --inset-icon-button: calc((var(--size-control) - var(--size-icon)) / 2);
