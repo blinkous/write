@@ -38,8 +38,8 @@ export const TAB_TITLE_MAX_LENGTH = 60
 /** Blur on the background picture or video, in px at normal zoom. */
 export const BACKGROUND_BLUR_RANGE = { min: 0, max: 40, step: 2 } as const
 
-/** How much of the page color is laid over the background media, in %. */
-export const BACKGROUND_FADE_RANGE = { min: 0, max: 100, step: 10 } as const
+/** How opaque the background media is over the page color, in %. */
+export const BACKGROUND_OPACITY_RANGE = { min: 0, max: 100, step: 10 } as const
 
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
@@ -67,8 +67,8 @@ export type Appearance = {
   tabTitle: string
   /** Blur on the background picture or video (px, BACKGROUND_BLUR_RANGE). */
   backgroundBlur: number
-  /** Page color laid over the background media (%, BACKGROUND_FADE_RANGE). */
-  backgroundFade: number
+  /** How opaque the background media is over the page color (%, BACKGROUND_OPACITY_RANGE). */
+  backgroundOpacity: number
 }
 
 /**
@@ -100,6 +100,6 @@ export const DEFAULT_APPEARANCE: Appearance = {
   textStyles: DEFAULT_TEXT_STYLES,
   tabTitle: '',
   backgroundBlur: 0,
-  // Enough page color over a busy picture that writing stays readable.
-  backgroundFade: 50,
+  // Half the page color showing through a busy picture, so writing stays readable.
+  backgroundOpacity: 50,
 }

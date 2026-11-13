@@ -8,29 +8,29 @@ import {
 } from '../../design-system'
 import {
   BACKGROUND_BLUR_RANGE,
-  BACKGROUND_FADE_RANGE,
+  BACKGROUND_OPACITY_RANGE,
 } from './appearanceOptions'
 import { BACKGROUND_MEDIA_ACCEPT } from './backgroundMedia'
 
 type BackgroundMediaSettingsProps = {
   hasMedia: boolean
   blur: number
-  fade: number
+  opacity: number
   onChooseFile: (file: File) => void
   onRemove: () => void
   onBlurChange: (blur: number) => void
-  onFadeChange: (fade: number) => void
+  onOpacityChange: (opacity: number) => void
 }
 
-/** A picture, GIF or video behind the window: add, change or remove it, and while there's one, its blur and fade. */
+/** A picture, GIF or video behind the window: add, change or remove it, and while there's one, its blur and opacity. */
 export function BackgroundMediaSettings({
   hasMedia,
   blur,
-  fade,
+  opacity,
   onChooseFile,
   onRemove,
   onBlurChange,
-  onFadeChange,
+  onOpacityChange,
 }: BackgroundMediaSettingsProps) {
   return (
     <>
@@ -60,13 +60,13 @@ export function BackgroundMediaSettings({
               onChange={onBlurChange}
             />
           </LabeledRow>
-          <LabeledRow label="Fade" control="icon">
+          <LabeledRow label="Opacity" control="icon">
             <NumberStepper
-              label="Background fade"
-              value={fade}
-              {...BACKGROUND_FADE_RANGE}
+              label="Background opacity"
+              value={opacity}
+              {...BACKGROUND_OPACITY_RANGE}
               unit="%"
-              onChange={onFadeChange}
+              onChange={onOpacityChange}
             />
           </LabeledRow>
         </>

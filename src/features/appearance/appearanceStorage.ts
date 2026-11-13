@@ -6,7 +6,7 @@ import { isHexColor } from '../../utils/color'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
   BACKGROUND_BLUR_RANGE,
-  BACKGROUND_FADE_RANGE,
+  BACKGROUND_OPACITY_RANGE,
   CUSTOM_TEXT_COLOR_SLOT_COUNT,
   DEFAULT_APPEARANCE,
   DEFAULT_PAGE_COLORS,
@@ -35,6 +35,12 @@ const customTextColorsSchema = z
         : null
     }),
   )
+
+const backgroundPercentSchema = z
+  .number()
+  .int()
+  .min(BACKGROUND_OPACITY_RANGE.min)
+  .max(BACKGROUND_OPACITY_RANGE.max)
 
 /* Each field falls back on its own so one stale value doesn't reset everything. */
 const appearanceSchema = z.object({
@@ -69,12 +75,9 @@ const appearanceSchema = z.object({
     .min(BACKGROUND_BLUR_RANGE.min)
     .max(BACKGROUND_BLUR_RANGE.max)
     .catch(DEFAULT_APPEARANCE.backgroundBlur),
-  backgroundFade: z
-    .number()
-    .int()
-    .min(BACKGROUND_FADE_RANGE.min)
-    .max(BACKGROUND_FADE_RANGE.max)
-    .catch(DEFAULT_APPEARANCE.backgroundFade),
+  backgroundOpacity: backgroundPercentSchema.optional().catch(undefined),
+  /** Briefly saved instead of opacity: how much page color covered the media. */
+  backgroundFade: backgroundPercentSchema.optional().catch(undefined),
 })
 
 /*
@@ -90,6 +93,21 @@ function migrateParagraphSpacing(
   if (legacyParagraphSpacing === undefined)
     return DEFAULT_APPEARANCE.hasParagraphSpacing
   return legacyParagraphSpacing !== 'none'
+}
+
+/*
+ * The background's opacity was briefly saved the other way round, as a fade
+ * (how much page color covered it): a saved fade becomes its opposite. The
+ * legacy field is dropped on the next save.
+ */
+function migrateBackgroundOpacity(
+  backgroundOpacity: number | undefined,
+  legacyBackgroundFade: number | undefined,
+): number {
+  if (backgroundOpacity !== undefined) return backgroundOpacity
+  if (legacyBackgroundFade === undefined)
+    return DEFAULT_APPEARANCE.backgroundOpacity
+  return BACKGROUND_OPACITY_RANGE.max - legacyBackgroundFade
 }
 
 /*
@@ -127,6 +145,8 @@ function toAppearance(
     editorFont,
     entryFont,
     font,
+    backgroundOpacity,
+    backgroundFade,
     ...stored
   }: z.infer<typeof appearanceSchema>,
   colorScheme: ColorScheme,
@@ -135,6 +155,10 @@ function toAppearance(
     ...stored,
     ...resolvePageColors(backgroundColor, textColor, colorScheme),
     editorFont: migrateEditorFont(editorFont, entryFont, font),
+    backgroundOpacity: migrateBackgroundOpacity(
+      backgroundOpacity,
+      backgroundFade,
+    ),
     hasParagraphSpacing: migrateParagraphSpacing(
       hasParagraphSpacing,
       paragraphSpacing,

@@ -84,7 +84,7 @@
 
 /*
  * Over a background picture or video, the sidebar and header let it show, so
- * it fills the window; its blur and fade (settings) are the only effects on it.
+ * it fills the window; its blur and opacity (settings) are the only effects on it.
  * :where() keeps this as weak as the plain rules, so narrow screens below still
  * give the overlaid sidebar its solid color.
  */

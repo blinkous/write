@@ -3,7 +3,7 @@ import { isEntrySort, type EntrySort } from '../entries'
 
 /*
  * A settings backup: the look (fonts, text styles, colors, custom color slots,
- * margins, spacing, tab title, background blur and fade) and how entries are
+ * margins, spacing, tab title, background blur and opacity) and how entries are
  * sorted. Not the background file itself (too big; it stays in this browser). Not UI state like whether the
  * drawer is open. Imported files are read like stored settings, so each bad
  * value falls back to its default rather than breaking anything.

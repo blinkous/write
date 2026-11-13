@@ -71,7 +71,7 @@ export function App() {
     customTextColors,
     tabTitle,
     backgroundBlur,
-    backgroundFade,
+    backgroundOpacity,
   } = appearance
   const {
     entries,
@@ -213,14 +213,14 @@ export function App() {
                     <BackgroundMediaSettings
                       hasMedia={backgroundMedia.media !== null}
                       blur={backgroundBlur}
-                      fade={backgroundFade}
+                      opacity={backgroundOpacity}
                       onChooseFile={backgroundMedia.chooseFile}
                       onRemove={backgroundMedia.remove}
                       onBlurChange={(blur) =>
                         updateAppearance({ backgroundBlur: blur })
                       }
-                      onFadeChange={(fade) =>
-                        updateAppearance({ backgroundFade: fade })
+                      onOpacityChange={(opacity) =>
+                        updateAppearance({ backgroundOpacity: opacity })
                       }
                     />
                   </AppSettings>

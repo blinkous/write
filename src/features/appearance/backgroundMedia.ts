@@ -1,6 +1,6 @@
 /*
  * The picture, GIF or video behind the whole window. The file lives in
- * IndexedDB (too big for localStorage); its blur and fade are appearance
+ * IndexedDB (too big for localStorage); its blur and opacity are appearance
  * settings, so they're saved and exported with the rest of the look.
  */
 

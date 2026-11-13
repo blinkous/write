@@ -37,7 +37,7 @@ describe('loadAppearance', () => {
       textStyles: DEFAULT_APPEARANCE.textStyles,
       tabTitle: DEFAULT_APPEARANCE.tabTitle,
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
-      backgroundFade: DEFAULT_APPEARANCE.backgroundFade,
+      backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,
     })
   })
 
@@ -102,26 +102,42 @@ describe('loadAppearance', () => {
     expect(loadAppearance().tabTitle).toBe(DEFAULT_APPEARANCE.tabTitle)
   })
 
-  it('keeps saved background blur and fade, and drops ones out of range', () => {
-    const save = (backgroundBlur: number, backgroundFade: number) =>
+  it('keeps saved background blur and opacity, and drops ones out of range', () => {
+    const save = (backgroundBlur: number, backgroundOpacity: number) =>
       window.localStorage.setItem(
         'write.appearance.v1',
         JSON.stringify({
           ...DEFAULT_APPEARANCE,
           backgroundBlur,
-          backgroundFade,
+          backgroundOpacity,
         }),
       )
     save(12, 70)
     expect(loadAppearance()).toMatchObject({
       backgroundBlur: 12,
-      backgroundFade: 70,
+      backgroundOpacity: 70,
     })
     save(-4, 140)
     expect(loadAppearance()).toMatchObject({
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
-      backgroundFade: DEFAULT_APPEARANCE.backgroundFade,
+      backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,
     })
+  })
+
+  it('turns a saved background fade into its opposite opacity, once', () => {
+    const { backgroundOpacity: _opacity, ...savedWithFade } = {
+      ...DEFAULT_APPEARANCE,
+      backgroundFade: 30,
+    }
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify(savedWithFade),
+    )
+    const migrated = loadAppearance()
+    expect(migrated.backgroundOpacity).toBe(70)
+    expect(migrated).not.toHaveProperty('backgroundFade')
+    window.localStorage.setItem('write.appearance.v1', JSON.stringify(migrated))
+    expect(loadAppearance().backgroundOpacity).toBe(70)
   })
 
   it('keeps saved custom colors, always as seven slots', () => {

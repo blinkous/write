@@ -3,7 +3,7 @@ import type { BackgroundMedia } from './useBackgroundMedia'
 import styles from './BackgroundMediaLayer.module.css'
 
 /**
- * The picture or video behind the whole window, blurred and faded toward the
+ * The picture or video behind the whole window, blurred and see-through to the
  * page color (both from settings). Decorative, so hidden from screen readers.
  * Marked with `data-background-media` so the layout can make its panels
  * translucent over it.

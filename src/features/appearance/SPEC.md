@@ -97,18 +97,19 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
 
 - Chosen in **App**, after the page colors (`BackgroundMediaSettings`): **Add picture or
   video** (a file picker; any image, including GIFs, or video, up to 100 MB), then while one is
-  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 2) and **Fade**
-  (0–100 %, by 10, default 50: how much page color is laid over it, so writing stays readable).
+  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 2) and **Opacity**
+  (0–100 %, by 10, default 50: how much of the media shows over the page color, so writing stays
+  readable; briefly saved the other way round as a fade, which loads as its opposite).
   Other files get a warning toast and the current background stays.
 - The file is kept in IndexedDB (`lib/blobStore.ts`, key `background-media.v1`), saved before
-  it's shown, so what's shown is what comes back after a refresh. Blur and fade are appearance
+  it's shown, so what's shown is what comes back after a refresh. Blur and opacity are appearance
   fields (localStorage, exported with settings); settings files don't carry the file itself.
 - `BackgroundMediaLayer` draws it behind the whole window (fixed, `object-fit: cover`), oversized
-  by the blur so its blurred edges stay off screen, with the page color laid over at the fade %. Videos
+  by the blur so its blurred edges stay off screen, at its opacity over the page color. Videos
   loop silently, and stay on their first frame when the system asks for less motion (GIFs
   can't be paused, so they still play). It's decorative: hidden from screen readers.
 - While it's shown, the sidebar and header are transparent, so it fills the whole window, and
-  its blur and fade are the only effects on it. The settings drawer, menus and dialogs stay
+  its blur and opacity are the only effects on it. The settings drawer, menus and dialogs stay
   solid so they're always readable, as does the sidebar on narrow screens, where it slides
   over the writing.
 
