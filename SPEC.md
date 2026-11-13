@@ -79,6 +79,8 @@ older data without them (see the storage tests).
   groups get accessible names. If a menu has parts that could be confused, make the items
   self-describing and separate the parts with a `Divider` (e.g. line spacing numbers, then
   "Add paragraph gap" / "Remove paragraph gap" actions). Menus size to their content.
+- **Number steppers** (`NumberStepper`, − value +) can also be typed in (applied on Enter or
+  leaving the field) or stepped with the arrow keys; values stay within their range and on a step.
 - **Settings show real units** where people expect them (line spacing as a multiplier) rather
   than S/M/L; preset names are fine where editors use them (margins). Text sizes are px
   (written as rem, so browser zoom still works), set per text style in settings.
