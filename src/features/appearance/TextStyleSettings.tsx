@@ -92,7 +92,7 @@ function TextStyleRow({
                 onChange={(size) => changeTextStyle(name, { size })}
               />
             </LabeledRow>
-            <LabeledRow label="Spacing" control="icon">
+            <LabeledRow label="Letter spacing" control="icon">
               <NumberStepper
                 label={`${label} letter spacing`}
                 value={settings.letterSpacing}
@@ -104,7 +104,19 @@ function TextStyleRow({
                 }
               />
             </LabeledRow>
-            <LabeledRow label="Style" control="icon">
+            {/* The toolbar's own controls, in a line of their own: color, then the toggles. */}
+            <div className={styles.formatting}>
+              <TextColorMenu
+                label={`${label} color`}
+                value={settings.color}
+                pageTextColor={textColor}
+                customColors={customTextColors}
+                onCustomColorsChange={onCustomTextColorsChange}
+                onSelect={(color) => changeTextStyle(name, { color })}
+                // A drag in the system picker previews live and becomes one undo step when it ends.
+                onPick={(color) => changeTextStyle(name, { color }, false)}
+                onPickEnd={commit}
+              />
               <div
                 role="group"
                 aria-label={`${label} formatting`}
@@ -127,20 +139,7 @@ function TextStyleRow({
                   ),
                 )}
               </div>
-            </LabeledRow>
-            <LabeledRow label="Color" control="icon">
-              <TextColorMenu
-                label={`${label} color`}
-                value={settings.color}
-                pageTextColor={textColor}
-                customColors={customTextColors}
-                onCustomColorsChange={onCustomTextColorsChange}
-                onSelect={(color) => changeTextStyle(name, { color })}
-                // A drag in the system picker previews live and becomes one undo step when it ends.
-                onPick={(color) => changeTextStyle(name, { color }, false)}
-                onPickEnd={commit}
-              />
-            </LabeledRow>
+            </div>
           </PopoverPanel>
           <MenuFooter>
             <Button

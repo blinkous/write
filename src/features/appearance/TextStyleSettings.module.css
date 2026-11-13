@@ -1,3 +1,10 @@
+/* Color, then the toggles: the first icon, not its padded edge, lines up with the labels above. */
+.formatting {
+  display: flex;
+  gap: var(--space-1);
+  margin-inline-start: calc(var(--inset-icon-button) * -1);
+}
+
 .toggles {
   display: flex;
   gap: var(--space-1);

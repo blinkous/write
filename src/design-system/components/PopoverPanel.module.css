@@ -12,4 +12,10 @@
 
 .regular {
   width: var(--width-popover);
+  /*
+   * Rows of controls: room for a text button's padded edge, which sits outside
+   * its row (see LabeledRow), so it lands where menu rows' hovers do and every
+   * row's control ends on the same edge.
+   */
+  padding-inline: calc(var(--space-control-inline) + var(--border-width));
 }
