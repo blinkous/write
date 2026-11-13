@@ -79,8 +79,8 @@ The list of journal entries and which one is open.
 - One JSON format for a single entry or the whole journal:
   `{ format: 'write-journal', version: 2, exportedAt, entries: JournalEntry[] }`.
   The entry ⋯ menu has copy as markdown, export entry, import and delete. The settings
-  drawer's **Data** section (`DataSettings`) has export all (JSON or markdown), import, and
-  About. Its labels are short to fit the sidebar ("Export as JSON"), with the full action
+  drawer's **Data** section (`DataSettings`) has export all (JSON or markdown), export
+  settings, import (journal backups or settings files; see settings `SPEC.md`), and About. Its labels are short to fit the sidebar ("Export as JSON"), with the full action
   as the accessible name.
 - **Export all as markdown** (`journalMarkdown.ts`) writes one `.md` file, oldest first so it
   reads like a journal: each entry starts with its custom name as `#` (headings shifted down

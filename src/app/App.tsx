@@ -46,7 +46,7 @@ import {
   useFirstVisit,
   usePrivacyNotice,
 } from '../features/privacy'
-import { SettingsDrawer } from '../features/settings'
+import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
 import styles from './App.module.css'
 
 const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
@@ -120,6 +120,20 @@ export function App() {
     exportEntry: () => exportEntry(selectedEntry),
     exportAllEntries,
   })
+  const settingsTransfer = useSettingsTransfer({
+    settings: { appearance, entrySort: sort },
+    onImport: ({ appearance: importedAppearance, entrySort }) => {
+      if (importedAppearance) updateAppearance(importedAppearance)
+      if (entrySort) setSort(entrySort)
+    },
+    onStatus: setToastMessage,
+  })
+
+  /** One import for everything: settings files apply settings, journal backups add entries. */
+  async function importFile(file: File) {
+    if (!(await settingsTransfer.importIfSettings(file)))
+      await importEntries(file)
+  }
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.matchMedia(WIDE_SCREEN_QUERY).matches,
   )
@@ -135,7 +149,7 @@ export function App() {
         label={label}
         onCopyMarkdown={() => copyEntryAsMarkdown(entry)}
         onExport={() => exportEntry(entry)}
-        onImport={importEntries}
+        onImport={importFile}
         onDelete={() => setEntryToDelete(entry)}
       />
     )
@@ -200,7 +214,8 @@ export function App() {
                   <DataSettings
                     onExportAll={exportAllEntries}
                     onExportAllAsMarkdown={exportAllAsMarkdown}
-                    onImport={importEntries}
+                    onExportSettings={settingsTransfer.exportSettings}
+                    onImport={importFile}
                     onShowAbout={privacyNotice.open}
                   />
                 ),

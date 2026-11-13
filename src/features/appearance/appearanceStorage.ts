@@ -98,10 +98,9 @@ function resolvePageColors(
   }
 }
 
-export function loadAppearance(
-  colorScheme = getSystemColorScheme(),
-): Appearance {
-  const {
+/* Stored (or imported) settings, with migrations and first-visit colors resolved. */
+function toAppearance(
+  {
     backgroundColor,
     textColor,
     hasParagraphSpacing,
@@ -110,12 +109,9 @@ export function loadAppearance(
     entryFont,
     font,
     ...stored
-  } = readStoredValue(
-    APPEARANCE_STORAGE_KEY,
-    appearanceSchema,
-    // Every field falls back on its own, so parsing nothing gives all the defaults.
-    appearanceSchema.parse({}),
-  )
+  }: z.infer<typeof appearanceSchema>,
+  colorScheme: ColorScheme,
+): Appearance {
   return {
     ...stored,
     ...resolvePageColors(backgroundColor, textColor, colorScheme),
@@ -125,6 +121,30 @@ export function loadAppearance(
       paragraphSpacing,
     ),
   }
+}
+
+export function loadAppearance(
+  colorScheme = getSystemColorScheme(),
+): Appearance {
+  const stored = readStoredValue(
+    APPEARANCE_STORAGE_KEY,
+    appearanceSchema,
+    // Every field falls back on its own, so parsing nothing gives all the defaults.
+    appearanceSchema.parse({}),
+  )
+  return toAppearance(stored, colorScheme)
+}
+
+/**
+ * Settings from elsewhere (e.g. an imported settings file), read like stored
+ * ones: each bad value falls back on its own. Null if it isn't settings at all.
+ */
+export function parseAppearance(
+  rawAppearance: unknown,
+  colorScheme = getSystemColorScheme(),
+): Appearance | null {
+  const result = appearanceSchema.safeParse(rawAppearance)
+  return result.success ? toAppearance(result.data, colorScheme) : null
 }
 
 export function saveAppearance(appearance: Appearance): void {

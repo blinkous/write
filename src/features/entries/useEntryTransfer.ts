@@ -1,6 +1,6 @@
 import type { ToastMessage } from '../../design-system'
 import { copyTextToClipboard } from '../../lib/clipboard'
-import { saveTextFile, type SaveFileResult } from '../../lib/saveFile'
+import { describeSaveResult, saveTextFile } from '../../lib/saveFile'
 import {
   describeImport,
   getEntryFileName,
@@ -40,21 +40,6 @@ function jsonExport(
   } as const
 }
 
-/** What to tell the user after an export; nothing if they cancelled the dialog. */
-function describeSave(result: SaveFileResult): ToastMessage | null {
-  switch (result.status) {
-    case 'saved':
-      return { text: `Saved ${result.fileName}.`, tone: 'neutral' }
-    case 'downloaded':
-      return {
-        text: `This browser can’t ask where to save, so ${result.fileName} went to your Downloads folder.`,
-        tone: 'neutral',
-      }
-    case 'cancelled':
-      return null
-  }
-}
-
 export function useEntryTransfer({
   entries,
   contentToMarkdown,
@@ -65,7 +50,7 @@ export function useEntryTransfer({
   async function saveExport(file: Parameters<typeof saveTextFile>[0]) {
     try {
       const result = await saveTextFile(file)
-      const message = describeSave(result)
+      const message = describeSaveResult(result)
       if (message) onStatus(message)
     } catch {
       onStatus({ text: 'Couldn’t save the file.', tone: 'warning' })

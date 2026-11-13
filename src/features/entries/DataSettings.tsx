@@ -1,18 +1,20 @@
-import { Download, FileText, Info } from 'lucide-react'
+import { Download, FileText, Info, SlidersHorizontal } from 'lucide-react'
 import { ActionList, MenuItem } from '../../design-system'
 import { ImportAction } from './ImportAction'
 
 type DataSettingsProps = {
   onExportAll: () => void
   onExportAllAsMarkdown: () => void
+  onExportSettings: () => void
   onImport: (file: File) => void
   onShowAbout: () => void
 }
 
-/** Whole-journal backups and imports, and About (which is mostly about where data lives). */
+/** Backups of the whole journal and of settings, imports, and About (which is mostly about where data lives). */
 export function DataSettings({
   onExportAll,
   onExportAllAsMarkdown,
+  onExportSettings,
   onImport,
   onShowAbout,
 }: DataSettingsProps) {
@@ -34,6 +36,11 @@ export function DataSettings({
         <FileText aria-hidden="true" />
         Export as markdown
       </MenuItem>
+      <MenuItem onClick={onExportSettings}>
+        <SlidersHorizontal aria-hidden="true" />
+        Export settings
+      </MenuItem>
+      {/* Takes journal backups and settings files alike. */}
       <ImportAction onImport={onImport} />
       <MenuItem onClick={onShowAbout}>
         <Info aria-hidden="true" />
