@@ -22,7 +22,8 @@
   height: var(--size-icon);
 }
 
-.button:hover {
+/* Hover only when it can be used; disabled controls don't react. */
+.button:hover:not(:disabled) {
   background: var(--color-surface-strong);
 }
 
@@ -39,7 +40,7 @@
   color: var(--color-muted);
 }
 
-.ghost:hover,
+.ghost:hover:not(:disabled),
 .ghost[aria-pressed='true'] {
   color: var(--color-text);
 }

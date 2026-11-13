@@ -19,6 +19,8 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 - **Imports are untrusted.** Validated against a strict format and the document schema,
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
 - Accessible: everything works by keyboard, controls are native elements with labels.
+  Visible labels are part of each control's accessible name; shortcuts are given as
+  `aria-keyshortcuts`. Disabled controls don't react to hover.
 
 ## Out of scope
 

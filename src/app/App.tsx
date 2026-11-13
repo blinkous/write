@@ -250,6 +250,8 @@ export function App() {
         </header>
 
         <main className={styles.main}>
+          {/* The page's top heading, for screen reader navigation. */}
+          <h1 className="visually-hidden">Write</h1>
           <JournalPage
             editor={editor}
             header={<EntryTitleField editor={titleEditor} />}

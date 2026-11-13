@@ -1,6 +1,5 @@
 import { Copy, Download, Ellipsis, Trash2 } from 'lucide-react'
 import { ActionList, MenuItem, Popover } from '../../design-system'
-import { formatShortcut } from '../../utils/shortcuts'
 import { ImportAction } from './ImportAction'
 
 type EntryMenuProps = {
@@ -31,7 +30,7 @@ export function EntryMenu({
             Copy as markdown
           </MenuItem>
           <MenuItem
-            shortcut={formatShortcut('Mod-s')}
+            shortcut="Mod-s"
             onClick={() => {
               closeMenu()
               onExport()

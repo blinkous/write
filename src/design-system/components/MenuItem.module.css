@@ -21,7 +21,7 @@
   cursor: pointer;
 }
 
-.item:hover,
+.item:hover:not(:disabled),
 .item[data-selected='true'] {
   background: var(--color-surface-strong);
 }
@@ -29,10 +29,6 @@
 .item:disabled {
   opacity: 0.5;
   cursor: default;
-}
-
-.item:disabled:hover {
-  background: transparent;
 }
 
 .item svg {

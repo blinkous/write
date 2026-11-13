@@ -1,6 +1,5 @@
 import { Download, FileText, Info } from 'lucide-react'
 import { ActionList, MenuItem } from '../../design-system'
-import { formatShortcut } from '../../utils/shortcuts'
 import { ImportAction } from './ImportAction'
 
 type DataSettingsProps = {
@@ -19,17 +18,17 @@ export function DataSettings({
 }: DataSettingsProps) {
   return (
     <ActionList>
-      {/* Short labels fit the sidebar; "all entries" is spelled out for screen readers. */}
+      {/* Short labels fit the sidebar; the tooltip (also read as the description) says "all entries". */}
       <MenuItem
-        shortcut={formatShortcut('Mod-Shift-s')}
-        aria-label="Export all entries as JSON"
+        shortcut="Mod-Shift-s"
+        title="Export all entries as JSON"
         onClick={onExportAll}
       >
         <Download aria-hidden="true" />
         Export as JSON
       </MenuItem>
       <MenuItem
-        aria-label="Export all entries as markdown"
+        title="Export all entries as markdown"
         onClick={onExportAllAsMarkdown}
       >
         <FileText aria-hidden="true" />

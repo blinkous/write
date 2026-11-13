@@ -54,7 +54,7 @@ export function TextStyleMenu({ editor }: { editor: Editor }) {
               <MenuItem
                 key={name}
                 isSelected={name === activeStyle.name}
-                shortcut={shortcut && formatShortcut(shortcut)}
+                shortcut={shortcut}
                 onClick={() => {
                   applyTextStyle(editor, textStyle)
                   close()
