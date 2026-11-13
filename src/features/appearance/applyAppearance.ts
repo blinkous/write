@@ -1,10 +1,10 @@
 import { deriveCozyThemeColors } from '../../lib/cozyPalette'
 import { deriveReadableMutedColor } from '../../lib/readableMuted'
 import { getTextStyleVariables } from '../../text-styles'
-import type { Appearance } from './appearanceOptions'
+import { APP_NAME, type Appearance } from './appearanceOptions'
 import { getFontOption } from '../../fonts'
 
-/** Pushes the appearance into the design-system CSS variables on the root element. */
+/** Pushes the appearance into the design-system CSS variables on the root element, and the tab's title and color. */
 export function applyAppearance({
   appFont,
   editorFont,
@@ -15,6 +15,7 @@ export function applyAppearance({
   backgroundColor,
   textColor,
   textStyles,
+  tabTitle,
 }: Appearance): void {
   const { style } = document.documentElement
   style.setProperty('--font-ui', getFontOption(appFont).family)
@@ -46,6 +47,7 @@ export function applyAppearance({
       style.setProperty(`--color-theme-${index + 1}`, themeColor)
     },
   )
+  document.title = tabTitle.trim() || APP_NAME
   document
     .querySelector('meta[name="theme-color"]')
     ?.setAttribute('content', backgroundColor)

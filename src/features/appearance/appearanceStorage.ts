@@ -10,6 +10,7 @@ import {
   DEFAULT_PAGE_COLORS,
   isLineSpacingValue,
   isMarginValue,
+  TAB_TITLE_MAX_LENGTH,
   type Appearance,
   type LineSpacingValue,
   type MarginValue,
@@ -56,6 +57,10 @@ const appearanceSchema = z.object({
   textColor: hexColorSchema.optional().catch(undefined),
   customTextColors: customTextColorsSchema,
   textStyles: textStylesSchema,
+  tabTitle: z
+    .string()
+    .max(TAB_TITLE_MAX_LENGTH)
+    .catch(DEFAULT_APPEARANCE.tabTitle),
 })
 
 /*

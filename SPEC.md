@@ -36,7 +36,7 @@ Sync, sharing, images/attachments, page breaks / print layout (the page scrolls 
 | `write.entries.v2`                | entries    | Array of journal entries (v1 kept as a backup)                              |
 | `write.selectedEntryId.v1`        | entries    | Last open entry id                                                          |
 | `write.entrySort.v1`              | entries    | How the entries list is sorted                                              |
-| `write.appearance.v1`             | appearance | App and entries fonts, margins, spacing, colors                             |
+| `write.appearance.v1`             | appearance | App and entries fonts, margins, spacing, colors, tab title                  |
 | `write.settingsOpen.v1`           | settings   | Whether the settings drawer is open                                         |
 | `write.settingsClosedSections.v1` | settings   | Folded settings sections, by id                                             |
 | `write.pageThemeHistory.v1`       | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |

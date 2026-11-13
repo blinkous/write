@@ -6,8 +6,10 @@
   min-height: var(--size-control);
 }
 
+/* Setting names are short: never wrapped or squeezed by the control beside them. */
 .label {
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .clickable {
@@ -30,4 +32,10 @@
 /* A swatch tile, as tall as a control. */
 .swatch {
   width: var(--size-control);
+}
+
+/* A text field, filling the room after the name. */
+.field {
+  flex: 1 1 auto;
+  min-width: 0;
 }

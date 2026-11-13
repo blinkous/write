@@ -1,4 +1,8 @@
-import { DEFAULT_APPEARANCE, DEFAULT_PAGE_COLORS } from './appearanceOptions'
+import {
+  DEFAULT_APPEARANCE,
+  DEFAULT_PAGE_COLORS,
+  TAB_TITLE_MAX_LENGTH,
+} from './appearanceOptions'
 import { loadAppearance } from './appearanceStorage'
 
 describe('loadAppearance', () => {
@@ -31,6 +35,7 @@ describe('loadAppearance', () => {
       hasParagraphIndent: DEFAULT_APPEARANCE.hasParagraphIndent,
       customTextColors: Array(7).fill(null),
       textStyles: DEFAULT_APPEARANCE.textStyles,
+      tabTitle: DEFAULT_APPEARANCE.tabTitle,
     })
   })
 
@@ -81,6 +86,18 @@ describe('loadAppearance', () => {
       appFont: DEFAULT_APPEARANCE.appFont,
       lineSpacing: 'loose',
     })
+  })
+
+  it('keeps a saved tab title, and drops one too long to be a title', () => {
+    const save = (tabTitle: string) =>
+      window.localStorage.setItem(
+        'write.appearance.v1',
+        JSON.stringify({ ...DEFAULT_APPEARANCE, tabTitle }),
+      )
+    save('Morning pages')
+    expect(loadAppearance().tabTitle).toBe('Morning pages')
+    save('x'.repeat(TAB_TITLE_MAX_LENGTH + 1))
+    expect(loadAppearance().tabTitle).toBe(DEFAULT_APPEARANCE.tabTitle)
   })
 
   it('keeps saved custom colors, always as seven slots', () => {

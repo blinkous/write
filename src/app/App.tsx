@@ -66,6 +66,7 @@ export function App() {
     hasParagraphIndent,
     textColor,
     customTextColors,
+    tabTitle,
   } = appearance
   const {
     entries,
@@ -192,7 +193,15 @@ export function App() {
               {
                 id: 'app',
                 title: 'App',
-                content: <AppSettings pageTheme={pageTheme} />,
+                content: (
+                  <AppSettings
+                    pageTheme={pageTheme}
+                    tabTitle={tabTitle}
+                    onTabTitleChange={(tabTitle) =>
+                      updateAppearance({ tabTitle })
+                    }
+                  />
+                ),
               },
               {
                 id: 'editor',

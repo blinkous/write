@@ -29,6 +29,12 @@ export const LINE_SPACING_OPTIONS = [
 export type LineSpacingValue = (typeof LINE_SPACING_OPTIONS)[number]['value']
 export const isLineSpacingValue = createOptionGuard(LINE_SPACING_OPTIONS)
 
+/** The browser tab's title when none is set (also in index.html, for the first paint). */
+export const APP_NAME = 'Write'
+
+/** Long enough for a name or phrase; tabs show far less. */
+export const TAB_TITLE_MAX_LENGTH = 60
+
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 
@@ -51,6 +57,8 @@ export type Appearance = {
   customTextColors: CustomTextColors
   /** How each text style looks (size, weight, font, color). */
   textStyles: TextStyles
+  /** The browser tab's title; empty for APP_NAME. */
+  tabTitle: string
 }
 
 /**
@@ -80,4 +88,5 @@ export const DEFAULT_APPEARANCE: Appearance = {
     null,
   ),
   textStyles: DEFAULT_TEXT_STYLES,
+  tabTitle: '',
 }
