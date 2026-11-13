@@ -14,8 +14,9 @@ servers, no analytics, and no network requests at all, fonts included.
 - **Text styles** like markdown: the title is `#`, then Heading 2–6, Body and Small, from a
   menu or `⇧⌘>` / `⇧⌘<`.
 - **Settings drawer** at the bottom of the sidebar: one font for the app and one for the
-  editor (19 bundled open-source fonts with live previews), page colors with undo/redo, and
-  backups. Margins and line/paragraph spacing sit in the toolbar.
+  editor (19 bundled open-source fonts with live previews), text styles (size, weight, font and color of
+  the title, headings, body and small text), page colors with undo/redo, and backups.
+  Margins and line/paragraph spacing sit in the toolbar.
 - **Text fonts and colors:** give any text its own font or color, or leave it on the page's.
 - **Entries** with search, sorted newest, oldest, last edited or by name. Name them, or let the first line be the name.
 - **Export / import:** copy an entry as markdown, export the whole journal as one markdown

@@ -1,7 +1,7 @@
 # Appearance
 
-User-adjustable look of the writing page: font, margins, vertical spacing and colors. Overall
-text size is left to browser zoom; size differences come from text styles (editor). All page-wide.
+User-adjustable look: fonts, text styles, margins, vertical spacing and colors. All
+page-wide, kept with one shared undo/redo for fonts, styles and colors.
 
 ## How it works
 
@@ -28,11 +28,18 @@ text size is left to browser zoom; size differences come from text styles (edito
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Theme settings** (`ThemeSettings.tsx`, shown in the settings drawer): **Fonts** has two
-  `FontMenu`s (from `src/fonts`): **App**, for everything around the page (sidebar, toolbar,
-  menus; sets `--font-ui`; default Inter) and **Editor**, for the
-  writing and title (sets `--font-editor`; default Lora) that text
-  without its own font uses. **Colors** has the free-form background and default text color
+- **Settings sections** (shown in the settings drawer): **App** (`AppSettings`) has the
+  interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter) and the page
+  colors (`PageColorSettings`, below). **Editor**
+  (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
+  every text style, then each text style (Title, Heading 2–6, Body, Small; see
+  `src/text-styles`) as a row with an edit (✎) button opening a popover with the
+  toolbar's controls: bold, italic, underline, strikethrough and color (`TextColorMenu`) on one
+  line, then the font (Default = editor font) and size (`NumberStepper`, px), then letter
+  spacing (`NumberStepper`, % of the size). Then **Reset all styles**, which resets every
+  style and sets the editor font to the app font. Letter spacing lives only here, per style
+  (not as a toolbar mark), so writing stays simple. **Page colors**
+  (`PageColorSettings`, in App) are the free-form background and default text color
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
   setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
   changes), as `LabeledRow`s like the font rows: the name, then

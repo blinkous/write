@@ -1,3 +1,4 @@
+import { DEFAULT_TEXT_STYLES, type TextStyles } from '../../text-styles'
 import type { ColorScheme } from '../../utils/colorScheme'
 import { createOptionGuard } from '../../utils/options'
 import type { FontValue } from '../../fonts'
@@ -48,6 +49,8 @@ export type Appearance = {
   backgroundColor: string
   textColor: string
   customTextColors: CustomTextColors
+  /** How each text style looks (size, weight, font, color). */
+  textStyles: TextStyles
 }
 
 /**
@@ -76,4 +79,5 @@ export const DEFAULT_APPEARANCE: Appearance = {
   customTextColors: Array<string | null>(CUSTOM_TEXT_COLOR_SLOT_COUNT).fill(
     null,
   ),
+  textStyles: DEFAULT_TEXT_STYLES,
 }

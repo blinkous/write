@@ -1,0 +1,178 @@
+import { z } from 'zod'
+import { getFontOption, isFontValue, type FontValue } from '../fonts'
+import { resolveTextColor } from '../journal-document'
+
+/*
+ * How each text style looks, set by the person (settings → Editor). The
+ * editor, the title and the style menu all draw from the CSS variables these
+ * produce, so a change shows everywhere at once.
+ */
+
+/** In settings order: the title, headings largest first, then body and small. */
+export const TEXT_STYLE_NAMES = [
+  'title',
+  'heading-2',
+  'heading-3',
+  'heading-4',
+  'heading-5',
+  'heading-6',
+  'body',
+  'small',
+] as const
+export type TextStyleName = (typeof TEXT_STYLE_NAMES)[number]
+
+export const TEXT_STYLE_LABELS: Record<TextStyleName, string> = {
+  title: 'Title',
+  'heading-2': 'Heading 2',
+  'heading-3': 'Heading 3',
+  'heading-4': 'Heading 4',
+  'heading-5': 'Heading 5',
+  'heading-6': 'Heading 6',
+  body: 'Body',
+  small: 'Small',
+}
+
+/** Sizes in px at normal browser zoom (written as rem, so zoom still works), stepped by 1. */
+export const TEXT_STYLE_SIZE_RANGE = { min: 10, max: 48 } as const
+
+/** Letter spacing as a percent of the style's size (so it scales with it), stepped by 1. */
+export const TEXT_STYLE_LETTER_SPACING_RANGE = { min: -5, max: 30 } as const
+
+export type TextStyleSettings = {
+  /** px, within TEXT_STYLE_SIZE_RANGE. */
+  size: number
+  bold: boolean
+  italic: boolean
+  underline: boolean
+  strike: boolean
+  /** Percent of the size, within TEXT_STYLE_LETTER_SPACING_RANGE; 0 is the font's own. */
+  letterSpacing: number
+  /** Its own font, or null for the editor font. */
+  font: FontValue | null
+  /** Its own color (a theme color name or #rrggbb), or null for the page text color. */
+  color: string | null
+}
+
+export type TextStyles = Record<TextStyleName, TextStyleSettings>
+
+function style(size: number, bold: boolean): TextStyleSettings {
+  return {
+    size,
+    bold,
+    italic: false,
+    underline: false,
+    strike: false,
+    letterSpacing: 0,
+    font: null,
+    color: null,
+  }
+}
+
+/** The look before any edits. Must match the --text-style-* defaults in tokens.css (tested). */
+export const DEFAULT_TEXT_STYLES: TextStyles = {
+  title: style(28, true),
+  'heading-2': style(24, true),
+  'heading-3': style(21, true),
+  'heading-4': style(18, true),
+  'heading-5': style(17, true),
+  'heading-6': style(16, true),
+  body: style(16, false),
+  small: style(14, false),
+}
+
+/* Each setting falls back on its own, so one bad value resets only itself. */
+function createStyleSchema(name: TextStyleName) {
+  const defaults = DEFAULT_TEXT_STYLES[name]
+  return z
+    .object({
+      size: z
+        .number()
+        .int()
+        .min(TEXT_STYLE_SIZE_RANGE.min)
+        .max(TEXT_STYLE_SIZE_RANGE.max)
+        .catch(defaults.size),
+      bold: z.boolean().catch(defaults.bold),
+      italic: z.boolean().catch(defaults.italic),
+      underline: z.boolean().catch(defaults.underline),
+      strike: z.boolean().catch(defaults.strike),
+      letterSpacing: z
+        .number()
+        .int()
+        .min(TEXT_STYLE_LETTER_SPACING_RANGE.min)
+        .max(TEXT_STYLE_LETTER_SPACING_RANGE.max)
+        .catch(defaults.letterSpacing),
+      font: z.custom<FontValue>(isFontValue).nullable().catch(null),
+      color: z
+        .string()
+        .refine((color) => resolveTextColor(color) !== null)
+        .nullable()
+        .catch(null),
+    })
+    .catch(defaults)
+}
+
+/** Stored text styles; anything missing or unreadable gets its default. */
+export const textStylesSchema = z
+  .object({
+    title: createStyleSchema('title'),
+    'heading-2': createStyleSchema('heading-2'),
+    'heading-3': createStyleSchema('heading-3'),
+    'heading-4': createStyleSchema('heading-4'),
+    'heading-5': createStyleSchema('heading-5'),
+    'heading-6': createStyleSchema('heading-6'),
+    body: createStyleSchema('body'),
+    small: createStyleSchema('small'),
+  })
+  .catch(DEFAULT_TEXT_STYLES)
+
+const BASE_FONT_SIZE_PX = 16
+
+function getTextDecoration(underline: boolean, strike: boolean): string {
+  const lines = [underline && 'underline', strike && 'line-through'].filter(
+    Boolean,
+  )
+  return lines.length > 0 ? lines.join(' ') : 'none'
+}
+
+/**
+ * The CSS variables for every style: size (rem), scale (relative to body, for
+ * previews at another size), weight, style (italic), decoration (underline,
+ * strikethrough), letter spacing, font and color. Defaults resolve to the editor font and the
+ * page text color.
+ */
+export function getTextStyleVariables(
+  textStyles: TextStyles,
+): Record<string, string> {
+  const bodySize = textStyles.body.size
+  return Object.fromEntries(
+    TEXT_STYLE_NAMES.flatMap((name) => {
+      const {
+        size,
+        bold,
+        italic,
+        underline,
+        strike,
+        letterSpacing,
+        font,
+        color,
+      } = textStyles[name]
+      const prefix = `--text-style-${name}`
+      return [
+        [`${prefix}-size`, `${size / BASE_FONT_SIZE_PX}rem`],
+        [`${prefix}-scale`, `${size / bodySize}`],
+        [
+          `${prefix}-weight`,
+          bold ? 'var(--font-weight-bold)' : 'var(--font-weight-regular)',
+        ],
+        [`${prefix}-style`, italic ? 'italic' : 'normal'],
+        [`${prefix}-decoration`, getTextDecoration(underline, strike)],
+        [`${prefix}-letter-spacing`, `${letterSpacing / 100}em`],
+        [
+          `${prefix}-font`,
+          font ? getFontOption(font).family : 'var(--font-editor)',
+        ],
+        [`${prefix}-color`, resolveTextColor(color) ?? 'var(--color-text)'],
+      ]
+    }),
+  )
+}

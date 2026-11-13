@@ -7,11 +7,11 @@ type LabeledRowProps = {
   /** Id of a form control (e.g. a swatch's color input), so clicking the label uses it. */
   controlId?: string
   /**
-   * What sits at the end: a `button` (e.g. a menu trigger) has padding, pulled
-   * out so its content lines up with the edge; a `swatch` is a tile, sized and
-   * flush with the edge.
+   * What sits at the end, lined up with the row's edge: a `button` with text
+   * (e.g. a menu trigger) is pulled out by its padding; an `icon` button by its
+   * icon's inset; a `swatch` tile is sized and flush.
    */
-  control: 'button' | 'swatch'
+  control: 'button' | 'icon' | 'swatch'
   children: ReactNode
 }
 

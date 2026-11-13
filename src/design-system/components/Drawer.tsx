@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Chevron } from './Chevron'
+import { Disclosure } from './Disclosure'
 import styles from './Drawer.module.css'
 
 type DrawerProps = {
@@ -38,10 +38,7 @@ type DrawerSectionProps = {
   children: ReactNode
 }
 
-/**
- * A titled group of settings in a drawer that folds away under its title
- * (native details/summary, so it's keyboard and screen reader friendly).
- */
+/** A titled group of settings in a drawer that folds away under its title. */
 export function DrawerSection({
   title,
   isOpen,
@@ -49,16 +46,8 @@ export function DrawerSection({
   children,
 }: DrawerSectionProps) {
   return (
-    <details
-      className={styles.section}
-      open={isOpen}
-      onToggle={({ currentTarget }) => onToggle(currentTarget.open)}
-    >
-      <summary className={styles.sectionTitle}>
-        {title}
-        <Chevron className={styles.chevron} />
-      </summary>
-      <div className={styles.sectionContent}>{children}</div>
-    </details>
+    <Disclosure summary={title} isOpen={isOpen} onToggle={onToggle}>
+      {children}
+    </Disclosure>
   )
 }

@@ -1,5 +1,6 @@
 import { deriveCozyThemeColors } from '../../lib/cozyPalette'
 import { deriveReadableMutedColor } from '../../lib/readableMuted'
+import { getTextStyleVariables } from '../../text-styles'
 import type { Appearance } from './appearanceOptions'
 import { getFontOption } from '../../fonts'
 
@@ -13,6 +14,7 @@ export function applyAppearance({
   hasParagraphIndent,
   backgroundColor,
   textColor,
+  textStyles,
 }: Appearance): void {
   const { style } = document.documentElement
   style.setProperty('--font-ui', getFontOption(appFont).family)
@@ -27,6 +29,10 @@ export function applyAppearance({
     '--paragraph-indent',
     hasParagraphIndent ? 'var(--size-paragraph-indent)' : '0',
   )
+  for (const [variable, value] of Object.entries(
+    getTextStyleVariables(textStyles),
+  ))
+    style.setProperty(variable, value)
   style.setProperty('--color-background', backgroundColor)
   style.setProperty('--color-text', textColor)
   // Muted text when the system asks for more contrast; soft otherwise (see tokens.css).

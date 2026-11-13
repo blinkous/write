@@ -1,14 +1,20 @@
+import { DEFAULT_TEXT_STYLES } from '../../text-styles'
 import { PAGE_THEME_HISTORY_LIMIT } from './pageThemeHistory'
 import {
   loadPageThemeHistory,
   savePageThemeHistory,
 } from './pageThemeHistoryStorage'
 
-const CURRENT_FONTS = { appFont: 'inter', editorFont: 'lora' } as const
+const CURRENT_FONTS = {
+  appFont: 'inter',
+  editorFont: 'lora',
+  textStyles: DEFAULT_TEXT_STYLES,
+} as const
 const STORAGE_KEY = 'write.pageThemeHistory.v1'
 const colors = (backgroundColor: string) => ({
   appFont: 'inter' as const,
   editorFont: 'lora' as const,
+  textStyles: DEFAULT_TEXT_STYLES,
   backgroundColor,
   textColor: '#111111',
 })
@@ -69,9 +75,15 @@ describe('page theme history storage', () => {
     const history = loadPageThemeHistory({
       appFont: 'inter',
       editorFont: 'literata',
+      textStyles: DEFAULT_TEXT_STYLES,
     })
     expect(history.past).toEqual([
-      { ...colorOnly, appFont: 'inter', editorFont: 'literata' },
+      {
+        ...colorOnly,
+        appFont: 'inter',
+        editorFont: 'literata',
+        textStyles: DEFAULT_TEXT_STYLES,
+      },
     ])
     savePageThemeHistory(history)
     // The old history stays as a backup and isn't read again.
@@ -79,7 +91,12 @@ describe('page theme history storage', () => {
       storedColorHistory,
     )
     expect(loadPageThemeHistory(CURRENT_FONTS).past).toEqual([
-      { ...colorOnly, appFont: 'inter', editorFont: 'literata' },
+      {
+        ...colorOnly,
+        appFont: 'inter',
+        editorFont: 'literata',
+        textStyles: DEFAULT_TEXT_STYLES,
+      },
     ])
   })
 

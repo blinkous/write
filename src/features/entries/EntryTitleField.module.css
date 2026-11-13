@@ -1,9 +1,12 @@
-/* In the editor font, at title size; `#` in markdown. One line; long titles wrap. */
+/* The Title text style (settings → Editor); `#` in markdown. One line; long titles wrap. */
 .title {
-  color: var(--color-text);
-  font-family: var(--font-editor);
-  font-size: calc(var(--scale-title) * var(--font-size-editor));
-  font-weight: var(--font-weight-bold);
+  color: var(--text-style-title-color);
+  font-family: var(--text-style-title-font);
+  font-size: var(--text-style-title-size);
+  font-weight: var(--text-style-title-weight);
+  font-style: var(--text-style-title-style);
+  text-decoration-line: var(--text-style-title-decoration);
+  letter-spacing: var(--text-style-title-letter-spacing);
   line-height: 1.2;
   overflow-wrap: break-word;
   outline: none;

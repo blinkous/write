@@ -1,0 +1,20 @@
+/* A line of controls: the first group at the start, the last at the end. */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.toggles {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.reset {
+  align-self: flex-start;
+  /* The button's padded edge sits outside, so its text lines up with the labels above. */
+  margin-inline-start: calc(
+    (var(--space-control-inline) + var(--border-width)) * -1
+  );
+}

@@ -1,42 +1,19 @@
 import { Redo2, Undo2 } from 'lucide-react'
 import { useId } from 'react'
 import { Button, LabeledRow, SwatchColorInput } from '../../design-system'
-import { FontMenu } from '../../fonts'
 import type { usePageTheme } from './usePageTheme'
 
 type PageThemeProps = {
   pageTheme: ReturnType<typeof usePageTheme>
 }
 
-/** The app's font (everything around the page) and the editor's (the writing and title). */
-export function FontSettings({ pageTheme }: PageThemeProps) {
-  const { appFont, editorFont, changeFonts } = pageTheme
-  return (
-    <>
-      <LabeledRow label="App" control="button">
-        <FontMenu
-          label="App font"
-          value={appFont}
-          onChange={(font) => font && changeFonts({ appFont: font })}
-        />
-      </LabeledRow>
-      <LabeledRow label="Editor" control="button">
-        <FontMenu
-          label="Editor font"
-          value={editorFont}
-          onChange={(font) => font && changeFonts({ editorFont: font })}
-        />
-      </LabeledRow>
-    </>
-  )
-}
-
 /**
- * Background and default text color, each a label with its swatch at the end.
+ * The page's background and default text color, each a label with its swatch
+ * at the end (part of the App section).
  * Picking a background also picks a matching text color, which can then be
  * changed. A drag in a picker is committed when it ends.
  */
-export function ColorSettings({ pageTheme }: PageThemeProps) {
+export function PageColorSettings({ pageTheme }: PageThemeProps) {
   const { backgroundColor, textColor, changeBackground, changeText, commit } =
     pageTheme
   const backgroundInputId = useId()

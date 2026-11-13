@@ -1,4 +1,4 @@
-import { useId, type ReactNode, type ToggleEvent } from 'react'
+import { useId, useRef, type ReactNode, type ToggleEvent } from 'react'
 import { Button } from './Button'
 import styles from './Popover.module.css'
 
@@ -23,12 +23,27 @@ const INITIAL_FOCUS_SELECTORS = [
   'button, input, select, [tabindex]',
 ]
 
-/** Moves focus into the panel on open, as expected for a dialog. */
+/**
+ * Moves focus into the panel on open, as expected for a dialog. Only this
+ * panel's own controls count, not those of a closed menu nested inside it.
+ */
 function focusInitialControl(panel: HTMLDivElement) {
   for (const selector of INITIAL_FOCUS_SELECTORS) {
-    const control = panel.querySelector<HTMLElement>(selector)
+    const control = [...panel.querySelectorAll<HTMLElement>(selector)].find(
+      (candidate) => candidate.closest('[popover]') === panel,
+    )
     if (control) return control.focus()
   }
+}
+
+/** Focus was inside the closed panel, or nowhere (e.g. a nested menu closed after a click). */
+function isFocusLost(panel: HTMLDivElement): boolean {
+  const { activeElement } = document
+  return (
+    activeElement === null ||
+    activeElement === document.body ||
+    panel.contains(activeElement)
+  )
 }
 
 /**
@@ -45,6 +60,7 @@ export function Popover({
   onClose,
 }: PopoverProps) {
   const popoverId = useId()
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const close = () => document.getElementById(popoverId)?.hidePopover()
 
   function handleToggle({
@@ -54,13 +70,16 @@ export function Popover({
   }: ToggleEvent<HTMLDivElement>) {
     // React bubbles toggle events: ignore those from a menu nested inside this one.
     if (target !== currentTarget) return
-    if (newState === 'open') focusInitialControl(currentTarget)
-    else onClose?.()
+    if (newState === 'open') return focusInitialControl(currentTarget)
+    // Back to the trigger, so keyboard users keep their place (onClose may move it on, e.g. to the text).
+    if (isFocusLost(currentTarget)) triggerRef.current?.focus()
+    onClose?.()
   }
 
   return (
     <div className={styles.anchor}>
       <Button
+        ref={triggerRef}
         iconOnly={isTriggerIconOnly}
         aria-label={label}
         title={label}

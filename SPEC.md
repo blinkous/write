@@ -67,8 +67,8 @@ older data without them (see the storage tests).
   self-describing and separate the parts with a `Divider` (e.g. line spacing numbers, then
   "Add paragraph gap" / "Remove paragraph gap" actions). Menus size to their content.
 - **Settings show real units** where people expect them (line spacing as a multiplier) rather
-  than S/M/L; preset names are fine where editors use them (margins). Size differences in
-  writing come from markdown-style text styles; overall size is browser zoom.
+  than S/M/L; preset names are fine where editors use them (margins). Text sizes are px
+  (written as rem, so browser zoom still works), set per text style in settings.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
 
 ## Layout

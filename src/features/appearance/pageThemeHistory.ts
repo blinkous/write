@@ -1,9 +1,11 @@
 import type { FontValue } from '../../fonts'
+import type { TextStyles } from '../../text-styles'
 
 /** The fonts and colors in settings, which share one undo/redo. */
 export type PageTheme = {
   appFont: FontValue
   editorFont: FontValue
+  textStyles: TextStyles
   backgroundColor: string
   textColor: string
 }
@@ -34,7 +36,8 @@ function isSameTheme(first: PageTheme, second: PageTheme): boolean {
     first.appFont === second.appFont &&
     first.editorFont === second.editorFont &&
     first.backgroundColor === second.backgroundColor &&
-    first.textColor === second.textColor
+    first.textColor === second.textColor &&
+    JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles)
   )
 }
 

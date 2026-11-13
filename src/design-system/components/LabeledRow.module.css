@@ -22,6 +22,11 @@
   );
 }
 
+/* A square icon button: its icon, not its edge, lines up with the row's edge. */
+.icon {
+  margin-inline-end: calc((var(--size-control) - var(--size-icon)) / -2);
+}
+
 /* A swatch tile, as tall as a control. */
 .swatch {
   width: var(--size-control);

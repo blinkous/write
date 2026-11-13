@@ -1,9 +1,10 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ComponentProps } from 'react'
 import styles from './Button.module.css'
 
 type ButtonVariant = 'ghost' | 'subtle' | 'danger'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+/* Includes `ref` (a regular prop in React 19), passed through to the <button>. */
+type ButtonProps = ComponentProps<'button'> & {
   variant?: ButtonVariant
   /** Square button sized for a single icon or glyph; requires an aria-label. */
   iconOnly?: boolean

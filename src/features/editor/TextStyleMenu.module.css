@@ -1,32 +1,71 @@
-/* Each name previews its style, on the same scale as the editor's headings. */
-.heading-2,
-.heading-3,
-.heading-4,
-.heading-5,
-.heading-6 {
-  font-weight: var(--font-weight-bold);
-}
+/* Each name previews its style (settings → Editor), scaled relative to body so they fit the menu. */
 
 .heading-2 {
-  font-size: calc(var(--scale-heading-2) * 1em);
+  color: var(--text-style-heading-2-color);
+  font-family: var(--text-style-heading-2-font);
+  font-size: calc(var(--text-style-heading-2-scale) * 1em);
+  font-weight: var(--text-style-heading-2-weight);
+  font-style: var(--text-style-heading-2-style);
+  text-decoration-line: var(--text-style-heading-2-decoration);
+  letter-spacing: var(--text-style-heading-2-letter-spacing);
 }
 
 .heading-3 {
-  font-size: calc(var(--scale-heading-3) * 1em);
+  color: var(--text-style-heading-3-color);
+  font-family: var(--text-style-heading-3-font);
+  font-size: calc(var(--text-style-heading-3-scale) * 1em);
+  font-weight: var(--text-style-heading-3-weight);
+  font-style: var(--text-style-heading-3-style);
+  text-decoration-line: var(--text-style-heading-3-decoration);
+  letter-spacing: var(--text-style-heading-3-letter-spacing);
 }
 
 .heading-4 {
-  font-size: calc(var(--scale-heading-4) * 1em);
+  color: var(--text-style-heading-4-color);
+  font-family: var(--text-style-heading-4-font);
+  font-size: calc(var(--text-style-heading-4-scale) * 1em);
+  font-weight: var(--text-style-heading-4-weight);
+  font-style: var(--text-style-heading-4-style);
+  text-decoration-line: var(--text-style-heading-4-decoration);
+  letter-spacing: var(--text-style-heading-4-letter-spacing);
 }
 
 .heading-5 {
-  font-size: calc(var(--scale-heading-5) * 1em);
+  color: var(--text-style-heading-5-color);
+  font-family: var(--text-style-heading-5-font);
+  font-size: calc(var(--text-style-heading-5-scale) * 1em);
+  font-weight: var(--text-style-heading-5-weight);
+  font-style: var(--text-style-heading-5-style);
+  text-decoration-line: var(--text-style-heading-5-decoration);
+  letter-spacing: var(--text-style-heading-5-letter-spacing);
 }
 
 .heading-6 {
-  font-size: calc(var(--scale-heading-6) * 1em);
+  color: var(--text-style-heading-6-color);
+  font-family: var(--text-style-heading-6-font);
+  font-size: calc(var(--text-style-heading-6-scale) * 1em);
+  font-weight: var(--text-style-heading-6-weight);
+  font-style: var(--text-style-heading-6-style);
+  text-decoration-line: var(--text-style-heading-6-decoration);
+  letter-spacing: var(--text-style-heading-6-letter-spacing);
+}
+
+.body {
+  color: var(--text-style-body-color);
+  font-family: var(--text-style-body-font);
+  font-size: calc(var(--text-style-body-scale) * 1em);
+  font-weight: var(--text-style-body-weight);
+  font-style: var(--text-style-body-style);
+  text-decoration-line: var(--text-style-body-decoration);
+  letter-spacing: var(--text-style-body-letter-spacing);
 }
 
 .small {
-  font-size: calc(var(--scale-small) * 1em);
+  color: var(--text-style-small-color);
+  font-family: var(--text-style-small-font);
+  font-size: calc(var(--text-style-small-scale) * 1em);
+  font-weight: var(--text-style-small-weight);
+  font-style: var(--text-style-small-style);
+  text-decoration-line: var(--text-style-small-decoration);
+  letter-spacing: var(--text-style-small-letter-spacing);
 }

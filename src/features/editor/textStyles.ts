@@ -1,3 +1,4 @@
+import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
 import type { Editor } from '@tiptap/react'
 import {
   Heading2,
@@ -17,7 +18,8 @@ type TextStyleBlock =
   | { kind: 'paragraph'; size: ParagraphSize | null }
 
 export type TextStyle = {
-  name: string
+  /** Also its key in settings (text-styles), which define how it looks. */
+  name: Exclude<TextStyleName, 'title'>
   label: string
   /** Shown in the toolbar for the current style, and beside the label in the menu. */
   icon: LucideIcon
@@ -33,48 +35,48 @@ export type TextStyle = {
 export const TEXT_STYLES: readonly TextStyle[] = [
   {
     name: 'small',
-    label: 'Small',
+    label: TEXT_STYLE_LABELS['small'],
     icon: Type,
     block: { kind: 'paragraph', size: 'small' },
   },
   {
     name: 'body',
-    label: 'Body',
+    label: TEXT_STYLE_LABELS['body'],
     icon: Pilcrow,
     block: { kind: 'paragraph', size: null },
     shortcut: 'Mod-Alt-0',
   },
   {
     name: 'heading-6',
-    label: 'Heading 6',
+    label: TEXT_STYLE_LABELS['heading-6'],
     icon: Heading6,
     block: { kind: 'heading', level: 6 },
     shortcut: 'Mod-Alt-6',
   },
   {
     name: 'heading-5',
-    label: 'Heading 5',
+    label: TEXT_STYLE_LABELS['heading-5'],
     icon: Heading5,
     block: { kind: 'heading', level: 5 },
     shortcut: 'Mod-Alt-5',
   },
   {
     name: 'heading-4',
-    label: 'Heading 4',
+    label: TEXT_STYLE_LABELS['heading-4'],
     icon: Heading4,
     block: { kind: 'heading', level: 4 },
     shortcut: 'Mod-Alt-4',
   },
   {
     name: 'heading-3',
-    label: 'Heading 3',
+    label: TEXT_STYLE_LABELS['heading-3'],
     icon: Heading3,
     block: { kind: 'heading', level: 3 },
     shortcut: 'Mod-Alt-3',
   },
   {
     name: 'heading-2',
-    label: 'Heading 2',
+    label: TEXT_STYLE_LABELS['heading-2'],
     icon: Heading2,
     block: { kind: 'heading', level: 2 },
     shortcut: 'Mod-Alt-2',

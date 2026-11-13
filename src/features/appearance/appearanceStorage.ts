@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { readStoredValue, writeStoredValue } from '../../lib/localStore'
 import { deriveCozyTextColor } from '../../lib/cozyPalette'
+import { textStylesSchema } from '../../text-styles'
 import { isHexColor } from '../../utils/color'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
@@ -54,6 +55,7 @@ const appearanceSchema = z.object({
   backgroundColor: hexColorSchema.optional().catch(undefined),
   textColor: hexColorSchema.optional().catch(undefined),
   customTextColors: customTextColorsSchema,
+  textStyles: textStylesSchema,
 })
 
 /*

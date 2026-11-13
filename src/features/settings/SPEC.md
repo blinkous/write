@@ -9,15 +9,15 @@ The settings drawer at the bottom of the sidebar.
   (the design-system `Drawer`). It isn't a menu: it stays open until toggled closed, and the
   entries list shrinks to share the sidebar, so both stay usable. Whether it's open is
   remembered (`write.settingsOpen.v1`).
-- **Sections fold** under their titles (`DrawerSection`: native details/summary with a
-  chevron at the right; the whole title line toggles, Enter/Space too). An open section's
+- **Sections fold** under their titles (`DrawerSection`: native details/summary, a quiet
+  title with a chevron at the right; the whole title line toggles, Enter/Space too). An open section's
   chevron shows only on hover or focus (as in macOS sidebars), so it isn't mistaken for the
   rows' dropdown chevrons; folded sections and touch screens always show it. All start open; folded ones are
   remembered by id (`write.settingsClosedSections.v1`), so new sections always appear open.
 - Rows in a section use regular weight (menu rows are medium in popover menus), so the Data
   actions match the font and color rows.
-- The app passes the sections in (id, title, contents), so features don't import each other: Fonts and Colors
-  (appearance), Data (entries: exports, import, About). The drawer has no header: while open, the
+- The app passes the sections in (id, title, contents), so features don't import each other: App and
+  Editor (appearance), Data (entries: exports, import, About). The drawer has no header: while open, the
   bottom bar shows one undo/redo for fonts and colors together (appearance's theme history)
   beside the ⚙, which is highlighted (like any open panel's toggle, via `aria-expanded`).
   Closed, the bar is just the ⚙. This saves a row; the drawer is still named "Settings" for

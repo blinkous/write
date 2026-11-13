@@ -1,4 +1,4 @@
-import { Chevron, ChoiceGroup, Popover } from '../design-system'
+import { SelectMenu } from '../design-system'
 import {
   FONT_OPTIONS,
   getFontOption,
@@ -12,7 +12,7 @@ import styles from './FontMenu.module.css'
 const DEFAULT_CHOICE = 'default'
 
 type FontMenuProps = {
-  /** Names the menu, e.g. "Page font" or "Text font". */
+  /** Names the menu, e.g. "App font" or "Text font". */
   label: string
   /** The chosen font, or null for the default. */
   value: FontValue | null
@@ -45,7 +45,7 @@ function getDefaultChoice({ label, family }: FontOption) {
   }
 }
 
-/** A trigger showing the font in use, opening a list of fonts previewed in themselves. */
+/** A trigger showing the font in use (in that font), opening a list of fonts previewed in themselves. */
 export function FontMenu({
   label,
   value,
@@ -54,6 +54,7 @@ export function FontMenu({
   onClose,
 }: FontMenuProps) {
   const shownFont = getFontOption(value ?? defaultFont ?? FONT_OPTIONS[0].value)
+  const isDefault = value === null && defaultFont !== undefined
   const choices = [
     ...(defaultFont ? [getDefaultChoice(getFontOption(defaultFont))] : []),
     ...FONT_OPTIONS.map((font) => ({
@@ -62,35 +63,19 @@ export function FontMenu({
       visual: preview(font.label, font.family),
     })),
   ]
-  const isDefault = value === null && defaultFont !== undefined
 
   return (
-    <Popover
-      label={`${label}: ${isDefault ? `Default (${shownFont.label})` : shownFont.label}`}
-      isTriggerIconOnly={false}
-      align="start"
+    <SelectMenu
+      label={label}
+      choices={choices}
+      value={isDefault ? DEFAULT_CHOICE : shownFont.value}
+      onChange={(choice) => onChange(isFontValue(choice) ? choice : null)}
       onClose={onClose}
-      trigger={
-        <>
-          <span
-            className={styles.fontTrigger}
-            style={{ fontFamily: shownFont.family }}
-          >
-            {isDefault ? 'Default' : shownFont.label}
-          </span>
-          <Chevron />
-        </>
+      triggerContent={
+        <span style={{ fontFamily: shownFont.family }}>
+          {isDefault ? 'Default' : shownFont.label}
+        </span>
       }
-    >
-      {(close) => (
-        <ChoiceGroup
-          label={label}
-          choices={choices}
-          selectedValue={isDefault ? DEFAULT_CHOICE : value}
-          onSelect={(choice) => onChange(isFontValue(choice) ? choice : null)}
-          onChoose={close}
-        />
-      )}
-    </Popover>
+    />
   )
 }

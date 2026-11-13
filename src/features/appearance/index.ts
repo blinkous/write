@@ -1,8 +1,5 @@
-export {
-  ColorSettings,
-  FontSettings,
-  ThemeHistoryButtons,
-} from './ThemeSettings'
+export { ThemeHistoryButtons } from './ThemeSettings'
+export { AppSettings, EditorSettings } from './TextStyleSettings'
 export { MarginsMenu, SpacingMenu } from './settingMenus'
 export { useAppearance } from './useAppearance'
 export { usePageTheme } from './usePageTheme'

@@ -5,6 +5,7 @@ import {
   readStoredValue,
   writeStoredValue,
 } from '../../lib/localStore'
+import { textStylesSchema } from '../../text-styles'
 import { isHexColor } from '../../utils/color'
 import {
   EMPTY_PAGE_THEME_HISTORY,
@@ -20,7 +21,8 @@ const PAGE_THEME_HISTORY_STORAGE_KEY = 'write.pageThemeHistory.v1'
  */
 const PAGE_COLOR_HISTORY_STORAGE_KEY = 'write.pageColorHistory.v1'
 
-type CurrentFonts = Pick<PageTheme, 'appFont' | 'editorFont'>
+/** What steps saved before a setting existed take for it: the current value. */
+type CurrentSettings = Pick<PageTheme, 'appFont' | 'editorFont' | 'textStyles'>
 
 // Explicitly optional: in zod 4 a bare unknown() key is still required.
 const optionalUnknown = z.unknown().optional()
@@ -31,14 +33,19 @@ const optionalUnknown = z.unknown().optional()
  * older `font` (or briefly `entryFont`) was the writing's, so it becomes the
  * editor font.
  */
-function createHistorySchema(currentFonts: CurrentFonts) {
+function createHistorySchema(current: CurrentSettings) {
   const pageThemeSchema = z.object({
     appFont: optionalUnknown.transform((font): FontValue =>
-      isFontValue(font) ? font : currentFonts.appFont,
+      isFontValue(font) ? font : current.appFont,
     ),
     editorFont: optionalUnknown,
     entryFont: optionalUnknown,
     font: optionalUnknown,
+    textStyles: optionalUnknown.transform((textStyles) =>
+      textStyles === undefined
+        ? current.textStyles
+        : textStylesSchema.parse(textStyles),
+    ),
     backgroundColor: z.string().refine(isHexColor),
     textColor: z.string().refine(isHexColor),
   })
@@ -53,8 +60,7 @@ function createHistorySchema(currentFonts: CurrentFonts) {
         if (!result.success) return []
         const { editorFont, entryFont, font, ...step } = result.data
         const stepEditorFont =
-          [editorFont, entryFont, font].find(isFontValue) ??
-          currentFonts.editorFont
+          [editorFont, entryFont, font].find(isFontValue) ?? current.editorFont
         return [{ ...step, editorFont: stepEditorFont }]
       }),
     )
@@ -71,14 +77,14 @@ function createHistorySchema(currentFonts: CurrentFonts) {
 
 /** Undo/redo steps survive a refresh; an edit in progress doesn't need to. */
 export function loadPageThemeHistory(
-  currentFonts: CurrentFonts,
+  current: CurrentSettings,
 ): PageThemeHistory {
   const storageKey = hasStoredValue(PAGE_THEME_HISTORY_STORAGE_KEY)
     ? PAGE_THEME_HISTORY_STORAGE_KEY
     : PAGE_COLOR_HISTORY_STORAGE_KEY
   const { past, future } = readStoredValue(
     storageKey,
-    createHistorySchema(currentFonts),
+    createHistorySchema(current),
     {
       past: [],
       future: [],

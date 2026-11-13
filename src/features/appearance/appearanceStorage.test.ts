@@ -30,6 +30,7 @@ describe('loadAppearance', () => {
       hasParagraphSpacing: DEFAULT_APPEARANCE.hasParagraphSpacing,
       hasParagraphIndent: DEFAULT_APPEARANCE.hasParagraphIndent,
       customTextColors: Array(7).fill(null),
+      textStyles: DEFAULT_APPEARANCE.textStyles,
     })
   })
 

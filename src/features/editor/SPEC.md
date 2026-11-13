@@ -16,9 +16,9 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   isn't a content style: typing `# ` stays text, `## ` … `###### ` make that level, and pasted
   `#` headings become H2 (`journal-document/journalHeading.ts`). Small copies to markdown as a
   plain paragraph. The toolbar shows only the current style's icon; the menu repeats it beside
-  each name, previewed at its size (`--scale-*` tokens shared with the editor). ⇧⌘> / ⇧⌘< step
-  Small → Body → H6 … H2 and back, stopping at the ends. Body text is a fixed 16 px; overall
-  size is left to browser zoom.
+  each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
+  ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
+  (size, weight, font, color) is set in settings → Editor (`src/text-styles`).
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
   first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font

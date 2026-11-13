@@ -9,8 +9,8 @@ import {
 } from '../design-system'
 import {
   MarginsMenu,
-  ColorSettings,
-  FontSettings,
+  AppSettings,
+  EditorSettings,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -176,14 +176,22 @@ export function App() {
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
             sections={[
               {
-                id: 'fonts',
-                title: 'Fonts',
-                content: <FontSettings pageTheme={pageTheme} />,
+                id: 'app',
+                title: 'App',
+                content: <AppSettings pageTheme={pageTheme} />,
               },
               {
-                id: 'colors',
-                title: 'Colors',
-                content: <ColorSettings pageTheme={pageTheme} />,
+                id: 'editor',
+                title: 'Editor',
+                content: (
+                  <EditorSettings
+                    pageTheme={pageTheme}
+                    customTextColors={customTextColors}
+                    onCustomTextColorsChange={(colors) =>
+                      updateAppearance({ customTextColors: colors })
+                    }
+                  />
+                ),
               },
               {
                 id: 'data',

@@ -1,0 +1,68 @@
+.disclosure {
+  /* Menu rows (ActionList) inside line up with the edge and match the other rows. */
+  --row-outdent: var(--menu-item-padding-inline);
+  --row-font-weight: normal;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  list-style: none;
+  cursor: pointer;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+/* The title: quiet, like a label; what's inside is what matters. */
+.summary {
+  color: var(--color-muted);
+  font-size: var(--text-size-caption);
+}
+
+.summary:hover {
+  color: var(--color-text);
+}
+
+/* Nested inside another, the title reads like the rows around it. */
+.disclosure .disclosure > .summary {
+  min-height: var(--size-control);
+  color: var(--color-text);
+  font-size: inherit;
+}
+
+/* Nested inside another, its contents sit indented under its title, so it's clear what belongs to it. */
+.disclosure .disclosure > .content {
+  padding-inline-start: var(--space-3);
+  padding-bottom: var(--space-2);
+}
+
+/* Down to unfold, up to fold. */
+.disclosure[open] > .summary .chevron {
+  transform: rotate(180deg);
+}
+
+/* While open, the chevron shows only on hover or focus; folded ones and touch screens always show it. */
+@media (hover: hover) {
+  .disclosure[open] > .summary:not(:hover, :focus-visible) .chevron {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chevron {
+    transition:
+      transform var(--duration-quick) var(--easing-standard),
+      opacity var(--duration-quick) var(--easing-standard);
+  }
+}

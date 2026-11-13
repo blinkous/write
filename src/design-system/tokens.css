@@ -9,16 +9,75 @@
   --color-text: #594a36;
   /* Two fonts: the editor's (writing and title) and the interface's (everything around them). */
   --font-editor: 'Lora Variable', Georgia, serif;
-  /* Body text in the editor; headings scale from it. Overall size is left to browser zoom. */
-  --font-size-editor: 1rem;
-  /* Text styles, relative to body text, shared by the editor and its menu. The title is `#`. */
-  --scale-title: 1.8;
-  --scale-heading-2: 1.5;
-  --scale-heading-3: 1.3;
-  --scale-heading-4: 1.15;
-  --scale-heading-5: 1.05;
-  --scale-heading-6: 1;
-  --scale-small: 0.85;
+  /*
+   * Text styles (Title, Heading 2–6, Body, Small): size, scale (relative to body,
+   * for previews), weight, font and color. Set from settings by the appearance
+   * feature; these are the defaults (DEFAULT_TEXT_STYLES in text-styles, tested).
+   */
+  --text-style-title-size: 1.75rem;
+  --text-style-title-scale: 1.75;
+  --text-style-title-weight: var(--font-weight-bold);
+  --text-style-title-style: normal;
+  --text-style-title-decoration: none;
+  --text-style-title-letter-spacing: 0em;
+  --text-style-title-font: var(--font-editor);
+  --text-style-title-color: var(--color-text);
+  --text-style-heading-2-size: 1.5rem;
+  --text-style-heading-2-scale: 1.5;
+  --text-style-heading-2-weight: var(--font-weight-bold);
+  --text-style-heading-2-style: normal;
+  --text-style-heading-2-decoration: none;
+  --text-style-heading-2-letter-spacing: 0em;
+  --text-style-heading-2-font: var(--font-editor);
+  --text-style-heading-2-color: var(--color-text);
+  --text-style-heading-3-size: 1.3125rem;
+  --text-style-heading-3-scale: 1.3125;
+  --text-style-heading-3-weight: var(--font-weight-bold);
+  --text-style-heading-3-style: normal;
+  --text-style-heading-3-decoration: none;
+  --text-style-heading-3-letter-spacing: 0em;
+  --text-style-heading-3-font: var(--font-editor);
+  --text-style-heading-3-color: var(--color-text);
+  --text-style-heading-4-size: 1.125rem;
+  --text-style-heading-4-scale: 1.125;
+  --text-style-heading-4-weight: var(--font-weight-bold);
+  --text-style-heading-4-style: normal;
+  --text-style-heading-4-decoration: none;
+  --text-style-heading-4-letter-spacing: 0em;
+  --text-style-heading-4-font: var(--font-editor);
+  --text-style-heading-4-color: var(--color-text);
+  --text-style-heading-5-size: 1.0625rem;
+  --text-style-heading-5-scale: 1.0625;
+  --text-style-heading-5-weight: var(--font-weight-bold);
+  --text-style-heading-5-style: normal;
+  --text-style-heading-5-decoration: none;
+  --text-style-heading-5-letter-spacing: 0em;
+  --text-style-heading-5-font: var(--font-editor);
+  --text-style-heading-5-color: var(--color-text);
+  --text-style-heading-6-size: 1rem;
+  --text-style-heading-6-scale: 1;
+  --text-style-heading-6-weight: var(--font-weight-bold);
+  --text-style-heading-6-style: normal;
+  --text-style-heading-6-decoration: none;
+  --text-style-heading-6-letter-spacing: 0em;
+  --text-style-heading-6-font: var(--font-editor);
+  --text-style-heading-6-color: var(--color-text);
+  --text-style-body-size: 1rem;
+  --text-style-body-scale: 1;
+  --text-style-body-weight: var(--font-weight-regular);
+  --text-style-body-style: normal;
+  --text-style-body-decoration: none;
+  --text-style-body-letter-spacing: 0em;
+  --text-style-body-font: var(--font-editor);
+  --text-style-body-color: var(--color-text);
+  --text-style-small-size: 0.875rem;
+  --text-style-small-scale: 0.875;
+  --text-style-small-weight: var(--font-weight-regular);
+  --text-style-small-style: normal;
+  --text-style-small-decoration: none;
+  --text-style-small-letter-spacing: 0em;
+  --text-style-small-font: var(--font-editor);
+  --text-style-small-color: var(--color-text);
   --width-page: var(--width-page-normal);
   --line-height-editor: var(--line-height-normal);
   --space-paragraph: var(--space-paragraph-gap);
@@ -92,6 +151,7 @@
   --space-paragraph-gap: calc(0.5em * var(--line-height-editor));
   /* Book-style first-line indent, relative to the editor's text. */
   --size-paragraph-indent: 2em;
+  --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 650;
 
@@ -115,6 +175,8 @@
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
 
   /* Layout */
+  /* Largest a text style's name is previewed in settings, so big styles stay compact. */
+  --size-text-style-preview-max: 1.4em;
   /* The settings drawer never takes more than this, so the entries above stay usable. */
   --height-drawer-max: 60vh;
   --width-page-wide: 36rem;
