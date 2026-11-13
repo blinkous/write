@@ -71,7 +71,6 @@ const appearanceSchema = z.object({
     .catch(DEFAULT_APPEARANCE.tabTitle),
   backgroundBlur: z
     .number()
-    .int()
     .min(BACKGROUND_BLUR_RANGE.min)
     .max(BACKGROUND_BLUR_RANGE.max)
     .catch(DEFAULT_APPEARANCE.backgroundBlur),

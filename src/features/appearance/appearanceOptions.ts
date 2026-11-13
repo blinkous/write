@@ -35,8 +35,8 @@ export const APP_NAME = 'Write'
 /** Long enough for a name or phrase; tabs show far less. */
 export const TAB_TITLE_MAX_LENGTH = 60
 
-/** Blur on the background picture or video, in px at normal zoom. */
-export const BACKGROUND_BLUR_RANGE = { min: 0, max: 40, step: 2 } as const
+/** Blur on the background picture or video, in px at normal zoom; fine steps, since even 1px softens a lot. */
+export const BACKGROUND_BLUR_RANGE = { min: 0, max: 40, step: 0.5 } as const
 
 /** How opaque the background media is over the page color, in %. */
 export const BACKGROUND_OPACITY_RANGE = { min: 0, max: 100, step: 10 } as const
