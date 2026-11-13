@@ -9,6 +9,9 @@ The settings drawer at the bottom of the sidebar.
   (the design-system `Drawer`). It isn't a menu: it stays open until toggled closed, and the
   entries list shrinks to share the sidebar, so both stay usable. Whether it's open is
   remembered (`write.settingsOpen.v1`).
+- **While open, the drawer and its bar are one solid panel** in the sidebar's color, reaching
+  the sidebar's edges and bottom (the sidebar sets `--settings-bleed` to its padding), so
+  settings stay readable over a background picture.
 - **Sections fold** under their titles (`DrawerSection`: native details/summary, a quiet
   title with a chevron at the right; the whole title line toggles, Enter/Space too; folding and unfolding slide, and a section stays open while it slides shut since browsers hide a closed one's content at once). An open section's
   chevron shows only on hover or focus (as in macOS sidebars), so it isn't mistaken for the

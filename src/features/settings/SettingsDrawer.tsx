@@ -48,7 +48,7 @@ export function SettingsDrawer({
   }
 
   return (
-    <>
+    <div className={styles.settings} data-open={isOpen}>
       <Drawer id={drawerId} label="Settings" isOpen={isOpen}>
         {sections.map(({ id, title, content }) => (
           <DrawerSection
@@ -78,6 +78,6 @@ export function SettingsDrawer({
           <Settings aria-hidden="true" />
         </Button>
       </div>
-    </>
+    </div>
   )
 }

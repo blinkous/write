@@ -1,4 +1,23 @@
 /*
+ * The drawer and its bar. While open, one solid panel reaching the container's
+ * edges (it sets --settings-bleed to its padding), so settings stay readable
+ * over whatever's behind, e.g. a background picture.
+ */
+.settings {
+  --bleed: var(--settings-bleed, 0);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  min-height: 0;
+  margin: 0 calc(var(--bleed) * -1) calc(var(--bleed) * -1);
+  padding: 0 var(--bleed) var(--bleed);
+}
+
+.settings[data-open='true'] {
+  background: var(--color-surface);
+}
+
+/*
  * The toggle at the end of the row, tucked close to the sidebar's bottom edge.
  * While open, the drawer's actions (undo/redo) sit beside it.
  */
