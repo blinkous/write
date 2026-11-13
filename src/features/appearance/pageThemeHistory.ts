@@ -1,27 +1,34 @@
 import type { FontValue } from '../../fonts'
 import type { TextStyles } from '../../text-styles'
 
-/** The fonts and colors in settings, which share one undo/redo. */
+/**
+ * The settings that share one undo/redo: fonts, colors, text styles, the tab
+ * title and the background's blur and opacity. The background file itself
+ * isn't kept, so choosing or removing one isn't undoable.
+ */
 export type PageTheme = {
   appFont: FontValue
   editorFont: FontValue
   textStyles: TextStyles
   backgroundColor: string
   textColor: string
+  tabTitle: string
+  backgroundBlur: number
+  backgroundOpacity: number
 }
 
 /** Undo steps kept; older ones are dropped. */
 export const PAGE_THEME_HISTORY_LIMIT = 50
 
 /**
- * Undo/redo for the page theme (font and colors). An "edit" spans everything from the first change
+ * Undo/redo for the page theme. An "edit" spans everything from the first change
  * until it's committed (e.g. one whole drag in a color picker), so it undoes
  * as one step.
  */
 export type PageThemeHistory = {
   past: PageTheme[]
   future: PageTheme[]
-  /** Colors before the edit in progress, or null if none is in progress. */
+  /** Settings before the edit in progress, or null if none is in progress. */
   editStart: PageTheme | null
 }
 
@@ -37,6 +44,9 @@ function isSameTheme(first: PageTheme, second: PageTheme): boolean {
     first.editorFont === second.editorFont &&
     first.backgroundColor === second.backgroundColor &&
     first.textColor === second.textColor &&
+    first.tabTitle === second.tabTitle &&
+    first.backgroundBlur === second.backgroundBlur &&
+    first.backgroundOpacity === second.backgroundOpacity &&
     JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles)
   )
 }

@@ -16,6 +16,9 @@ const colors = (backgroundColor: string): PageTheme => ({
   textStyles: DEFAULT_TEXT_STYLES,
   backgroundColor,
   textColor: '#111111',
+  tabTitle: '',
+  backgroundBlur: 0,
+  backgroundOpacity: 50,
 })
 
 /** One committed edit from `from` to `to`, like a finished drag in the picker. */
@@ -96,5 +99,19 @@ describe('page theme history', () => {
       after,
     )
     expect(undone?.theme.editorFont).toBe('lora')
+  })
+
+  it.each([
+    ['tab title', { tabTitle: 'Notes' }],
+    ['background blur', { backgroundBlur: 0.2 }],
+    ['background opacity', { backgroundOpacity: 70 }],
+  ])('undoes a %s change', (_name, changes) => {
+    const before = colors('#aaaaaa')
+    const after = { ...before, ...changes }
+    const undone = undoPageTheme(
+      edit(EMPTY_PAGE_THEME_HISTORY, before, after),
+      after,
+    )
+    expect(undone?.theme).toEqual(before)
   })
 })

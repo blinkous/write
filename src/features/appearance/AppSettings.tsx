@@ -7,20 +7,13 @@ import type { usePageTheme } from './usePageTheme'
 
 type AppSettingsProps = {
   pageTheme: ReturnType<typeof usePageTheme>
-  tabTitle: string
-  onTabTitleChange: (tabTitle: string) => void
   /** More of the look around the page, after the colors (e.g. the background media). */
   children?: ReactNode
 }
 
 /** Everything around the page: the tab's title, its font, and the page's background and text colors. */
-export function AppSettings({
-  pageTheme,
-  tabTitle,
-  onTabTitleChange,
-  children,
-}: AppSettingsProps) {
-  const { appFont, changeFonts } = pageTheme
+export function AppSettings({ pageTheme, children }: AppSettingsProps) {
+  const { appFont, changeFonts, tabTitle, changeTabTitle, commit } = pageTheme
   const tabTitleInputId = useId()
   return (
     <>
@@ -32,7 +25,8 @@ export function AppSettings({
           maxLength={TAB_TITLE_MAX_LENGTH}
           spellCheck={false}
           autoComplete="off"
-          onChange={({ target }) => onTabTitleChange(target.value)}
+          onChange={({ target }) => changeTabTitle(target.value)}
+          onBlur={commit}
         />
       </LabeledRow>
       <LabeledRow label="Font" control="button">

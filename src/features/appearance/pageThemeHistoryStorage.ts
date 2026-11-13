@@ -8,6 +8,11 @@ import {
 import { textStylesSchema } from '../../text-styles'
 import { isHexColor } from '../../utils/color'
 import {
+  BACKGROUND_BLUR_RANGE,
+  BACKGROUND_OPACITY_RANGE,
+  TAB_TITLE_MAX_LENGTH,
+} from './appearanceOptions'
+import {
   EMPTY_PAGE_THEME_HISTORY,
   PAGE_THEME_HISTORY_LIMIT,
   type PageTheme,
@@ -22,14 +27,33 @@ const PAGE_THEME_HISTORY_STORAGE_KEY = 'write.pageThemeHistory.v1'
 const PAGE_COLOR_HISTORY_STORAGE_KEY = 'write.pageColorHistory.v1'
 
 /** What steps saved before a setting existed take for it: the current value. */
-type CurrentSettings = Pick<PageTheme, 'appFont' | 'editorFont' | 'textStyles'>
+type CurrentSettings = Omit<PageTheme, 'backgroundColor' | 'textColor'>
 
 // Explicitly optional: in zod 4 a bare unknown() key is still required.
 const optionalUnknown = z.unknown().optional()
 
+/** A step's value, or the current one if the step predates the setting or holds a bad value. */
+function valueOrCurrent<Value>(schema: z.ZodType<Value>, current: Value) {
+  return optionalUnknown.transform((value): Value => {
+    const result = schema.safeParse(value)
+    return result.success ? result.data : current
+  })
+}
+
+const tabTitleSchema = z.string().max(TAB_TITLE_MAX_LENGTH)
+const backgroundBlurSchema = z
+  .number()
+  .min(BACKGROUND_BLUR_RANGE.min)
+  .max(BACKGROUND_BLUR_RANGE.max)
+const backgroundOpacitySchema = z
+  .number()
+  .min(BACKGROUND_OPACITY_RANGE.min)
+  .max(BACKGROUND_OPACITY_RANGE.max)
+
 /**
- * Steps that predate a font (or have an unknown one) get the current font, so
- * undoing an old color change never also changes a font. A step's single
+ * Steps that predate a setting (or have an unknown value for it) get its
+ * current value, so undoing an old color change never also changes a font,
+ * the tab title or the background. A step's single
  * older `font` (or briefly `entryFont`) was the writing's, so it becomes the
  * editor font.
  */
@@ -48,6 +72,15 @@ function createHistorySchema(current: CurrentSettings) {
     ),
     backgroundColor: z.string().refine(isHexColor),
     textColor: z.string().refine(isHexColor),
+    tabTitle: valueOrCurrent(tabTitleSchema, current.tabTitle),
+    backgroundBlur: valueOrCurrent(
+      backgroundBlurSchema,
+      current.backgroundBlur,
+    ),
+    backgroundOpacity: valueOrCurrent(
+      backgroundOpacitySchema,
+      current.backgroundOpacity,
+    ),
   })
 
   /* Drops unreadable steps rather than the whole history, and never keeps more than the limit. */

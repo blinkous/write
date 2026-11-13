@@ -1,7 +1,8 @@
 # Appearance
 
 User-adjustable look: fonts, text styles, margins, vertical spacing and colors. All
-page-wide, kept with one shared undo/redo for fonts, styles and colors.
+page-wide, with one shared undo/redo for the settings drawer (fonts, styles, colors, tab
+title, background blur and opacity).
 
 ## How it works
 
@@ -80,11 +81,14 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
     `applyAppearance` sets the theme tones as `--color-theme-1…7`.
 - **Changing the background also sets the page text color** to the derived match; the
   text color can still be changed afterwards.
-- **Undo/redo** covers fonts and colors together: the last 50
+- **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur and
+  opacity together (not choosing or removing the background file, which isn't kept): the last 50
   changes, surviving a refresh (`pageThemeHistory.ts`, stored under `write.pageThemeHistory.v1`;
   unreadable steps are dropped, never more than 50 kept). The older color-only history
   (`write.pageColorHistory.v1`) is read once, its steps given the current font, and left as a
-  backup. A font pick is one step. Steps saved with one font (before the app font) treat it as
+  backup. Steps saved before a setting joined history take its current value. A font pick, a
+  stepper press or a typed blur/opacity is one step; typing a tab title is one step once the
+  field is left. Steps saved with one font (before the app font) treat it as
   the editor font. A whole drag in a color picker is one step: an edit begins on
   the first change and is committed on the input's native `change` event or when the
   menu closes.

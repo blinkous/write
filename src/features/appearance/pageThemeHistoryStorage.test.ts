@@ -5,10 +5,13 @@ import {
   savePageThemeHistory,
 } from './pageThemeHistoryStorage'
 
-const CURRENT_FONTS = {
+const CURRENT_SETTINGS = {
   appFont: 'inter',
   editorFont: 'lora',
   textStyles: DEFAULT_TEXT_STYLES,
+  tabTitle: 'Notes',
+  backgroundBlur: 2,
+  backgroundOpacity: 60,
 } as const
 const STORAGE_KEY = 'write.pageThemeHistory.v1'
 const colors = (backgroundColor: string) => ({
@@ -17,13 +20,16 @@ const colors = (backgroundColor: string) => ({
   textStyles: DEFAULT_TEXT_STYLES,
   backgroundColor,
   textColor: '#111111',
+  tabTitle: '',
+  backgroundBlur: 0,
+  backgroundOpacity: 50,
 })
 
 describe('page theme history storage', () => {
   beforeEach(() => window.localStorage.clear())
 
   it('starts empty', () => {
-    expect(loadPageThemeHistory(CURRENT_FONTS)).toEqual({
+    expect(loadPageThemeHistory(CURRENT_SETTINGS)).toEqual({
       past: [],
       future: [],
       editStart: null,
@@ -37,7 +43,7 @@ describe('page theme history storage', () => {
       editStart: null,
     }
     savePageThemeHistory(history)
-    expect(loadPageThemeHistory(CURRENT_FONTS)).toEqual(history)
+    expect(loadPageThemeHistory(CURRENT_SETTINGS)).toEqual(history)
   })
 
   it('drops unreadable steps but keeps the rest', () => {
@@ -48,7 +54,7 @@ describe('page theme history storage', () => {
         future: 'nope',
       }),
     )
-    expect(loadPageThemeHistory(CURRENT_FONTS)).toEqual({
+    expect(loadPageThemeHistory(CURRENT_SETTINGS)).toEqual({
       past: [colors('#aaaaaa')],
       future: [],
       editStart: null,
@@ -63,7 +69,7 @@ describe('page theme history storage', () => {
       STORAGE_KEY,
       JSON.stringify({ past: manySteps, future: [] }),
     )
-    const { past } = loadPageThemeHistory(CURRENT_FONTS)
+    const { past } = loadPageThemeHistory(CURRENT_SETTINGS)
     expect(past).toHaveLength(PAGE_THEME_HISTORY_LIMIT)
     expect(past.at(-1)).toEqual(manySteps.at(-1))
   })
@@ -73,30 +79,19 @@ describe('page theme history storage', () => {
     const storedColorHistory = JSON.stringify({ past: [colorOnly], future: [] })
     window.localStorage.setItem('write.pageColorHistory.v1', storedColorHistory)
     const history = loadPageThemeHistory({
-      appFont: 'inter',
+      ...CURRENT_SETTINGS,
       editorFont: 'literata',
-      textStyles: DEFAULT_TEXT_STYLES,
     })
     expect(history.past).toEqual([
-      {
-        ...colorOnly,
-        appFont: 'inter',
-        editorFont: 'literata',
-        textStyles: DEFAULT_TEXT_STYLES,
-      },
+      { ...CURRENT_SETTINGS, ...colorOnly, editorFont: 'literata' },
     ])
     savePageThemeHistory(history)
     // The old history stays as a backup and isn't read again.
     expect(window.localStorage.getItem('write.pageColorHistory.v1')).toBe(
       storedColorHistory,
     )
-    expect(loadPageThemeHistory(CURRENT_FONTS).past).toEqual([
-      {
-        ...colorOnly,
-        appFont: 'inter',
-        editorFont: 'literata',
-        textStyles: DEFAULT_TEXT_STYLES,
-      },
+    expect(loadPageThemeHistory(CURRENT_SETTINGS).past).toEqual([
+      { ...CURRENT_SETTINGS, ...colorOnly, editorFont: 'literata' },
     ])
   })
 
@@ -110,9 +105,26 @@ describe('page theme history storage', () => {
         future: [],
       }),
     )
-    expect(loadPageThemeHistory(CURRENT_FONTS).past[0]).toMatchObject({
+    expect(loadPageThemeHistory(CURRENT_SETTINGS).past[0]).toMatchObject({
       appFont: 'inter',
       editorFont: 'nunito',
+    })
+  })
+
+  it('gives steps saved before or without a setting its current value', () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        past: [
+          { ...colors('#aaaaaa'), tabTitle: undefined, backgroundBlur: 99 },
+        ],
+        future: [],
+      }),
+    )
+    expect(loadPageThemeHistory(CURRENT_SETTINGS).past[0]).toMatchObject({
+      tabTitle: 'Notes',
+      backgroundBlur: 2,
+      backgroundOpacity: 50,
     })
   })
 })

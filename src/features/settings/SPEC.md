@@ -21,7 +21,7 @@ The settings drawer at the bottom of the sidebar.
   actions match the font and color rows.
 - The app passes the sections in (id, title, contents), so features don't import each other: App and
   Editor (appearance), Data (entries: exports, import, About). The drawer has no header: while open, the
-  bottom bar shows one undo/redo for fonts and colors together (appearance's theme history)
+  bottom bar shows one undo/redo for every setting but the background file (appearance's theme history)
   beside the ⚙, which is highlighted (like any open panel's toggle, via `aria-expanded`).
   Closed, the bar is just the ⚙. This saves a row; the drawer is still named "Settings" for
   screen readers.

@@ -69,9 +69,6 @@ export function App() {
     hasParagraphIndent,
     textColor,
     customTextColors,
-    tabTitle,
-    backgroundBlur,
-    backgroundOpacity,
   } = appearance
   const {
     entries,
@@ -203,24 +200,22 @@ export function App() {
                 id: 'app',
                 title: 'App',
                 content: (
-                  <AppSettings
-                    pageTheme={pageTheme}
-                    tabTitle={tabTitle}
-                    onTabTitleChange={(tabTitle) =>
-                      updateAppearance({ tabTitle })
-                    }
-                  >
+                  <AppSettings pageTheme={pageTheme}>
                     <BackgroundMediaSettings
                       hasMedia={backgroundMedia.media !== null}
-                      blur={backgroundBlur}
-                      opacity={backgroundOpacity}
+                      blur={pageTheme.backgroundBlur}
+                      opacity={pageTheme.backgroundOpacity}
                       onChooseFile={backgroundMedia.chooseFile}
                       onRemove={backgroundMedia.remove}
                       onBlurChange={(blur) =>
-                        updateAppearance({ backgroundBlur: blur })
+                        pageTheme.changeBackgroundEffects({
+                          backgroundBlur: blur,
+                        })
                       }
                       onOpacityChange={(opacity) =>
-                        updateAppearance({ backgroundOpacity: opacity })
+                        pageTheme.changeBackgroundEffects({
+                          backgroundOpacity: opacity,
+                        })
                       }
                     />
                   </AppSettings>

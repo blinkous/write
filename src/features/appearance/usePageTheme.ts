@@ -19,25 +19,35 @@ import {
 } from './pageThemeHistoryStorage'
 
 /**
- * The fonts, page colors and text styles, with one shared undo/redo over
- * recent changes (kept across refreshes).
+ * The fonts, page colors, text styles, tab title and background blur and
+ * opacity, with one shared undo/redo over recent changes (kept across refreshes).
  */
 export function usePageTheme(
-  { appFont, editorFont, backgroundColor, textColor, textStyles }: Appearance,
+  {
+    appFont,
+    editorFont,
+    backgroundColor,
+    textColor,
+    textStyles,
+    tabTitle,
+    backgroundBlur,
+    backgroundOpacity,
+  }: Appearance,
   updateAppearance: (changes: Partial<Appearance>) => void,
 ) {
-  const [history, setHistory] = useState(() =>
-    loadPageThemeHistory({ appFont, editorFont, textStyles }),
-  )
-
-  useEffect(() => savePageThemeHistory(history), [history])
   const current: PageTheme = {
     appFont,
     editorFont,
     backgroundColor,
     textColor,
     textStyles,
+    tabTitle,
+    backgroundBlur,
+    backgroundOpacity,
   }
+  const [history, setHistory] = useState(() => loadPageThemeHistory(current))
+
+  useEffect(() => savePageThemeHistory(history), [history])
 
   function applyStep(step: ReturnType<typeof undoPageTheme>) {
     if (!step) return
@@ -45,7 +55,7 @@ export function usePageTheme(
     updateAppearance(step.theme)
   }
 
-  /** Applies a change: one undo step now, or (while dragging a color) when committed. */
+  /** Applies a change: one undo step now, or (while dragging a color or typing) when committed. */
   function change(changes: Partial<PageTheme>, isFinal: boolean) {
     setHistory((currentHistory) => {
       const started = beginEdit(currentHistory, current)
@@ -60,6 +70,9 @@ export function usePageTheme(
     backgroundColor,
     textColor,
     textStyles,
+    tabTitle,
+    backgroundBlur,
+    backgroundOpacity,
     /**
      * Changes one text style. Picks are one undo step each; a color drag
      * (isFinal false) becomes one step when committed.
@@ -91,6 +104,16 @@ export function usePageTheme(
     },
     changeText(nextTextColor: string) {
       change({ textColor: nextTextColor }, false)
+    },
+    /** Typing shows in the tab at once; it becomes one undo step when committed (e.g. on leaving the field). */
+    changeTabTitle(nextTabTitle: string) {
+      change({ tabTitle: nextTabTitle }, false)
+    },
+    /** Each blur or opacity step (a press or a typed value) is one undo step. */
+    changeBackgroundEffects(
+      effects: Partial<Pick<PageTheme, 'backgroundBlur' | 'backgroundOpacity'>>,
+    ) {
+      change(effects, true)
     },
     /** One text style back to its defaults, as one undo step. */
     resetTextStyle(name: TextStyleName) {
