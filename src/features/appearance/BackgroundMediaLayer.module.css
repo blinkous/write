@@ -7,15 +7,15 @@
 }
 
 /*
- * Covers the window, reaching past its edges by the blur, so blurring doesn't
- * fade the edges into the page color.
+ * Covers the window, reaching past its edges by three times the blur (a blur
+ * fades out over about that far), so the edges never fade into the page color.
  */
 .media {
   position: absolute;
-  top: calc(var(--background-media-blur) * -2);
-  left: calc(var(--background-media-blur) * -2);
-  width: calc(100% + var(--background-media-blur) * 4);
-  height: calc(100% + var(--background-media-blur) * 4);
+  top: calc(var(--background-media-blur) * -3);
+  left: calc(var(--background-media-blur) * -3);
+  width: calc(100% + var(--background-media-blur) * 6);
+  height: calc(100% + var(--background-media-blur) * 6);
   object-fit: cover;
   filter: blur(var(--background-media-blur));
 }
