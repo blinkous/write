@@ -17,6 +17,8 @@
    */
   --drawer-reach: calc(var(--space-control-inline) + var(--border-width));
   margin-inline: calc(var(--drawer-reach) * -1);
+  /* Solid, so settings stay readable over whatever's behind (e.g. a background picture). */
+  background: var(--color-surface);
 }
 
 .drawer[data-open='true'] {

@@ -80,6 +80,17 @@
   padding: var(--space-4) var(--space-8);
 }
 
+/*
+ * Over a background picture or video, the sidebar and header let it show, so
+ * it fills the window; its blur and fade (settings) are the only effects on it.
+ * :where() keeps this as weak as the plain rules, so narrow screens below still
+ * give the overlaid sidebar its solid color.
+ */
+:where(.layout:has(> [data-background-media])) .sidebar,
+:where(.layout:has(> [data-background-media])) .header {
+  background: transparent;
+}
+
 /* On narrow screens the sidebar overlays the page instead of squeezing it. */
 @media (max-width: 48rem) {
   .layout[data-sidebar-open='true'] {
@@ -106,26 +117,4 @@
   .main {
     padding: var(--space-4);
   }
-}
-
-/*
- * Over a background picture or video, the sidebar and header become
- * translucent panels, blurring what's behind them so their text stays readable.
- */
-.layout:has(> [data-background-media]) .sidebar {
-  background: color-mix(
-    in srgb,
-    var(--color-surface) var(--mix-panel-over-media),
-    transparent
-  );
-  backdrop-filter: blur(var(--blur-panel));
-}
-
-.layout:has(> [data-background-media]) .header {
-  background: color-mix(
-    in srgb,
-    var(--color-background) var(--mix-panel-over-media),
-    transparent
-  );
-  backdrop-filter: blur(var(--blur-panel));
 }

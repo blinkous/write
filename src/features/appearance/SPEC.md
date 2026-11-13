@@ -107,8 +107,10 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
   by the blur so its blurred edges stay off screen, with the page color laid over at the fade %. Videos
   loop silently, and stay on their first frame when the system asks for less motion (GIFs
   can't be paused, so they still play). It's decorative: hidden from screen readers.
-- While it's shown, the sidebar and header are translucent panels (`--mix-panel-over-media`
-  of their color, blurring what's behind by `--blur-panel`); menus and dialogs stay opaque.
+- While it's shown, the sidebar and header are transparent, so it fills the whole window, and
+  its blur and fade are the only effects on it. The settings drawer, menus and dialogs stay
+  solid so they're always readable, as does the sidebar on narrow screens, where it slides
+  over the writing.
 
 ## Decisions
 
