@@ -27,7 +27,10 @@ export function Disclosure({
     <details
       className={styles.disclosure}
       open={isOpen}
-      onToggle={({ currentTarget }) => onToggle?.(currentTarget.open)}
+      // React bubbles toggle events: only this details' own fold counts, not a popover inside it.
+      onToggle={({ target, currentTarget }) => {
+        if (target === currentTarget) onToggle?.(currentTarget.open)
+      }}
     >
       <summary className={styles.summary}>
         {summary}
