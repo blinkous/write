@@ -33,10 +33,14 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
   colors (`PageColorSettings`, below). **Editor**
   (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
   every text style, then each text style (Title, Heading 2–6, Body, Small; see
-  `src/text-styles`) as a row with an edit (✎) button opening a popover with the
-  toolbar's controls: bold, italic, underline, strikethrough and color (`TextColorMenu`) on one
-  line, then the font (Default = editor font) and size (`NumberStepper`, px), then letter
-  spacing (`NumberStepper`, % of the size). Then **Reset all styles**, which resets every
+  `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
+  real size). The whole row is the button: it opens a popover beside it (so the rows below
+  stay visible) with labeled rows: **Font** (Default = editor font), **Size**
+  (`NumberStepper`, px), **Spacing** (letter spacing, % of the size), **Style** (the
+  toolbar's bold, italic, underline, strikethrough) and **Color** (`TextColorMenu`), and a
+  footer reset for just that style (off while it's at its defaults). While open, the row takes
+  the page background, so its color is judged against the page, and it previews every change.
+  Then **Reset all styles**, which resets every
   style and sets the editor font to the app font. Letter spacing lives only here, per style
   (not as a toolbar mark), so writing stays simple. **Page colors**
   (`PageColorSettings`, in App) are the free-form background and default text color

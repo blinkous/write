@@ -1,5 +1,5 @@
 import { useId, useRef, type ReactNode, type ToggleEvent } from 'react'
-import { Button } from './Button'
+import { Button, type ButtonVariant } from './Button'
 import styles from './Popover.module.css'
 
 type PopoverProps = {
@@ -9,8 +9,15 @@ type PopoverProps = {
   trigger: ReactNode
   /** Square trigger for a lone icon; turn off for triggers that show text. */
   isTriggerIconOnly?: boolean
-  /** Content, or a function receiving `close` for actions that should dismiss the panel. */
-  children: ReactNode | ((close: () => void) => ReactNode)
+  triggerVariant?: ButtonVariant
+  /**
+   * Content, or a function receiving `close` for actions that should dismiss the
+   * panel, and `refocus` for actions that disable themselves (e.g. a reset), so
+   * focus moves to the panel's first control instead of being lost.
+   */
+  children: ReactNode | ((close: () => void, refocus: () => void) => ReactNode)
+  /** `below` the trigger, lined up with its `align` edge, or `beside` it, lined up with its top. */
+  placement?: 'below' | 'beside'
   align?: 'start' | 'end'
   /** Turns the trigger off, e.g. when the menu doesn't apply right now. */
   isDisabled?: boolean
@@ -54,14 +61,21 @@ export function Popover({
   label,
   trigger,
   isTriggerIconOnly = true,
+  triggerVariant,
   children,
+  placement = 'below',
   align = 'end',
   isDisabled = false,
   onClose,
 }: PopoverProps) {
   const popoverId = useId()
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const close = () => document.getElementById(popoverId)?.hidePopover()
+  const getPanel = () => document.getElementById(popoverId)
+  const close = () => getPanel()?.hidePopover()
+  const refocus = () => {
+    const panel = getPanel()
+    if (panel instanceof HTMLDivElement) focusInitialControl(panel)
+  }
 
   function handleToggle({
     newState,
@@ -81,6 +95,7 @@ export function Popover({
       <Button
         ref={triggerRef}
         iconOnly={isTriggerIconOnly}
+        variant={triggerVariant}
         aria-label={label}
         title={label}
         popoverTarget={popoverId}
@@ -94,9 +109,9 @@ export function Popover({
         role="dialog"
         aria-label={label}
         onToggle={handleToggle}
-        className={`${styles.panel} ${styles[align]}`}
+        className={`${styles.panel} ${placement === 'beside' ? styles.beside : styles[align]}`}
       >
-        {typeof children === 'function' ? children(close) : children}
+        {typeof children === 'function' ? children(close, refocus) : children}
       </div>
     </div>
   )

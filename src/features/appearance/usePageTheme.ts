@@ -92,6 +92,13 @@ export function usePageTheme(
     changeText(nextTextColor: string) {
       change({ textColor: nextTextColor }, false)
     },
+    /** One text style back to its defaults, as one undo step. */
+    resetTextStyle(name: TextStyleName) {
+      change(
+        { textStyles: { ...textStyles, [name]: DEFAULT_TEXT_STYLES[name] } },
+        true,
+      )
+    },
     /** Editor back to its defaults: every text style, and the editor font matching the app's. */
     resetEditor() {
       change({ editorFont: appFont, textStyles: DEFAULT_TEXT_STYLES }, true)

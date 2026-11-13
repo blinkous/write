@@ -1,7 +1,8 @@
 import type { ComponentProps } from 'react'
 import styles from './Button.module.css'
 
-type ButtonVariant = 'ghost' | 'subtle' | 'danger'
+/** `row` fills its row edge to edge, its text lined up with the row's other text. */
+export type ButtonVariant = 'ghost' | 'subtle' | 'danger' | 'row'
 
 /* Includes `ref` (a regular prop in React 19), passed through to the <button>. */
 type ButtonProps = ComponentProps<'button'> & {

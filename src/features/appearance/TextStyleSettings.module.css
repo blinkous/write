@@ -1,11 +1,3 @@
-/* A line of controls: the first group at the start, the last at the end. */
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
 .toggles {
   display: flex;
   gap: var(--space-1);

@@ -43,3 +43,12 @@
 .start:popover-open {
   position-area: block-end span-inline-end;
 }
+
+/* Beside the trigger, its top lined up with the trigger's (e.g. a row's panel, not covering the rows below). */
+.beside {
+  margin: 0 var(--space-2);
+}
+
+.beside:popover-open {
+  position-area: inline-end span-block-end;
+}
