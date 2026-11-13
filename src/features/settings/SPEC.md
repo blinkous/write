@@ -33,5 +33,5 @@ The settings drawer at the bottom of the sidebar.
 
 - A drawer rather than separate menus: settings are browsed and adjusted together, often
   while looking at the page, and font menus open from it directly (no menu inside a menu).
-- The drawer's height is capped (`--height-drawer-max`) and scrolls, so the entries above
-  always keep some room.
+- The drawer grows as far as the search bar (the entries list gives up its room and scrolls)
+  and scrolls past that; an upward shadow marks its top edge so the line reads clearly.

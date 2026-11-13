@@ -3,8 +3,10 @@
   flex: 1;
   flex-direction: column;
   gap: var(--space-4);
-  /* Shrinks to make room (e.g. for the settings drawer); the list scrolls instead. */
-  min-height: 0;
+  /*
+   * Gives up all its room (e.g. to the settings drawer) except the search bar:
+   * the list, sized only by the room it's given, shrinks to nothing and scrolls.
+   */
 }
 
 /* Pulled out so the search icon and the last button's icon line up with the sidebar's text edges. */
@@ -59,9 +61,11 @@
 
 .items {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: var(--space-1);
   min-height: 0;
+  contain: size;
   /*
    * Room for focus rings, which scrolling would otherwise clip; pulled back so
    * items line up. Items are also pulled out by their padding, so their text

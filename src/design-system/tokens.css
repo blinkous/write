@@ -176,6 +176,10 @@
     color-mix(in srgb, var(--color-text) 18%, transparent);
   --shadow-overlay: 0 0 2rem
     color-mix(in srgb, var(--color-text) 20%, transparent);
+  /* Cast upward only, along the top edge of something that slides over content (a drawer). */
+  --shadow-edge-top: 0 calc(var(--space-2) * -1) var(--space-4)
+    calc(var(--space-2) * -1)
+    color-mix(in srgb, var(--color-text) 14%, transparent);
 
   /* Motion: small UI changes only (color changes stay instant). */
   --duration-quick: 180ms;
@@ -185,8 +189,6 @@
   /* Layout */
   /* Largest a text style's name is previewed in settings, so big styles stay compact. */
   --size-text-style-preview-max: 1.4em;
-  /* The settings drawer never takes more than this, so the entries above stay usable. */
-  --height-drawer-max: 60vh;
   --width-page-wide: 36rem;
   --width-page-normal: 44rem;
   --width-page-narrow: 60rem;

@@ -1,10 +1,14 @@
 /*
  * Slides up by growing from no height to its content's (grid rows 0fr → 1fr),
- * so whatever sits above it shrinks smoothly to make room.
+ * so whatever sits above it shrinks smoothly to make room. It can shrink
+ * below its content (it scrolls instead), so it takes all the room its
+ * container gives it and no more.
  */
 .drawer {
   display: grid;
-  grid-template-rows: 0fr;
+  grid-template-rows: minmax(0, 0fr);
+  flex-shrink: 1;
+  min-height: 0;
   visibility: hidden;
   /*
    * Reaches into the container's padding (the content is padded back in line)
@@ -16,8 +20,10 @@
 }
 
 .drawer[data-open='true'] {
-  grid-template-rows: 1fr;
+  grid-template-rows: minmax(0, 1fr);
   visibility: visible;
+  /* Marks its top edge, so what's above reads as passing underneath. */
+  box-shadow: var(--shadow-edge-top);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -29,6 +35,8 @@
 }
 
 .clip {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
   overflow: hidden;
 }
@@ -37,7 +45,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  max-height: var(--height-drawer-max);
+  min-height: 0;
   overflow-y: auto;
   padding: var(--space-4) var(--drawer-reach) var(--space-2);
   /* The top divider, drawn only across the content's width (not the wider scroll area). */
