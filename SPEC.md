@@ -18,9 +18,12 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`).
 - **Imports are untrusted.** Validated against a strict format and the document schema,
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
-- Accessible: everything works by keyboard, controls are native elements with labels.
-  Visible labels are part of each control's accessible name; shortcuts are given as
-  `aria-keyshortcuts`. Disabled controls don't react to hover. Toggles for open panels (sidebar, settings) show as pressed.
+- Accessible: everything works by keyboard, controls are native elements with labels, and
+  text meets WCAG AA contrast (4.5:1). Muted text is soft by default (a cozy choice) and
+  becomes 4.5:1 when the system asks for more contrast. Checked with axe-core in light
+  and dark mode, with the drawer, menus and dialogs open. Visible labels are part of each
+  control's accessible name; shortcuts are given as `aria-keyshortcuts`. Disabled controls
+  don't react to hover. Toggles for open panels (sidebar, settings) show as pressed.
 
 ## Out of scope
 

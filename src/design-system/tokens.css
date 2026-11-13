@@ -4,9 +4,9 @@
  * else derives from them so custom palettes stay coherent.
  */
 :root {
-  /* User-controlled (defaults match the "Dusty rose" preset) */
-  --color-background: #f0dfdb;
-  --color-text: #4a3236;
+  /* User-controlled; until the app sets them, the first-visit defaults (DEFAULT_PAGE_COLORS). */
+  --color-background: #ede3d6;
+  --color-text: #594a36;
   /* Two fonts: the editor's (writing and title) and the interface's (everything around them). */
   --font-editor: 'Lora Variable', Georgia, serif;
   /* Body text in the editor; headings scale from it. Overall size is left to browser zoom. */
@@ -25,6 +25,7 @@
   --paragraph-indent: 0;
 
   /* Derived colors */
+  /* Surface mixes must match SURFACE_TEXT_SHARES in lib/readableMuted.ts. */
   --color-surface: color-mix(
     in srgb,
     var(--color-text) 5%,
@@ -40,11 +41,23 @@
     var(--color-text) 16%,
     var(--color-background)
   );
-  --color-muted: color-mix(
+  /*
+   * Muted text (captions, placeholders, section titles) is soft by default, a
+   * cozy choice. When the system asks for more contrast it switches to the
+   * softest color that reads at 4.5:1, which the app sets for the page colors
+   * (lib/readableMuted.ts); until then, a safe mix.
+   */
+  --color-muted-soft: color-mix(
     in srgb,
     var(--color-text) 65%,
     var(--color-background)
   );
+  --color-muted-readable: color-mix(
+    in srgb,
+    var(--color-text) 90%,
+    var(--color-background)
+  );
+  --color-muted: var(--color-muted-soft);
   --color-focus: color-mix(
     in srgb,
     var(--color-text) 55%,
@@ -127,4 +140,19 @@
   --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
+}
+
+/* The system asks for more contrast: muted text becomes readable (see --color-muted). */
+@media (prefers-contrast: more) {
+  :root {
+    --color-muted: var(--color-muted-readable);
+  }
+}
+
+/* Dark mode's first-visit colors, so the page doesn't flash light before the app loads. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #2b211c;
+    --color-text: #c1aba1;
+  }
 }

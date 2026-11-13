@@ -33,11 +33,16 @@ text size is left to browser zoom; size differences come from text styles (edito
   menus; sets `--font-ui`; default Inter) and **Editor**, for the
   writing and title (sets `--font-editor`; default Lora) that text
   without its own font uses. **Colors** has the free-form background and default text color
-  (default: dusty rose), as `LabeledRow`s like the font rows: the name, then
+  (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
+  setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
+  changes), as `LabeledRow`s like the font rows: the name, then
   its swatch tile at the end (clicking either opens the picker). `ThemeHistoryButtons` (the drawer's
   header) are the undo/redo for both sections. They live apart from the
   toolbar's per-text color so the two aren't confused.
-  Surface, border and muted colors derive from them with `color-mix()` in `tokens.css`.
+  Surface and border colors derive from them with `color-mix()` in `tokens.css`. The muted
+  color (captions, placeholders, section titles) is soft by default (a cozy choice); when the
+  system's "increase contrast" setting is on (`prefers-contrast: more`), it becomes the
+  softest mix that reads at 4.5:1 on the page and both surfaces (`lib/readableMuted.ts`).
   There are no theme presets.
 - The page text color is the default for all text: text without its own color (see the
   editor's text color) references it, so changing it recolors that text automatically.

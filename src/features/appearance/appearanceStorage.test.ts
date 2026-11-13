@@ -1,4 +1,4 @@
-import { DEFAULT_APPEARANCE } from './appearanceOptions'
+import { DEFAULT_APPEARANCE, DEFAULT_PAGE_COLORS } from './appearanceOptions'
 import { loadAppearance } from './appearanceStorage'
 
 describe('loadAppearance', () => {
@@ -109,5 +109,29 @@ describe('loadAppearance', () => {
       editorFont: 'literata',
       appFont: 'nunito',
     })
+  })
+
+  it('starts a first visit in the system mode: oat when light, cocoa when dark', () => {
+    expect(loadAppearance('light')).toMatchObject(DEFAULT_PAGE_COLORS.light)
+    expect(loadAppearance('dark')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
+  })
+
+  it('keeps saved colors whatever the system mode', () => {
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ backgroundColor: '#112233', textColor: '#eeddcc' }),
+    )
+    expect(loadAppearance('dark')).toMatchObject({
+      backgroundColor: '#112233',
+      textColor: '#eeddcc',
+    })
+  })
+
+  it('matches a text color to a saved background that lost its own', () => {
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ backgroundColor: '#2b211c', textColor: 'nope' }),
+    )
+    expect(loadAppearance('light')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
   })
 })

@@ -1,4 +1,5 @@
 import { deriveCozyThemeColors } from '../../lib/cozyPalette'
+import { deriveReadableMutedColor } from '../../lib/readableMuted'
 import type { Appearance } from './appearanceOptions'
 import { getFontOption } from '../../fonts'
 
@@ -28,6 +29,11 @@ export function applyAppearance({
   )
   style.setProperty('--color-background', backgroundColor)
   style.setProperty('--color-text', textColor)
+  // Muted text when the system asks for more contrast; soft otherwise (see tokens.css).
+  style.setProperty(
+    '--color-muted-readable',
+    deriveReadableMutedColor(backgroundColor, textColor),
+  )
   // Live theme text colors: text colored with one follows the page background.
   deriveCozyThemeColors(backgroundColor, textColor).forEach(
     (themeColor, index) => {

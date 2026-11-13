@@ -1,3 +1,4 @@
+import type { ColorScheme } from '../../utils/colorScheme'
 import { createOptionGuard } from '../../utils/options'
 import type { FontValue } from '../../fonts'
 
@@ -49,6 +50,21 @@ export type Appearance = {
   customTextColors: CustomTextColors
 }
 
+/**
+ * Page colors for a first visit, following the system's light or dark mode:
+ * warm browns rather than the greys most editors use. Each text color is the
+ * cozy match for its background (`deriveCozyTextColor`). Saved colors win.
+ */
+export const DEFAULT_PAGE_COLORS: Record<
+  ColorScheme,
+  Pick<Appearance, 'backgroundColor' | 'textColor'>
+> = {
+  // Oat
+  light: { backgroundColor: '#ede3d6', textColor: '#594a36' },
+  // Cocoa
+  dark: { backgroundColor: '#2b211c', textColor: '#c1aba1' },
+}
+
 export const DEFAULT_APPEARANCE: Appearance = {
   appFont: 'inter',
   editorFont: 'lora',
@@ -56,9 +72,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   lineSpacing: 'normal',
   hasParagraphSpacing: true,
   hasParagraphIndent: false,
-  // Dusty rose
-  backgroundColor: '#f0dfdb',
-  textColor: '#4a3236',
+  ...DEFAULT_PAGE_COLORS.light,
   customTextColors: Array<string | null>(CUSTOM_TEXT_COLOR_SLOT_COUNT).fill(
     null,
   ),

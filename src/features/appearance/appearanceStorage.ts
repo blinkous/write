@@ -1,9 +1,12 @@
 import { z } from 'zod'
 import { readStoredValue, writeStoredValue } from '../../lib/localStore'
+import { deriveCozyTextColor } from '../../lib/cozyPalette'
 import { isHexColor } from '../../utils/color'
+import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
   CUSTOM_TEXT_COLOR_SLOT_COUNT,
   DEFAULT_APPEARANCE,
+  DEFAULT_PAGE_COLORS,
   isLineSpacingValue,
   isMarginValue,
   type Appearance,
@@ -47,8 +50,9 @@ const appearanceSchema = z.object({
   hasParagraphIndent: z.boolean().catch(DEFAULT_APPEARANCE.hasParagraphIndent),
   /** Legacy (before paragraph spacing became on/off): none | small | normal | large. */
   paragraphSpacing: z.unknown().optional(),
-  backgroundColor: hexColorSchema.catch(DEFAULT_APPEARANCE.backgroundColor),
-  textColor: hexColorSchema.catch(DEFAULT_APPEARANCE.textColor),
+  // Resolved together below, so the text always suits the background.
+  backgroundColor: hexColorSchema.optional().catch(undefined),
+  textColor: hexColorSchema.optional().catch(undefined),
   customTextColors: customTextColorsSchema,
 })
 
@@ -76,8 +80,28 @@ function migrateEditorFont(...savedFonts: unknown[]): FontValue {
   return savedFonts.find(isFontValue) ?? DEFAULT_APPEARANCE.editorFont
 }
 
-export function loadAppearance(): Appearance {
+/*
+ * Nothing saved (a first visit): the default colors for the system's light or
+ * dark mode. A saved background without a usable text color gets its match.
+ */
+function resolvePageColors(
+  backgroundColor: string | undefined,
+  textColor: string | undefined,
+  colorScheme: ColorScheme,
+): Pick<Appearance, 'backgroundColor' | 'textColor'> {
+  if (!backgroundColor) return DEFAULT_PAGE_COLORS[colorScheme]
+  return {
+    backgroundColor,
+    textColor: textColor ?? deriveCozyTextColor(backgroundColor),
+  }
+}
+
+export function loadAppearance(
+  colorScheme = getSystemColorScheme(),
+): Appearance {
   const {
+    backgroundColor,
+    textColor,
     hasParagraphSpacing,
     paragraphSpacing,
     editorFont,
@@ -92,6 +116,7 @@ export function loadAppearance(): Appearance {
   )
   return {
     ...stored,
+    ...resolvePageColors(backgroundColor, textColor, colorScheme),
     editorFont: migrateEditorFont(editorFont, entryFont, font),
     hasParagraphSpacing: migrateParagraphSpacing(
       hasParagraphSpacing,

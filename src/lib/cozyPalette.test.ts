@@ -4,6 +4,8 @@ import { deriveCozyTextColor, deriveCozyThemeColors } from './cozyPalette'
 const COLORFUL_BACKGROUNDS = {
   burgundy: '#6e2340',
   dustyRose: '#f0dfdb',
+  oat: '#ede3d6',
+  cocoa: '#2b211c',
   navy: '#1c2433',
   sage: '#dfe5d8',
 }
