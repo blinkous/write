@@ -2,7 +2,6 @@ import { Bold, Italic, RotateCcw, Strikethrough, Underline } from 'lucide-react'
 import {
   Button,
   LabeledRow,
-  MenuFooter,
   NumberStepper,
   Popover,
   PopoverPanel,
@@ -72,78 +71,73 @@ function TextStyleRow({
       trigger={<TextStylePreview name={name}>{label}</TextStylePreview>}
     >
       {(_close, refocus) => (
-        <>
-          <PopoverPanel width="regular">
-            <LabeledRow label="Font" control="button">
-              <FontMenu
-                label={`${label} font`}
-                value={settings.font}
-                defaultFont={editorFont}
-                onChange={(font) => changeTextStyle(name, { font })}
-              />
-            </LabeledRow>
-            <LabeledRow label="Size" control="icon">
-              <NumberStepper
-                label={`${label} size`}
-                value={settings.size}
-                min={TEXT_STYLE_SIZE_RANGE.min}
-                max={TEXT_STYLE_SIZE_RANGE.max}
-                unit="px"
-                onChange={(size) => changeTextStyle(name, { size })}
-              />
-            </LabeledRow>
-            <LabeledRow label="Letter spacing" control="icon">
-              <NumberStepper
-                label={`${label} letter spacing`}
-                value={settings.letterSpacing}
-                min={TEXT_STYLE_LETTER_SPACING_RANGE.min}
-                max={TEXT_STYLE_LETTER_SPACING_RANGE.max}
-                unit="%"
-                onChange={(letterSpacing) =>
-                  changeTextStyle(name, { letterSpacing })
-                }
-              />
-            </LabeledRow>
-            {/* The toolbar's own controls, in a line of their own: color, then the toggles. */}
-            <div className={styles.formatting}>
-              <TextColorMenu
-                label={`${label} color`}
-                value={settings.color}
-                pageTextColor={textColor}
-                customColors={customTextColors}
-                onCustomColorsChange={onCustomTextColorsChange}
-                onSelect={(color) => changeTextStyle(name, { color })}
-                // A drag in the system picker previews live and becomes one undo step when it ends.
-                onPick={(color) => changeTextStyle(name, { color }, false)}
-                onPickEnd={commit}
-              />
-              <div
-                role="group"
-                aria-label={`${label} formatting`}
-                className={styles.toggles}
-              >
-                {STYLE_TOGGLES.map(
-                  ({ key, label: toggleLabel, icon: Icon }) => (
-                    <Button
-                      key={key}
-                      iconOnly
-                      aria-label={toggleLabel}
-                      title={toggleLabel}
-                      aria-pressed={settings[key]}
-                      onClick={() =>
-                        changeTextStyle(name, { [key]: !settings[key] })
-                      }
-                    >
-                      <Icon aria-hidden="true" />
-                    </Button>
-                  ),
-                )}
-              </div>
+        <PopoverPanel width="regular">
+          <LabeledRow label="Font" control="button">
+            <FontMenu
+              label={`${label} font`}
+              value={settings.font}
+              defaultFont={editorFont}
+              onChange={(font) => changeTextStyle(name, { font })}
+            />
+          </LabeledRow>
+          <LabeledRow label="Size" control="icon">
+            <NumberStepper
+              label={`${label} size`}
+              value={settings.size}
+              min={TEXT_STYLE_SIZE_RANGE.min}
+              max={TEXT_STYLE_SIZE_RANGE.max}
+              unit="px"
+              onChange={(size) => changeTextStyle(name, { size })}
+            />
+          </LabeledRow>
+          <LabeledRow label="Letter spacing" control="icon">
+            <NumberStepper
+              label={`${label} letter spacing`}
+              value={settings.letterSpacing}
+              min={TEXT_STYLE_LETTER_SPACING_RANGE.min}
+              max={TEXT_STYLE_LETTER_SPACING_RANGE.max}
+              unit="%"
+              onChange={(letterSpacing) =>
+                changeTextStyle(name, { letterSpacing })
+              }
+            />
+          </LabeledRow>
+          {/* The toolbar's own controls, in a line of their own: color, then the toggles; reset at the end. */}
+          <div className={styles.formatting}>
+            <TextColorMenu
+              label={`${label} color`}
+              value={settings.color}
+              pageTextColor={textColor}
+              customColors={customTextColors}
+              onCustomColorsChange={onCustomTextColorsChange}
+              onSelect={(color) => changeTextStyle(name, { color })}
+              // A drag in the system picker previews live and becomes one undo step when it ends.
+              onPick={(color) => changeTextStyle(name, { color }, false)}
+              onPickEnd={commit}
+            />
+            <div
+              role="group"
+              aria-label={`${label} formatting`}
+              className={styles.toggles}
+            >
+              {STYLE_TOGGLES.map(({ key, label: toggleLabel, icon: Icon }) => (
+                <Button
+                  key={key}
+                  iconOnly
+                  aria-label={toggleLabel}
+                  title={toggleLabel}
+                  aria-pressed={settings[key]}
+                  onClick={() =>
+                    changeTextStyle(name, { [key]: !settings[key] })
+                  }
+                >
+                  <Icon aria-hidden="true" />
+                </Button>
+              ))}
             </div>
-          </PopoverPanel>
-          <MenuFooter>
             <Button
               iconOnly
+              className={styles.resetStyle}
               aria-label={`Reset ${label.toLowerCase()} style`}
               title={`Reset ${label.toLowerCase()} style`}
               disabled={isDefault}
@@ -155,8 +149,8 @@ function TextStyleRow({
             >
               <RotateCcw aria-hidden="true" />
             </Button>
-          </MenuFooter>
-        </>
+          </div>
+        </PopoverPanel>
       )}
     </Popover>
   )
