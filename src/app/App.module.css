@@ -92,7 +92,7 @@
     z-index: 3;
     width: min(var(--width-sidebar), 85vw);
     background: var(--color-background);
-    box-shadow: 0 0 2rem color-mix(in srgb, var(--color-text) 20%, transparent);
+    box-shadow: var(--shadow-overlay);
   }
 
   .backdrop {

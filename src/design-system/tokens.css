@@ -169,6 +169,14 @@
   --border-width: 1px;
   --focus-ring-width: 2px;
 
+  /* Shadows, tinted with the text color so they suit any page. */
+  --shadow-floating: 0 0.5rem 2rem
+    color-mix(in srgb, var(--color-text) 14%, transparent);
+  --shadow-modal: 0 1rem 3rem
+    color-mix(in srgb, var(--color-text) 18%, transparent);
+  --shadow-overlay: 0 0 2rem
+    color-mix(in srgb, var(--color-text) 20%, transparent);
+
   /* Motion: small UI changes only (color changes stay instant). */
   --duration-quick: 180ms;
   --duration-medium: 260ms;

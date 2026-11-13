@@ -13,8 +13,7 @@
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-medium);
   background: var(--color-background);
-  box-shadow: 0 0.5rem 2rem
-    color-mix(in srgb, var(--color-text) 14%, transparent);
+  box-shadow: var(--shadow-floating);
   pointer-events: auto;
 }
 

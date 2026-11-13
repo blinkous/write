@@ -9,7 +9,7 @@
   border-radius: var(--radius-medium);
   background: var(--color-background);
   color: var(--color-text);
-  box-shadow: 0 1rem 3rem color-mix(in srgb, var(--color-text) 18%, transparent);
+  box-shadow: var(--shadow-modal);
   overflow-y: auto;
 }
 
