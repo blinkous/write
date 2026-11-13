@@ -1,5 +1,5 @@
-import { useId, type ReactNode } from 'react'
-import { LabeledRow, TextInput } from '../../design-system'
+import type { ReactNode } from 'react'
+import { EditableText, LabeledRow } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import { APP_NAME, TAB_TITLE_MAX_LENGTH } from './appearanceOptions'
 import { PageColorSettings } from './ThemeSettings'
@@ -13,20 +13,17 @@ type AppSettingsProps = {
 
 /** Everything around the page: the tab's title, its font, and the page's background and text colors. */
 export function AppSettings({ pageTheme, children }: AppSettingsProps) {
-  const { appFont, changeFonts, tabTitle, changeTabTitle, commit } = pageTheme
-  const tabTitleInputId = useId()
+  const { appFont, changeFonts, tabTitle, changeTabTitle } = pageTheme
   return (
     <>
-      <LabeledRow label="Tab title" controlId={tabTitleInputId} control="field">
-        <TextInput
-          id={tabTitleInputId}
+      <LabeledRow label="Tab title" control="text">
+        <EditableText
+          label="Tab title"
           value={tabTitle}
           placeholder={APP_NAME}
           maxLength={TAB_TITLE_MAX_LENGTH}
-          spellCheck={false}
-          autoComplete="off"
-          onChange={({ target }) => changeTabTitle(target.value)}
-          onBlur={commit}
+          onChange={(nextTabTitle) => changeTabTitle(nextTabTitle)}
+          onEditEnd={(finalTabTitle) => changeTabTitle(finalTabTitle, true)}
         />
       </LabeledRow>
       <LabeledRow label="Font" control="button">

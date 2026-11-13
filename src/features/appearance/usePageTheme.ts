@@ -105,9 +105,12 @@ export function usePageTheme(
     changeText(nextTextColor: string) {
       change({ textColor: nextTextColor }, false)
     },
-    /** Typing shows in the tab at once; it becomes one undo step when committed (e.g. on leaving the field). */
-    changeTabTitle(nextTabTitle: string) {
-      change({ tabTitle: nextTabTitle }, false)
+    /**
+     * Typing shows in the tab at once (isFinal false); the final title (e.g.
+     * on leaving the field) makes the whole edit one undo step.
+     */
+    changeTabTitle(nextTabTitle: string, isFinal = false) {
+      change({ tabTitle: nextTabTitle }, isFinal)
     },
     /** Each blur or opacity step (a press or a typed value) is one undo step. */
     changeBackgroundEffects(

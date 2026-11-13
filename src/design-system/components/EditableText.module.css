@@ -1,0 +1,37 @@
+/* Fills the room it's given, its text at the end, like the values of the rows around it. */
+.editableText {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+/* One box for both states (shown and editing), a text button's, so nothing shifts. */
+.box {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--size-control);
+  padding: 0 var(--space-control-inline);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-small);
+  font-size: var(--text-size-small);
+  font-weight: normal;
+}
+
+/* Long values end in an ellipsis; the text cursor says it can be typed in. */
+.display {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: text;
+}
+
+/* Editing takes all the room, the text still at the end. */
+.box:has(.input) {
+  flex: 1;
+}
+
+.input {
+  text-align: end;
+}

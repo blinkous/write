@@ -30,8 +30,10 @@ title, background blur and opacity).
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
 - **Settings sections** (shown in the settings drawer): **App** (`AppSettings`) has the
-  **tab title** (a text field; empty shows the app's name, "Write", as its placeholder and in
-  the tab; up to 60 characters, a longer saved one falls back to empty), the
+  **tab title** (`EditableText`: quiet text at the row's end, like the font's name, showing
+  the app's name, "Write", while empty; click it to type in place, Enter or clicking away
+  keeps it, Escape puts it back; up to 60 characters, a longer saved one falls back to
+  empty; it's the tab's title, or "Write" when empty), the
   interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter) and the page
   colors (`PageColorSettings`, below). **Editor**
   (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for

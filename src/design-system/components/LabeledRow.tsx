@@ -9,10 +9,10 @@ type LabeledRowProps = {
   /**
    * What sits at the end, lined up with the row's edge: a `button` with text
    * (e.g. a menu trigger) is pulled out by its padding; an `icon` button by its
-   * icon's inset; a `swatch` tile is sized and flush; a text `field` takes the
-   * room the name leaves.
+   * icon's inset; a `swatch` tile is sized and flush; `text` (editable in
+   * place) takes the room the name leaves, lined up like a button.
    */
-  control: 'button' | 'icon' | 'swatch' | 'field'
+  control: 'button' | 'icon' | 'swatch' | 'text'
   children: ReactNode
 }
 
