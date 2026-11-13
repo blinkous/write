@@ -7,11 +7,12 @@
   grid-template-rows: 0fr;
   visibility: hidden;
   /*
-   * Reaches into the container's padding (the content is padded back in line),
-   * so controls' hover backgrounds and focus rings past the content edge
-   * aren't clipped by the drawer's scrolling.
+   * Reaches into the container's padding (the content is padded back in line)
+   * by exactly as far as rows pull their controls out (padding + border), so
+   * hover backgrounds and focus rings aren't clipped and nothing scrolls sideways.
    */
-  margin-inline: calc(var(--space-control-inline) * -1);
+  --drawer-reach: calc(var(--space-control-inline) + var(--border-width));
+  margin-inline: calc(var(--drawer-reach) * -1);
 }
 
 .drawer[data-open='true'] {
@@ -38,8 +39,8 @@
   gap: var(--space-4);
   max-height: var(--height-drawer-max);
   overflow-y: auto;
-  padding: var(--space-4) var(--space-control-inline) var(--space-2);
+  padding: var(--space-4) var(--drawer-reach) var(--space-2);
   /* The top divider, drawn only across the content's width (not the wider scroll area). */
   background: linear-gradient(var(--color-border), var(--color-border)) top /
-    calc(100% - var(--space-control-inline) * 2) var(--border-width) no-repeat;
+    calc(100% - var(--drawer-reach) * 2) var(--border-width) no-repeat;
 }
