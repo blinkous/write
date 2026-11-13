@@ -27,7 +27,9 @@
   background: var(--color-surface-strong);
 }
 
-.button[aria-pressed='true'] {
+/* On: a pressed toggle, or a toggle whose panel is open (e.g. settings, the sidebar). */
+.button[aria-pressed='true'],
+.button[aria-expanded='true'] {
   background: var(--color-surface-strong);
 }
 
@@ -41,7 +43,8 @@
 }
 
 .ghost:hover:not(:disabled),
-.ghost[aria-pressed='true'] {
+.ghost[aria-pressed='true'],
+.ghost[aria-expanded='true'] {
   color: var(--color-text);
 }
 

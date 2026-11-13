@@ -4,11 +4,9 @@ import styles from './Drawer.module.css'
 
 type DrawerProps = {
   id: string
-  /** Names the drawer for screen readers and as its visible heading. */
+  /** Names the drawer for screen readers; the visible title goes with its toggle. */
   label: string
   isOpen: boolean
-  /** Small controls beside the heading, e.g. undo/redo. */
-  headerActions?: ReactNode
   children: ReactNode
 }
 
@@ -17,13 +15,7 @@ type DrawerProps = {
  * until its toggle closes it; the content above shrinks to make room, so both
  * stay usable. Opened by a separate toggle with `aria-controls={id}`.
  */
-export function Drawer({
-  id,
-  label,
-  isOpen,
-  headerActions,
-  children,
-}: DrawerProps) {
+export function Drawer({ id, label, isOpen, children }: DrawerProps) {
   return (
     <section
       id={id}
@@ -33,15 +25,7 @@ export function Drawer({
       inert={!isOpen}
     >
       <div className={styles.clip}>
-        <div className={styles.content}>
-          <div className={styles.header}>
-            <h2 className={styles.title}>{label}</h2>
-            {headerActions && (
-              <div className={styles.headerActions}>{headerActions}</div>
-            )}
-          </div>
-          {children}
-        </div>
+        <div className={styles.content}>{children}</div>
       </div>
     </section>
   )

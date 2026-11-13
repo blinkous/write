@@ -20,7 +20,7 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
 - Accessible: everything works by keyboard, controls are native elements with labels.
   Visible labels are part of each control's accessible name; shortcuts are given as
-  `aria-keyshortcuts`. Disabled controls don't react to hover.
+  `aria-keyshortcuts`. Disabled controls don't react to hover. Toggles for open panels (sidebar, settings) show as pressed.
 
 ## Out of scope
 

@@ -1,7 +1,33 @@
-/* Just the toggle, at the end of the row, tucked close to the sidebar's bottom edge. */
+/*
+ * The toggle at the end of the row, tucked close to the sidebar's bottom edge.
+ * While open, the drawer's actions (undo/redo) sit beside it.
+ */
 .bar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: var(--space-1);
   margin-block-end: calc(var(--space-2) * -1);
   margin-inline-end: calc(var(--space-2) * -1);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* Closed: tucked away to the right, behind the toggle. */
+.actions[data-open='false'] {
+  opacity: 0;
+  transform: translateX(var(--space-6));
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .actions {
+    transition:
+      opacity var(--duration-medium) var(--easing-standard),
+      transform var(--duration-medium) var(--easing-standard),
+      visibility var(--duration-medium) allow-discrete;
+  }
 }

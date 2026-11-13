@@ -44,24 +44,6 @@
     calc(100% - var(--space-control-inline) * 2) var(--border-width) no-repeat;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.title {
-  margin: 0;
-  font-size: var(--text-size-ui);
-  font-weight: var(--font-weight-bold);
-}
-
-.headerActions {
-  display: flex;
-  gap: var(--space-1);
-}
-
 .section {
   /* Menu rows (ActionList) in a section line up with its edge and match its other rows. */
   --row-outdent: var(--menu-item-padding-inline);
