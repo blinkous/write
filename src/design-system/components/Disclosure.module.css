@@ -47,8 +47,8 @@
   padding-bottom: var(--space-2);
 }
 
-/* Down to unfold, up to fold. */
-.disclosure[open] > .summary .chevron {
+/* Down to unfold, up to fold (flipping as soon as folding starts). */
+.disclosure[open]:not([data-closing]) > .summary .chevron {
   transform: rotate(180deg);
 }
 
@@ -64,5 +64,34 @@
     transition:
       transform var(--duration-quick) var(--easing-standard),
       opacity var(--duration-quick) var(--easing-standard);
+  }
+}
+
+/*
+ * Folding and unfolding slide, so what's below moves smoothly: the content's
+ * row grows from nothing to its height (rows 0fr → 1fr, which every engine
+ * animates, unlike height: auto), like the drawer. To fold, it stays open
+ * while it shrinks (data-closing), then closes.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .disclosure::details-content {
+    display: grid;
+    grid-template-rows: minmax(0, 0fr);
+    transition: grid-template-rows var(--duration-medium) var(--easing-standard);
+  }
+
+  .disclosure[open]::details-content {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .disclosure[data-closing]::details-content {
+    grid-template-rows: minmax(0, 0fr);
+  }
+
+  /* Clipped only top to bottom, so rows' hover backgrounds and focus rings still reach out sideways. */
+  .content {
+    min-height: 0;
+    overflow-x: visible;
+    overflow-y: clip;
   }
 }

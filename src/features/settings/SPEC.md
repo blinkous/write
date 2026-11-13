@@ -10,7 +10,7 @@ The settings drawer at the bottom of the sidebar.
   entries list shrinks to share the sidebar, so both stay usable. Whether it's open is
   remembered (`write.settingsOpen.v1`).
 - **Sections fold** under their titles (`DrawerSection`: native details/summary, a quiet
-  title with a chevron at the right; the whole title line toggles, Enter/Space too). An open section's
+  title with a chevron at the right; the whole title line toggles, Enter/Space too; folding and unfolding slide, and a section stays open while it slides shut since browsers hide a closed one's content at once). An open section's
   chevron shows only on hover or focus (as in macOS sidebars), so it isn't mistaken for the
   rows' dropdown chevrons; folded sections and touch screens always show it. All start open; folded ones are
   remembered by id (`write.settingsClosedSections.v1`), so new sections always appear open.
