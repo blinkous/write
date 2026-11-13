@@ -76,6 +76,8 @@
 @media (prefers-reduced-motion: no-preference) {
   .disclosure::details-content {
     display: grid;
+    /* One column as wide as the section, so long contents shrink (e.g. end in an ellipsis) instead of widening it. */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 0fr);
     transition: grid-template-rows var(--duration-medium) var(--easing-standard);
   }
