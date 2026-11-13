@@ -1,5 +1,6 @@
 import { useEditorState, type Editor } from '@tiptap/react'
 import { ActionList, Chevron, MenuItem, Popover } from '../../design-system'
+import { TextStylePreview } from '../../text-styles'
 import { formatShortcut } from '../../utils/shortcuts'
 import { editorSupports } from './formattingActions'
 import {
@@ -8,7 +9,6 @@ import {
   getActiveTextStyle,
   TEXT_STYLES,
 } from './textStyles'
-import styles from './TextStyleMenu.module.css'
 
 /*
  * Body first (the everyday style), then the rest largest first. The order for
@@ -61,7 +61,7 @@ export function TextStyleMenu({ editor }: { editor: Editor }) {
                 }}
               >
                 <Icon aria-hidden="true" />
-                <span className={styles[name]}>{label}</span>
+                <TextStylePreview name={name}>{label}</TextStylePreview>
               </MenuItem>
             )
           })}

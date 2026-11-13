@@ -12,3 +12,4 @@ export {
 } from './textStyleSettings'
 export { TextColorSwatches } from './TextColorSwatches'
 export { TextColorMenu } from './TextColorMenu'
+export { TextStylePreview } from './TextStylePreview'
