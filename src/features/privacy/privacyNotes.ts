@@ -22,6 +22,7 @@ export const PRIVACY_NOTES: readonly {
     lines: [
       'All data is stored locally in the browser.',
       'Your data is cleared when you clear browser data; to save, export it.',
+      'Browsers may also delete it if you haven’t visited in a while, so export regularly.',
       'You can import saved entries anytime.',
     ],
   },
