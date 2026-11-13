@@ -72,8 +72,8 @@ export const DEFAULT_APPEARANCE: Appearance = {
   appFont: 'inter',
   editorFont: 'lora',
   margins: 'normal',
-  lineSpacing: 'normal',
-  hasParagraphSpacing: true,
+  lineSpacing: 'tight',
+  hasParagraphSpacing: false,
   hasParagraphIndent: false,
   ...DEFAULT_PAGE_COLORS.light,
   customTextColors: Array<string | null>(CUSTOM_TEXT_COLOR_SLOT_COUNT).fill(

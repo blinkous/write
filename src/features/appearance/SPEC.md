@@ -11,9 +11,9 @@ page-wide, kept with one shared undo/redo for fonts, styles and colors.
 - **Units:** line spacing is shown as real multipliers, like word processors; margins keep
   preset names (Wide/Normal/Narrow/None), as word processors do. A test checks the line
   spacing labels match the design tokens.
-- **Spacing** is one menu: line spacing as real multipliers (1.4, 1.7, 2.0, 2.4), a
+- **Spacing** is one menu: line spacing as real multipliers (1.4, 1.7, 2.0, 2.4; default 1.4), a
   separator, then actions whose labels flip with the state, like Google Docs: **Add/Remove
-  paragraph gap** (a half-line gap,
+  paragraph gap** (off by default; a half-line gap,
   `--space-paragraph-gap`, from the editor's font size × line spacing) and **Add/Remove
   paragraph indent** (book-style first-line indent, `--size-paragraph-indent`, on paragraphs that
   follow a paragraph, so not the first after a heading). Line spacing values are stored as
