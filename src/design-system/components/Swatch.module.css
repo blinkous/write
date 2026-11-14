@@ -19,7 +19,8 @@
   aspect-ratio: 1;
   margin: 0;
   padding: 0;
-  border: var(--border-width) solid var(--color-border);
+  /* As strong as section titles, so a tile near the page color (e.g. black on black) still shows its edge. */
+  border: var(--border-width) solid var(--color-muted);
   border-radius: var(--radius-small);
   cursor: pointer;
 }

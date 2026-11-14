@@ -73,7 +73,8 @@ older data without them (see the storage tests).
   and up to fold). Settings rows are `LabeledRow`s: the name on the left, the control at the
   end (a menu button, text editable in place, a stepper or a swatch tile), its text lined up
   with the row's edge; text controls there have snugger padding, so their hover stays clear of
-  the panel's edge. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
+  the panel's edge. Swatch tiles are outlined in the muted color (like section titles), so a
+  tile matching the page still shows its edge. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
 - **Dialogs** use the design-system `Dialog` (native `<dialog>`: focus trap, Escape, focus
   return) e.g. the welcome/privacy notice; confirmations use
   `ConfirmDialog` (Cancel first, so Enter never confirms by accident). No browser popups.
