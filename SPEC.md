@@ -5,9 +5,9 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 
 ## Hard rules
 
-- **Local only.** All data lives in the browser: `localStorage`, plus IndexedDB for files too
-  big for it (the background picture or video, `src/lib/blobStore.ts`). No accounts, servers
-  or analytics.
+- **Local only.** All data lives in the browser: entries in IndexedDB (see entries
+  `SPEC.md`), files in IndexedDB too (the background picture or video, `src/lib/blobStore.ts`),
+  and settings in `localStorage`. No accounts, servers or analytics.
 - **No network at runtime.** Fonts are open-licensed Google Fonts bundled via Fontsource,
   so the app works offline.
 - **Locked-down origin.** Builds ship a Content Security Policy (`vite.config.ts`) allowing
@@ -16,10 +16,10 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   styles, or `data:` fonts (e.g. Tiptap's CSS is vendored, fonts are never inlined).
   Pictures and videos may be `blob:` URLs: the background, read from IndexedDB.
 - **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
-  `localStorage` is per origin: a shared or shifting port would share or "lose" entries.
+  browser storage is per origin: a shared or shifting port would share or "lose" entries.
 - **Never silently lose writing.** Stored data that fails validation is backed up under a
-  timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`), and a
-  failed save is announced, never ignored.
+  timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`; invalid
+  IndexedDB entries move to a `backup` store), and a failed save is announced, never ignored.
 - **Imports are untrusted.** Validated against a strict format and the document schema,
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
 - Accessible: everything works by keyboard, controls are native elements with labels, and
@@ -35,18 +35,27 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 
 ## Storage keys
 
-| Key                               | Owner      | Contents                                                                    |
-| --------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| `write.entries.v2`                | entries    | Array of journal entries (v1 kept as a backup)                              |
-| `write.selectedEntryId.v1`        | entries    | Last open entry id                                                          |
-| `write.entrySort.v1`              | entries    | How the entries list is sorted                                              |
-| `write.appearance.v1`             | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity         |
-| `write.settingsOpen.v1`           | settings   | Whether the settings drawer is open                                         |
-| `write.settingsClosedSections.v1` | settings   | Folded settings sections, by id                                             |
-| `write.pageThemeHistory.v1`       | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |
-| `write.privacyNoticeSeen.v1`      | privacy    | This browser has visited (no welcome entry)                                 |
+| Key                                | Owner      | Contents                                                                    |
+| ---------------------------------- | ---------- | --------------------------------------------------------------------------- |
+| `write.entries.v2`                 | entries    | Journal entries before the move to IndexedDB, kept as a backup (and v1)     |
+| `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so the copy above is out of date            |
+| `write.selectedEntryId.v1`         | entries    | Last open entry id                                                          |
+| `write.entrySort.v1`               | entries    | How the entries list is sorted                                              |
+| `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity         |
+| `write.settingsOpen.v1`            | settings   | Whether the settings drawer is open                                         |
+| `write.settingsClosedSections.v1`  | settings   | Folded settings sections, by id                                             |
+| `write.pageThemeHistory.v1`        | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |
+| `write.privacyNoticeSeen.v1`       | privacy    | This browser has visited (no welcome entry)                                 |
 
-IndexedDB (database `write-files`, store `files`):
+IndexedDB database `write-journal` (entries; see entries `SPEC.md`):
+
+| Store    | Key            | Contents                                                        |
+| -------- | -------------- | --------------------------------------------------------------- |
+| `entry`  | entry id       | One journal entry (format 2)                                    |
+| `meta`   | name           | `movedFromLocalStorageAt`: when entries moved from localStorage |
+| `backup` | auto-increment | Entry records that failed validation, with when                 |
+
+IndexedDB database `write-files`, store `files`:
 
 | Key                   | Owner      | Contents                                                              |
 | --------------------- | ---------- | --------------------------------------------------------------------- |

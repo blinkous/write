@@ -1,0 +1,9 @@
+/* Laid out like a dialog, since it stands in for one. */
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: min(var(--width-dialog), calc(100% - var(--space-8)));
+  margin: var(--space-8) auto;
+}

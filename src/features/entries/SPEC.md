@@ -15,7 +15,21 @@ The list of journal entries and which one is open.
   end and an underline (drawn inside the field) to show it's being edited. Enter or clicking away saves, Escape cancels.
   Saving blank clears the custom title. Saving the first line unchanged keeps following
   the first line instead of freezing it. Titles are trimmed and capped at 200 characters.
-- Entries and the selected id are persisted to `localStorage` on every change. If saving the
+- **Storage** (`entryStore.ts`): entries live in IndexedDB (`entryDatabase.ts`, database
+  `write-journal`), one record per entry, loaded before the app first renders (`main.tsx`), so
+  there's no loading state. Each change writes only the entries it touched (a new object means
+  a change) and deletes removed ones, in one transaction; after a failed write, the next save
+  writes every entry. Records that fail validation move to the `backup` store, never dropped.
+  The selected id and sort stay in `localStorage`.
+- **The move from localStorage:** on the first load with IndexedDB, the localStorage journal
+  (`write.entries.v2`, or v1 migrated) is copied over once: the copy and a marker in `meta`
+  are written in one transaction, so it's never repeated or half done. The localStorage copy
+  is left untouched as a backup, and `write.entriesMovedToIndexedDb.v1` records the move.
+  Where IndexedDB can't open (some strict privacy settings), entries stay in localStorage as
+  before. If it can't open after the move, the localStorage copy is out of date, so instead of
+  showing it the app shows `JournalUnavailable` ("Your journal couldn’t open", with Reload)
+  and saves nothing.
+- If saving the
   entries or the settings (appearance, sort) fails (e.g. storage is full), `SaveFailedDialog`
   says so and offers every export (JSON, markdown, settings) beside Dismiss. It opens by itself,
   often mid-typing, so focus goes to the dialog rather than a button: a stray Enter or Space
@@ -59,7 +73,7 @@ The list of journal entries and which one is open.
 
 ## Data
 
-- **Format 2** (storage key `write.entries.v2`, export `version: 2`) reserves `#` headings for
+- **Format 2** (each IndexedDB record, the old storage key `write.entries.v2`, export `version: 2`) reserves `#` headings for
   entry titles. Format 1 data (key `write.entries.v1`, export `version: 1`) is migrated by
   `migrateEntryFromFormat1`: an untitled entry starting with a `#` heading gets it as its
   title; all other headings move down a level. Stored v1 data is migrated once (only when v2

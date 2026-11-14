@@ -2,13 +2,12 @@ import type { JSONContent } from '@tiptap/react'
 import { useEffect, useReducer } from 'react'
 import { createEntriesState, entriesReducer } from './entriesReducer'
 import {
-  loadEntries,
   loadEntrySort,
   loadSelectedEntryId,
-  saveEntries,
   saveEntrySort,
   saveSelectedEntryId,
 } from './entriesStorage'
+import type { EntryStore } from './entryStore'
 import type { EntrySort } from './entrySort'
 import {
   createJournalEntry,
@@ -18,19 +17,22 @@ import {
 } from './journalEntry'
 
 type UseEntriesOptions = {
+  /** Where entries are loaded from and saved to (see openEntryStore). */
+  entryStore: EntryStore
   /** What an empty journal starts with (e.g. a welcome entry); a blank entry by default. */
   createFirstEntry?: () => JournalEntry
 }
 
 export function useEntries({
+  entryStore: { storedEntries, saveEntries },
   createFirstEntry = createJournalEntry,
-}: UseEntriesOptions = {}) {
+}: UseEntriesOptions) {
   const [{ entries, selectedEntryId, sort }, dispatch] = useReducer(
     entriesReducer,
     createFirstEntry,
     (createFallbackEntry) =>
       createEntriesState(
-        loadEntries(),
+        storedEntries,
         loadSelectedEntryId(),
         createFallbackEntry(),
         loadEntrySort(),
@@ -39,7 +41,7 @@ export function useEntries({
   const selectedEntry =
     entries.find(({ id }) => id === selectedEntryId) ?? entries[0]
 
-  useEffect(() => saveEntries(entries), [entries])
+  useEffect(() => saveEntries(entries), [entries, saveEntries])
   useEffect(() => saveSelectedEntryId(selectedEntryId), [selectedEntryId])
   useEffect(() => saveEntrySort(sort), [sort])
 

@@ -29,3 +29,6 @@ if (!('showModal' in HTMLDialogElement.prototype)) {
     },
   })
 }
+
+// jsdom lacks IndexedDB; tests that use it start from a fresh, empty one (see resetIndexedDb).
+import 'fake-indexeddb/auto'

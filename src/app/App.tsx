@@ -36,6 +36,7 @@ import {
   type JournalEntry,
   EntryTitleField,
   EntryMenu,
+  type EntryStore,
   DataSettings,
   SaveFailedDialog,
   useEntries,
@@ -54,7 +55,12 @@ import styles from './App.module.css'
 
 const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
 
-export function App() {
+type AppProps = {
+  /** The journal's storage, opened before the app renders (see main.tsx). */
+  entryStore: EntryStore
+}
+
+export function App({ entryStore }: AppProps) {
   const { appearance, updateAppearance } = useAppearance()
   const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
@@ -83,6 +89,7 @@ export function App() {
     addEntries,
     deleteEntry,
   } = useEntries({
+    entryStore,
     // A first visit starts with the welcome entry instead of a blank page.
     createFirstEntry: isFirstVisit
       ? () => ({ ...createJournalEntry(), ...getWelcomeEntry() })

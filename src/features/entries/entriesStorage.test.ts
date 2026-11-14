@@ -1,6 +1,10 @@
-import { loadEntries, saveEntries } from './entriesStorage'
+import { getSaveFailure, reportSaveResult } from '../../lib/saveStatus'
+import {
+  loadLocalStorageEntries,
+  saveLocalStorageEntries,
+} from './entriesStorage'
 
-describe('loadEntries', () => {
+describe('loadLocalStorageEntries', () => {
   beforeEach(() => window.localStorage.clear())
 
   it('loads entries saved before titles existed, without a title', () => {
@@ -14,7 +18,7 @@ describe('loadEntries', () => {
       'write.entries.v1',
       JSON.stringify([savedBeforeTitles]),
     )
-    expect(loadEntries()).toEqual([
+    expect(loadLocalStorageEntries()).toEqual([
       { ...savedBeforeTitles, title: null, titleContent: null },
     ])
   })
@@ -44,10 +48,10 @@ describe('loadEntries', () => {
   it('migrates v1 entries once, leaving the v1 copy untouched as a backup', () => {
     const storedFormatOne = JSON.stringify([formatOneEntry])
     window.localStorage.setItem('write.entries.v1', storedFormatOne)
-    const [migrated] = loadEntries()
+    const [migrated] = loadLocalStorageEntries()
     expect(migrated.title).toBe('Sunday')
     expect(migrated.content.content?.[0].attrs?.level).toBe(3)
-    saveEntries([migrated])
+    saveLocalStorageEntries([migrated])
     expect(window.localStorage.getItem('write.entries.v1')).toBe(
       storedFormatOne,
     )
@@ -62,6 +66,27 @@ describe('loadEntries', () => {
       JSON.stringify([formatOneEntry]),
     )
     window.localStorage.setItem('write.entries.v2', JSON.stringify([]))
-    expect(loadEntries()).toEqual([])
+    expect(loadLocalStorageEntries()).toEqual([])
+  })
+})
+
+describe('saveLocalStorageEntries', () => {
+  beforeEach(() => window.localStorage.clear())
+  afterEach(() => {
+    vi.restoreAllMocks()
+    reportSaveResult('entries', true)
+  })
+
+  it('reports when saving fails, and when it works again', () => {
+    const setItem = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementationOnce(() => {
+        throw new DOMException('Full', 'QuotaExceededError')
+      })
+    saveLocalStorageEntries([])
+    expect(getSaveFailure()).not.toBeNull()
+    setItem.mockRestore()
+    saveLocalStorageEntries([])
+    expect(getSaveFailure()).toBeNull()
   })
 })
