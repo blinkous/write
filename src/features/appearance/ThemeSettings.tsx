@@ -1,47 +1,56 @@
 import { Redo2, Undo2 } from 'lucide-react'
-import { useId } from 'react'
 import { Button, LabeledRow, SwatchColorInput } from '../../design-system'
+import {
+  BackgroundMediaEffects,
+  BackgroundMediaTile,
+} from './BackgroundMediaSettings'
+import type { useBackgroundMedia } from './useBackgroundMedia'
 import type { usePageTheme } from './usePageTheme'
 
 type PageThemeProps = {
   pageTheme: ReturnType<typeof usePageTheme>
 }
 
+type PageColorSettingsProps = PageThemeProps & {
+  backgroundMedia: ReturnType<typeof useBackgroundMedia>
+}
+
 /**
- * The page's background and default text color, each a label with its swatch
- * at the end (part of the App section).
- * Picking a background also picks a matching text color, which can then be
- * changed. A drag in a picker is committed when it ends.
+ * The page's foreground (default text) and background colors, each a label
+ * with its tile at the end (part of the App section); only the tiles open
+ * pickers. The background row also holds the background picture or video,
+ * followed by its blur and opacity while there's one. Picking a background
+ * also picks a matching foreground, which can then be changed. A drag in a
+ * picker is committed when it ends.
  */
-export function PageColorSettings({ pageTheme }: PageThemeProps) {
+export function PageColorSettings({
+  pageTheme,
+  backgroundMedia,
+}: PageColorSettingsProps) {
   const { backgroundColor, textColor, changeBackground, changeText, commit } =
     pageTheme
-  const backgroundInputId = useId()
-  const textInputId = useId()
   return (
     <>
-      <LabeledRow
-        label="Background"
-        controlId={backgroundInputId}
-        control="swatch"
-      >
+      <LabeledRow label="Foreground" control="swatch">
         <SwatchColorInput
-          id={backgroundInputId}
-          value={backgroundColor}
-          label="Background"
-          onChange={changeBackground}
-          onCommit={commit}
-        />
-      </LabeledRow>
-      <LabeledRow label="Text" controlId={textInputId} control="swatch">
-        <SwatchColorInput
-          id={textInputId}
           value={textColor}
-          label="Text"
+          label="Foreground"
           onChange={changeText}
           onCommit={commit}
         />
       </LabeledRow>
+      <LabeledRow label="Background" control="swatch">
+        <BackgroundMediaTile backgroundMedia={backgroundMedia} />
+        <SwatchColorInput
+          value={backgroundColor}
+          label="Background color"
+          onChange={changeBackground}
+          onCommit={commit}
+        />
+      </LabeledRow>
+      {backgroundMedia.media && (
+        <BackgroundMediaEffects pageTheme={pageTheme} />
+      )}
     </>
   )
 }

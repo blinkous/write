@@ -80,8 +80,6 @@ type SwatchColorInputProps = {
   onCommit?: () => void
   /** Empties the slot; shown as a small × on hover or focus when the slot is filled. */
   onClear?: () => void
-  /** For pairing with a visible label (see LabeledRow's `controlId`). */
-  id?: string
 }
 
 /** Where the picker starts for an empty slot when no color is given: a neutral mid grey. */
@@ -97,7 +95,6 @@ export function SwatchColorInput({
   onChange,
   onCommit,
   onClear,
-  id,
 }: SwatchColorInputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const onCommitRef = useRef(onCommit)
@@ -130,7 +127,6 @@ export function SwatchColorInput({
       />
       <input
         ref={inputRef}
-        id={id}
         type="color"
         className={styles.colorInput}
         value={value ?? emptyPickerColor}

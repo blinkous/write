@@ -11,7 +11,6 @@ import {
   MarginsMenu,
   AppSettings,
   BackgroundMediaLayer,
-  BackgroundMediaSettings,
   useBackgroundMedia,
   EditorSettings,
   ThemeHistoryButtons,
@@ -203,25 +202,10 @@ export function App() {
                 id: 'app',
                 title: 'App',
                 content: (
-                  <AppSettings pageTheme={pageTheme}>
-                    <BackgroundMediaSettings
-                      hasMedia={backgroundMedia.media !== null}
-                      blur={pageTheme.backgroundBlur}
-                      opacity={pageTheme.backgroundOpacity}
-                      onChooseFile={backgroundMedia.chooseFile}
-                      onRemove={backgroundMedia.remove}
-                      onBlurChange={(blur) =>
-                        pageTheme.changeBackgroundEffects({
-                          backgroundBlur: blur,
-                        })
-                      }
-                      onOpacityChange={(opacity) =>
-                        pageTheme.changeBackgroundEffects({
-                          backgroundOpacity: opacity,
-                        })
-                      }
-                    />
-                  </AppSettings>
+                  <AppSettings
+                    pageTheme={pageTheme}
+                    backgroundMedia={backgroundMedia}
+                  />
                 ),
               },
               {

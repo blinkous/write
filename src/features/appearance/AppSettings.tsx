@@ -1,18 +1,17 @@
-import type { ReactNode } from 'react'
 import { EditableText, LabeledRow } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import { APP_NAME, TAB_TITLE_MAX_LENGTH } from './appearanceOptions'
 import { PageColorSettings } from './ThemeSettings'
+import type { useBackgroundMedia } from './useBackgroundMedia'
 import type { usePageTheme } from './usePageTheme'
 
 type AppSettingsProps = {
   pageTheme: ReturnType<typeof usePageTheme>
-  /** More of the look around the page, after the colors (e.g. the background media). */
-  children?: ReactNode
+  backgroundMedia: ReturnType<typeof useBackgroundMedia>
 }
 
-/** Everything around the page: the tab's title, its font, and the page's background and text colors. */
-export function AppSettings({ pageTheme, children }: AppSettingsProps) {
+/** Everything around the page: the tab's title, its font, and the page's foreground and background. */
+export function AppSettings({ pageTheme, backgroundMedia }: AppSettingsProps) {
   const { appFont, changeFonts, tabTitle, changeTabTitle } = pageTheme
   return (
     <>
@@ -35,8 +34,10 @@ export function AppSettings({ pageTheme, children }: AppSettingsProps) {
           }
         />
       </LabeledRow>
-      <PageColorSettings pageTheme={pageTheme} />
-      {children}
+      <PageColorSettings
+        pageTheme={pageTheme}
+        backgroundMedia={backgroundMedia}
+      />
     </>
   )
 }

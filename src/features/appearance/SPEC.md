@@ -34,8 +34,9 @@ title, background blur and opacity).
   the app's name, "Write", while empty; click it to type in place, Enter or clicking away
   keeps it, Escape puts it back; up to 60 characters, a longer saved one falls back to
   empty; it's the tab's title, or "Write" when empty), the
-  interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter) and the page
-  colors (`PageColorSettings`, below). **Editor**
+  interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter), then the page
+  colors (`PageColorSettings`, below): **Foreground**, then **Background** with the background
+  picture or video. **Editor**
   (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
   every text style, then each text style (Title, Heading 2–6, Body, Small; see
   `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
@@ -49,11 +50,12 @@ title, background blur and opacity).
   Then **Reset all styles**, which resets every
   style and sets the editor font to the app font. Letter spacing lives only here, per style
   (not as a toolbar mark), so writing stays simple. **Page colors**
-  (`PageColorSettings`, in App) are the free-form background and default text color
+  (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
+  it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
   setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
   changes), as `LabeledRow`s like the font rows: the name, then
-  its swatch tile at the end (clicking either opens the picker). `ThemeHistoryButtons` (the drawer's
+  its swatch tile at the end (only the tile opens the picker, not the name). `ThemeHistoryButtons` (the drawer's
   header) are the undo/redo for both sections. They live apart from the
   toolbar's per-text color so the two aren't confused.
   Surface and border colors derive from them with `color-mix()` in `tokens.css`. The muted
@@ -101,9 +103,12 @@ title, background blur and opacity).
 
 ## Background picture or video
 
-- Chosen in **App**, after the page colors (`BackgroundMediaSettings`): **Add picture or
-  video** (a file picker; any image, including GIFs, or video, up to 100 MB), then while one is
-  set, **Change** / **Remove** and two steppers: **Blur** (0–40 px, by 0.5; any tenth can be
+- Chosen in **App**, on the **Background** row: a tile (`FileSwatch`, via
+  `BackgroundMediaTile`) before the color tile. Empty, it shows + and a picture icon; clicking it
+  opens a file picker (any image, including GIFs, or video, up to 100 MB). Once one is set, it
+  shows a small still of it (a video's first moment); clicking changes it, and an × on hover or
+  focus removes it, like custom color slots. While one is set, two steppers follow the row,
+  indented under it (`BackgroundMediaEffects`, in a `NestedRows` group): **Blur** (0–40 px, by 0.5; any tenth can be
   typed, e.g. 0.2) and **Opacity** (0–100 %, by 10; any whole percent can be typed; default 50: how much of the media shows over the page color, so writing stays
   readable; briefly saved the other way round as a fade, which loads as its opposite).
   Other files get a warning toast and the current background stays.

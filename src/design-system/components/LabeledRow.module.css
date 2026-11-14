@@ -12,11 +12,6 @@
   white-space: nowrap;
 }
 
-.clickable {
-  flex: 1;
-  cursor: pointer;
-}
-
 /*
  * The control's padded edge sits outside the row, so its content lines up with
  * the edge. Its padding is snugger than other buttons', so the hover stays
@@ -35,8 +30,13 @@
   margin-inline-end: calc(var(--inset-icon-button) * -1);
 }
 
-/* A swatch tile, as tall as a control. */
+/* Swatch tiles, each as tall as a control. */
 .swatch {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.swatch > * {
   width: var(--size-control);
 }
 
