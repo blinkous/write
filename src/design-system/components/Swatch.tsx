@@ -73,7 +73,7 @@ type SwatchColorInputProps = {
   isSelected?: boolean
   /** Color the picker opens with when the slot is empty. */
   emptyPickerColor?: string
-  /** Clicking also opens the system color picker. */
+  /** Runs when the tile is pressed, before the system color picker opens. */
   onClick?: () => void
   onChange: (color: string) => void
   /** Called once a color is picked (native "change"), not on every step of a drag. */
@@ -84,6 +84,15 @@ type SwatchColorInputProps = {
 
 /** Where the picker starts for an empty slot when no color is given: a neutral mid grey. */
 const DEFAULT_EMPTY_PICKER_COLOR = '#808080'
+
+/** Opens a color input's picker; browsers without showPicker() get a click instead. */
+function openColorPicker(input: HTMLInputElement) {
+  try {
+    input.showPicker()
+  } catch {
+    input.click()
+  }
+}
 
 /** A swatch that opens the system color picker; shown as an empty box until filled. */
 export function SwatchColorInput({
@@ -96,6 +105,7 @@ export function SwatchColorInput({
   onCommit,
   onClear,
 }: SwatchColorInputProps) {
+  const tileRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const onCommitRef = useRef(onCommit)
 
@@ -114,25 +124,32 @@ export function SwatchColorInput({
   return (
     <div className={styles.slot}>
       {/*
-       * The tile is drawn like SwatchButton; the native color input sits on top,
-       * invisible, only to open the picker. Native color inputs can't be styled
-       * consistently across browsers (Safari draws its own well).
+       * The tile is a button, drawn like SwatchButton, that opens the native
+       * color input's picker. The input sits under it, invisible and out of the
+       * tab order: WebKit never lets the keyboard reach color inputs, and they
+       * can't be styled consistently across browsers anyway.
        */}
-      <span
+      <button
+        ref={tileRef}
+        type="button"
         className={styles.swatch}
         style={value ? { background: value } : undefined}
         data-empty={value === null}
         data-selected={isSelected}
-        aria-hidden="true"
+        aria-label={label}
+        title={label}
+        onClick={() => {
+          onClick?.()
+          if (inputRef.current) openColorPicker(inputRef.current)
+        }}
       />
       <input
         ref={inputRef}
         type="color"
         className={styles.colorInput}
         value={value ?? emptyPickerColor}
-        aria-label={label}
-        title={label}
-        onClick={onClick}
+        tabIndex={-1}
+        aria-hidden="true"
         onChange={({ target }) => onChange(target.value)}
       />
       {value !== null && onClear && (
@@ -141,7 +158,7 @@ export function SwatchColorInput({
           onClear={() => {
             onClear()
             // The button disappears with the color; keep focus on the slot.
-            inputRef.current?.focus()
+            tileRef.current?.focus()
           }}
         />
       )}

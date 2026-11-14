@@ -32,7 +32,10 @@
   outline-offset: var(--focus-ring-width);
 }
 
-/* Invisible, covering the tile, so clicks open the system color picker. */
+/*
+ * Invisible, over the tile it belongs to, so its picker opens beside the tile.
+ * Clicks pass through to the tile (a button), which also takes keyboard focus.
+ */
 .colorInput {
   position: absolute;
   inset: 0;
@@ -42,11 +45,11 @@
   padding: 0;
   border: 0;
   opacity: 0;
-  cursor: pointer;
+  pointer-events: none;
 }
 
-/* The input is invisible, so its keyboard focus ring is drawn on the tile. */
-.slot:has(.colorInput:focus-visible) .swatch {
+/* Keyboard focus shows over the selected ring, so a focused, selected tile still shows focus. */
+.swatch:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }
