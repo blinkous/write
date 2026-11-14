@@ -71,7 +71,6 @@
    * items line up. Items are also pulled out by their padding, so their text
    * lines up with the settings below (the highlight reaches into the margin).
    */
-  --focus-ring-room: calc(var(--focus-ring-width) * 2);
   margin-block: calc(var(--focus-ring-room) * -1);
   margin-inline: calc((var(--focus-ring-room) + var(--space-3)) * -1);
   padding: var(--focus-ring-room);

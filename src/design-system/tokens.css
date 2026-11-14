@@ -168,6 +168,8 @@
   --radius-medium: 0.625rem;
   --border-width: 1px;
   --focus-ring-width: 2px;
+  /* How far a focus ring reaches outside its control (its width plus its offset): room to leave where contents are clipped. */
+  --focus-ring-room: calc(var(--focus-ring-width) * 2);
 
   /* Shadows, tinted with the text color so they suit any page. */
   --shadow-floating: 0 0.5rem 2rem
