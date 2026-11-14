@@ -55,15 +55,15 @@ export function PageColorSettings({
   )
 }
 
-/** One undo/redo for fonts and colors together. */
+/** One undo/redo for every setting except the background file (see pageThemeHistory). */
 export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
   const { canUndo, canRedo, undo, redo } = pageTheme
   return (
     <>
       <Button
         iconOnly
-        aria-label="Undo font or color change"
-        title="Undo font or color change"
+        aria-label="Undo settings change"
+        title="Undo settings change"
         disabled={!canUndo}
         onClick={undo}
       >
@@ -71,8 +71,8 @@ export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
       </Button>
       <Button
         iconOnly
-        aria-label="Redo font or color change"
-        title="Redo font or color change"
+        aria-label="Redo settings change"
+        title="Redo settings change"
         disabled={!canRedo}
         onClick={redo}
       >
