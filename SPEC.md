@@ -18,7 +18,8 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 - **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
   `localStorage` is per origin: a shared or shifting port would share or "lose" entries.
 - **Never silently lose writing.** Stored data that fails validation is backed up under a
-  timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`).
+  timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`), and a
+  failed save is announced, never ignored.
 - **Imports are untrusted.** Validated against a strict format and the document schema,
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
 - Accessible: everything works by keyboard, controls are native elements with labels, and

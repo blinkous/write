@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { readStoredValue, writeStoredValue } from '../../lib/localStore'
+import { reportSaveResult } from '../../lib/saveStatus'
 import { deriveCozyTextColor } from '../../lib/cozyPalette'
 import { textStylesSchema } from '../../text-styles'
 import { isHexColor } from '../../utils/color'
@@ -189,6 +190,10 @@ export function parseAppearance(
   return result.success ? toAppearance(result.data, colorScheme) : null
 }
 
+/** A failed save (e.g. storage is full) is reported, never ignored (see lib/saveStatus). */
 export function saveAppearance(appearance: Appearance): void {
-  writeStoredValue(APPEARANCE_STORAGE_KEY, appearance)
+  reportSaveResult(
+    'appearance',
+    writeStoredValue(APPEARANCE_STORAGE_KEY, appearance),
+  )
 }

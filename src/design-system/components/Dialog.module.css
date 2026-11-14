@@ -17,15 +17,30 @@
   display: flex;
 }
 
+/* Focused only so keystrokes land nowhere (see opensUnprompted); it isn't a control, so no ring. */
+.dialog:focus {
+  outline: none;
+}
+
 .dialog::backdrop {
   background: color-mix(in srgb, var(--color-background) 60%, transparent);
   backdrop-filter: blur(var(--space-1));
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   margin: 0;
   font-size: var(--text-size-medium);
   font-weight: var(--font-weight-bold);
+}
+
+.warningIcon {
+  flex-shrink: 0;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--color-warning);
 }
 
 .body {
@@ -41,6 +56,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-2);
 }

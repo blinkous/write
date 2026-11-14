@@ -37,6 +37,7 @@ import {
   EntryTitleField,
   EntryMenu,
   DataSettings,
+  SaveFailedDialog,
   useEntries,
   useEntryTransfer,
   useTitleEditor,
@@ -308,6 +309,12 @@ export function App() {
       </div>
 
       <Toast message={toastMessage} onDismiss={dismissToast} />
+      <SaveFailedDialog
+        onExportAll={exportAllEntries}
+        onExportAllAsMarkdown={exportAllAsMarkdown}
+        onExportSettings={settingsTransfer.exportSettings}
+        onStatus={setToastMessage}
+      />
       <ConfirmDialog
         isOpen={entryToDelete !== null}
         title="Delete this entry?"

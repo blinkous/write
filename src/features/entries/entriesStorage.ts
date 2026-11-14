@@ -6,6 +6,7 @@ import {
   readStoredValue,
   writeStoredValue,
 } from '../../lib/localStore'
+import { reportSaveResult } from '../../lib/saveStatus'
 import { migrateEntryFromFormat1 } from './entryMigration'
 import { DEFAULT_ENTRY_SORT, isEntrySort, type EntrySort } from './entrySort'
 import {
@@ -67,8 +68,9 @@ export function loadEntries(): JournalEntry[] {
   return readEntries(FORMAT_1_ENTRIES_STORAGE_KEY).map(migrateEntryFromFormat1)
 }
 
+/** Saves the entries; a failure (e.g. storage is full) is reported, never ignored (see lib/saveStatus). */
 export function saveEntries(entries: readonly JournalEntry[]): void {
-  writeStoredValue(ENTRIES_STORAGE_KEY, entries)
+  reportSaveResult('entries', writeStoredValue(ENTRIES_STORAGE_KEY, entries))
 }
 
 export function loadSelectedEntryId(): string | null {
@@ -92,6 +94,7 @@ export function loadEntrySort(): EntrySort {
   )
 }
 
+/** The sort is a setting (exported with settings), so a failed save is reported too. */
 export function saveEntrySort(sort: EntrySort): void {
-  writeStoredValue(ENTRY_SORT_STORAGE_KEY, sort)
+  reportSaveResult('entrySort', writeStoredValue(ENTRY_SORT_STORAGE_KEY, sort))
 }

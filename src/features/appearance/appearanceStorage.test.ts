@@ -3,7 +3,8 @@ import {
   DEFAULT_PAGE_COLORS,
   TAB_TITLE_MAX_LENGTH,
 } from './appearanceOptions'
-import { loadAppearance } from './appearanceStorage'
+import { getSaveFailure, reportSaveResult } from '../../lib/saveStatus'
+import { loadAppearance, saveAppearance } from './appearanceStorage'
 
 describe('loadAppearance', () => {
   beforeEach(() => window.localStorage.clear())
@@ -191,5 +192,20 @@ describe('loadAppearance', () => {
       JSON.stringify({ backgroundColor: '#2b211c', textColor: 'nope' }),
     )
     expect(loadAppearance('light')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
+  })
+})
+
+describe('saving the appearance', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    reportSaveResult('appearance', true)
+  })
+
+  it('reports a failed save (e.g. full storage) instead of ignoring it', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Full', 'QuotaExceededError')
+    })
+    saveAppearance(DEFAULT_APPEARANCE)
+    expect(getSaveFailure()).not.toBeNull()
   })
 })

@@ -15,7 +15,15 @@ The list of journal entries and which one is open.
   end and an underline (drawn inside the field) to show it's being edited. Enter or clicking away saves, Escape cancels.
   Saving blank clears the custom title. Saving the first line unchanged keeps following
   the first line instead of freezing it. Titles are trimmed and capped at 200 characters.
-- Entries and the selected id are persisted to `localStorage` on every change.
+- Entries and the selected id are persisted to `localStorage` on every change. If saving the
+  entries or the settings (appearance, sort) fails (e.g. storage is full), `SaveFailedDialog`
+  says so and offers every export (JSON, markdown, settings) beside Dismiss. It opens by itself,
+  often mid-typing, so focus goes to the dialog rather than a button: a stray Enter or Space
+  can't dismiss it unread. Each saver reports
+  to `lib/saveStatus` under its own name, so one working save doesn't hide another failing.
+  Dismissed, it stays closed for that run of failures (each run gets a number from
+  `lib/saveStatus`, read with `useSyncExternalStore`); it closes by itself with a "saving
+  again" toast once every save works.
 - **Title on the page** (`EntryTitleField`, `useTitleEditor`): the entry's name sits above
   the writing in the title style and scrolls with it. It's a one-line editor
   (`journal-document/titleExtensions.ts`) styled with the same toolbar as the writing: bold,
