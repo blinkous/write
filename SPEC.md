@@ -89,7 +89,9 @@ older data without them (see the storage tests).
   tile matching the page still shows its edge. Color tiles are buttons that open the system
   color picker (a hidden color input), since WebKit never lets the keyboard reach color inputs. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
 - **Dialogs** use the design-system `Dialog` (native `<dialog>`: focus trap, Escape, focus
-  return) e.g. the welcome/privacy notice; confirmations use
+  return) e.g. the welcome/privacy notice. A dialog you opened closes on a click outside,
+  like Escape or Cancel; one that opened by itself (`opensUnprompted`, e.g. Save failed)
+  needs a button, so a stray click can't dismiss it unread. Confirmations use
   `ConfirmDialog` (Cancel first, so Enter never confirms by accident). No browser popups.
   A dialog whose main action is safe (e.g. Export) focuses it on open (`initialFocusRef`), so
   Enter does it. Choices inside a dialog are native checkboxes and radios, stacked in a
