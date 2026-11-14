@@ -1,4 +1,5 @@
 import { useRef, type ReactNode } from 'react'
+import { HiddenFileInput } from './HiddenFileInput'
 import { MenuItem } from './MenuItem'
 
 type FileMenuItemProps = {
@@ -20,17 +21,10 @@ export function FileMenuItem({
       <MenuItem onClick={() => fileInputRef.current?.click()}>
         {children}
       </MenuItem>
-      <input
+      <HiddenFileInput
         ref={fileInputRef}
-        type="file"
         accept={accept}
-        hidden
-        onChange={({ currentTarget }) => {
-          const [selectedFile] = currentTarget.files ?? []
-          // Cleared so choosing the same file again still triggers a change.
-          currentTarget.value = ''
-          if (selectedFile) onFileSelected(selectedFile)
-        }}
+        onFileSelected={onFileSelected}
       />
     </>
   )

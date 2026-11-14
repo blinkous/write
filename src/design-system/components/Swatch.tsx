@@ -44,6 +44,28 @@ export function SwatchButton({
   )
 }
 
+type SwatchClearButtonProps = {
+  /** The slot's name, e.g. "Custom color 2"; the button says "Remove" with it. */
+  label: string
+  /** Empties the slot; the caller keeps focus on the slot, since this button then disappears. */
+  onClear: () => void
+}
+
+/** A small × over a filled slot's corner, shown on hover or focus (inside a swatch slot). */
+export function SwatchClearButton({ label, onClear }: SwatchClearButtonProps) {
+  return (
+    <button
+      type="button"
+      className={styles.clearButton}
+      aria-label={`Remove ${label.toLowerCase()}`}
+      title="Remove"
+      onClick={onClear}
+    >
+      <X aria-hidden="true" />
+    </button>
+  )
+}
+
 type SwatchColorInputProps = {
   /** The slot's color, or null for an empty slot. */
   value: string | null
@@ -118,19 +140,14 @@ export function SwatchColorInput({
         onChange={({ target }) => onChange(target.value)}
       />
       {value !== null && onClear && (
-        <button
-          type="button"
-          className={styles.clearButton}
-          aria-label={`Remove ${label.toLowerCase()}`}
-          title="Remove"
-          onClick={() => {
+        <SwatchClearButton
+          label={label}
+          onClear={() => {
             onClear()
             // The button disappears with the color; keep focus on the slot.
             inputRef.current?.focus()
           }}
-        >
-          <X aria-hidden="true" />
-        </button>
+        />
       )}
     </div>
   )
