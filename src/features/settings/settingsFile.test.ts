@@ -1,5 +1,10 @@
 import { DEFAULT_APPEARANCE } from '../appearance/appearanceOptions'
-import { parseSettingsFile, serializeSettings } from './settingsFile'
+import {
+  parseSettingsFile,
+  parseSettingsRecord,
+  serializeSettings,
+  toSettingsRecord,
+} from './settingsFile'
 
 const settings = {
   appearance: { ...DEFAULT_APPEARANCE, appFont: 'nunito', margins: 'wide' },
@@ -10,6 +15,15 @@ describe('settings files', () => {
   it('round-trips settings', () => {
     const result = parseSettingsFile(serializeSettings(settings))
     expect(result).toMatchObject({ kind: 'settings', settings })
+  })
+
+  it('reads the settings record saved inside a journal export', () => {
+    // Saved and read as JSON, like the journal file that carries it.
+    const savedRecord = JSON.parse(JSON.stringify(toSettingsRecord(settings)))
+    expect(parseSettingsRecord(savedRecord)).toMatchObject({
+      kind: 'settings',
+      settings,
+    })
   })
 
   it('leaves journal backups and other files to the journal import', () => {

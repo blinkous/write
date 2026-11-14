@@ -39,23 +39,37 @@ const exportFileSchema = z.object({
       }),
     )
     .max(MAX_IMPORT_ENTRIES),
+  /** Settings saved alongside (see serializeEntries); read by whoever imports settings. */
+  settings: z.unknown().optional(),
 })
+
+type SerializeOptions = {
+  exportedAt?: Date
+  /**
+   * Settings to save in the same file (opaque here: the settings feature
+   * writes and reads them). Older versions of the app ignore them and still
+   * import the entries.
+   */
+  settings?: unknown
+}
 
 export function serializeEntries(
   entries: readonly JournalEntry[],
-  exportedAt = new Date(),
+  { exportedAt = new Date(), settings }: SerializeOptions = {},
 ): string {
   const exportFile = {
     format: EXPORT_FORMAT,
     version: EXPORT_VERSION,
     exportedAt: exportedAt.toISOString(),
     entries,
+    ...(settings !== undefined && { settings }),
   }
   return `${JSON.stringify(exportFile, null, 2)}\n`
 }
 
 type ParseResult =
-  { ok: true; entries: JournalEntry[] } | { ok: false; reason: string }
+  | { ok: true; entries: JournalEntry[]; settings?: unknown }
+  | { ok: false; reason: string }
 
 /** Validates an export file. All-or-nothing: one bad entry rejects the whole file. */
 export function parseEntriesFile(fileText: string): ParseResult {
@@ -89,6 +103,7 @@ export function parseEntriesFile(fileText: string): ParseResult {
   return {
     ok: true,
     entries: isFormat1 ? entries.map(migrateEntryFromFormat1) : entries,
+    settings: fileResult.data.settings,
   }
 }
 

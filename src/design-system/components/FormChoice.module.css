@@ -1,0 +1,84 @@
+/* Native checkboxes and radios in a labeled group (see ChoiceFieldset). */
+.fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Like a settings section's title. A legend isn't a flex item, so it pads itself. */
+.legend {
+  padding: 0 0 var(--space-1);
+  color: var(--color-muted);
+  font-size: var(--text-size-caption);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--size-control);
+  cursor: pointer;
+}
+
+.choice:has(:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/*
+ * Drawn here rather than by the browser, whose controls have white fills that
+ * clash with colorful themes: an outline in the text color over whatever's
+ * behind, filled with the text color when checked.
+ */
+.input {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  margin: 0;
+  border: var(--border-width-strong) solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: inherit;
+}
+
+.input[type='checkbox'] {
+  border-radius: var(--radius-tiny);
+}
+
+.input[type='checkbox']:checked {
+  background: currentColor;
+}
+
+/* The check: two borders of an L, turned, in the page color. */
+.input[type='checkbox']:checked::before {
+  content: '';
+  width: calc(var(--size-icon) * 0.28);
+  height: calc(var(--size-icon) * 0.55);
+  border: solid var(--color-background);
+  border-width: 0 var(--border-width-strong) var(--border-width-strong) 0;
+  transform: translateY(-10%) rotate(45deg);
+}
+
+.input[type='radio'] {
+  border-radius: 50%;
+}
+
+/* The dot, leaving a ring of what's behind. */
+.input[type='radio']:checked {
+  background: radial-gradient(circle, currentColor 40%, transparent 45%);
+}
+
+.hint {
+  margin: var(--space-1) 0 0;
+  color: var(--color-muted);
+  font-size: var(--text-size-caption);
+}

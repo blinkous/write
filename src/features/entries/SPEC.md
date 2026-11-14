@@ -51,8 +51,9 @@ The list of journal entries and which one is open.
   markdown); `titleContent` holds the styled title document, or null when nothing is styled.
   Styling that's invalid or whose text no longer matches `title` is dropped on load and
   import; a sidebar rename that changes the text clears it.
-- **⌘S / ⇧⌘S** (`useExportShortcuts`) save a JSON backup of the open entry / all entries via
-  the Save dialog, replacing the browser's "save page"; the menus show the shortcuts.
+- **⌘S** (`useExportShortcuts`) saves a JSON backup of the open entry via the Save dialog;
+  **⇧⌘S** opens Export (below), its Export button focused so Enter saves. They replace the
+  browser's "save page"; the menus show the shortcuts.
 - **Row ⋯ menu:** each entry in the list has the same ⋯ menu as the open entry (copy as
   markdown, export, import, delete), acting on that entry and named "Actions for <name>". It
   shows on hover, keyboard focus or while open (always on touch screens), and the name makes
@@ -102,11 +103,20 @@ The list of journal entries and which one is open.
 ## Export / import
 
 - One JSON format for a single entry or the whole journal:
-  `{ format: 'write-journal', version: 2, exportedAt, entries: JournalEntry[] }`.
+  `{ format: 'write-journal', version: 2, exportedAt, entries: JournalEntry[], settings? }`.
+  `settings` (opaque here; written and read by the settings feature) makes one file a full
+  backup. Older versions ignore it and import the entries. On import, attached settings are
+  applied only once the whole file has proved valid, and the toast says so ("Settings
+  imported too.", or why they were skipped).
   The entry ⋯ menu has copy as markdown, export entry, import and delete. The settings
-  drawer's **Data** section (`DataSettings`) has export all (JSON or markdown), export
-  settings, import (journal backups or settings files; see settings `SPEC.md`), and About. Its labels are short to fit the sidebar ("Export as JSON"), with the full action
-  as the accessible name.
+  drawer's **Data** section (`DataSettings`) has **Export…**, import (journal backups or
+  settings files; see settings `SPEC.md`), and About.
+- **Export…** opens `ExportDialog`: two columns (stacking when narrow), **Include** Journal
+  and/or Settings (checkboxes) and **Format** JSON or Markdown (radios), then Cancel | Export. JSON saves the journal with its
+  settings in one file, or just one of them (settings alone save a settings file). Markdown
+  is for reading the writing elsewhere, so it holds only the journal: Settings turns off,
+  with "Settings export as JSON only.". Export is off while nothing is included. The choices
+  are remembered (`exportChoices.ts`); the first time, everything as JSON.
 - **Export all as markdown** (`journalMarkdown.ts`) writes one `.md` file, oldest first so it
   reads like a journal: each entry starts with its custom name as `#` (headings shifted down
   a level, as for Copy as markdown) and an italic line saying when it was written; entries

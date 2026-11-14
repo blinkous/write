@@ -22,6 +22,15 @@ function createWrittenEntry(
 }
 
 describe('serializeEntries / parseEntriesFile', () => {
+  it('carries settings saved with the entries, untouched, and none otherwise', () => {
+    const settings = { format: 'write-settings', version: 1 }
+    const entries = [createWrittenEntry('with settings')]
+    expect(
+      parseEntriesFile(serializeEntries(entries, { settings })),
+    ).toMatchObject({ ok: true, settings })
+    expect('settings' in JSON.parse(serializeEntries(entries))).toBe(false)
+  })
+
   it('round-trips entries', () => {
     const entries = [createWrittenEntry('one'), createWrittenEntry('two')]
     const result = parseEntriesFile(serializeEntries(entries))

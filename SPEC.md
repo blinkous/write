@@ -45,6 +45,7 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 | `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity         |
 | `write.settingsOpen.v1`            | settings   | Whether the settings drawer is open                                         |
 | `write.settingsClosedSections.v1`  | settings   | Folded settings sections, by id                                             |
+| `write.exportChoices.v1`           | entries    | The Export dialog's last choices (journal, settings, format)                |
 | `write.pageThemeHistory.v1`        | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |
 | `write.privacyNoticeSeen.v1`       | privacy    | This browser has visited (no welcome entry)                                 |
 
@@ -90,6 +91,12 @@ older data without them (see the storage tests).
 - **Dialogs** use the design-system `Dialog` (native `<dialog>`: focus trap, Escape, focus
   return) e.g. the welcome/privacy notice; confirmations use
   `ConfirmDialog` (Cancel first, so Enter never confirms by accident). No browser popups.
+  A dialog whose main action is safe (e.g. Export) focuses it on open (`initialFocusRef`), so
+  Enter does it. Choices inside a dialog are native checkboxes and radios, stacked in a
+  labeled group (`ChoiceFieldset`, `Checkbox`, `RadioGroup`), drawn by the app rather than
+  the browser: an outline in the text color over whatever's behind (browsers fill them
+  white, which clashes with colorful themes), filled with it when checked. Menus keep their
+  own rows (`ChoiceGroup`).
 - **No menu titles:** a menu is named by its trigger (the popover's accessible name), and
   groups get accessible names. If a menu has parts that could be confused, make the items
   self-describing and separate the parts with a `Divider` (e.g. line spacing numbers, then

@@ -2,13 +2,13 @@ import { useEffect, useRef } from 'react'
 
 type ExportShortcutActions = {
   exportEntry: () => void
-  exportAllEntries: () => void
+  openExport: () => void
 }
 
 /**
- * ⌘S saves a backup of the current entry, ⇧⌘S of all entries (as JSON, via the
- * Save dialog). Writing is already saved as you type; these replace the
- * browser's "save page", which is no use here.
+ * ⌘S saves a backup of the current entry (as JSON, via the Save dialog); ⇧⌘S
+ * opens Export, for everything. Writing is already saved as you type; these
+ * replace the browser's "save page", which is no use here.
  */
 export function useExportShortcuts(actions: ExportShortcutActions) {
   const latestRef = useRef(actions)
@@ -24,8 +24,8 @@ export function useExportShortcuts(actions: ExportShortcutActions) {
         event.code === 'KeyS'
       if (!isSaveShortcut) return
       event.preventDefault()
-      const { exportEntry, exportAllEntries } = latestRef.current
-      if (event.shiftKey) exportAllEntries()
+      const { exportEntry, openExport } = latestRef.current
+      if (event.shiftKey) openExport()
       else exportEntry()
     }
     window.addEventListener('keydown', handleKeyDown)

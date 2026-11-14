@@ -26,8 +26,11 @@ The settings drawer at the bottom of the sidebar.
   Closed, the bar is just the ⚙. This saves a row; the drawer is still named "Settings" for
   screen readers.
 
-- **Settings backups** (`settingsFile.ts`, `useSettingsTransfer`): "Export settings" (Data)
-  saves `{ format: 'write-settings', version: 1, exportedAt, appearance, entrySort }`: fonts,
+- **Settings backups** (`settingsFile.ts`, `useSettingsTransfer`): exported from Data's
+  Export dialog, alone or inside a journal export (see entries `SPEC.md`). Alone, it saves
+  `{ format: 'write-settings', version: 1, exportedAt, appearance, entrySort }`; inside a
+  journal file, the same record without `exportedAt` (`toSettingsRecord`, read back with
+  `parseSettingsRecord`). Fonts,
   text styles, colors, custom color slots, margins, spacing and sort, not UI state. There's
   one Import: a settings file applies its settings (read like stored ones, so bad values fall
   back on their own; newer versions are refused); anything else goes to the journal import.

@@ -1,6 +1,7 @@
 export { EntryList } from './EntryList'
 export { EntryMenu } from './EntryMenu'
 export { DataSettings } from './DataSettings'
+export { ExportDialog } from './ExportDialog'
 export { JournalUnavailable } from './JournalUnavailable'
 export { SaveFailedDialog } from './SaveFailedDialog'
 export { openEntryStore, type EntryStore } from './entryStore'

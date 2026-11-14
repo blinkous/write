@@ -38,6 +38,7 @@ import {
   EntryMenu,
   type EntryStore,
   DataSettings,
+  ExportDialog,
   SaveFailedDialog,
   useEntries,
   useEntryTransfer,
@@ -127,9 +128,10 @@ export function App({ entryStore }: AppProps) {
     addEntries,
     onStatus: setToastMessage,
   })
+  const [isExportOpen, setIsExportOpen] = useState(false)
   useExportShortcuts({
     exportEntry: () => exportEntry(selectedEntry),
-    exportAllEntries,
+    openExport: () => setIsExportOpen(true),
   })
   const settingsTransfer = useSettingsTransfer({
     settings: { appearance, entrySort: sort },
@@ -140,10 +142,10 @@ export function App({ entryStore }: AppProps) {
     onStatus: setToastMessage,
   })
 
-  /** One import for everything: settings files apply settings, journal backups add entries. */
+  /** One import for everything: settings files apply settings; journal backups add entries, and apply any settings saved with them. */
   async function importFile(file: File) {
     if (!(await settingsTransfer.importIfSettings(file)))
-      await importEntries(file)
+      await importEntries(file, settingsTransfer.importAttachedSettings)
   }
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.matchMedia(WIDE_SCREEN_QUERY).matches,
@@ -234,9 +236,7 @@ export function App({ entryStore }: AppProps) {
                 title: 'Data',
                 content: (
                   <DataSettings
-                    onExportAll={exportAllEntries}
-                    onExportAllAsMarkdown={exportAllAsMarkdown}
-                    onExportSettings={settingsTransfer.exportSettings}
+                    onExport={() => setIsExportOpen(true)}
                     onImport={importFile}
                     onShowAbout={privacyNotice.open}
                   />
@@ -316,8 +316,19 @@ export function App({ entryStore }: AppProps) {
       </div>
 
       <Toast message={toastMessage} onDismiss={dismissToast} />
+      <ExportDialog
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        onExportJournal={({ includesSettings }) =>
+          exportAllEntries(
+            includesSettings ? settingsTransfer.getSettingsRecord() : undefined,
+          )
+        }
+        onExportMarkdown={exportAllAsMarkdown}
+        onExportSettings={settingsTransfer.exportSettings}
+      />
       <SaveFailedDialog
-        onExportAll={exportAllEntries}
+        onExportAll={() => exportAllEntries()}
         onExportAllAsMarkdown={exportAllAsMarkdown}
         onExportSettings={settingsTransfer.exportSettings}
         onStatus={setToastMessage}

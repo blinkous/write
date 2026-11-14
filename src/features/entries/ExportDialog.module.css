@@ -1,0 +1,9 @@
+/* Include and Format side by side, stacking when there's no room for both. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--width-dialog-column)), 1fr)
+  );
+  gap: var(--space-4);
+}

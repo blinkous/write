@@ -2,8 +2,10 @@ import type { ToastMessage } from '../../design-system'
 import { describeSaveResult, saveTextFile } from '../../lib/saveFile'
 import {
   getSettingsFileName,
+  parseSettingsRecord,
   readSettingsFile,
   serializeSettings,
+  toSettingsRecord,
   type Settings,
 } from './settingsFile'
 
@@ -35,6 +37,21 @@ export function useSettingsTransfer({
         if (message) onStatus(message)
       } catch {
         onStatus({ text: 'Couldn’t save the file.', tone: 'warning' })
+      }
+    },
+
+    /** The settings to save inside a journal export, so one file holds both. */
+    getSettingsRecord: () => toSettingsRecord(settings),
+
+    /** For settings found inside a journal export: how to apply them, or why they can't be. */
+    importAttachedSettings(rawSettings: unknown) {
+      const result = parseSettingsRecord(rawSettings)
+      if (result.kind === 'other') return null
+      if (result.kind === 'invalid')
+        return { status: `Settings skipped: ${result.reason}` }
+      return {
+        apply: () => onImport(result.settings),
+        status: 'Settings imported too.',
       }
     },
 

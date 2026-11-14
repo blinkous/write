@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode, type RefObject } from 'react'
 import styles from './Dialog.module.css'
 import { MessageTitle, type MessageTone } from './MessageTitle'
 
@@ -18,6 +18,8 @@ type DialogProps = {
    * keystroke (Enter, Space) can't press a button before it's read.
    */
   opensUnprompted?: boolean
+  /** Focused on open instead of the first control, e.g. the main action so Enter does it. */
+  initialFocusRef?: RefObject<HTMLElement | null>
 }
 
 /**
@@ -32,6 +34,7 @@ export function Dialog({
   actions,
   onClose,
   opensUnprompted = false,
+  initialFocusRef,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
@@ -42,9 +45,10 @@ export function Dialog({
     if (isOpen && !dialog.open) {
       dialog.showModal()
       if (opensUnprompted) dialog.focus()
+      else initialFocusRef?.current?.focus()
     }
     if (!isOpen && dialog.open) dialog.close()
-  }, [isOpen, opensUnprompted])
+  }, [isOpen, opensUnprompted, initialFocusRef])
 
   return (
     <dialog

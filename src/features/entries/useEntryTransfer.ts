@@ -27,13 +27,23 @@ type UseEntryTransferOptions = {
 
 const MARKDOWN_MIME_TYPE = 'text/markdown'
 
+/**
+ * Reads settings found in an imported journal file (opaque to entries):
+ * null if there are none it can use; otherwise how to apply them and what to
+ * tell the user. Applied only once the whole file has proved valid.
+ */
+export type AttachedSettingsImporter = (
+  rawSettings: unknown,
+) => { apply?: () => void; status: string } | null
+
 function jsonExport(
   entriesToExport: readonly JournalEntry[],
   suggestedName: string,
+  settings?: unknown,
 ) {
   return {
     suggestedName,
-    text: serializeEntries(entriesToExport),
+    text: serializeEntries(entriesToExport, { settings }),
     mimeType: JOURNAL_FILE_MIME_TYPE,
     description: 'Journal export',
     extension: '.json',
@@ -70,8 +80,9 @@ export function useEntryTransfer({
     },
     exportEntry: (entry: JournalEntry) =>
       saveExport(jsonExport([entry], getEntryFileName(entry))),
-    exportAllEntries: () =>
-      saveExport(jsonExport(entries, getJournalFileName())),
+    /** Every entry as JSON, with `settings` in the same file when given (see serializeEntries). */
+    exportAllEntries: (settings?: unknown) =>
+      saveExport(jsonExport(entries, getJournalFileName(), settings)),
     exportAllAsMarkdown: () =>
       saveExport({
         suggestedName: getJournalMarkdownFileName(),
@@ -81,8 +92,14 @@ export function useEntryTransfer({
         extension: '.md',
       }),
 
-    /** Accepts a single-entry or whole-journal export; both use the same format. */
-    async importEntries(file: File) {
+    /**
+     * Accepts a single-entry or whole-journal export; both use the same
+     * format. Settings saved in the file go to `importAttachedSettings`.
+     */
+    async importEntries(
+      file: File,
+      importAttachedSettings?: AttachedSettingsImporter,
+    ) {
       const parseResult = await readEntriesFile(file)
       if (!parseResult.ok) {
         onStatus({
@@ -92,8 +109,14 @@ export function useEntryTransfer({
         return
       }
       const importPlan = planImport(entries, parseResult.entries)
+      const settingsImport =
+        parseResult.settings === undefined
+          ? null
+          : (importAttachedSettings?.(parseResult.settings) ?? null)
+      settingsImport?.apply?.()
       addEntries(importPlan.entriesToAdd)
-      onStatus({ text: describeImport(importPlan), tone: 'neutral' })
+      const statusParts = [describeImport(importPlan), settingsImport?.status]
+      onStatus({ text: statusParts.filter(Boolean).join(' '), tone: 'neutral' })
     },
   }
 }

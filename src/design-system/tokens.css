@@ -164,9 +164,12 @@
   --space-8: 2rem;
 
   /* Shape */
+  --radius-tiny: 0.1875rem;
   --radius-small: 0.375rem;
   --radius-medium: 0.625rem;
   --border-width: 1px;
+  /* Outlines that must read at a glance, e.g. a checkbox's. */
+  --border-width-strong: 1.5px;
   --focus-ring-width: 2px;
   /* How far a focus ring reaches outside its control (its width plus its offset): room to leave where contents are clipped. */
   --focus-ring-room: calc(var(--focus-ring-width) * 2);
@@ -199,6 +202,8 @@
   --width-popover: 18rem;
   --width-popover-narrow: 13rem;
   --width-dialog: 36rem;
+  /* Narrowest a dialog's column gets before the columns stack. */
+  --width-dialog-column: 12rem;
   --height-popover-max: 70vh;
   --size-control: 2rem;
   --size-control-small: 1.5rem;

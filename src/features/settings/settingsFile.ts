@@ -15,16 +15,23 @@ const MAX_SETTINGS_FILE_BYTES = 1024 * 1024
 
 export type Settings = { appearance: Appearance; entrySort: EntrySort }
 
+/** The settings as saved: in a settings file, or inside a journal export (see entries' serializeEntries). */
+export function toSettingsRecord({ appearance, entrySort }: Settings) {
+  return {
+    format: SETTINGS_FORMAT,
+    version: SETTINGS_VERSION,
+    appearance,
+    entrySort,
+  }
+}
+
 export function serializeSettings(
-  { appearance, entrySort }: Settings,
+  settings: Settings,
   exportedAt = new Date(),
 ): string {
   const settingsFile = {
-    format: SETTINGS_FORMAT,
-    version: SETTINGS_VERSION,
+    ...toSettingsRecord(settings),
     exportedAt: exportedAt.toISOString(),
-    appearance,
-    entrySort,
   }
   return `${JSON.stringify(settingsFile, null, 2)}\n`
 }
@@ -50,6 +57,11 @@ export function parseSettingsFile(fileText: string): SettingsFileResult {
   } catch {
     return { kind: 'other' }
   }
+  return parseSettingsRecord(rawFile)
+}
+
+/** Reads settings as saved by toSettingsRecord, from a settings file or a journal export. */
+export function parseSettingsRecord(rawFile: unknown): SettingsFileResult {
   if (!isRecord(rawFile) || rawFile.format !== SETTINGS_FORMAT)
     return { kind: 'other' }
   if (rawFile.version !== SETTINGS_VERSION)
