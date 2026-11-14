@@ -1,5 +1,5 @@
 import { PanelLeft } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import {
   Button,
   ConfirmDialog,
@@ -43,7 +43,8 @@ import {
   useEntries,
   useEntryTransfer,
   useTitleEditor,
-  useExportShortcuts,
+  useFileShortcuts,
+  ImportFilePicker,
 } from '../features/entries'
 import {
   getWelcomeEntry,
@@ -129,9 +130,11 @@ export function App({ entryStore }: AppProps) {
     onStatus: setToastMessage,
   })
   const [isExportOpen, setIsExportOpen] = useState(false)
-  useExportShortcuts({
+  const importFilePickerRef = useRef<HTMLInputElement>(null)
+  useFileShortcuts({
     exportEntry: () => exportEntry(selectedEntry),
     openExport: () => setIsExportOpen(true),
+    openImport: () => importFilePickerRef.current?.click(),
   })
   const settingsTransfer = useSettingsTransfer({
     settings: { appearance, entrySort: sort },
@@ -316,6 +319,7 @@ export function App({ entryStore }: AppProps) {
       </div>
 
       <Toast message={toastMessage} onDismiss={dismissToast} />
+      <ImportFilePicker ref={importFilePickerRef} onImport={importFile} />
       <ExportDialog
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}

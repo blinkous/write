@@ -51,9 +51,11 @@ The list of journal entries and which one is open.
   markdown); `titleContent` holds the styled title document, or null when nothing is styled.
   Styling that's invalid or whose text no longer matches `title` is dropped on load and
   import; a sidebar rename that changes the text clears it.
-- **⌘S** (`useExportShortcuts`) saves a JSON backup of the open entry via the Save dialog;
-  **⇧⌘S** opens Export (below), its Export button focused so Enter saves. They replace the
-  browser's "save page"; the menus show the shortcuts.
+- **⌘S** (`useFileShortcuts`) saves a JSON backup of the open entry via the Save dialog;
+  **⇧⌘S** opens Export (below), its Export button focused so Enter saves; **⌘O** opens
+  Import's file picker (`ImportFilePicker`, always mounted, since the menus with Import rows
+  may be closed). They replace the browser's "save page" and "open file"; the menus show the
+  shortcuts.
 - **Row ⋯ menu:** each entry in the list has the same ⋯ menu as the open entry (copy as
   markdown, export, import, delete), acting on that entry and named "Actions for <name>". It
   shows on hover, keyboard focus or while open (always on touch screens), and the name makes

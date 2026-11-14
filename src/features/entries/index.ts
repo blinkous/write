@@ -9,7 +9,8 @@ export { isEntrySort, type EntrySort } from './entrySort'
 export { useEntries } from './useEntries'
 export { useEntryTransfer } from './useEntryTransfer'
 export { EntryTitleField } from './EntryTitleField'
-export { useExportShortcuts } from './useExportShortcuts'
+export { useFileShortcuts } from './useFileShortcuts'
+export { ImportFilePicker } from './ImportAction'
 export { useTitleEditor } from './useTitleEditor'
 export {
   createJournalEntry,
