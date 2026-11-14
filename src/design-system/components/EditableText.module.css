@@ -19,15 +19,21 @@
   font-weight: normal;
 }
 
-/* Long values end in an ellipsis; the text cursor says it can be typed in. */
+/*
+ * The whole room is the button (hover included), so a short value is still easy
+ * to click or tap; its text sits at the end. Long values end in an ellipsis; the
+ * text cursor says it can be typed in.
+ */
 .display {
   display: block;
+  flex: 1;
   overflow: hidden;
+  text-align: end;
   text-overflow: ellipsis;
   cursor: text;
 }
 
-/* Editing takes all the room, the text still at the end. */
+/* Editing takes the same room, the text still at the end, so nothing shifts. */
 .box:has(.input) {
   flex: 1;
 }
