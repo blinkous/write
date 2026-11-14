@@ -1,0 +1,15 @@
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-size-medium);
+  font-weight: var(--font-weight-bold);
+}
+
+.warningIcon {
+  flex-shrink: 0;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--color-warning);
+}

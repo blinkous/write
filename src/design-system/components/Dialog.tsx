@@ -1,12 +1,12 @@
-import { TriangleAlert } from 'lucide-react'
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import styles from './Dialog.module.css'
+import { MessageTitle, type MessageTone } from './MessageTitle'
 
 type DialogProps = {
   isOpen: boolean
   title: string
-  /** "warning" marks something gone wrong (e.g. a failed save) with a warning icon before the title. */
-  tone?: 'neutral' | 'warning'
+  /** See MessageTitle. */
+  tone?: MessageTone
   children: ReactNode
   /** Buttons along the bottom, e.g. a primary "Got it". */
   actions: ReactNode
@@ -55,12 +55,9 @@ export function Dialog({
       className={styles.dialog}
       onClose={onClose}
     >
-      <h2 id={titleId} className={styles.title}>
-        {tone === 'warning' && (
-          <TriangleAlert className={styles.warningIcon} aria-hidden="true" />
-        )}
+      <MessageTitle id={titleId} tone={tone}>
         {title}
-      </h2>
+      </MessageTitle>
       <div className={styles.body}>{children}</div>
       <div className={styles.actions}>{actions}</div>
     </dialog>
