@@ -61,7 +61,7 @@ export function SettingsDrawer({
           </DrawerSection>
         ))}
       </Drawer>
-      {/* The drawer's controls, down by its toggle; the highlighted ⚙ shows it's open. */}
+      {/* The drawer's controls, down by its toggle; the shaded ⚙ shows it's open. */}
       <div className={styles.bar}>
         {/* Slide in beside the toggle while open; out of reach while closed. */}
         <div className={styles.actions} data-open={isOpen} inert={!isOpen}>

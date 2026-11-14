@@ -262,6 +262,7 @@ export function App({ entryStore }: AppProps) {
         <header className={styles.header}>
           <Button
             iconOnly
+            plainWhenExpanded
             aria-label="Entries"
             title="Entries"
             aria-expanded={isSidebarOpen}

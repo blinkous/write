@@ -24,13 +24,13 @@
 
 /* Hover only when it can be used; disabled controls don't react. */
 .button:hover:not(:disabled) {
-  background: var(--color-surface-strong);
+  background: var(--color-shade);
 }
 
-/* On: a pressed toggle, or a toggle whose panel is open (e.g. settings, the sidebar). */
+/* On: a pressed toggle (e.g. bold), or a toggle whose panel is open (e.g. settings). */
 .button[aria-pressed='true'],
-.button[aria-expanded='true'] {
-  background: var(--color-surface-strong);
+.button[aria-expanded='true']:not(.plainWhenExpanded) {
+  background: var(--color-shade);
 }
 
 .button:disabled {
@@ -44,8 +44,17 @@
 
 .ghost:hover:not(:disabled),
 .ghost[aria-pressed='true'],
-.ghost[aria-expanded='true'] {
+.ghost[aria-expanded='true']:not(.plainWhenExpanded) {
   color: var(--color-text);
+}
+
+/* A panel toggle's shade fades in and out as the panel opens and closes. */
+@media (prefers-reduced-motion: no-preference) {
+  .button[aria-expanded] {
+    transition:
+      background-color var(--duration-quick) var(--easing-standard),
+      color var(--duration-quick) var(--easing-standard);
+  }
 }
 
 .subtle {

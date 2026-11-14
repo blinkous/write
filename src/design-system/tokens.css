@@ -95,6 +95,12 @@
     var(--color-text) 10%,
     var(--color-background)
   );
+  /*
+   * A see-through layer of the text color for hovered and "on" controls: it
+   * darkens (or lightens) whatever is behind by the same step, so it shows as
+   * well on the tinted sidebar as on the page.
+   */
+  --color-shade: color-mix(in srgb, var(--color-text) 12%, transparent);
   --color-border: color-mix(
     in srgb,
     var(--color-text) 16%,

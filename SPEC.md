@@ -28,7 +28,11 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   becomes 4.5:1 when the system asks for more contrast. Checked with axe-core in light
   and dark mode, with the drawer, menus and dialogs open. Visible labels are part of each
   control's accessible name; shortcuts are given as `aria-keyshortcuts`. Disabled controls
-  don't react to hover. Toggles for open panels (sidebar, settings) show as pressed.
+  don't react to hover. Pressed toggles (bold, italic) and the settings ⚙ while its drawer is open show as on: a
+  see-through shade (`--color-shade`) that reads the same on the page and the tinted
+  sidebar (the ⚙'s fades unless motion is reduced). The sidebar toggle doesn't
+  (`plainWhenExpanded`): the open sidebar shows it, as in most apps. Both keep
+  `aria-expanded`.
 
 ## Out of scope
 
