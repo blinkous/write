@@ -13,7 +13,12 @@ const DATABASE_VERSION = 1
 /** In `meta`: when the entries were copied over from localStorage. */
 const MOVED_FROM_LOCAL_STORAGE_KEY = 'movedFromLocalStorageAt'
 
-type EntryBackup = { backedUpAt: string; record: unknown }
+type EntryBackup = {
+  backedUpAt: string
+  record: unknown
+  /** Where the record was: "entry" store, or a localStorage key. Missing on the first backups made. */
+  source?: string
+}
 
 interface EntryDatabaseSchema extends DBSchema {
   /** Validated on every read, since stored data may predate today's format. */
@@ -45,9 +50,9 @@ export function openEntryDatabase(): Promise<EntryDatabase> {
 
 /**
  * Copies the entries kept in localStorage into the database, once: the copy
- * and a marker are written together, so it's never repeated or half done. The
- * localStorage copy stays as a backup. `loadLocalStorageEntries` is only
- * called (it parses the whole journal) while the move hasn't happened.
+ * and a marker are written together, so it's never repeated or half done.
+ * `loadLocalStorageEntries` is only called (it parses the whole journal) while
+ * the move hasn't happened.
  */
 export async function moveEntriesFromLocalStorage(
   database: EntryDatabase,
@@ -83,16 +88,34 @@ export async function readEntries(
         entries.push(result.data)
         continue
       }
-      const backup = {
-        backedUpAt: new Date().toISOString(),
-        record: cursor.value,
-      }
-      await Promise.all([backupStore.add(backup), cursor.delete()])
+      await Promise.all([
+        backupStore.add(createBackup(cursor.value, 'entry')),
+        cursor.delete(),
+      ])
     }
     return entries
   }
   const [entries] = await Promise.all([collectValidEntries(), transaction.done])
   return entries
+}
+
+/** Keeps records that can't be read as entries (e.g. an unreadable localStorage journal) in `backup`. */
+export async function backUpRecords(
+  database: EntryDatabase,
+  records: readonly { record: unknown; source: string }[],
+): Promise<void> {
+  if (records.length === 0) return
+  const transaction = database.transaction('backup', 'readwrite')
+  await Promise.all([
+    ...records.map(({ record, source }) =>
+      transaction.store.add(createBackup(record, source)),
+    ),
+    transaction.done,
+  ])
+}
+
+function createBackup(record: unknown, source: string): EntryBackup {
+  return { backedUpAt: new Date().toISOString(), record, source }
 }
 
 /**

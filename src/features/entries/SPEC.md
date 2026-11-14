@@ -23,8 +23,11 @@ The list of journal entries and which one is open.
   The selected id and sort stay in `localStorage`.
 - **The move from localStorage:** on the first load with IndexedDB, the localStorage journal
   (`write.entries.v2`, or v1 migrated) is copied over once: the copy and a marker in `meta`
-  are written in one transaction, so it's never repeated or half done. The localStorage copy
-  is left untouched as a backup, and `write.entriesMovedToIndexedDb.v1` records the move.
+  are written in one transaction, so it's never repeated or half done, and
+  `write.entriesMovedToIndexedDb.v1` records the move. Then, on every load, the journal is
+  cleared out of localStorage (v1, v2 and their `.backup.` keys): anything unreadable (a
+  backup, a journal failing validation) is first added to the `backup` store, with its key as
+  the source, so no writing is lost; readable copies are already in the database.
   Where IndexedDB can't open (some strict privacy settings), entries stay in localStorage as
   before. If it can't open after the move, the localStorage copy is out of date, so instead of
   showing it the app shows `JournalUnavailable` ("Your journal couldn’t open", with Reload)
@@ -77,7 +80,7 @@ The list of journal entries and which one is open.
   entry titles. Format 1 data (key `write.entries.v1`, export `version: 1`) is migrated by
   `migrateEntryFromFormat1`: an untitled entry starting with a `#` heading gets it as its
   title; all other headings move down a level. Stored v1 data is migrated once (only when v2
-  doesn't exist yet) and left in place as a backup; v1 files are migrated on import.
+  doesn't exist yet); v1 files are migrated on import.
 
 - `title` was added after launch. Older stored entries and exports have no `title` key; it
   loads as null (no migration rewrite needed). A malformed title also becomes null rather

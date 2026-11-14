@@ -17,9 +17,10 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   Pictures and videos may be `blob:` URLs: the background, read from IndexedDB.
 - **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
   browser storage is per origin: a shared or shifting port would share or "lose" entries.
-- **Never silently lose writing.** Stored data that fails validation is backed up under a
-  timestamped `.backup.` key before the app starts fresh (see `src/lib/localStore.ts`; invalid
-  IndexedDB entries move to a `backup` store), and a failed save is announced, never ignored.
+- **Never silently lose writing.** Stored entries that fail validation are kept in the
+  journal database's `backup` store, never dropped (where IndexedDB can't open, under a
+  timestamped `.backup.` localStorage key; see `src/lib/localStore.ts`), and a failed save is
+  announced, never ignored.
 - **Imports are untrusted.** Validated against a strict format and the document schema,
   all-or-nothing, and never overwrite existing writing (see entries `SPEC.md`).
 - Accessible: everything works by keyboard, controls are native elements with labels, and
@@ -37,8 +38,8 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 
 | Key                                | Owner      | Contents                                                                    |
 | ---------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| `write.entries.v2`                 | entries    | Journal entries before the move to IndexedDB, kept as a backup (and v1)     |
-| `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so the copy above is out of date            |
+| `write.entries.v2`                 | entries    | Journal entries, only where IndexedDB can't open (cleared once moved)       |
+| `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so a journal here would be out of date      |
 | `write.selectedEntryId.v1`         | entries    | Last open entry id                                                          |
 | `write.entrySort.v1`               | entries    | How the entries list is sorted                                              |
 | `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity         |
@@ -49,11 +50,11 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 
 IndexedDB database `write-journal` (entries; see entries `SPEC.md`):
 
-| Store    | Key            | Contents                                                        |
-| -------- | -------------- | --------------------------------------------------------------- |
-| `entry`  | entry id       | One journal entry (format 2)                                    |
-| `meta`   | name           | `movedFromLocalStorageAt`: when entries moved from localStorage |
-| `backup` | auto-increment | Entry records that failed validation, with when                 |
+| Store    | Key            | Contents                                                               |
+| -------- | -------------- | ---------------------------------------------------------------------- |
+| `entry`  | entry id       | One journal entry (format 2)                                           |
+| `meta`   | name           | `movedFromLocalStorageAt`: when entries moved from localStorage        |
+| `backup` | auto-increment | Unreadable entry records or localStorage journals, with when and where |
 
 IndexedDB database `write-files`, store `files`:
 
@@ -61,8 +62,8 @@ IndexedDB database `write-files`, store `files`:
 | --------------------- | ---------- | --------------------------------------------------------------------- |
 | `background-media.v1` | appearance | The background picture, GIF or video (its bytes and type, max 100 MB) |
 
-Bump the `vN` suffix if a format changes incompatibly, migrating from the old key once and
-leaving it in place as a backup (see entries `SPEC.md`). Fields added later must load from
+Bump the `vN` suffix if a format changes incompatibly, migrating from the old key once (see
+entries `SPEC.md`). Fields added later must load from
 older data without them (see the storage tests).
 
 ## UI patterns

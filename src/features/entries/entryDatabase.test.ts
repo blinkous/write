@@ -63,7 +63,11 @@ describe('entryDatabase', () => {
       await database.put('entry', invalidRecord)
       expect(await readEntries(database)).toEqual([monday])
       expect(await database.getAll('backup')).toEqual([
-        { backedUpAt: expect.any(String), record: invalidRecord },
+        {
+          backedUpAt: expect.any(String),
+          record: invalidRecord,
+          source: 'entry',
+        },
       ])
       expect(await database.getAllKeys('entry')).toEqual([monday.id])
     })
