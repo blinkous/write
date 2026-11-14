@@ -3,7 +3,6 @@ import { deriveReadableMutedColor } from '../../lib/readableMuted'
 import { getTextStyleVariables } from '../../text-styles'
 import { APP_NAME, type Appearance } from './appearanceOptions'
 import { getFontOption } from '../../fonts'
-import { pxToRem } from '../../utils/units'
 
 /** Pushes the appearance into the design-system CSS variables on the root element, and the tab's title and color. */
 export function applyAppearance({
@@ -17,7 +16,6 @@ export function applyAppearance({
   textColor,
   textStyles,
   tabTitle,
-  backgroundBlur,
   backgroundOpacity,
 }: Appearance): void {
   const { style } = document.documentElement
@@ -37,7 +35,6 @@ export function applyAppearance({
     getTextStyleVariables(textStyles),
   ))
     style.setProperty(variable, value)
-  style.setProperty('--background-media-blur', pxToRem(backgroundBlur))
   style.setProperty('--background-media-opacity', `${backgroundOpacity}%`)
   style.setProperty('--color-background', backgroundColor)
   style.setProperty('--color-text', textColor)

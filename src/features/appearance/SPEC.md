@@ -110,8 +110,11 @@ title, background blur and opacity).
 - The file is kept in IndexedDB (`lib/blobStore.ts`, key `background-media.v1`), saved before
   it's shown, so what's shown is what comes back after a refresh. Blur and opacity are appearance
   fields (localStorage, exported with settings); settings files don't carry the file itself.
-- `BackgroundMediaLayer` draws it behind the whole window (fixed, `object-fit: cover`), oversized
-  by the blur so its blurred edges stay off screen, at its opacity over the page color. Videos
+- `BackgroundMediaLayer` draws it behind the whole window (fixed, `object-fit: cover`), at its
+  opacity over the page color. The blur is an SVG filter (Gaussian blur, then made fully opaque,
+  within the media's own box) rather than CSS `blur()`, whose edges fade to transparent: WebKit's
+  GPU path clips the media to the window before blurring, so even oversized media showed the page
+  color at the window's edges (after a reload in Safari, until a resize). Videos
   loop silently, and stay on their first frame when the system asks for less motion (GIFs
   can't be paused, so they still play). It's decorative: hidden from screen readers.
 - While it's shown, the sidebar and header are transparent, so it fills the whole window, and

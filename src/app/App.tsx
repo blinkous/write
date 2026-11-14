@@ -162,7 +162,10 @@ export function App() {
   return (
     <div className={styles.layout} data-sidebar-open={isSidebarOpen}>
       {backgroundMedia.media && (
-        <BackgroundMediaLayer {...backgroundMedia.media} />
+        <BackgroundMediaLayer
+          {...backgroundMedia.media}
+          blur={pageTheme.backgroundBlur}
+        />
       )}
       {isSidebarOpen && (
         <aside
