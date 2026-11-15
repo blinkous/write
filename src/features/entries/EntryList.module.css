@@ -93,7 +93,8 @@
   cursor: pointer;
 }
 
-.item:hover,
+/* The row and its ⋯ hover as one, so pointing at the ⋯ keeps the row lit. */
+.row:hover .item,
 .item[aria-current='page'] {
   background: var(--color-surface-strong);
 }
