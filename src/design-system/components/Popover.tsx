@@ -1,4 +1,11 @@
-import { useId, useRef, type ReactNode, type ToggleEvent } from 'react'
+import {
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+  type ToggleEvent,
+} from 'react'
+import { flushSync } from 'react-dom'
 import { Button, type ButtonVariant } from './Button'
 import styles from './Popover.module.css'
 
@@ -55,7 +62,10 @@ function isFocusLost(panel: HTMLDivElement): boolean {
 
 /**
  * Light-dismiss panel built on the native Popover API, which handles
- * Escape, outside clicks and focus return without extra JS.
+ * Escape, outside clicks and focus return without extra JS. Its content is
+ * only rendered while open: closed menus would otherwise re-render with the
+ * app on every keystroke (whole font lists and swatch grids), garbage WebKit
+ * is slow to give back.
  */
 export function Popover({
   label,
@@ -69,12 +79,23 @@ export function Popover({
   onClose,
 }: PopoverProps) {
   const popoverId = useId()
+  const [isOpen, setIsOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const getPanel = () => document.getElementById(popoverId)
   const close = () => getPanel()?.hidePopover()
   const refocus = () => {
     const panel = getPanel()
     if (panel instanceof HTMLDivElement) focusInitialControl(panel)
+  }
+
+  /* Rendered before the panel shows (not after), so it opens at its full size and the focus below finds its controls. */
+  function handleBeforeToggle({
+    newState,
+    target,
+    currentTarget,
+  }: ToggleEvent<HTMLDivElement>) {
+    if (target === currentTarget && newState === 'open')
+      flushSync(() => setIsOpen(true))
   }
 
   function handleToggle({
@@ -87,6 +108,7 @@ export function Popover({
     if (newState === 'open') return focusInitialControl(currentTarget)
     // Back to the trigger, so keyboard users keep their place (onClose may move it on, e.g. to the text).
     if (isFocusLost(currentTarget)) triggerRef.current?.focus()
+    setIsOpen(false)
     onClose?.()
   }
 
@@ -108,10 +130,14 @@ export function Popover({
         popover="auto"
         role="dialog"
         aria-label={label}
+        onBeforeToggle={handleBeforeToggle}
         onToggle={handleToggle}
         className={`${styles.panel} ${placement === 'beside' ? styles.beside : styles[align]}`}
       >
-        {typeof children === 'function' ? children(close, refocus) : children}
+        {isOpen &&
+          (typeof children === 'function'
+            ? children(close, refocus)
+            : children)}
       </div>
     </div>
   )

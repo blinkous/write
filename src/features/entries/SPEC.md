@@ -53,8 +53,8 @@ The list of journal entries and which one is open.
   import; a sidebar rename that changes the text clears it.
 - **⌘S** (`useFileShortcuts`) saves a JSON backup of the open entry via the Save dialog;
   **⇧⌘S** opens Export (below), its Export button focused so Enter saves; **⌘O** opens
-  Import's file picker (`ImportFilePicker`, always mounted, since the menus with Import rows
-  may be closed). They replace the browser's "save page" and "open file"; the menus show the
+  Import's file picker (`ImportFilePicker`, the app's one import picker, which the Import
+  rows open too: it's always mounted, unlike menus' contents). They replace the browser's "save page" and "open file"; the menus show the
   shortcuts.
 - **Row ⋯ menu:** each entry in the list has the same ⋯ menu as the open entry (copy as
   markdown, export, import, delete), acting on that entry and named "Actions for <name>". It

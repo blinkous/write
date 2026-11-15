@@ -7,7 +7,8 @@ type EntryMenuProps = {
   label?: string
   onCopyMarkdown: () => void
   onExport: () => void
-  onImport: (file: File) => void
+  /** Opens the import file picker. */
+  onChooseImportFile: () => void
   onDelete: () => void
 }
 
@@ -16,7 +17,7 @@ export function EntryMenu({
   label = 'Entry actions',
   onCopyMarkdown,
   onExport,
-  onImport,
+  onChooseImportFile,
   onDelete,
 }: EntryMenuProps) {
   return (
@@ -42,7 +43,10 @@ export function EntryMenu({
             <Download aria-hidden="true" />
             Export entry as JSON
           </MenuItem>
-          <ImportAction onImport={onImport} closeMenu={closeMenu} />
+          <ImportAction
+            onChooseFile={onChooseImportFile}
+            closeMenu={closeMenu}
+          />
           <MenuItem
             variant="danger"
             onClick={() => {

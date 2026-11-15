@@ -89,11 +89,16 @@ export function Dialog({
         pressStartedOnBackdropRef.current = false
       }}
     >
-      <MessageTitle id={titleId} tone={tone}>
-        {title}
-      </MessageTitle>
-      <div className={styles.body}>{children}</div>
-      <div className={styles.actions}>{actions}</div>
+      {/* Like closed menus, a closed dialog renders nothing (see Popover). */}
+      {isOpen && (
+        <>
+          <MessageTitle id={titleId} tone={tone}>
+            {title}
+          </MessageTitle>
+          <div className={styles.body}>{children}</div>
+          <div className={styles.actions}>{actions}</div>
+        </>
+      )}
     </dialog>
   )
 }

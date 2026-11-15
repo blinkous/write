@@ -131,10 +131,11 @@ export function App({ entryStore }: AppProps) {
   })
   const [isExportOpen, setIsExportOpen] = useState(false)
   const importFilePickerRef = useRef<HTMLInputElement>(null)
+  const openImportPicker = () => importFilePickerRef.current?.click()
   useFileShortcuts({
     exportEntry: () => exportEntry(selectedEntry),
     openExport: () => setIsExportOpen(true),
-    openImport: () => importFilePickerRef.current?.click(),
+    openImport: openImportPicker,
   })
   const settingsTransfer = useSettingsTransfer({
     settings: { appearance, entrySort: sort },
@@ -165,7 +166,7 @@ export function App({ entryStore }: AppProps) {
         label={label}
         onCopyMarkdown={() => copyEntryAsMarkdown(entry)}
         onExport={() => exportEntry(entry)}
-        onImport={importFile}
+        onChooseImportFile={openImportPicker}
         onDelete={() => setEntryToDelete(entry)}
       />
     )
@@ -240,7 +241,7 @@ export function App({ entryStore }: AppProps) {
                 content: (
                   <DataSettings
                     onExport={() => setIsExportOpen(true)}
-                    onImport={importFile}
+                    onChooseImportFile={openImportPicker}
                     onShowAbout={privacyNotice.open}
                   />
                 ),

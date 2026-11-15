@@ -1,43 +1,45 @@
 import { Upload } from 'lucide-react'
 import type { Ref } from 'react'
-import { FileMenuItem, HiddenFileInput } from '../../design-system'
+import { HiddenFileInput, MenuItem } from '../../design-system'
 import { JOURNAL_FILE_MIME_TYPE } from './entryTransfer'
 
 /** Journal backups (one entry or all) and settings files: both are JSON. */
 const IMPORT_FILE_TYPES = `.json,${JOURNAL_FILE_MIME_TYPE}`
-/** Opens Import from anywhere (see useFileShortcuts). */
-const IMPORT_SHORTCUT = 'Mod-o'
 
 type ImportActionProps = {
-  onImport: (file: File) => void
-  /** Closes the menu it's in, if any, before the import runs. */
+  /** Opens the app's one import picker (ImportFilePicker). */
+  onChooseFile: () => void
+  /** Closes the menu it's in, if any, as the picker opens. */
   closeMenu?: () => void
 }
 
 /** The Import row of a menu. */
-export function ImportAction({ onImport, closeMenu }: ImportActionProps) {
+export function ImportAction({ onChooseFile, closeMenu }: ImportActionProps) {
   return (
-    <FileMenuItem
-      accept={IMPORT_FILE_TYPES}
-      shortcut={IMPORT_SHORTCUT}
-      onFileSelected={(file) => {
+    <MenuItem
+      shortcut="Mod-o"
+      onClick={() => {
         closeMenu?.()
-        onImport(file)
+        onChooseFile()
       }}
     >
       <Upload aria-hidden="true" />
       Import from JSON
-    </FileMenuItem>
+    </MenuItem>
   )
 }
 
 type ImportFilePickerProps = {
-  /** Call `.click()` on it to open the picker (⌘O). */
+  /** Call `.click()` on it to open the picker (Import rows, ⌘O). */
   ref: Ref<HTMLInputElement>
   onImport: (file: File) => void
 }
 
-/** Import's file picker, always mounted (unlike menus), for the shortcut to open. */
+/**
+ * The app's one import picker, always mounted: menus render nothing once
+ * closed, so a picker inside one could vanish (and drop its file) if the menu
+ * closed while the system picker was up.
+ */
 export function ImportFilePicker({ ref, onImport }: ImportFilePickerProps) {
   return (
     <HiddenFileInput

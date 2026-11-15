@@ -5,14 +5,15 @@ import { ImportAction } from './ImportAction'
 type DataSettingsProps = {
   /** Opens the Export dialog (journal and/or settings, JSON or markdown). */
   onExport: () => void
-  onImport: (file: File) => void
+  /** Opens the import file picker. */
+  onChooseImportFile: () => void
   onShowAbout: () => void
 }
 
 /** Export (the journal and/or settings), import, and About (which is mostly about where data lives). */
 export function DataSettings({
   onExport,
-  onImport,
+  onChooseImportFile,
   onShowAbout,
 }: DataSettingsProps) {
   return (
@@ -22,7 +23,7 @@ export function DataSettings({
         Export…
       </MenuItem>
       {/* Takes journal backups and settings files alike. */}
-      <ImportAction onImport={onImport} />
+      <ImportAction onChooseFile={onChooseImportFile} />
       <MenuItem onClick={onShowAbout}>
         <Info aria-hidden="true" />
         About
