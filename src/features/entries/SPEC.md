@@ -4,13 +4,19 @@ The list of journal entries and which one is open.
 
 ## How it works
 
-- State is managed by a pure reducer (`entriesReducer.ts`); ids and timestamps are created
-  outside it and passed in actions.
-- **The journal** (`journal.ts`) holds that state outside React, so typing re-renders only
-  what shows it. Components subscribe to the part they show (`useJournalState`): the list
-  to the entries, the app to which entry is open and the sort, and the editors read their
-  entry once when it opens. Click actions (export, copy, import, delete) read entries as
-  they are then (`getState`, `getEntry`). Every change is saved, as before.
+- **Only storage holds every entry's writing.** The journal (`journal.ts`, opened in
+  `main.tsx` before the first render) knows the list's order, a summary of each entry
+  (`EntrySummary`: everything but the writing, plus the first line), which entry is
+  selected, and which is open. The editor holds the open entry's writing. Actions that need
+  writing (export, copy, import, search) read it from storage when they run
+  (`getEntry`, `getAllEntries`).
+- **Renders follow what they show** (`useJournalState`, `useEntrySummary`): the list follows
+  the order, each row its own entry, the app the open entry and the sort. Typing redraws
+  only the open entry's row.
+- **Opening an entry:** choosing one selects it at once (the list shows it); it opens once
+  its writing has loaded, the previous one staying in the editor meanwhile. If it can't be
+  read, the selection goes back and a toast says so. New and imported entries open straight
+  away, their writing already at hand.
 - Entries are always sorted newest first and the list is never empty: deleting the last
   entry replaces it with a blank one.
 - An entry's name is its custom `title` if set, otherwise its first non-empty line of
@@ -21,10 +27,13 @@ The list of journal entries and which one is open.
   Saving blank clears the custom title. Saving the first line unchanged keeps following
   the first line instead of freezing it. Titles are trimmed and capped at 200 characters.
 - **Storage** (`entryStore.ts`): entries live in IndexedDB (`entryDatabase.ts`, database
-  `write-journal`), one record per entry, loaded before the app first renders (`main.tsx`), so
-  there's no loading state. Each change writes only the entries it touched (a new object means
-  a change) and deletes removed ones, in one transaction; after a failed write, the next save
-  writes every entry. Records that fail validation move to the `backup` store, never dropped.
+  `write-journal`), one record per entry, read and validated at startup (records that fail
+  validation move to the `backup` store, never dropped). Each change is written straight
+  away as a change to its own entry (`databaseEntryStore.ts`; a rename keeps the stored
+  writing, an edit the stored name), one transaction at a time, with changes made meanwhile
+  combined into the next (`pendingEntryWrites.ts`). A change stays pending until its write
+  succeeds, and every read includes what's pending, so exports always have the latest
+  writing. A failed write is reported (Save failed) and written again with the next change.
   The selected id and sort stay in `localStorage`.
 - **The move from localStorage:** on the first load with IndexedDB, the localStorage journal
   (`write.entries.v2`, or v1 migrated) is copied over once: the copy and a marker in `meta`
@@ -34,7 +43,7 @@ The list of journal entries and which one is open.
   backup, a journal failing validation) is first added to the `backup` store, with its key as
   the source, so no writing is lost; readable copies are already in the database.
   Where IndexedDB can't open (some strict privacy settings), entries stay in localStorage as
-  before. If it can't open after the move, the localStorage copy is out of date, so instead of
+  before, held whole and written whole on each change (`createMemoryEntryStore`). If it can't open after the move, the localStorage copy is out of date, so instead of
   showing it the app shows `JournalUnavailable` ("Your journal couldn’t open", with Reload)
   and saves nothing.
 - If saving the
@@ -69,12 +78,13 @@ The list of journal entries and which one is open.
   pick-one menu): Newest first (default), Oldest
   first, Last edited (by `updatedAt`, which edits and renames set; the list then shows "Edited
   <date>"), or Name A–Z (natural order, ignoring case and accents; unnamed entries last). The
-  reducer keeps entries in the chosen order after every change, so the list, keyboard order
+  journal keeps entries in the chosen order after every change, so the list, keyboard order
   and "what opens after a delete" all agree. Stored under `write.entrySort.v1`.
-- **First entry:** `createJournal` takes `createFirstEntry` for an empty journal (the app passes
+- **First entry:** `openJournal` takes `createFirstEntry` for an empty journal (the app passes
   the welcome entry on a first visit); otherwise a blank entry.
 - **Search** (`entrySearch.ts`, the field at the top of the sidebar) filters entries as you
   type by name and text, ignoring case and accents; every word must match, in any order.
+  Each change of the query reads the entries from storage (`useEntrySearch`).
   Matches are highlighted; when the match is in the text rather than the name, a snippet
   around it replaces the date. Escape clears; creating an entry clears the search (a new
   empty entry wouldn't match). The result count is announced for screen readers. While

@@ -30,13 +30,11 @@ import {
   useJournalEditor,
 } from '../features/editor'
 import {
-  createJournal,
-  createJournalEntry,
-  JournalEntryList,
+  EntryList,
   getEntryTitle,
+  type Journal,
   EntryTitleField,
   EntryMenu,
-  type EntryStore,
   DataSettings,
   ExportDialog,
   SaveFailedDialog,
@@ -47,10 +45,9 @@ import {
   ImportFilePicker,
 } from '../features/entries'
 import {
-  getWelcomeEntry,
   PrivacyNotice,
-  useFirstVisit,
   usePrivacyNotice,
+  useRememberVisit,
 } from '../features/privacy'
 import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
 import styles from './App.module.css'
@@ -58,15 +55,15 @@ import styles from './App.module.css'
 const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
 
 type AppProps = {
-  /** The journal's storage, opened before the app renders (see main.tsx). */
-  entryStore: EntryStore
+  /** Opened before the app renders, with the open entry's writing loaded (see main.tsx). */
+  journal: Journal
 }
 
-export function App({ entryStore }: AppProps) {
+export function App({ journal }: AppProps) {
   const { appearance, updateAppearance } = useAppearance()
   const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
-  const isFirstVisit = useFirstVisit()
+  useRememberVisit()
   // The entry awaiting delete confirmation, from the page's menu or a list row's.
   const [entryIdToDelete, setEntryIdToDelete] = useState<string | null>(null)
   const {
@@ -78,30 +75,17 @@ export function App({ entryStore }: AppProps) {
     textColor,
     customTextColors,
   } = appearance
-  // Held outside React state: the app only subscribes to which entry is open and the sort, never to the writing.
-  const [journal] = useState(() =>
-    createJournal({
-      entryStore,
-      // A first visit starts with the welcome entry instead of a blank page.
-      createFirstEntry: isFirstVisit
-        ? () => ({ ...createJournalEntry(), ...getWelcomeEntry() })
-        : undefined,
-    }),
-  )
-  const selectedEntryId = useJournalState(
-    journal,
-    (state) => state.selectedEntryId,
-  )
+  // The app follows only which entry is open and the sort, never the writing (see Journal).
+  const openEntry = useJournalState(journal, (state) => state.openEntry)
   const sort = useJournalState(journal, (state) => state.sort)
   const editor = useJournalEditor({
-    entryId: selectedEntryId,
-    // Read once per entry: the editor holds the writing from then on.
-    initialContent: journal.getEntry(selectedEntryId).content,
+    entryId: openEntry.id,
+    initialContent: openEntry.initialContent,
     onChange: journal.updateEntryContent,
   })
   const titleEditor = useTitleEditor({
     journal,
-    entryId: selectedEntryId,
+    entryId: openEntry.id,
     onContinue: () => {
       // Focus right away (Tiptap's focus waits a frame), so the next keystroke lands in the writing.
       editor.view.focus()
@@ -120,7 +104,8 @@ export function App({ entryStore }: AppProps) {
     exportAllAsMarkdown,
     importEntries,
   } = useEntryTransfer({
-    getEntries: () => journal.getState().entries,
+    getEntry: journal.getEntry,
+    getAllEntries: journal.getAllEntries,
     contentToMarkdown: (content, header) =>
       documentToMarkdown(editor, content, header),
     addEntries: journal.addEntries,
@@ -130,7 +115,7 @@ export function App({ entryStore }: AppProps) {
   const importFilePickerRef = useRef<HTMLInputElement>(null)
   const openImportPicker = () => importFilePickerRef.current?.click()
   useFileShortcuts({
-    exportEntry: () => exportEntry(journal.getSelectedEntry()),
+    exportEntry: () => exportEntry(journal.getState().openEntry.id),
     openExport: () => setIsExportOpen(true),
     openImport: openImportPicker,
   })
@@ -156,13 +141,13 @@ export function App({ entryStore }: AppProps) {
     if (!window.matchMedia(WIDE_SCREEN_QUERY).matches) setIsSidebarOpen(false)
   }
 
-  /** The same ⋯ menu for the open entry (page header) and each entry in the list. Actions read the entry as it is when clicked. */
+  /** The same ⋯ menu for the open entry (page header) and each entry in the list. Actions read the entry when clicked. */
   function renderEntryMenu(entryId: string, label?: string) {
     return (
       <EntryMenu
         label={label}
-        onCopyMarkdown={() => copyEntryAsMarkdown(journal.getEntry(entryId))}
-        onExport={() => exportEntry(journal.getEntry(entryId))}
+        onCopyMarkdown={() => copyEntryAsMarkdown(entryId)}
+        onExport={() => exportEntry(entryId)}
         onChooseImportFile={openImportPicker}
         onDelete={() => setEntryIdToDelete(entryId)}
       />
@@ -185,13 +170,14 @@ export function App({ entryStore }: AppProps) {
             if (key === 'Escape') closeSidebarOnNarrowScreens()
           }}
         >
-          <JournalEntryList
+          <EntryList
             journal={journal}
             onEntryOpened={closeSidebarOnNarrowScreens}
-            entryActions={(entry) =>
+            onStatus={setToastMessage}
+            entryActions={(summary) =>
               renderEntryMenu(
-                entry.id,
-                `Actions for ${getEntryTitle(entry) ?? 'Untitled'}`,
+                summary.id,
+                `Actions for ${getEntryTitle(summary) ?? 'Untitled'}`,
               )
             }
           />
@@ -292,7 +278,7 @@ export function App({ entryStore }: AppProps) {
           </div>
 
           <div className={styles.headerActions}>
-            {renderEntryMenu(selectedEntryId)}
+            {renderEntryMenu(openEntry.id)}
           </div>
         </header>
 
@@ -332,7 +318,13 @@ export function App({ entryStore }: AppProps) {
         confirmLabel="Delete"
         tone="danger"
         onConfirm={() => {
-          if (entryIdToDelete) journal.deleteEntry(entryIdToDelete)
+          if (entryIdToDelete)
+            journal.deleteEntry(entryIdToDelete).catch(() =>
+              setToastMessage({
+                text: 'Couldn’t open the next entry.',
+                tone: 'warning',
+              }),
+            )
           setEntryIdToDelete(null)
         }}
         onCancel={() => setEntryIdToDelete(null)}

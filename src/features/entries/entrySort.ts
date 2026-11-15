@@ -1,5 +1,5 @@
 import { createOptionGuard } from '../../utils/options'
-import { getEntryTitle, type JournalEntry } from './journalEntry'
+import { getEntryTitle, type EntrySummary } from './journalEntry'
 
 export const ENTRY_SORT_OPTIONS = [
   { value: 'newest', label: 'Newest first' },
@@ -18,7 +18,7 @@ const nameCollator = new Intl.Collator(undefined, {
   numeric: true,
 })
 
-type EntryComparer = (first: JournalEntry, second: JournalEntry) => number
+type EntryComparer = (first: EntrySummary, second: EntrySummary) => number
 
 const byNewest: EntryComparer = (first, second) =>
   second.createdAt.localeCompare(first.createdAt)
@@ -42,9 +42,25 @@ const ENTRY_COMPARERS: Record<EntrySort, EntryComparer> = {
   },
 }
 
-export function sortEntries(
-  entries: readonly JournalEntry[],
+export function sortEntries<Entry extends EntrySummary>(
+  entries: readonly Entry[],
   sort: EntrySort,
-): JournalEntry[] {
+): Entry[] {
   return entries.toSorted(ENTRY_COMPARERS[sort])
+}
+
+/**
+ * Entry ids in the list's order. Returns `currentEntryIds` itself when the
+ * order is unchanged, so what shows the list doesn't re-render.
+ */
+export function sortEntryIds(
+  summaries: Iterable<EntrySummary>,
+  sort: EntrySort,
+  currentEntryIds: readonly string[] = [],
+): readonly string[] {
+  const entryIds = sortEntries([...summaries], sort).map(({ id }) => id)
+  const isSameOrder =
+    entryIds.length === currentEntryIds.length &&
+    entryIds.every((entryId, index) => entryId === currentEntryIds[index])
+  return isSameOrder ? currentEntryIds : entryIds
 }

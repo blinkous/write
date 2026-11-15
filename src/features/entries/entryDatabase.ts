@@ -1,12 +1,11 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
-import { reportSaveResult } from '../../lib/saveStatus'
 import type { JournalEntry } from './journalEntry'
 import { storedEntrySchema } from './storedEntrySchema'
 
 /*
  * The journal's entries, one record per entry, in this browser's IndexedDB:
  * far more room than localStorage, and each change writes only the entries it
- * touched. Owned by the entries feature (files live apart, in lib/blobStore).
+ * touched (see databaseEntryStore). Owned by the entries feature (files live apart, in lib/blobStore).
  */
 const DATABASE_NAME = 'write-journal'
 const DATABASE_VERSION = 1
@@ -118,76 +117,8 @@ function createBackup(record: unknown, source: string): EntryBackup {
   return { backedUpAt: new Date().toISOString(), record, source }
 }
 
-/**
- * Returns a save function that writes only what changed since the last call
- * (entries are replaced, never mutated, so a new object means a change) and
- * deletes removed entries, in one transaction. After a failed write, the next
- * save writes every entry, so nothing missed stays unsaved. Each outcome is
- * reported (see lib/saveStatus): saving counts as working again only once a
- * full save has covered every failure.
- */
-export function createEntrySaver(
-  database: EntryDatabase,
-  savedEntries: readonly JournalEntry[],
-): (entries: readonly JournalEntry[]) => void {
-  let lastEntries = indexById(savedEntries)
-  let failedWrites = 0
-  let failedWritesCovered = 0
-
-  return (entries) => {
-    const isFullSave = failedWrites > failedWritesCovered
-    const failedWritesBefore = failedWrites
-    const changedEntries = isFullSave
-      ? entries
-      : entries.filter((entry) => lastEntries.get(entry.id) !== entry)
-    const currentEntries = indexById(entries)
-    const removedIds = [...lastEntries.keys()].filter(
-      (id) => !currentEntries.has(id),
-    )
-    lastEntries = currentEntries
-    if (changedEntries.length === 0 && removedIds.length === 0) return
-
-    writeEntries(
-      database,
-      changedEntries,
-      removedIds,
-      isFullSave ? entries : null,
-    )
-      .then(() => {
-        if (isFullSave) failedWritesCovered = failedWritesBefore
-        reportSaveResult('entries', failedWrites === failedWritesCovered)
-      })
-      .catch(() => {
-        failedWrites += 1
-        reportSaveResult('entries', false)
-      })
-  }
-}
-
-/** `allEntries`, when given, also deletes every stored entry not among them (a full save). */
-async function writeEntries(
-  database: EntryDatabase,
-  changedEntries: readonly JournalEntry[],
-  removedIds: readonly string[],
-  allEntries: readonly JournalEntry[] | null,
-): Promise<void> {
-  const transaction = database.transaction('entry', 'readwrite')
-  const { store } = transaction
-  async function write() {
-    const keptEntries = allEntries && indexById(allEntries)
-    const staleIds = keptEntries
-      ? (await store.getAllKeys()).filter((id) => !keptEntries.has(id))
-      : removedIds
-    await Promise.all([
-      ...changedEntries.map((entry) => store.put(entry)),
-      ...staleIds.map((id) => store.delete(id)),
-    ])
-  }
-  await Promise.all([write(), transaction.done])
-}
-
-function indexById(
-  entries: readonly JournalEntry[],
-): Map<string, JournalEntry> {
-  return new Map(entries.map((entry) => [entry.id, entry]))
+/** A record read back from the database, if it's a valid entry. */
+export function parseStoredEntry(record: unknown): JournalEntry | null {
+  const result = storedEntrySchema.safeParse(record)
+  return result.success ? result.data : null
 }

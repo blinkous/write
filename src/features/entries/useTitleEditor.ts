@@ -37,7 +37,7 @@ export function useTitleEditor({
         TitleBehavior.configure({ maxLength: MAX_ENTRY_TITLE_LENGTH }),
       ],
       // Read once per entry: the editor holds the title from then on.
-      content: getTitleDocument(journal.getEntry(entryId)),
+      content: getTitleDocument(getSummaryOrBlank(journal, entryId)),
       // Loaded from tiptapBase.css instead; the CSP blocks inline <style> tags.
       injectCSS: false,
       editorProps: {
@@ -70,14 +70,15 @@ export function useTitleEditor({
   useEffect(
     () =>
       journal.subscribe(() => {
-        const entry = journal.getEntry(entryId)
+        const summary = journal.getSummary(entryId)
         if (
+          !summary ||
           editor.isDestroyed ||
           editor.isFocused ||
-          readTitleDocument(editor.getJSON()).title === entry.title
+          readTitleDocument(editor.getJSON()).title === summary.title
         )
           return
-        editor.commands.setContent(getTitleDocument(entry), {
+        editor.commands.setContent(getTitleDocument(summary), {
           emitUpdate: false,
         })
       }),
@@ -85,4 +86,9 @@ export function useTitleEditor({
   )
 
   return editor
+}
+
+/** The entry's title fields; none if it was just deleted (its editor is about to go). */
+function getSummaryOrBlank(journal: Journal, entryId: string) {
+  return journal.getSummary(entryId) ?? { title: null, titleContent: null }
 }

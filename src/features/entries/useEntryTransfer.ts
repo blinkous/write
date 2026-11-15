@@ -18,8 +18,9 @@ import {
 } from './journalMarkdown'
 
 type UseEntryTransferOptions = {
-  /** The journal's entries as they are now: read when an action runs, so typing doesn't re-render whoever exports. */
-  getEntries: () => readonly JournalEntry[]
+  /** Read from storage when an action runs (see Journal). */
+  getEntry: (entryId: string) => Promise<JournalEntry>
+  getAllEntries: () => Promise<readonly JournalEntry[]>
   /** Turns entry content into markdown (provided by the editor, which owns the format). */
   contentToMarkdown: ContentToMarkdown
   addEntries: (newEntries: readonly JournalEntry[]) => void
@@ -52,13 +53,29 @@ function jsonExport(
 }
 
 export function useEntryTransfer({
-  getEntries,
+  getEntry,
+  getAllEntries,
   contentToMarkdown,
   addEntries,
   onStatus,
 }: UseEntryTransferOptions) {
-  // Called straight from the menu click: the save dialog needs a user action.
-  async function saveExport(file: Parameters<typeof saveTextFile>[0]) {
+  /**
+   * Called straight from the menu click: the save dialog needs a user action
+   * (reading the entries first is quick enough to still count as one).
+   */
+  async function saveExport(
+    readFile: () => Promise<Parameters<typeof saveTextFile>[0]>,
+  ) {
+    let file
+    try {
+      file = await readFile()
+    } catch {
+      onStatus({
+        text: 'Couldn’t read the journal to export.',
+        tone: 'warning',
+      })
+      return
+    }
     try {
       const result = await saveTextFile(file)
       const message = describeSaveResult(result)
@@ -70,8 +87,10 @@ export function useEntryTransfer({
 
   return {
     /** Copies the entry as markdown, under its name when it has a custom one. */
-    async copyEntryAsMarkdown(entry: JournalEntry) {
-      const markdown = contentToMarkdown(entry.content, { title: entry.title })
+    async copyEntryAsMarkdown(entryId: string) {
+      const markdown = getEntry(entryId).then(({ content, title }) =>
+        contentToMarkdown(content, { title }),
+      )
       const didCopy = await copyTextToClipboard(markdown)
       onStatus(
         didCopy
@@ -79,19 +98,24 @@ export function useEntryTransfer({
           : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
       )
     },
-    exportEntry: (entry: JournalEntry) =>
-      saveExport(jsonExport([entry], getEntryFileName(entry))),
+    exportEntry: (entryId: string) =>
+      saveExport(async () => {
+        const entry = await getEntry(entryId)
+        return jsonExport([entry], getEntryFileName(entry))
+      }),
     /** Every entry as JSON, with `settings` in the same file when given (see serializeEntries). */
     exportAllEntries: (settings?: unknown) =>
-      saveExport(jsonExport(getEntries(), getJournalFileName(), settings)),
+      saveExport(async () =>
+        jsonExport(await getAllEntries(), getJournalFileName(), settings),
+      ),
     exportAllAsMarkdown: () =>
-      saveExport({
+      saveExport(async () => ({
         suggestedName: getJournalMarkdownFileName(),
-        text: journalToMarkdown(getEntries(), contentToMarkdown),
+        text: journalToMarkdown(await getAllEntries(), contentToMarkdown),
         mimeType: MARKDOWN_MIME_TYPE,
         description: 'Markdown',
         extension: '.md',
-      }),
+      })),
 
     /**
      * Accepts a single-entry or whole-journal export; both use the same
@@ -109,7 +133,17 @@ export function useEntryTransfer({
         })
         return
       }
-      const importPlan = planImport(getEntries(), parseResult.entries)
+      let existingEntries
+      try {
+        existingEntries = await getAllEntries()
+      } catch {
+        onStatus({
+          text: 'Couldn’t read the journal to import into.',
+          tone: 'warning',
+        })
+        return
+      }
+      const importPlan = planImport(existingEntries, parseResult.entries)
       const settingsImport =
         parseResult.settings === undefined
           ? null

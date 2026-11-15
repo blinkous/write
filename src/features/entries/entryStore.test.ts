@@ -1,7 +1,7 @@
 import { resetIndexedDb } from '../../test/resetIndexedDb'
 import { openEntryDatabase } from './entryDatabase'
 import { JournalUnavailableError, openEntryStore } from './entryStore'
-import { createJournalEntry } from './journalEntry'
+import { createJournalEntry, summarizeEntry } from './journalEntry'
 
 const LOCAL_STORAGE_ENTRIES_KEY = 'write.entries.v2'
 
@@ -34,7 +34,7 @@ describe('openEntryStore', () => {
       JSON.stringify([monday]),
     )
     window.localStorage.setItem('write.entries.v1', '[]')
-    expect((await openEntryStore()).storedEntries).toEqual([monday])
+    expect(await (await openEntryStore()).getAllEntries()).toEqual([monday])
     expect(Object.keys(window.localStorage)).toEqual([
       'write.entriesMovedToIndexedDb.v1',
     ])
@@ -44,7 +44,7 @@ describe('openEntryStore', () => {
     window.localStorage.setItem(LOCAL_STORAGE_ENTRIES_KEY, '{unreadable')
     const backupKey = `${LOCAL_STORAGE_ENTRIES_KEY}.backup.2026-11-01T09:00:00.000Z`
     window.localStorage.setItem(backupKey, '[{"id":"old"}]')
-    expect((await openEntryStore()).storedEntries).toEqual([])
+    expect((await openEntryStore()).storedSummaries).toEqual([])
     expect(await readDatabaseBackups()).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -73,9 +73,13 @@ describe('openEntryStore', () => {
 
   it('loads what was saved to IndexedDB, not the old localStorage copy', async () => {
     window.localStorage.setItem(LOCAL_STORAGE_ENTRIES_KEY, JSON.stringify([]))
-    const { saveEntries } = await openEntryStore()
-    saveEntries([monday])
-    expect((await openEntryStore()).storedEntries).toEqual([monday])
+    const entryStore = await openEntryStore()
+    entryStore.putEntries([monday])
+    // A read waits for the writes before it.
+    await entryStore.getAllEntries()
+    expect((await openEntryStore()).storedSummaries).toEqual([
+      summarizeEntry(monday),
+    ])
   })
 
   it('keeps using localStorage when IndexedDB never opened', async () => {
@@ -84,9 +88,9 @@ describe('openEntryStore', () => {
       JSON.stringify([monday]),
     )
     breakIndexedDb()
-    const { storedEntries, saveEntries } = await openEntryStore()
-    expect(storedEntries).toEqual([monday])
-    saveEntries([])
+    const entryStore = await openEntryStore()
+    expect(await entryStore.getAllEntries()).toEqual([monday])
+    entryStore.deleteEntry(monday.id)
     expect(window.localStorage.getItem(LOCAL_STORAGE_ENTRIES_KEY)).toBe('[]')
   })
 

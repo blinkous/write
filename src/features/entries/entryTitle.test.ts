@@ -7,6 +7,7 @@ import {
   readTitleDocument,
   reconcileTitleContent,
   renameEntryTitle,
+  summarizeEntry,
 } from './journalEntry'
 import { TitleBehavior } from './titleBehavior'
 
@@ -61,7 +62,7 @@ describe('title documents', () => {
 
   it('keeps styling through a sidebar rename only if the text is unchanged', () => {
     const entry = {
-      ...createJournalEntry(),
+      ...summarizeEntry(createJournalEntry()),
       title: 'Sunday',
       titleContent: bold('Sunday'),
     }

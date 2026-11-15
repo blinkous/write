@@ -1,4 +1,9 @@
-import { getEntryText, getEntryTitle, type JournalEntry } from './journalEntry'
+import {
+  getEntryText,
+  getEntryTitle,
+  summarizeEntry,
+  type JournalEntry,
+} from './journalEntry'
 
 /** [start, end) positions in the original text. */
 export type TextRange = readonly [number, number]
@@ -113,7 +118,7 @@ export function searchEntries(
 ): EntryMatch[] {
   const words = parseSearchQuery(query)
   return entries.flatMap((entry): EntryMatch[] => {
-    const titleText = getEntryTitle(entry) ?? 'Untitled'
+    const titleText = getEntryTitle(summarizeEntry(entry)) ?? 'Untitled'
     if (words.length === 0)
       return [{ entry, title: { text: titleText, ranges: [] }, snippet: null }]
     const bodyText = getEntryText(entry)

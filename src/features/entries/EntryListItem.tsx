@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { HighlightedText, Text, TextInput } from '../../design-system'
 import { formatEntryDate } from '../../utils/date'
-import { getEntryTitle, MAX_ENTRY_TITLE_LENGTH } from './journalEntry'
+import {
+  getEntryTitle,
+  MAX_ENTRY_TITLE_LENGTH,
+  type EntrySummary,
+} from './journalEntry'
 import type { EntryMatch } from './entrySearch'
 import styles from './EntryList.module.css'
 
 type EntryListItemProps = {
-  /** The entry, with search highlights (none when not searching). */
-  match: EntryMatch
+  summary: EntrySummary
+  /** Search highlights; null when not searching. */
+  match: EntryMatch | null
   isSelected: boolean
   /** Id of the element explaining that the selected entry can be renamed. */
   renameHintId: string
@@ -24,6 +29,7 @@ function placeCaretAtEnd(input: HTMLInputElement) {
 
 /** Clicking an entry opens it; clicking the open entry renames it in place. */
 export function EntryListItem({
+  summary,
   match,
   isSelected,
   renameHintId,
@@ -31,12 +37,16 @@ export function EntryListItem({
   onRename,
   showsEditedDate = false,
 }: EntryListItemProps) {
-  const { entry, title: highlightedTitle, snippet } = match
   const [isRenaming, setIsRenaming] = useState(false)
   const itemButtonRef = useRef<HTMLButtonElement>(null)
   // Enter/Escape return focus to the entry; clicking elsewhere leaves it there.
   const shouldRestoreFocusRef = useRef(false)
-  const title = getEntryTitle(entry)
+  const title = getEntryTitle(summary)
+  const highlightedTitle = match?.title ?? {
+    text: title ?? 'Untitled',
+    ranges: [],
+  }
+  const snippet = match?.snippet ?? null
 
   useEffect(() => {
     if (isRenaming || !shouldRestoreFocusRef.current) return
@@ -69,8 +79,8 @@ export function EntryListItem({
   const dateCaption = (
     <Text variant="caption">
       {showsEditedDate
-        ? `Edited ${formatEntryDate(entry.updatedAt)}`
-        : formatEntryDate(entry.createdAt)}
+        ? `Edited ${formatEntryDate(summary.updatedAt)}`
+        : formatEntryDate(summary.createdAt)}
     </Text>
   )
 

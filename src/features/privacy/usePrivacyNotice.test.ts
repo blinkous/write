@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { useFirstVisit } from './useFirstVisit'
+import { isFirstVisit, useRememberVisit } from './firstVisit'
 import { usePrivacyNotice } from './usePrivacyNotice'
 import { getWelcomeEntry } from './welcomeEntry'
 import { parseDocument } from '../../journal-document'
@@ -13,17 +13,18 @@ describe('usePrivacyNotice', () => {
   })
 })
 
-describe('useFirstVisit', () => {
+describe('isFirstVisit', () => {
   beforeEach(() => window.localStorage.clear())
 
-  it('is true once per browser', () => {
-    expect(renderHook(() => useFirstVisit()).result.current).toBe(true)
-    expect(renderHook(() => useFirstVisit()).result.current).toBe(false)
+  it('is true until the visit is remembered', () => {
+    expect(isFirstVisit()).toBe(true)
+    renderHook(() => useRememberVisit())
+    expect(isFirstVisit()).toBe(false)
   })
 
   it('treats visitors who saw the old welcome dialog as returning', () => {
     window.localStorage.setItem('write.privacyNoticeSeen.v1', 'true')
-    expect(renderHook(() => useFirstVisit()).result.current).toBe(false)
+    expect(isFirstVisit()).toBe(false)
   })
 })
 

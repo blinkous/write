@@ -17,6 +17,21 @@ export type JournalEntry = {
   content: JSONContent
 }
 
+/**
+ * What the list and the rest of the app know about an entry: everything but
+ * its writing, plus the first line it's named by when untitled. The writing
+ * itself stays in storage (and in the editor while it's open).
+ */
+export type EntrySummary = Omit<JournalEntry, 'content'> & {
+  firstLine: string | null
+}
+
+/** Changes to a stored entry; the rest of it stays as it is. */
+export type EntryChanges = Partial<Omit<JournalEntry, 'id' | 'createdAt'>>
+
+/** Just enough to name an entry. */
+type EntryName = Pick<EntrySummary, 'title' | 'firstLine'>
+
 const EMPTY_DOCUMENT: JSONContent = {
   type: 'doc',
   content: [{ type: 'paragraph' }],
@@ -38,7 +53,7 @@ export function createJournalEntry(now = new Date()): JournalEntry {
 export function getTitleDocument({
   title,
   titleContent,
-}: JournalEntry): JSONContent {
+}: Pick<JournalEntry, 'title' | 'titleContent'>): JSONContent {
   if (titleContent) return titleContent
   return {
     type: 'doc',
@@ -97,13 +112,21 @@ export function getEntryText({ content }: JournalEntry): string {
   return getBlockTexts(content).join(' ')
 }
 
-function getFirstLine({ content }: JournalEntry): string | null {
+/** The first line of text, which names an untitled entry. */
+export function getFirstLine(content: JSONContent): string | null {
   const [firstBlockText] = getBlockTexts(content)
   return firstBlockText ?? null
 }
 
-export function getEntryTitle(entry: JournalEntry): string | null {
-  return entry.title ?? getFirstLine(entry)
+export function summarizeEntry({
+  content,
+  ...fields
+}: JournalEntry): EntrySummary {
+  return { ...fields, firstLine: getFirstLine(content) }
+}
+
+export function getEntryTitle({ title, firstLine }: EntryName): string | null {
+  return title ?? firstLine
 }
 
 export const MAX_ENTRY_TITLE_LENGTH = 200
@@ -119,11 +142,11 @@ export function normalizeEntryTitle(rawTitle: string): string | null {
  * the entry following its first line rather than freezing today's text.
  */
 export function resolveRenamedTitle(
-  entry: JournalEntry,
+  entry: EntryName,
   rawTitle: string,
 ): string | null {
   const title = normalizeEntryTitle(rawTitle)
-  return entry.title === null && title === getFirstLine(entry) ? null : title
+  return entry.title === null && title === entry.firstLine ? null : title
 }
 
 /**
@@ -131,7 +154,7 @@ export function resolveRenamedTitle(
  * didn't change.
  */
 export function renameEntryTitle(
-  entry: JournalEntry,
+  entry: Pick<EntrySummary, 'title' | 'titleContent' | 'firstLine'>,
   rawTitle: string,
 ): Pick<JournalEntry, 'title' | 'titleContent'> {
   const title = resolveRenamedTitle(entry, rawTitle)
@@ -153,14 +176,7 @@ export const entryTitleSchema = z
     typeof value === 'string' ? normalizeEntryTitle(value) : null,
   )
 
-export function isEntryEmpty(entry: JournalEntry): boolean {
-  return entry.title === null && getBlockTexts(entry.content).length === 0
-}
-
-export function sortEntriesNewestFirst(
-  entries: readonly JournalEntry[],
-): JournalEntry[] {
-  return entries.toSorted((first, second) =>
-    second.createdAt.localeCompare(first.createdAt),
-  )
+/** No name and no text. */
+export function isEntryEmpty({ title, firstLine }: EntryName): boolean {
+  return title === null && firstLine === null
 }

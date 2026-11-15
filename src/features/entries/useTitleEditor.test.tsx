@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
-import { createJournal } from './journal'
+import { createMemoryEntryStore } from './entryStore'
+import { openJournal } from './journal'
 import { createJournalEntry } from './journalEntry'
 import { useTitleEditor } from './useTitleEditor'
 
@@ -8,13 +9,11 @@ describe('useTitleEditor', () => {
 
   const first = { ...createJournalEntry(), title: 'First' }
   const second = { ...createJournalEntry(), title: 'Second' }
-  const createTestJournal = () =>
-    createJournal({
-      entryStore: { storedEntries: [first, second], saveEntries: vi.fn() },
-    })
+  const openTestJournal = () =>
+    openJournal({ entryStore: createMemoryEntryStore([first, second]) })
 
-  it('switches to another entry without using the destroyed editor', () => {
-    const journal = createTestJournal()
+  it('switches to another entry without using the destroyed editor', async () => {
+    const journal = await openTestJournal()
     const { result, rerender } = renderHook(
       ({ entryId }) =>
         useTitleEditor({ journal, entryId, onContinue: () => {} }),
@@ -26,8 +25,8 @@ describe('useTitleEditor', () => {
     expect(result.current.getText()).toBe('Second')
   })
 
-  it('shows a rename from the sidebar, and saves titles typed on the page', () => {
-    const journal = createTestJournal()
+  it('shows a rename from the sidebar, and saves titles typed on the page', async () => {
+    const journal = await openTestJournal()
     const { result } = renderHook(() =>
       useTitleEditor({ journal, entryId: first.id, onContinue: () => {} }),
     )
@@ -36,6 +35,6 @@ describe('useTitleEditor', () => {
     act(() => {
       result.current.commands.setContent('Typed')
     })
-    expect(journal.getEntry(first.id).title).toBe('Typed')
+    expect(journal.getSummary(first.id)?.title).toBe('Typed')
   })
 })

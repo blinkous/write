@@ -9,7 +9,7 @@ The welcome: what the journal is and how it keeps your writing.
   it back; works offline once loaded; browser extensions may read data on all sites, so
   disable them or use another profile or browser) and the sign-off ("Write away!"). The
   dialog and the welcome entry both use it, so the wording lives in one place.
-- **First visit** (`useFirstVisit`, no `write.privacyNoticeSeen.v1` key): the journal starts
+- **First visit** (`isFirstVisit`, no `write.privacyNoticeSeen.v1` key): the journal starts
   with the **welcome entry** (`welcomeEntry.ts`), a real entry the person can edit or delete:
   the intro, the privacy notes as a list, a quick tour that uses what it describes (title,
   headings, lists, code), and the sign-off. The visit is then remembered. Returning visitors,

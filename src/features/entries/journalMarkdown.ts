@@ -1,6 +1,6 @@
 import type { JSONContent } from '@tiptap/react'
 import { formatEntryTimestamp } from '../../utils/date'
-import { isEntryEmpty, type JournalEntry } from './journalEntry'
+import { isEntryEmpty, summarizeEntry, type JournalEntry } from './journalEntry'
 
 /** Turns an entry's content into markdown under an optional title and date line (the editor's job). */
 export type ContentToMarkdown = (
@@ -21,7 +21,7 @@ export function journalToMarkdown(
   contentToMarkdown: ContentToMarkdown,
 ): string {
   const sections = entries
-    .filter((entry) => !isEntryEmpty(entry))
+    .filter((entry) => !isEntryEmpty(summarizeEntry(entry)))
     .toSorted((first, second) =>
       first.createdAt.localeCompare(second.createdAt),
     )

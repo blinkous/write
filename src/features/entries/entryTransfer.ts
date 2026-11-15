@@ -5,6 +5,7 @@ import {
   entryTitleSchema,
   reconcileTitleContent,
   getEntryTitle,
+  summarizeEntry,
   type JournalEntry,
 } from './journalEntry'
 
@@ -183,7 +184,7 @@ function toFileNameSlug(text: string): string {
 
 export function getEntryFileName(entry: JournalEntry): string {
   const datePart = entry.createdAt.slice(0, 10)
-  const titleSlug = toFileNameSlug(getEntryTitle(entry) ?? '')
+  const titleSlug = toFileNameSlug(getEntryTitle(summarizeEntry(entry)) ?? '')
   return `journal-${datePart}${titleSlug ? `-${titleSlug}` : ''}.json`
 }
 

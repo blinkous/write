@@ -4,21 +4,22 @@ import {
   getEntryTitle,
   isEntryEmpty,
   resolveRenamedTitle,
-  type JournalEntry,
+  summarizeEntry,
+  type EntrySummary,
 } from './journalEntry'
 
 function createWrittenEntry(
   text: string,
   title: string | null = null,
-): JournalEntry {
-  return {
+): EntrySummary {
+  return summarizeEntry({
     ...createJournalEntry(),
     title,
     content: {
       type: 'doc',
       content: [{ type: 'paragraph', content: [{ type: 'text', text }] }],
     },
-  }
+  })
 }
 
 describe('getEntryTitle', () => {
@@ -66,9 +67,9 @@ describe('entryTitleSchema', () => {
 
 describe('isEntryEmpty', () => {
   it('treats a named entry as not empty', () => {
-    expect(isEntryEmpty(createJournalEntry())).toBe(true)
-    expect(isEntryEmpty({ ...createJournalEntry(), title: 'Plans' })).toBe(
-      false,
-    )
+    const blank = summarizeEntry(createJournalEntry())
+    expect(isEntryEmpty(blank)).toBe(true)
+    expect(isEntryEmpty({ ...blank, title: 'Plans' })).toBe(false)
+    expect(isEntryEmpty(createWrittenEntry('Text'))).toBe(false)
   })
 })
