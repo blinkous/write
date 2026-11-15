@@ -15,6 +15,9 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   content can't read the journal or send it anywhere. Nothing may need inline scripts or
   styles, or `data:` fonts (e.g. Tiptap's CSS is vendored, fonts are never inlined).
   Pictures and videos may be `blob:` URLs: the background, read from IndexedDB.
+- **License notices ship with the app.** Builds include `THIRD_PARTY_LICENSES.txt` with the
+  license and copyright of every production dependency (fonts included), generated from
+  `package.json` (`vite.config.ts`).
 - **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
   browser storage is per origin: a shared or shifting port would share or "lose" entries.
 - **Never silently lose writing.** Stored entries that fail validation are kept in the

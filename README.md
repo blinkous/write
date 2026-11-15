@@ -70,4 +70,5 @@ self-hosting. See the comment at the top of `src/fonts/fontOptions.ts`.
 [Lucide](https://lucide.dev) icons.
 
 Fonts are licensed under the SIL Open Font License 1.1, except Permanent Marker (Apache
-2.0). `src/features/editor/tiptapBase.css` is copied from Tiptap (MIT).
+2.0). `src/features/editor/tiptapBase.css` is copied from Tiptap (MIT). Every build includes
+`THIRD_PARTY_LICENSES.txt` with the full license and copyright notice of each dependency.

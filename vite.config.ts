@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react'
+import { getLicenseFileText } from 'generate-license-file'
 import type { Plugin } from 'vite'
 import { defineConfig } from 'vitest/config'
 
@@ -47,9 +48,30 @@ function contentSecurityPolicy(): Plugin {
   }
 }
 
+const THIRD_PARTY_LICENSES_FILE = 'THIRD_PARTY_LICENSES.txt'
+
+/*
+ * Build-only: ships the license and copyright notice of every production
+ * dependency next to the app, as the fonts' OFL and the MIT, Apache and BSD
+ * licenses require. Read from package.json, so CSS-only packages (fonts) count.
+ */
+function thirdPartyLicenses(): Plugin {
+  return {
+    name: 'third-party-licenses',
+    apply: 'build',
+    async generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: THIRD_PARTY_LICENSES_FILE,
+        source: await getLicenseFileText('package.json', { lineEnding: 'lf' }),
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), contentSecurityPolicy()],
+  plugins: [react(), contentSecurityPolicy(), thirdPartyLicenses()],
   build: {
     // Emit fonts as files: the CSP's font-src 'self' doesn't allow data: URLs.
     assetsInlineLimit: (filePath) =>
