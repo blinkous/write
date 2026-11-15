@@ -6,6 +6,11 @@ The list of journal entries and which one is open.
 
 - State is managed by a pure reducer (`entriesReducer.ts`); ids and timestamps are created
   outside it and passed in actions.
+- **The journal** (`journal.ts`) holds that state outside React, so typing re-renders only
+  what shows it. Components subscribe to the part they show (`useJournalState`): the list
+  to the entries, the app to which entry is open and the sort, and the editors read their
+  entry once when it opens. Click actions (export, copy, import, delete) read entries as
+  they are then (`getState`, `getEntry`). Every change is saved, as before.
 - Entries are always sorted newest first and the list is never empty: deleting the last
   entry replaces it with a blank one.
 - An entry's name is its custom `title` if set, otherwise its first non-empty line of
@@ -66,7 +71,7 @@ The list of journal entries and which one is open.
   <date>"), or Name A–Z (natural order, ignoring case and accents; unnamed entries last). The
   reducer keeps entries in the chosen order after every change, so the list, keyboard order
   and "what opens after a delete" all agree. Stored under `write.entrySort.v1`.
-- **First entry:** `useEntries` takes `createFirstEntry` for an empty journal (the app passes
+- **First entry:** `createJournal` takes `createFirstEntry` for an empty journal (the app passes
   the welcome entry on a first visit); otherwise a blank entry.
 - **Search** (`entrySearch.ts`, the field at the top of the sidebar) filters entries as you
   type by name and text, ignoring case and accents; every word must match, in any order.

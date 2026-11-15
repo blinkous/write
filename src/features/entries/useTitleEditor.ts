@@ -1,20 +1,21 @@
 import Placeholder from '@tiptap/extension-placeholder'
-import { useEditor, type JSONContent } from '@tiptap/react'
+import { useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
 import { titleExtensions } from '../../journal-document'
 import { WRITING_ASSISTANT_OPT_OUT } from '../../lib/writingAssistants'
+import type { Journal } from './journal'
 import {
   getTitleDocument,
   MAX_ENTRY_TITLE_LENGTH,
   readTitleDocument,
-  type JournalEntry,
 } from './journalEntry'
 import { TitleBehavior } from './titleBehavior'
 import styles from './EntryTitleField.module.css'
 
 type UseTitleEditorOptions = {
-  entry: JournalEntry
-  onChange: (entryId: string, titleDocument: JSONContent) => void
+  journal: Journal
+  /** The open entry. */
+  entryId: string
   /** Moves on into the writing (Enter, or ↓ at the end of the title). */
   onContinue: () => void
 }
@@ -24,8 +25,8 @@ type UseTitleEditorOptions = {
  * writing. A fresh editor per entry, so each keeps its own undo history.
  */
 export function useTitleEditor({
-  entry,
-  onChange,
+  journal,
+  entryId,
   onContinue,
 }: UseTitleEditorOptions) {
   const editor = useEditor(
@@ -35,7 +36,8 @@ export function useTitleEditor({
         Placeholder.configure({ placeholder: 'Untitled' }),
         TitleBehavior.configure({ maxLength: MAX_ENTRY_TITLE_LENGTH }),
       ],
-      content: getTitleDocument(entry),
+      // Read once per entry: the editor holds the title from then on.
+      content: getTitleDocument(journal.getEntry(entryId)),
       // Loaded from tiptapBase.css instead; the CSP blocks inline <style> tags.
       injectCSS: false,
       editorProps: {
@@ -48,9 +50,9 @@ export function useTitleEditor({
         },
       },
       onUpdate: ({ editor: titleEditor }) =>
-        onChange(entry.id, titleEditor.getJSON()),
+        journal.setEntryTitle(entryId, titleEditor.getJSON()),
     },
-    [entry.id],
+    [entryId],
   )
 
   /*
@@ -64,16 +66,23 @@ export function useTitleEditor({
   })
 
   // A rename from the sidebar: show it, unless the title is being edited here.
-  const { title } = entry
-  useEffect(() => {
-    if (
-      editor.isDestroyed ||
-      editor.isFocused ||
-      readTitleDocument(editor.getJSON()).title === title
-    )
-      return
-    editor.commands.setContent(getTitleDocument(entry), { emitUpdate: false })
-  }, [editor, entry, title])
+  // Followed straight from the journal, so changes don't re-render whoever holds this editor.
+  useEffect(
+    () =>
+      journal.subscribe(() => {
+        const entry = journal.getEntry(entryId)
+        if (
+          editor.isDestroyed ||
+          editor.isFocused ||
+          readTitleDocument(editor.getJSON()).title === entry.title
+        )
+          return
+        editor.commands.setContent(getTitleDocument(entry), {
+          emitUpdate: false,
+        })
+      }),
+    [editor, journal, entryId],
+  )
 
   return editor
 }

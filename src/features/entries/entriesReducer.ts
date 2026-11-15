@@ -6,7 +6,7 @@ import {
   type JournalEntry,
 } from './journalEntry'
 
-type EntriesState = {
+export type EntriesState = {
   /** Never empty, and always in `sort` order (the order the list shows). */
   entries: JournalEntry[]
   selectedEntryId: string
@@ -14,7 +14,7 @@ type EntriesState = {
 }
 
 /* Actions carry generated ids and timestamps so the reducer stays pure. */
-type EntriesAction =
+export type EntriesAction =
   | { type: 'create'; newEntry: JournalEntry }
   | { type: 'select'; entryId: string }
   | {

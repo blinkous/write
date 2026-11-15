@@ -18,7 +18,8 @@ import {
 } from './journalMarkdown'
 
 type UseEntryTransferOptions = {
-  entries: readonly JournalEntry[]
+  /** The journal's entries as they are now: read when an action runs, so typing doesn't re-render whoever exports. */
+  getEntries: () => readonly JournalEntry[]
   /** Turns entry content into markdown (provided by the editor, which owns the format). */
   contentToMarkdown: ContentToMarkdown
   addEntries: (newEntries: readonly JournalEntry[]) => void
@@ -51,7 +52,7 @@ function jsonExport(
 }
 
 export function useEntryTransfer({
-  entries,
+  getEntries,
   contentToMarkdown,
   addEntries,
   onStatus,
@@ -82,11 +83,11 @@ export function useEntryTransfer({
       saveExport(jsonExport([entry], getEntryFileName(entry))),
     /** Every entry as JSON, with `settings` in the same file when given (see serializeEntries). */
     exportAllEntries: (settings?: unknown) =>
-      saveExport(jsonExport(entries, getJournalFileName(), settings)),
+      saveExport(jsonExport(getEntries(), getJournalFileName(), settings)),
     exportAllAsMarkdown: () =>
       saveExport({
         suggestedName: getJournalMarkdownFileName(),
-        text: journalToMarkdown(entries, contentToMarkdown),
+        text: journalToMarkdown(getEntries(), contentToMarkdown),
         mimeType: MARKDOWN_MIME_TYPE,
         description: 'Markdown',
         extension: '.md',
@@ -108,7 +109,7 @@ export function useEntryTransfer({
         })
         return
       }
-      const importPlan = planImport(entries, parseResult.entries)
+      const importPlan = planImport(getEntries(), parseResult.entries)
       const settingsImport =
         parseResult.settings === undefined
           ? null

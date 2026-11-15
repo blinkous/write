@@ -83,9 +83,10 @@ older data without them (see the storage tests).
   style in settings), lined up with its top so the rows below stay visible.
   Panels are anchored to their trigger only while open: WebKit (Safari, DuckDuckGo) hangs
   when a menu closes with closed, still-anchored menus nested inside it.
-  Closed menus and dialogs render nothing inside (`Popover`, `Dialog`): the app re-renders
-  as you type, and rendering every closed font list and swatch grid on each keystroke made
-  WebKit's memory climb by hundreds of MB. Anything that must outlive its menu (e.g. the
+  Closed menus and dialogs render nothing inside (`Popover`, `Dialog`): rendering every
+  closed font list and swatch grid whenever the app re-rendered made WebKit's memory climb
+  by hundreds of MB. Typing re-renders only what shows the writing (see the entries spec's
+  journal). Anything that must outlive its menu (e.g. the
   import file picker, `ImportFilePicker`) lives outside it.
 - **The settings drawer** (design-system `Drawer`) is for settings browsed together: it
   slides up from the bottom of the sidebar, stays open until toggled, and shares the space
