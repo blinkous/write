@@ -4,8 +4,9 @@ import { Button, SearchField, type ToastMessage } from '../../design-system'
 import { EntryListItem } from './EntryListItem'
 import { EntrySortMenu } from './EntrySortMenu'
 import type { EntryMatch } from './entrySearch'
-import type { Journal } from './journal'
-import type { EntrySummary } from './journalEntry'
+import type { Journal, JournalState } from './journal'
+import { getEntryTitle, type EntrySummary } from './journalEntry'
+import { formatEntryDate } from '../../utils/date'
 import { useEntrySearch } from './useEntrySearch'
 import { useEntrySummary, useJournalState } from './useJournalState'
 import styles from './EntryList.module.css'
@@ -16,7 +17,7 @@ type EntryListProps = {
   onEntryOpened: () => void
   onStatus: (message: ToastMessage) => void
   /** A row's actions (e.g. its ⋯ menu), shown on hover or focus. */
-  entryActions: (summary: EntrySummary) => ReactNode
+  entryActions: (entryId: string, title: string | null) => ReactNode
 }
 
 /**
@@ -103,9 +104,13 @@ type EntryRowProps = {
   match: EntryMatch | null
   renameHintId: string
   onSelect: () => void
-  entryActions: (summary: EntrySummary) => ReactNode
+  entryActions: (entryId: string, title: string | null) => ReactNode
 }
 
+/**
+ * Follows only what it shows, as text: typing in an entry redraws its row
+ * only when its name (its first line) or its shown date changes.
+ */
 function EntryRow({
   journal,
   entryId,
@@ -114,29 +119,36 @@ function EntryRow({
   onSelect,
   entryActions,
 }: EntryRowProps) {
-  const summary = useEntrySummary(journal, entryId)
+  const title = useEntrySummary(journal, entryId, getEntryTitle)
+  const dateText = useEntrySummary(journal, entryId, getShownDate)
   const isSelected = useJournalState(
     journal,
     (state) => state.selectedEntryId === entryId,
   )
-  const showsEditedDate = useJournalState(
-    journal,
-    (state) => state.sort === 'last-edited',
-  )
   // Deleted: the list drops this row in the same update.
-  if (!summary) return null
+  if (title === undefined || dateText === undefined) return null
   return (
     <li className={styles.row}>
       <EntryListItem
-        summary={summary}
+        title={title}
+        dateText={dateText}
         match={match}
         isSelected={isSelected}
         renameHintId={renameHintId}
         onSelect={onSelect}
         onRename={(rawTitle) => journal.renameEntry(entryId, rawTitle)}
-        showsEditedDate={showsEditedDate}
       />
-      <div className={styles.rowActions}>{entryActions(summary)}</div>
+      <div className={styles.rowActions}>{entryActions(entryId, title)}</div>
     </li>
   )
+}
+
+/** When the entry was made, or when it was last edited while sorted that way. */
+function getShownDate(
+  { createdAt, updatedAt }: EntrySummary,
+  { sort }: JournalState,
+): string {
+  return sort === 'last-edited'
+    ? `Edited ${formatEntryDate(updatedAt)}`
+    : formatEntryDate(createdAt)
 }

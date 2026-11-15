@@ -14,12 +14,18 @@ export function useJournalState<Picked>(
   return useSyncExternalStore(journal.subscribe, () => pick(journal.getState()))
 }
 
-/** One entry's summary; re-renders only when that entry changes. Undefined once it's deleted. */
-export function useEntrySummary(
+/**
+ * Something shown about one entry (e.g. its name); re-renders only when that
+ * changes. The same rule applies to the pick as for useJournalState.
+ * Undefined once the entry is deleted.
+ */
+export function useEntrySummary<Picked>(
   journal: Journal,
   entryId: string,
-): EntrySummary | undefined {
-  return useSyncExternalStore(journal.subscribe, () =>
-    journal.getSummary(entryId),
-  )
+  pick: (summary: EntrySummary, state: JournalState) => Picked,
+): Picked | undefined {
+  return useSyncExternalStore(journal.subscribe, () => {
+    const summary = journal.getSummary(entryId)
+    return summary && pick(summary, journal.getState())
+  })
 }

@@ -31,7 +31,6 @@ import {
 } from '../features/editor'
 import {
   EntryList,
-  getEntryTitle,
   type Journal,
   EntryTitleField,
   EntryMenu,
@@ -174,11 +173,8 @@ export function App({ journal }: AppProps) {
             journal={journal}
             onEntryOpened={closeSidebarOnNarrowScreens}
             onStatus={setToastMessage}
-            entryActions={(summary) =>
-              renderEntryMenu(
-                summary.id,
-                `Actions for ${getEntryTitle(summary) ?? 'Untitled'}`,
-              )
+            entryActions={(entryId, title) =>
+              renderEntryMenu(entryId, `Actions for ${title ?? 'Untitled'}`)
             }
           />
           <SettingsDrawer

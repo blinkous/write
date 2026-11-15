@@ -2,7 +2,11 @@ import { act, renderHook } from '@testing-library/react'
 import { createMemoryEntryStore } from './entryStore'
 import type { EntrySort } from './entrySort'
 import { openJournal } from './journal'
-import { createJournalEntry, type JournalEntry } from './journalEntry'
+import {
+  createJournalEntry,
+  getEntryTitle,
+  type JournalEntry,
+} from './journalEntry'
 import { useEntrySummary, useJournalState } from './useJournalState'
 
 const SELECTED_ENTRY_KEY = 'write.selectedEntryId.v1'
@@ -173,14 +177,20 @@ describe('journal', () => {
     })
     renderHook(() => {
       renders.olderRow += 1
-      return useEntrySummary(journal, olderEntry.id)
+      return useEntrySummary(journal, olderEntry.id, getEntryTitle)
     })
     renderHook(() => {
       renders.newerRow += 1
-      return useEntrySummary(journal, newerEntry.id)
+      return useEntrySummary(journal, newerEntry.id, getEntryTitle)
     })
     const before = { ...renders }
-    act(() => journal.updateEntryContent(olderEntry.id, words('Typing')))
+    const firstLineKept = {
+      type: 'doc',
+      content: [...words('older').content, ...words('More writing').content],
+    }
+    act(() => journal.updateEntryContent(olderEntry.id, firstLineKept))
+    expect(renders).toEqual(before)
+    act(() => journal.renameEntry(olderEntry.id, 'Winter'))
     expect(renders).toEqual({ ...before, olderRow: before.olderRow + 1 })
   })
 })

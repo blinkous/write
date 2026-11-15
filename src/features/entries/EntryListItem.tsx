@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { HighlightedText, Text, TextInput } from '../../design-system'
-import { formatEntryDate } from '../../utils/date'
-import {
-  getEntryTitle,
-  MAX_ENTRY_TITLE_LENGTH,
-  type EntrySummary,
-} from './journalEntry'
+import { MAX_ENTRY_TITLE_LENGTH } from './journalEntry'
 import type { EntryMatch } from './entrySearch'
 import styles from './EntryList.module.css'
 
 type EntryListItemProps = {
-  summary: EntrySummary
+  /** The entry's name (see getEntryTitle); null when it has none. */
+  title: string | null
+  /** When it was made or edited, as shown (see EntryList). */
+  dateText: string
   /** Search highlights; null when not searching. */
   match: EntryMatch | null
   isSelected: boolean
@@ -18,8 +16,6 @@ type EntryListItemProps = {
   renameHintId: string
   onSelect: () => void
   onRename: (rawTitle: string) => void
-  /** Show when it was last edited instead of when it was made (e.g. when sorted that way). */
-  showsEditedDate?: boolean
 }
 
 function placeCaretAtEnd(input: HTMLInputElement) {
@@ -29,19 +25,18 @@ function placeCaretAtEnd(input: HTMLInputElement) {
 
 /** Clicking an entry opens it; clicking the open entry renames it in place. */
 export function EntryListItem({
-  summary,
+  title,
+  dateText,
   match,
   isSelected,
   renameHintId,
   onSelect,
   onRename,
-  showsEditedDate = false,
 }: EntryListItemProps) {
   const [isRenaming, setIsRenaming] = useState(false)
   const itemButtonRef = useRef<HTMLButtonElement>(null)
   // Enter/Escape return focus to the entry; clicking elsewhere leaves it there.
   const shouldRestoreFocusRef = useRef(false)
-  const title = getEntryTitle(summary)
   const highlightedTitle = match?.title ?? {
     text: title ?? 'Untitled',
     ranges: [],
@@ -76,13 +71,7 @@ export function EntryListItem({
     }
   }
 
-  const dateCaption = (
-    <Text variant="caption">
-      {showsEditedDate
-        ? `Edited ${formatEntryDate(summary.updatedAt)}`
-        : formatEntryDate(summary.createdAt)}
-    </Text>
-  )
+  const dateCaption = <Text variant="caption">{dateText}</Text>
 
   if (isRenaming) {
     return (

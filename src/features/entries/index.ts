@@ -13,8 +13,4 @@ export { EntryTitleField } from './EntryTitleField'
 export { useFileShortcuts } from './useFileShortcuts'
 export { ImportFilePicker } from './ImportAction'
 export { useTitleEditor } from './useTitleEditor'
-export {
-  createJournalEntry,
-  getEntryTitle,
-  type JournalEntry,
-} from './journalEntry'
+export { createJournalEntry, type JournalEntry } from './journalEntry'
