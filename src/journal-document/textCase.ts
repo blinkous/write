@@ -1,6 +1,7 @@
 import { Mark } from '@tiptap/core'
 import type { MarkType, Node as ProseMirrorNode } from '@tiptap/pm/model'
-import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state'
+import { AddMarkStep, RemoveMarkStep } from '@tiptap/pm/transform'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { findCapitalOffsets, isTextCase, type TextCase } from './capitalization'
 
@@ -37,6 +38,46 @@ function readBlock(block: ProseMirrorNode, markType: MarkType) {
   return { text, casesByOffset }
 }
 
+/** The cases that capitalize some letters, which CSS can't do. */
+const CAPITALIZING_CASES = ['title', 'sentence'] as const
+
+function hasCapitalizingCase(block: ProseMirrorNode, markType: MarkType) {
+  let hasCase = false
+  block.forEach((child) => {
+    const textCase = markType.isInSet(child.marks)?.attrs.textCase
+    if (CAPITALIZING_CASES.includes(textCase)) hasCase = true
+  })
+  return hasCase
+}
+
+/** Capitals in the text block at `position`; none (and no work) for most blocks. */
+function buildBlockCapitals(
+  block: ProseMirrorNode,
+  position: number,
+  markType: MarkType,
+): Decoration[] {
+  if (!hasCapitalizingCase(block, markType)) return []
+  const decorations: Decoration[] = []
+  const { text, casesByOffset } = readBlock(block, markType)
+  for (const textCase of CAPITALIZING_CASES) {
+    if (!casesByOffset.includes(textCase)) continue
+    for (const offset of findCapitalOffsets(text, textCase)) {
+      if (casesByOffset[offset] !== textCase) continue
+      const from = position + 1 + offset
+      // Some letters take two UTF-16 code units; cover the whole character.
+      const letterLength = String.fromCodePoint(
+        text.codePointAt(offset) ?? 0,
+      ).length
+      decorations.push(
+        Decoration.inline(from, from + letterLength, {
+          class: CAPITAL_LETTER_CLASS,
+        }),
+      )
+    }
+  }
+  return decorations
+}
+
 function buildCapitalDecorations(
   doc: ProseMirrorNode,
   markType: MarkType,
@@ -44,26 +85,49 @@ function buildCapitalDecorations(
   const decorations: Decoration[] = []
   doc.descendants((node, position) => {
     if (!node.isTextblock) return true
-    const { text, casesByOffset } = readBlock(node, markType)
-    for (const textCase of ['title', 'sentence'] as const) {
-      if (!casesByOffset.includes(textCase)) continue
-      for (const offset of findCapitalOffsets(text, textCase)) {
-        if (casesByOffset[offset] !== textCase) continue
-        const from = position + 1 + offset
-        // Some letters take two UTF-16 code units; cover the whole character.
-        const letterLength = String.fromCodePoint(
-          text.codePointAt(offset) ?? 0,
-        ).length
-        decorations.push(
-          Decoration.inline(from, from + letterLength, {
-            class: CAPITAL_LETTER_CLASS,
-          }),
-        )
-      }
-    }
+    decorations.push(...buildBlockCapitals(node, position, markType))
     return false
   })
   return DecorationSet.create(doc, decorations)
+}
+
+/** Where a transaction changed the document (text, or marks), in the new document. */
+function getChangedRanges(transaction: Transaction): [number, number][] {
+  const ranges: [number, number][] = []
+  transaction.steps.forEach((step, index) => {
+    const laterMapping = transaction.mapping.slice(index + 1)
+    const addRange = (from: number, to: number) =>
+      ranges.push([laterMapping.map(from, -1), laterMapping.map(to, 1)])
+    step.getMap().forEach((_oldFrom, _oldTo, from, to) => addRange(from, to))
+    // Mark changes move nothing, so their map is empty.
+    if (step instanceof AddMarkStep || step instanceof RemoveMarkStep)
+      addRange(step.from, step.to)
+  })
+  return ranges
+}
+
+/**
+ * Keeps the capitals in step with an edit: the rest move with the text, and
+ * only the blocks it touched are read again, so typing costs the same however
+ * long the entry is.
+ */
+function updateCapitalDecorations(
+  transaction: Transaction,
+  decorations: DecorationSet,
+  markType: MarkType,
+): DecorationSet {
+  const { doc } = transaction
+  let updated = decorations.map(transaction.mapping, doc)
+  for (const [from, to] of getChangedRanges(transaction)) {
+    doc.nodesBetween(from, to, (node, position) => {
+      if (!node.isTextblock) return true
+      updated = updated
+        .remove(updated.find(position, position + node.nodeSize))
+        .add(doc, buildBlockCapitals(node, position, markType))
+      return false
+    })
+  }
+  return updated
 }
 
 /**
@@ -115,7 +179,7 @@ export const TextCaseMark = Mark.create({
           init: (_, { doc }) => buildCapitalDecorations(doc, markType),
           apply: (transaction, decorations) =>
             transaction.docChanged
-              ? buildCapitalDecorations(transaction.doc, markType)
+              ? updateCapitalDecorations(transaction, decorations, markType)
               : decorations,
         },
         props: {

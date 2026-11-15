@@ -60,3 +60,38 @@ describe('TextCaseMark', () => {
     ])
   })
 })
+
+describe('TextCaseMark capitals while editing', () => {
+  const capitalsOf = (editor: ReturnType<typeof createTestEditor>) =>
+    [...editor.view.dom.querySelectorAll(`.${CAPITAL_LETTER_CLASS}`)].map(
+      ({ textContent }) => textContent,
+    )
+
+  it('follows edits inside cased text, and edits elsewhere leave it be', () => {
+    const { editor } = renderWithCase('rain all day', 'title')
+    editor.commands.insertContentAt(1, 'cold ')
+    expect(capitalsOf(editor)).toEqual(['c', 'r', 'a', 'd'])
+    editor.commands.insertContentAt(editor.state.doc.content.size, {
+      type: 'paragraph',
+      content: [{ type: 'text', text: 'plain' }],
+    })
+    expect(capitalsOf(editor)).toEqual(['c', 'r', 'a', 'd'])
+  })
+
+  it('shows capitals when a case is set on existing text, and drops them when unset', () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<p>first</p><p>rain all day</p>',
+    })
+    const secondStart = editor.state.doc.firstChild?.nodeSize ?? 0
+    const secondEnd = editor.state.doc.content.size
+    editor
+      .chain()
+      .setTextSelection({ from: secondStart + 1, to: secondEnd - 1 })
+      .setTextCase('title')
+      .run()
+    expect(capitalsOf(editor)).toEqual(['r', 'a', 'd'])
+    editor.commands.unsetTextCase()
+    expect(capitalsOf(editor)).toEqual([])
+  })
+})
