@@ -19,6 +19,8 @@
   background: transparent;
   line-height: inherit;
   caret-color: var(--color-text);
+  /* Exactly one line, like the text it replaces: WebKit otherwise sizes it by the font's own height, a pixel or so taller with some fonts. */
+  height: 1lh;
 }
 
 /* An underline drawn inside the field's own box, so editing shifts nothing. */
