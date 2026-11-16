@@ -26,6 +26,20 @@ describe('useFileShortcuts', () => {
     expect(openExport).toHaveBeenCalledOnce()
   })
 
+  it('also opens Export with ⇧⌘E', () => {
+    const { exportEntry, openExport } = renderFileShortcuts()
+    const exportAll = new KeyboardEvent('keydown', {
+      code: 'KeyE',
+      metaKey: true,
+      shiftKey: true,
+      cancelable: true,
+    })
+    window.dispatchEvent(exportAll)
+    expect(exportAll.defaultPrevented).toBe(true)
+    expect(openExport).toHaveBeenCalledOnce()
+    expect(exportEntry).not.toHaveBeenCalled()
+  })
+
   it('opens Import with ⌘O, instead of the browser opening a file', () => {
     const { openImport } = renderFileShortcuts()
     const openFile = new KeyboardEvent('keydown', {
@@ -44,6 +58,8 @@ describe('useFileShortcuts', () => {
     fireEvent.keyDown(window, { code: 'KeyO' })
     fireEvent.keyDown(window, { code: 'KeyA', metaKey: true })
     fireEvent.keyDown(window, { code: 'KeyO', metaKey: true, altKey: true })
+    // ⌘E without ⇧ is the editor's inline code.
+    fireEvent.keyDown(window, { code: 'KeyE', metaKey: true })
     for (const action of Object.values(actions))
       expect(action).not.toHaveBeenCalled()
   })
