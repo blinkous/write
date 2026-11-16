@@ -72,3 +72,11 @@ self-hosting. See the comment at the top of `src/fonts/fontOptions.ts`.
 Fonts are licensed under the SIL Open Font License 1.1, except Permanent Marker (Apache
 2.0). `src/features/editor/tiptapBase.css` is copied from Tiptap (MIT). Every build includes
 `THIRD_PARTY_LICENSES.txt` with the full license and copyright notice of each dependency.
+
+## License
+
+Copyright (C) 2026 blinkous
+
+Write is free software under the [GNU Affero General Public License v3.0](LICENSE): you may
+use, study, share and change it, and anyone who shares or hosts a changed version must
+publish its full source under the same license.

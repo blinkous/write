@@ -2,6 +2,7 @@
   "name": "write",
   "private": true,
   "version": "0.0.0",
+  "license": "AGPL-3.0-only",
   "description": "A minimal, private, local-only web journal with rich text, bundled fonts and markdown/JSON export.",
   "type": "module",
   "engines": {
