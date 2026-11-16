@@ -93,10 +93,15 @@
   cursor: pointer;
 }
 
-/* The row and its ⋯ hover as one, so pointing at the ⋯ keeps the row lit. */
-.row:hover .item,
 .item[aria-current='page'] {
   background: var(--color-surface-strong);
+}
+
+/* The row and its ⋯ hover as one, so pointing at the ⋯ keeps the row lit (only where there's hover; it would stick after a tap). */
+@media (hover: hover) {
+  .row:hover .item {
+    background: var(--color-surface-strong);
+  }
 }
 
 .title {

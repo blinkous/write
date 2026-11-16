@@ -13,21 +13,18 @@
 }
 
 /*
- * The control's padded edge sits outside the row, so its content lines up with
- * the edge. Its padding is snugger than other buttons', so the hover stays
- * clear of the panel's edge.
+ * The control's padded edge sits outside the row, so its content (an icon, a
+ * menu trigger's text, editable text) lines up with the row's edge. Every
+ * kind is inset alike (see --space-trigger-inline), so one pull fits all.
  */
 .button,
+.icon,
 .text {
-  --space-control-inline: var(--space-row-control-inline);
-  margin-inline-end: calc(
-    (var(--space-control-inline) + var(--border-width)) * -1
-  );
+  margin-inline-end: calc(var(--inset-icon-button) * -1);
 }
 
-/* A square icon button: its icon, not its edge, lines up with the row's edge. */
-.icon {
-  margin-inline-end: calc(var(--inset-icon-button) * -1);
+.text {
+  --space-control-inline: var(--space-trigger-inline);
 }
 
 /* Swatch tiles, each as tall as a control. */

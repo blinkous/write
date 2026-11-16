@@ -23,9 +23,15 @@
   height: var(--size-icon);
 }
 
-/* Hover only when it can be used; disabled controls don't react. */
-.button:hover:not(:disabled) {
-  background: var(--color-shade);
+/* Hover only when it can be used (disabled controls don't react), and only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: var(--color-shade);
+  }
+
+  .ghost:hover:not(:disabled) {
+    color: var(--color-text);
+  }
 }
 
 /* On: a pressed toggle (e.g. bold), or a toggle whose panel is open (e.g. settings). */
@@ -43,7 +49,6 @@
   color: var(--color-muted);
 }
 
-.ghost:hover:not(:disabled),
 .ghost[aria-pressed='true'],
 .ghost[aria-expanded='true']:not(.plainWhenExpanded) {
   color: var(--color-text);

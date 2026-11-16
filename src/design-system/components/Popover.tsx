@@ -119,6 +119,11 @@ export function Popover({
         ref={triggerRef}
         iconOnly={isTriggerIconOnly}
         variant={triggerVariant}
+        className={
+          isTriggerIconOnly || triggerVariant === 'row'
+            ? undefined
+            : styles.textTrigger
+        }
         aria-label={label}
         title={label}
         popoverTarget={popoverId}

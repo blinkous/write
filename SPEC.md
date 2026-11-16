@@ -101,10 +101,18 @@ older data without them (see the storage tests).
   with the entries (both stay usable). Sections are `DrawerSection`s (foldable, chevron down to unfold
   and up to fold). Settings rows are `LabeledRow`s: the name on the left, the control at the
   end (a menu button, text editable in place, a stepper or a swatch tile), its text lined up
-  with the row's edge; text controls there have snugger padding, so their hover stays clear of
-  the panel's edge. Swatch tiles are outlined in the muted color (like section titles), so a
+  with the row's edge; menu triggers showing text (e.g. "Lora ⌄") and
+  editable text are padded like an icon button's inset (`--space-trigger-inline`), so every
+  control's content sits equally far in, toolbars space selects and icons alike, and one pull
+  lines every row's content up with the edge. Swatch tiles are outlined in the muted color (like section titles), so a
   tile matching the page still shows its edge. Color tiles are buttons that open the system
   color picker (a hidden color input), since WebKit never lets the keyboard reach color inputs. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
+- **Text colors** are picked from one menu (`ColorMenu`): text color (toolbar) and each
+  text style's color. A row of theme tones, then the custom colors, shared by both. Custom
+  slots open the system color picker (a hidden color input under a button, since WebKit
+  never lets the keyboard reach color inputs). A filled slot's × (on hover or focus)
+  removes it without applying it. The page's Foreground and Background are tiles that
+  open the system color picker directly (see appearance `SPEC.md`).
 - **Messages in place of the app** (e.g. the journal couldn't open, or the app crashed: an
   error boundary around it in `main.tsx` shows `AppCrashed` with the error's message and
   Reload, never a blank page) use `MessagePage`, laid
@@ -140,6 +148,14 @@ older data without them (see the storage tests).
   than S/M/L; preset names are fine where editors use them (margins). Text sizes are px
   (written as rem, so browser zoom still works), set per text style in settings.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
+- **Phones and touch screens** get the same layout, adapted by CSS rather than separate
+  screens: the toolbar scrolls sideways at the top, the sidebar overlays the page below
+  48rem, and on touch screens (`pointer: coarse`) controls are 44px and swatch menus widen
+  so tiles are too. Hover styles apply only where there's hover (`hover: hover`), since a
+  tap would leave them stuck. Fields are at
+  least 16px, so iOS doesn't zoom in on focus. The page reaches under a phone's notch and
+  home indicator (`viewport-fit=cover`), with safe-area padding keeping controls clear;
+  on Android the keyboard shrinks the layout (`interactive-widget=resizes-content`).
 
 ## Layout
 

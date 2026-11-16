@@ -6,6 +6,15 @@
   anchor-name: --popover-anchor;
 }
 
+/*
+ * A trigger showing text (e.g. "Lora ⌄"): padded like an icon button's inset,
+ * its chevron snug, so it spaces like the icon buttons beside it.
+ */
+.anchor > .textTrigger {
+  --space-control-inline: var(--space-trigger-inline);
+  gap: var(--space-1);
+}
+
 .panel {
   margin: var(--space-2) 0;
   width: max-content;
@@ -51,4 +60,11 @@
 
 .beside:popover-open {
   position-area: inline-end span-block-end;
+}
+
+/* Narrow screens: panels often reach the screen's edge, so they keep a gap from it. */
+@media (width < 48rem) {
+  .panel {
+    margin-inline: var(--space-2);
+  }
 }

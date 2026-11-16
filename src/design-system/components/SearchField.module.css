@@ -33,9 +33,19 @@
   color: var(--color-muted);
 }
 
-.input:hover,
 .input:focus {
   background: var(--color-surface-strong);
+}
+
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .input:hover {
+    background: var(--color-surface-strong);
+  }
+
+  .clear:hover {
+    color: var(--color-text);
+  }
 }
 
 /* The browser's clear button doesn't follow the theme; Escape clears instead. */
@@ -57,10 +67,6 @@
   background: transparent;
   color: var(--color-muted);
   cursor: pointer;
-}
-
-.clear:hover {
-  color: var(--color-text);
 }
 
 .clear svg {

@@ -25,5 +25,5 @@ them).
 - Sizes step by 1px within a range, like a word processor, so styles stay sensible.
 - `TextStylePreview` draws text in a style at its size relative to body (via `-scale`), for
   showing a style's name in the style menu and in settings.
-- `TextColorSwatches` / `TextColorMenu` are the shared text color controls: the toolbar's
-  color menu and each style's color in settings.
+- `TextColorMenu` is the shared text color control (the design system's `ColorMenu` with the
+  theme colors as suggestions): the toolbar's color menu and each style's color in settings.

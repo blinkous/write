@@ -21,8 +21,11 @@
   text-align: center;
 }
 
-.value:hover {
-  border-color: var(--color-border);
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .value:hover {
+    border-color: var(--color-border);
+  }
 }
 
 .value:focus {

@@ -21,9 +21,15 @@
   cursor: pointer;
 }
 
-.item:hover:not(:disabled),
 .item[data-selected='true'] {
   background: var(--color-surface-strong);
+}
+
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .item:hover:not(:disabled) {
+    background: var(--color-surface-strong);
+  }
 }
 
 .item:disabled {

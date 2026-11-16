@@ -204,7 +204,7 @@
   --width-page-none: 100%;
   --width-sidebar: 16rem;
   --width-popover: 18rem;
-  --width-popover-narrow: 13rem;
+  --width-popover-narrow: 15rem;
   --width-dialog: 36rem;
   /* Narrowest a dialog's column gets before the columns stack. */
   --width-dialog-column: 12rem;
@@ -217,16 +217,33 @@
   /* Swatch grids share one column count so tiles are the same size in every menu. */
   --swatch-columns: 7;
   --space-control-inline: var(--space-3);
-  /* Text controls at a row's end (LabeledRow): snugger, so their hover stays clear of the panel's edge. */
-  --space-row-control-inline: var(--space-2);
   --size-icon: 1.125rem;
   /* How far an icon button's icon sits in from its edge; pulled out by this, icons line up with text. */
   --inset-icon-button: calc((var(--size-control) - var(--size-icon)) / 2);
+  /*
+   * Inline padding of menu triggers that show text (e.g. "Lora ⌄") and of text
+   * at a settings row's end: their content sits as far in as an icon button's
+   * icon (padding plus border), so toolbars and rows space every control alike.
+   */
+  --space-trigger-inline: calc(var(--inset-icon-button) - var(--border-width));
   --size-icon-small: 0.875rem;
   /* Lighter lines for small icons beside text (chevrons), so they read as the same weight. */
   --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
+}
+
+/*
+ * Touch screens: controls reach the 44px touch size (Apple's minimum; WCAG's is
+ * 24px), and menus widen so swatch tiles do too (seven columns).
+ */
+@media (pointer: coarse) {
+  :root {
+    --size-control: 2.75rem;
+    --size-control-small: var(--size-control);
+    --width-popover: 22rem;
+    --width-popover-narrow: 21rem;
+  }
 }
 
 /* The system asks for more contrast: muted text becomes readable (see --color-muted). */

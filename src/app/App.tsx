@@ -51,7 +51,8 @@ import {
 import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
 import styles from './App.module.css'
 
-const WIDE_SCREEN_QUERY = '(min-width: 48rem)'
+/** The opposite of App.module.css's narrow-screen query, so exactly one of them matches at any width. */
+const WIDE_SCREEN_QUERY = '(width >= 48rem)'
 
 type AppProps = {
   /** Opened before the app renders, with the open entry's writing loaded (see main.tsx). */
@@ -74,6 +75,9 @@ export function App({ journal }: AppProps) {
     textColor,
     customTextColors,
   } = appearance
+  // Custom colors are shared by the text color menus (toolbar and text styles).
+  const changeCustomTextColors = (colors: (string | null)[]) =>
+    updateAppearance({ customTextColors: colors })
   // The app follows only which entry is open and the sort, never the writing (see Journal).
   const openEntry = useJournalState(journal, (state) => state.openEntry)
   const sort = useJournalState(journal, (state) => state.sort)
@@ -207,9 +211,7 @@ export function App({ journal }: AppProps) {
                   <EditorSettings
                     pageTheme={pageTheme}
                     customTextColors={customTextColors}
-                    onCustomTextColorsChange={(colors) =>
-                      updateAppearance({ customTextColors: colors })
-                    }
+                    onCustomTextColorsChange={changeCustomTextColors}
                   />
                 ),
               },
@@ -264,9 +266,7 @@ export function App({ journal }: AppProps) {
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
-                onCustomTextColorsChange={(colors) =>
-                  updateAppearance({ customTextColors: colors })
-                }
+                onCustomTextColorsChange={changeCustomTextColors}
               />
               <TextCasePicker editor={activeEditor} />
               <MarginsMenu

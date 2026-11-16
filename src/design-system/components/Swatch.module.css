@@ -68,8 +68,11 @@
   color: var(--color-muted);
 }
 
-.fileSwatch:hover {
-  color: var(--color-text);
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .fileSwatch:hover {
+    color: var(--color-text);
+  }
 }
 
 .fileSwatch svg {

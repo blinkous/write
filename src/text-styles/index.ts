@@ -10,6 +10,5 @@ export {
   type TextStyles,
   type TextStyleSettings,
 } from './textStyleSettings'
-export { TextColorSwatches } from './TextColorSwatches'
 export { TextColorMenu } from './TextColorMenu'
 export { TextStylePreview } from './TextStylePreview'

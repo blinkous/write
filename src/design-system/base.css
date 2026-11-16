@@ -11,6 +11,12 @@ body,
   margin: 0;
 }
 
+html {
+  /* Phones keep the chosen text sizes when turned sideways. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-text);

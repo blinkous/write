@@ -31,8 +31,9 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
     tile removes the text's own color (so it doubles as reset) and is selected by default.
   - **Custom row:** seven saved slots (stored with appearance). An empty slot (dashed)
     opens the color picker; picking fills the slot and applies it. A filled slot applies
-    its color on click and can be re-picked; hovering or focusing it shows a small × to
-    empty it. Text already colored keeps its color (the color is stored on the text).
+    its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
+    colored keeps its color (the color is stored on the text). This is the shared `ColorMenu`
+    (design system), the same menu as each text style's color (see the root `SPEC.md`).
 - **Text case** (`TextCasePicker`): UPPERCASE, lowercase, Title Case, Sentence case, or
   "As typed". Display-only: the letters typed are stored unchanged (see `journal-document`).
 - **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯

@@ -30,8 +30,11 @@
   font-size: var(--text-size-caption);
 }
 
-.summary:hover {
-  color: var(--color-text);
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .summary:hover {
+    color: var(--color-text);
+  }
 }
 
 /* Nested inside another, the title reads like the rows around it. */
