@@ -15,8 +15,9 @@ The welcome: what the journal is and how it keeps your writing.
   headings, lists, code), and the sign-off. The visit is then remembered. Returning visitors,
   including anyone who saw the old welcome dialog, never get it.
 - **About** (settings drawer → Data) opens `PrivacyNotice`, a dialog with the same intro and the notes
-  as icon rows (each sentence on its own line, icons centered on their note). Closing it
-  returns focus to the entry.
+  as icon rows (each sentence on its own line, icons centered on their note), then a GitHub
+  link to the source (`SOURCE_CODE_URL`, opens in a new tab) beside "Write away!", which is
+  focused on open so Enter closes it. Closing it returns focus to the entry.
 
 - **Framed by another page** (`isFramed`), `main.tsx` shows `FramedNotice` ("Write opens in
   its own tab", with a button to open it there) and never opens the journal.

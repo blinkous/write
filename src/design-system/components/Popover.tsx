@@ -6,7 +6,8 @@ import {
   type ToggleEvent,
 } from 'react'
 import { flushSync } from 'react-dom'
-import { Button, type ButtonVariant } from './Button'
+import { Button } from './Button'
+import type { ButtonVariant } from './buttonClassName'
 import styles from './Popover.module.css'
 
 type PopoverProps = {

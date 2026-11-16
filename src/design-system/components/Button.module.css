@@ -11,6 +11,7 @@
   color: inherit;
   font: inherit;
   font-weight: var(--font-weight-medium);
+  text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
 }

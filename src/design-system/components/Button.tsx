@@ -1,8 +1,5 @@
 import type { ComponentProps } from 'react'
-import styles from './Button.module.css'
-
-/** `row` fills its row edge to edge, its text lined up with the row's other text. */
-export type ButtonVariant = 'ghost' | 'subtle' | 'danger' | 'row'
+import { getButtonClassName, type ButtonVariant } from './buttonClassName'
 
 /* Includes `ref` (a regular prop in React 19), passed through to the <button>. */
 type ButtonProps = ComponentProps<'button'> & {
@@ -17,21 +14,23 @@ type ButtonProps = ComponentProps<'button'> & {
 }
 
 export function Button({
-  variant = 'ghost',
-  iconOnly = false,
-  plainWhenExpanded = false,
-  className = '',
+  variant,
+  iconOnly,
+  plainWhenExpanded,
+  className,
   type = 'button',
   ...buttonProps
 }: ButtonProps) {
-  const classNames = [
-    styles.button,
-    styles[variant],
-    iconOnly ? styles.iconOnly : '',
-    plainWhenExpanded ? styles.plainWhenExpanded : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ')
-  return <button type={type} className={classNames} {...buttonProps} />
+  return (
+    <button
+      type={type}
+      className={getButtonClassName({
+        variant,
+        iconOnly,
+        plainWhenExpanded,
+        className,
+      })}
+      {...buttonProps}
+    />
+  )
 }

@@ -1,6 +1,14 @@
-import { Button, Dialog } from '../../design-system'
+import { useRef } from 'react'
+import { siGithub } from 'simple-icons'
+import {
+  BrandIcon,
+  Button,
+  Dialog,
+  ExternalLinkButton,
+} from '../../design-system'
 import {
   PRIVACY_NOTES,
+  SOURCE_CODE_URL,
   WELCOME_INTRO,
   WELCOME_SIGN_OFF,
   WELCOME_TITLE,
@@ -12,17 +20,29 @@ type PrivacyNoticeProps = {
   onClose: () => void
 }
 
-/** About: the author's note on what this is, then how your data is kept. */
+/**
+ * About: the author's note on what this is, then how your data is kept, with
+ * a link to the source code.
+ */
 export function PrivacyNotice({ isOpen, onClose }: PrivacyNoticeProps) {
+  // Focus the sign-off, not the GitHub link before it, so Enter closes the dialog.
+  const signOffButtonRef = useRef<HTMLButtonElement>(null)
   return (
     <Dialog
       isOpen={isOpen}
       title={WELCOME_TITLE}
       onClose={onClose}
+      initialFocusRef={signOffButtonRef}
       actions={
-        <Button variant="subtle" onClick={onClose}>
-          {WELCOME_SIGN_OFF}
-        </Button>
+        <>
+          <ExternalLinkButton href={SOURCE_CODE_URL}>
+            <BrandIcon icon={siGithub} />
+            GitHub
+          </ExternalLinkButton>
+          <Button variant="subtle" onClick={onClose} ref={signOffButtonRef}>
+            {WELCOME_SIGN_OFF}
+          </Button>
+        </>
       }
     >
       <p>{WELCOME_INTRO}</p>

@@ -12,6 +12,9 @@ export const WELCOME_INTRO =
 
 export const WELCOME_SIGN_OFF = 'Write away!'
 
+/** Where the app's source lives, linked from About. */
+export const SOURCE_CODE_URL = 'https://github.com/blinkous/write'
+
 /** How your writing is kept: each note is an icon (in the dialog) and its sentences. */
 export const PRIVACY_NOTES: readonly {
   icon: LucideIcon
