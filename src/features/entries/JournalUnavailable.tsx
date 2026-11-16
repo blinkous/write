@@ -1,5 +1,4 @@
-import { Button, MessageTitle, Text } from '../../design-system'
-import styles from './JournalUnavailable.module.css'
+import { Button, MessagePage, MessageTitle, Text } from '../../design-system'
 
 /**
  * Shown instead of the app when the journal's storage (IndexedDB) won't open
@@ -8,8 +7,7 @@ import styles from './JournalUnavailable.module.css'
  */
 export function JournalUnavailable() {
   return (
-    <main className={styles.page}>
-      <h1 className="visually-hidden">Write</h1>
+    <MessagePage>
       <MessageTitle tone="warning">Your journal couldn’t open</MessageTitle>
       <Text>
         This browser’s storage isn’t responding. Your writing is still stored
@@ -18,6 +16,6 @@ export function JournalUnavailable() {
       <Button variant="subtle" onClick={() => window.location.reload()}>
         Reload
       </Button>
-    </main>
+    </MessagePage>
   )
 }
