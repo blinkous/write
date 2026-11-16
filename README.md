@@ -3,6 +3,8 @@
 A minimal, private web journal. Everything stays in your browser: no accounts, no
 servers, no analytics, and no network requests at all, fonts included.
 
+**Use it at [write.dhani.dev](https://write.dhani.dev)**, or run your own copy (below).
+
 ## Features
 
 - **Rich text** with a clean toolbar: headings, bold/italic, lists, quotes, and markdown
@@ -19,17 +21,24 @@ servers, no analytics, and no network requests at all, fonts included.
   journal and settings. Margins and line/paragraph spacing sit in the toolbar.
 - **Text fonts and colors:** give any text its own font or color, or leave it on the page's.
 - **Entries** with search, sorted newest, oldest, last edited or by name. Name them, or let the first line be the name.
-- **Export / import:** copy an entry as markdown, export the whole journal as one markdown
-  file, or save JSON backups (you choose where) and import them back. Imports never
-  overwrite existing writing.
-- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, `⇧⌘>` / `⇧⌘<` change text style, `⌘S` / `⇧⌘S` save backups,
-  and everything is reachable by keyboard.
+- **Background picture or video** behind the page, with blur and opacity.
+- **Export / import:** copy an entry as markdown, or export your journal, settings or both
+  as JSON or markdown (you choose where) and import them back. Imports never overwrite
+  existing writing.
+- **Keyboard friendly:** `⌥↑` / `⌥↓` move lines like VS Code, `⇧⌘>` / `⇧⌘<` change text
+  style, `⌘S` backs up the open entry, `⇧⌘S` exports, `⌘O` imports, and everything is
+  reachable by keyboard.
 
 ## Privacy and security
 
-- Entries and settings are stored in `localStorage` for the app's address only.
+- Entries and the background picture are stored in IndexedDB, and settings in
+  `localStorage`, for the app's address only. Each address keeps its own journal: the
+  hosted app and a copy on your computer don't share entries (export and import to move
+  them).
 - Builds ship a strict Content Security Policy: only the app's own code, styles and fonts
   can load, and network connections are blocked.
+- The app won't run inside another site's frame, so it can't be disguised to trick clicks
+  (clickjacking).
 - Imported files are treated as untrusted. They're size-capped, validated against a strict
   format and the document schema, and rejected whole if anything is invalid.
 
@@ -47,6 +56,8 @@ npm start       # build and serve the locked-down app at http://localhost:4791
 
 The app always uses port 4791. Browser storage is tied to the address, so a different port
 would show an empty journal.
+
+`npm run build` writes the static app to `dist/`, ready for any static host.
 
 ### Development
 
@@ -66,8 +77,8 @@ self-hosting. See the comment at the top of `src/fonts/fontOptions.ts`.
 ## Built with
 
 [React](https://react.dev), [Tiptap](https://tiptap.dev) (ProseMirror),
-[Vite](https://vite.dev), [Zod](https://zod.dev), [Culori](https://culorijs.org) and
-[Lucide](https://lucide.dev) icons.
+[Vite](https://vite.dev), [Zod](https://zod.dev), [Culori](https://culorijs.org),
+[Lucide](https://lucide.dev) and [Simple Icons](https://simpleicons.org).
 
 Fonts are licensed under the SIL Open Font License 1.1, except Permanent Marker (Apache
 2.0). `src/features/editor/tiptapBase.css` is copied from Tiptap (MIT). Every build includes
