@@ -18,7 +18,14 @@ The welcome: what the journal is and how it keeps your writing.
   as icon rows (each sentence on its own line, icons centered on their note). Closing it
   returns focus to the entry.
 
+- **Framed by another page** (`isFramed`), `main.tsx` shows `FramedNotice` ("Write opens in
+  its own tab", with a button to open it there) and never opens the journal.
+
 ## Decisions
+
+- The frame check stands in for the `frame-ancestors` header, which static hosts like GitHub
+  Pages can't send and a `<meta>` CSP ignores. Without it, another site could show the app
+  disguised under its own page and trick clicks (clickjacking).
 
 - The copy is the author's own; edits are for grammar only, keeping the voice. The tour lines
   and the welcome entry's two headings are drafts for the author to rewrite (marked in code).
