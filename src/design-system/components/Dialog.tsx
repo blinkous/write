@@ -2,10 +2,13 @@ import {
   useEffect,
   useId,
   useRef,
+  type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
 } from 'react'
+import { tabbable } from 'tabbable'
 import styles from './Dialog.module.css'
+import { nextInFocusCycle } from './focusCycle'
 import { MessageTitle, type MessageTone } from './MessageTitle'
 
 type DialogProps = {
@@ -31,6 +34,25 @@ function isOnBackdrop(dialog: HTMLDialogElement, event: PointerEvent) {
   const { top, right, bottom, left } = dialog.getBoundingClientRect()
   const { clientX, clientY } = event
   return clientX < left || clientX > right || clientY < top || clientY > bottom
+}
+
+/**
+ * Tab and Shift+Tab step through every control in the dialog, wrapping at the
+ * ends. Done here because Safari's plain Tab skips buttons, checkboxes and
+ * radios (only Option+Tab reaches them), which left nothing in a dialog to
+ * land on, and focus fell out to the page behind it.
+ */
+function cycleFocusWithin(dialog: HTMLDialogElement, event: KeyboardEvent) {
+  const { key, shiftKey, metaKey, ctrlKey } = event
+  if (key !== 'Tab' || metaKey || ctrlKey) return
+  const next = nextInFocusCycle(
+    tabbable(dialog),
+    document.activeElement,
+    shiftKey,
+  )
+  if (!next) return
+  event.preventDefault()
+  next.focus()
 }
 
 /**
@@ -75,6 +97,7 @@ export function Dialog({
       tabIndex={-1}
       className={styles.dialog}
       onClose={onClose}
+      onKeyDown={(event) => cycleFocusWithin(event.currentTarget, event)}
       onPointerDown={(event) => {
         pressStartedOnBackdropRef.current =
           !opensUnprompted && isOnBackdrop(event.currentTarget, event)

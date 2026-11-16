@@ -112,12 +112,15 @@ older data without them (see the storage tests).
   like Escape or Cancel; one that opened by itself (`opensUnprompted`, e.g. Save failed)
   needs a button, so a stray click can't dismiss it unread. Confirmations use
   `ConfirmDialog` (Cancel first, so the first Tab lands on it, not the action). No browser popups.
+  Every dialog takes focus itself on open, not its first button: nothing looks chosen until
+  Tab, and a stray Enter can't press anything. Inside a dialog, Tab and Shift+Tab step
+  through every control and wrap at the ends, in every browser (Safari's plain Tab would
+  otherwise skip buttons and checkboxes, leaving nothing to land on).
 - **No warning colors.** People pick their own palette, and a red or orange can clash with
   it or be unreadable on it. Destructive actions look like any other and ask first;
   something gone wrong (a failed save, a toast about a bad file) is marked by `WarningIcon`,
   drawn in the text color, so the shape is the signal.
-  Every dialog takes focus itself on open, not its first button: nothing looks chosen until
-  Tab, and a stray Enter can't press anything. Choices inside a dialog are native checkboxes and radios, stacked in a
+  Choices inside a dialog are native checkboxes and radios, stacked in a
   labeled group (`ChoiceFieldset`, `Checkbox`, `RadioGroup`), drawn by the app rather than
   the browser: an outline in the text color over whatever's behind (browsers fill them
   white, which clashes with colorful themes), filled with it when checked. Menus keep their
