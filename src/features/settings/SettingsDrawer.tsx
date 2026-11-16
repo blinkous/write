@@ -2,10 +2,10 @@ import { Settings } from 'lucide-react'
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Button, Drawer, DrawerSection } from '../../design-system'
 import {
-  loadClosedSectionIds,
   loadIsSettingsOpen,
-  saveClosedSectionIds,
+  loadOpenSectionIds,
   saveIsSettingsOpen,
+  saveOpenSectionIds,
 } from './settingsStorage'
 import styles from './SettingsDrawer.module.css'
 
@@ -19,7 +19,7 @@ export type SettingsSection = {
 type SettingsDrawerProps = {
   /** Small controls shown in the bottom bar while open, e.g. undo/redo. */
   headerActions?: ReactNode
-  /** Each folds away under its title; all start open. */
+  /** Each folds away under its title; all start folded. */
   sections: readonly SettingsSection[]
 }
 
@@ -35,15 +35,17 @@ export function SettingsDrawer({
 }: SettingsDrawerProps) {
   const drawerId = useId()
   const [isOpen, setIsOpen] = useState(loadIsSettingsOpen)
-  const [closedSectionIds, setClosedSectionIds] = useState(loadClosedSectionIds)
+  const [openSectionIds, setOpenSectionIds] = useState(() =>
+    loadOpenSectionIds(sections.map(({ id }) => id)),
+  )
   useEffect(() => saveIsSettingsOpen(isOpen), [isOpen])
-  useEffect(() => saveClosedSectionIds(closedSectionIds), [closedSectionIds])
+  useEffect(() => saveOpenSectionIds(openSectionIds), [openSectionIds])
 
   function toggleSection(sectionId: string, isSectionOpen: boolean) {
-    setClosedSectionIds((closedIds) =>
+    setOpenSectionIds((openIds) =>
       isSectionOpen
-        ? closedIds.filter((closedId) => closedId !== sectionId)
-        : [...new Set([...closedIds, sectionId])],
+        ? [...new Set([...openIds, sectionId])]
+        : openIds.filter((openId) => openId !== sectionId),
     )
   }
 
@@ -54,7 +56,7 @@ export function SettingsDrawer({
           <DrawerSection
             key={id}
             title={title}
-            isOpen={!closedSectionIds.includes(id)}
+            isOpen={openSectionIds.includes(id)}
             onToggle={(isSectionOpen) => toggleSection(id, isSectionOpen)}
           >
             {content}

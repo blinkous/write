@@ -7,6 +7,7 @@ import {
 } from '../../text-styles'
 import type { Appearance } from './appearanceOptions'
 import {
+  EMPTY_PAGE_THEME_HISTORY,
   beginEdit,
   commitEdit,
   redoPageTheme,
@@ -132,6 +133,10 @@ export function usePageTheme(
     /** Ends the current edit (e.g. a finished drag) as one undo step. */
     commit() {
       setHistory((currentHistory) => commitEdit(currentHistory, current))
+    },
+    /** Forgets every undo and redo step, as on a first visit (e.g. after resetting settings). */
+    clearHistory() {
+      setHistory(EMPTY_PAGE_THEME_HISTORY)
     },
     canUndo: history.past.length > 0 || history.editStart !== null,
     canRedo: history.future.length > 0 && history.editStart === null,

@@ -47,18 +47,19 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 
 ## Storage keys
 
-| Key                                | Owner      | Contents                                                                    |
-| ---------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| `write.entries.v2`                 | entries    | Journal entries, only where IndexedDB can't open (cleared once moved)       |
-| `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so a journal here would be out of date      |
-| `write.selectedEntryId.v1`         | entries    | Last open entry id                                                          |
-| `write.entrySort.v1`               | entries    | How the entries list is sorted                                              |
-| `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity         |
-| `write.settingsOpen.v1`            | settings   | Whether the settings drawer is open                                         |
-| `write.settingsClosedSections.v1`  | settings   | Folded settings sections, by id                                             |
-| `write.exportChoices.v1`           | entries    | The Export dialog's last choices (journal, settings, format)                |
-| `write.pageThemeHistory.v1`        | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup) |
-| `write.privacyNoticeSeen.v1`       | privacy    | This browser has visited (no welcome entry)                                 |
+| Key                                | Owner      | Contents                                                                     |
+| ---------------------------------- | ---------- | ---------------------------------------------------------------------------- |
+| `write.entries.v2`                 | entries    | Journal entries, only where IndexedDB can't open (cleared once moved)        |
+| `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so a journal here would be out of date       |
+| `write.selectedEntryId.v1`         | entries    | Last open entry id                                                           |
+| `write.entrySort.v1`               | entries    | How the entries list is sorted                                               |
+| `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity          |
+| `write.settingsOpen.v1`            | settings   | Whether the settings drawer is open                                          |
+| `write.settingsOpenSections.v1`    | settings   | Open settings sections, by id (all start folded)                             |
+| `write.settingsClosedSections.v1`  | settings   | Folded sections, from before they started folded (read once, kept as backup) |
+| `write.exportChoices.v1`           | entries    | The Export dialog's last choices (journal, settings, format)                 |
+| `write.pageThemeHistory.v1`        | appearance | Page theme undo/redo steps, max 50 (color-only v1 history kept as a backup)  |
+| `write.privacyNoticeSeen.v1`       | privacy    | This browser has visited (no welcome entry)                                  |
 
 IndexedDB database `write-journal` (entries; see entries `SPEC.md`):
 

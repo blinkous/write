@@ -1,7 +1,16 @@
 import { z } from 'zod'
-import { readStoredValue, writeStoredValue } from '../../lib/localStore'
+import {
+  hasStoredValue,
+  readStoredValue,
+  writeStoredValue,
+} from '../../lib/localStore'
 
 const SETTINGS_OPEN_STORAGE_KEY = 'write.settingsOpen.v1'
+const OPEN_SECTIONS_STORAGE_KEY = 'write.settingsOpenSections.v1'
+/*
+ * Before sections started folded, the folded ones were remembered instead. It's
+ * read once (while open sections aren't saved yet) and left as a backup.
+ */
 const CLOSED_SECTIONS_STORAGE_KEY = 'write.settingsClosedSections.v1'
 
 export function loadIsSettingsOpen(): boolean {
@@ -12,11 +21,27 @@ export function saveIsSettingsOpen(isOpen: boolean): void {
   writeStoredValue(SETTINGS_OPEN_STORAGE_KEY, isOpen)
 }
 
-/** Folded sections, by id; anything not listed (including new sections) is open. */
-export function loadClosedSectionIds(): string[] {
-  return readStoredValue(CLOSED_SECTIONS_STORAGE_KEY, z.array(z.string()), [])
+const sectionIdsSchema = z.array(z.string())
+
+/**
+ * Open sections, by id; anything not listed (including new sections) is
+ * folded, so a first look shows just the section titles. Someone who folded
+ * sections before keeps the rest open.
+ */
+export function loadOpenSectionIds(allSectionIds: readonly string[]): string[] {
+  if (hasStoredValue(OPEN_SECTIONS_STORAGE_KEY))
+    return readStoredValue(OPEN_SECTIONS_STORAGE_KEY, sectionIdsSchema, [])
+  if (!hasStoredValue(CLOSED_SECTIONS_STORAGE_KEY)) return []
+  const closedSectionIds = readStoredValue(
+    CLOSED_SECTIONS_STORAGE_KEY,
+    sectionIdsSchema,
+    [],
+  )
+  return allSectionIds.filter(
+    (sectionId) => !closedSectionIds.includes(sectionId),
+  )
 }
 
-export function saveClosedSectionIds(sectionIds: readonly string[]): void {
-  writeStoredValue(CLOSED_SECTIONS_STORAGE_KEY, sectionIds)
+export function saveOpenSectionIds(sectionIds: readonly string[]): void {
+  writeStoredValue(OPEN_SECTIONS_STORAGE_KEY, sectionIds)
 }

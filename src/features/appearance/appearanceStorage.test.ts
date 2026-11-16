@@ -4,7 +4,11 @@ import {
   TAB_TITLE_MAX_LENGTH,
 } from './appearanceOptions'
 import { getSaveFailure, reportSaveResult } from '../../lib/saveStatus'
-import { loadAppearance, saveAppearance } from './appearanceStorage'
+import {
+  getFirstVisitAppearance,
+  loadAppearance,
+  saveAppearance,
+} from './appearanceStorage'
 
 describe('loadAppearance', () => {
   beforeEach(() => window.localStorage.clear())
@@ -207,5 +211,28 @@ describe('saving the appearance', () => {
     })
     saveAppearance(DEFAULT_APPEARANCE)
     expect(getSaveFailure()).not.toBeNull()
+  })
+})
+
+describe('getFirstVisitAppearance', () => {
+  beforeEach(() => window.localStorage.clear())
+
+  it('is what a first visit loads, in light or dark mode', () => {
+    expect(getFirstVisitAppearance('light')).toEqual(loadAppearance('light'))
+    expect(getFirstVisitAppearance('dark')).toEqual(loadAppearance('dark'))
+    expect(getFirstVisitAppearance('dark')).toMatchObject(
+      DEFAULT_PAGE_COLORS.dark,
+    )
+  })
+
+  it('ignores saved settings', () => {
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ margins: 'wide', tabTitle: 'Mine' }),
+    )
+    expect(getFirstVisitAppearance('light')).toMatchObject({
+      margins: DEFAULT_APPEARANCE.margins,
+      tabTitle: DEFAULT_APPEARANCE.tabTitle,
+    })
   })
 })

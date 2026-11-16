@@ -1,4 +1,4 @@
-import { Download, Info } from 'lucide-react'
+import { Download, Info, RotateCcw } from 'lucide-react'
 import { ActionList, MenuItem } from '../../design-system'
 import { ImportAction } from './ImportAction'
 
@@ -8,13 +8,19 @@ type DataSettingsProps = {
   /** Opens the import file picker. */
   onChooseImportFile: () => void
   onShowAbout: () => void
+  /** Asks before putting every setting back to a first visit's. */
+  onResetSettings: () => void
 }
 
-/** Export (the journal and/or settings), import, and About (which is mostly about where data lives). */
+/**
+ * Export (the journal and/or settings), import, resetting settings (which asks
+ * first) and About (which is mostly about where data lives).
+ */
 export function DataSettings({
   onExport,
   onChooseImportFile,
   onShowAbout,
+  onResetSettings,
 }: DataSettingsProps) {
   return (
     <ActionList>
@@ -24,6 +30,10 @@ export function DataSettings({
       </MenuItem>
       {/* Takes journal backups and settings files alike. */}
       <ImportAction onChooseFile={onChooseImportFile} />
+      <MenuItem onClick={onResetSettings}>
+        <RotateCcw aria-hidden="true" />
+        Reset settings…
+      </MenuItem>
       <MenuItem onClick={onShowAbout}>
         <Info aria-hidden="true" />
         About

@@ -59,7 +59,7 @@ type AppProps = {
 }
 
 export function App({ journal }: AppProps) {
-  const { appearance, updateAppearance } = useAppearance()
+  const { appearance, updateAppearance, resetAppearance } = useAppearance()
   const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
   useRememberVisit()
@@ -111,6 +111,16 @@ export function App({ journal }: AppProps) {
     onStatus: setToastMessage,
   })
   const [isExportOpen, setIsExportOpen] = useState(false)
+  const [isResetSettingsOpen, setIsResetSettingsOpen] = useState(false)
+
+  /** Every look back to a first visit's: settings, their undo history and the background file. */
+  function resetSettings() {
+    resetAppearance()
+    pageTheme.clearHistory()
+    backgroundMedia.remove()
+    setIsResetSettingsOpen(false)
+    setToastMessage({ text: 'Settings reset.', tone: 'neutral' })
+  }
   const importFilePickerRef = useRef<HTMLInputElement>(null)
   const openImportPicker = () => importFilePickerRef.current?.click()
   useFileShortcuts({
@@ -211,6 +221,7 @@ export function App({ journal }: AppProps) {
                     onExport={() => setIsExportOpen(true)}
                     onChooseImportFile={openImportPicker}
                     onShowAbout={privacyNotice.open}
+                    onResetSettings={() => setIsResetSettingsOpen(true)}
                   />
                 ),
               },
@@ -324,6 +335,15 @@ export function App({ journal }: AppProps) {
           setEntryIdToDelete(null)
         }}
         onCancel={() => setEntryIdToDelete(null)}
+      />
+      <ConfirmDialog
+        isOpen={isResetSettingsOpen}
+        title="Reset settings?"
+        message="Fonts, colors, text styles, spacing, the tab title and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
+        confirmLabel="Reset settings"
+        tone="danger"
+        onConfirm={resetSettings}
+        onCancel={() => setIsResetSettingsOpen(false)}
       />
       <PrivacyNotice
         isOpen={privacyNotice.isOpen}

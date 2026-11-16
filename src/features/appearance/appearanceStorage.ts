@@ -166,16 +166,25 @@ function toAppearance(
   }
 }
 
+/* Every field falls back on its own, so parsing nothing gives all the defaults. */
+const NOTHING_STORED = appearanceSchema.parse({})
+
 export function loadAppearance(
   colorScheme = getSystemColorScheme(),
 ): Appearance {
   const stored = readStoredValue(
     APPEARANCE_STORAGE_KEY,
     appearanceSchema,
-    // Every field falls back on its own, so parsing nothing gives all the defaults.
-    appearanceSchema.parse({}),
+    NOTHING_STORED,
   )
   return toAppearance(stored, colorScheme)
+}
+
+/** What a first visit gets: every default, with the colors for the system's light or dark mode. */
+export function getFirstVisitAppearance(
+  colorScheme = getSystemColorScheme(),
+): Appearance {
+  return toAppearance(NOTHING_STORED, colorScheme)
 }
 
 /**

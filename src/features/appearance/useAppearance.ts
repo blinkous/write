@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { Appearance } from './appearanceOptions'
 import { applyAppearance } from './applyAppearance'
-import { loadAppearance, saveAppearance } from './appearanceStorage'
+import {
+  getFirstVisitAppearance,
+  loadAppearance,
+  saveAppearance,
+} from './appearanceStorage'
 
 export function useAppearance() {
   const [appearance, setAppearance] = useState<Appearance>(loadAppearance)
@@ -15,5 +19,10 @@ export function useAppearance() {
     setAppearance((currentAppearance) => ({ ...currentAppearance, ...changes }))
   }
 
-  return { appearance, updateAppearance }
+  /** Every setting back to a first visit's (see getFirstVisitAppearance). */
+  function resetAppearance() {
+    setAppearance(getFirstVisitAppearance())
+  }
+
+  return { appearance, updateAppearance, resetAppearance }
 }
