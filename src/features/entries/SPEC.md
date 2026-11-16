@@ -66,7 +66,7 @@ The list of journal entries and which one is open.
   Styling that's invalid or whose text no longer matches `title` is dropped on load and
   import; a sidebar rename that changes the text clears it.
 - **⌘S** (`useFileShortcuts`) saves a JSON backup of the open entry via the Save dialog;
-  **⇧⌘S** opens Export (below), its Export button focused so Enter saves, and so does
+  **⇧⌘S** opens Export (below), and so does
   **⇧⌘E** (unlisted: the menus show ⇧⌘S); **⌘O** opens
   Import's file picker (`ImportFilePicker`, the app's one import picker, which the Import
   rows open too: it's always mounted, unlike menus' contents). They replace the browser's "save page" and "open file"; the menus show the

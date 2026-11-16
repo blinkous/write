@@ -17,7 +17,7 @@
   display: flex;
 }
 
-/* Focused only so keystrokes land nowhere (see opensUnprompted); it isn't a control, so no ring. */
+/* Focused on open so keystrokes land nowhere until Tab; it isn't a control, so no ring. */
 .dialog:focus {
   outline: none;
 }

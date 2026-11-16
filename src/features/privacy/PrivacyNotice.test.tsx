@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { PrivacyNotice } from './PrivacyNotice'
-import { SOURCE_CODE_URL, WELCOME_SIGN_OFF } from './privacyNotes'
+import { SOURCE_CODE_URL } from './privacyNotes'
 
 describe('PrivacyNotice', () => {
   it('links to the source code in a new tab', () => {
@@ -11,10 +11,5 @@ describe('PrivacyNotice', () => {
     expect(link).toHaveAttribute('href', SOURCE_CODE_URL)
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-  })
-
-  it('focuses the sign-off on open, so Enter closes it', () => {
-    render(<PrivacyNotice isOpen onClose={() => {}} />)
-    expect(screen.getByRole('button', { name: WELCOME_SIGN_OFF })).toHaveFocus()
   })
 })

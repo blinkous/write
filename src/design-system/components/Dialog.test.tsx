@@ -37,6 +37,14 @@ function press(
 describe('Dialog', () => {
   afterEach(() => vi.restoreAllMocks())
 
+  it.each([false, true])(
+    'takes focus itself, so no button looks chosen before Tab (opens unprompted: %s)',
+    (opensUnprompted) => {
+      const { dialog } = renderDialog({ opensUnprompted })
+      expect(dialog).toHaveFocus()
+    },
+  )
+
   it('closes on a click outside', () => {
     const { dialog, onClose } = renderDialog()
     press(dialog, INSIDE)

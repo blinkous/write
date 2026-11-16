@@ -10,7 +10,7 @@ type ConfirmDialogProps = {
   onCancel: () => void
 }
 
-/** Asks before an action. Cancel comes first, so it gets focus and Enter never confirms by accident. */
+/** Asks before an action. Cancel comes first, so the first Tab lands on it, not the action. */
 export function ConfirmDialog({
   isOpen,
   title,

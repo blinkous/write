@@ -4,7 +4,6 @@ import {
   useRef,
   type PointerEvent,
   type ReactNode,
-  type RefObject,
 } from 'react'
 import styles from './Dialog.module.css'
 import { MessageTitle, type MessageTone } from './MessageTitle'
@@ -20,15 +19,11 @@ type DialogProps = {
   /** Called however it closes: an action, Escape, a click outside, or the browser. */
   onClose: () => void
   /**
-   * For a dialog that opens by itself (not from a click), perhaps mid-typing:
-   * focus goes to the dialog instead of its first button, so the next
-   * keystroke (Enter, Space) can't press a button before it's read. It also
-   * stays open on a click outside: it wasn't asked for, so a stray click
-   * shouldn't dismiss it unread. Dialogs you opened close on one, like Escape.
+   * For a dialog that opens by itself (not from a click): it stays open on a
+   * click outside, since it wasn't asked for and a stray click shouldn't
+   * dismiss it unread. Dialogs you opened close on one, like Escape.
    */
   opensUnprompted?: boolean
-  /** Focused on open instead of the first control, e.g. the main action so Enter does it. */
-  initialFocusRef?: RefObject<HTMLElement | null>
 }
 
 /** Whether a pointer event landed on the backdrop, outside the dialog's box. */
@@ -43,6 +38,10 @@ function isOnBackdrop(dialog: HTMLDialogElement, event: PointerEvent) {
  * and returns focus to where it was, with no extra JS. A click outside closes
  * it too (unless it opened by itself), done here because not every browser
  * supports <dialog closedby>.
+ *
+ * It takes focus itself rather than its first button: nothing looks chosen
+ * until Tab, and a stray Enter or Space can't press anything before the
+ * dialog is read. Screen readers still announce it, by its title.
  */
 export function Dialog({
   isOpen,
@@ -52,7 +51,6 @@ export function Dialog({
   actions,
   onClose,
   opensUnprompted = false,
-  initialFocusRef,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
@@ -64,18 +62,17 @@ export function Dialog({
     if (!dialog) return
     if (isOpen && !dialog.open) {
       dialog.showModal()
-      if (opensUnprompted) dialog.focus()
-      else initialFocusRef?.current?.focus()
+      dialog.focus()
     }
     if (!isOpen && dialog.open) dialog.close()
-  }, [isOpen, opensUnprompted, initialFocusRef])
+  }, [isOpen])
 
   return (
     <dialog
       ref={dialogRef}
       aria-labelledby={titleId}
-      // Focusable only from code, for opensUnprompted; never a Tab stop.
-      tabIndex={opensUnprompted ? -1 : undefined}
+      // Focusable only from code, on open; never a Tab stop.
+      tabIndex={-1}
       className={styles.dialog}
       onClose={onClose}
       onPointerDown={(event) => {

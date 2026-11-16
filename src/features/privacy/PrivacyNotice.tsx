@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { siGithub } from 'simple-icons'
 import {
   BrandIcon,
@@ -25,21 +24,18 @@ type PrivacyNoticeProps = {
  * a link to the source code.
  */
 export function PrivacyNotice({ isOpen, onClose }: PrivacyNoticeProps) {
-  // Focus the sign-off, not the GitHub link before it, so Enter closes the dialog.
-  const signOffButtonRef = useRef<HTMLButtonElement>(null)
   return (
     <Dialog
       isOpen={isOpen}
       title={WELCOME_TITLE}
       onClose={onClose}
-      initialFocusRef={signOffButtonRef}
       actions={
         <>
           <ExternalLinkButton href={SOURCE_CODE_URL}>
             <BrandIcon icon={siGithub} />
             GitHub
           </ExternalLinkButton>
-          <Button variant="subtle" onClick={onClose} ref={signOffButtonRef}>
+          <Button variant="subtle" onClick={onClose}>
             {WELCOME_SIGN_OFF}
           </Button>
         </>
