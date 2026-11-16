@@ -128,7 +128,6 @@
     var(--color-text) 55%,
     var(--color-background)
   );
-  --color-danger: color-mix(in srgb, #b3261e 70%, var(--color-text));
   /* Theme text colors: cozy shades of the page background, set by the appearance feature. */
   --color-theme-1: var(--color-text);
   --color-theme-2: var(--color-text);
@@ -137,7 +136,6 @@
   --color-theme-5: var(--color-text);
   --color-theme-6: var(--color-text);
   --color-theme-7: var(--color-text);
-  --color-warning: color-mix(in srgb, #9a5b00 70%, var(--color-text));
 
   /* Typography */
   --font-ui: 'Inter Variable', system-ui, sans-serif;

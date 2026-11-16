@@ -37,10 +37,6 @@
   height: var(--size-icon);
 }
 
-.danger {
-  color: var(--color-danger);
-}
-
 .shortcut {
   margin-left: auto;
   padding-left: var(--space-4);

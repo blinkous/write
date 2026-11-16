@@ -112,6 +112,10 @@ older data without them (see the storage tests).
   like Escape or Cancel; one that opened by itself (`opensUnprompted`, e.g. Save failed)
   needs a button, so a stray click can't dismiss it unread. Confirmations use
   `ConfirmDialog` (Cancel first, so Enter never confirms by accident). No browser popups.
+- **No warning colors.** People pick their own palette, and a red or orange can clash with
+  it or be unreadable on it. Destructive actions look like any other and ask first;
+  something gone wrong (a failed save, a toast about a bad file) is marked by `WarningIcon`,
+  drawn in the text color, so the shape is the signal.
   A dialog whose main action is safe (e.g. Export) focuses it on open (`initialFocusRef`), so
   Enter does it. Choices inside a dialog are native checkboxes and radios, stacked in a
   labeled group (`ChoiceFieldset`, `Checkbox`, `RadioGroup`), drawn by the app rather than

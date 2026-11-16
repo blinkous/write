@@ -1,6 +1,6 @@
-import { TriangleAlert } from 'lucide-react'
 import type { ReactNode } from 'react'
 import styles from './MessageTitle.module.css'
+import { WarningIcon } from './WarningIcon'
 
 export type MessageTone = 'neutral' | 'warning'
 
@@ -19,9 +19,7 @@ export function MessageTitle({
 }: MessageTitleProps) {
   return (
     <h2 id={id} className={styles.title}>
-      {tone === 'warning' && (
-        <TriangleAlert className={styles.warningIcon} aria-hidden="true" />
-      )}
+      {tone === 'warning' && <WarningIcon />}
       {children}
     </h2>
   )

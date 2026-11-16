@@ -323,7 +323,6 @@ export function App({ journal }: AppProps) {
         title="Delete this entry?"
         message="It’ll be gone for good. Export it first if you might want it back."
         confirmLabel="Delete"
-        tone="danger"
         onConfirm={() => {
           if (entryIdToDelete)
             journal.deleteEntry(entryIdToDelete).catch(() =>
@@ -341,7 +340,6 @@ export function App({ journal }: AppProps) {
         title="Reset settings?"
         message="Fonts, colors, text styles, spacing, the tab title and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
         confirmLabel="Reset settings"
-        tone="danger"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}
       />

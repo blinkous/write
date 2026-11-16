@@ -6,8 +6,6 @@ type ConfirmDialogProps = {
   title: string
   message: string
   confirmLabel: string
-  /** "danger" for destructive actions like deleting. */
-  tone?: 'neutral' | 'danger'
   onConfirm: () => void
   onCancel: () => void
 }
@@ -18,7 +16,6 @@ export function ConfirmDialog({
   title,
   message,
   confirmLabel,
-  tone = 'neutral',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -32,10 +29,7 @@ export function ConfirmDialog({
           <Button variant="subtle" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            variant={tone === 'danger' ? 'danger' : 'subtle'}
-            onClick={onConfirm}
-          >
+          <Button variant="subtle" onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </>

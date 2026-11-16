@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import styles from './Toast.module.css'
+import { WarningIcon } from './WarningIcon'
 
 export type ToastMessage = {
   text: string
+  /** "warning" marks something gone wrong with a warning icon before the text. */
   tone: 'neutral' | 'warning'
 }
 
@@ -24,7 +26,8 @@ export function Toast({ message, onDismiss }: ToastProps) {
   return (
     <div role="status" className={styles.region}>
       {message && (
-        <p className={`${styles.toast} ${styles[message.tone]}`}>
+        <p className={styles.toast}>
+          {message.tone === 'warning' && <WarningIcon />}
           {message.text}
         </p>
       )}

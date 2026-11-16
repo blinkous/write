@@ -3,7 +3,6 @@ import { formatShortcut, toAriaKeyShortcut } from '../../utils/shortcuts'
 import styles from './MenuItem.module.css'
 
 type MenuItemProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
-  variant?: 'default' | 'danger'
   /** Marks the current choice in a menu of options. */
   isSelected?: boolean
   /**
@@ -15,7 +14,6 @@ type MenuItemProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
 
 /** A row in a menu. Put an icon (aria-hidden) before the text when one helps. */
 export function MenuItem({
-  variant = 'default',
   isSelected,
   shortcut,
   className = '',
@@ -25,7 +23,7 @@ export function MenuItem({
   return (
     <button
       type="button"
-      className={`${styles.item} ${variant === 'default' ? '' : styles[variant]} ${className}`}
+      className={`${styles.item} ${className}`}
       aria-pressed={isSelected}
       aria-keyshortcuts={shortcut && toAriaKeyShortcut(shortcut)}
       data-selected={isSelected}

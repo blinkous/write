@@ -48,7 +48,6 @@ export function EntryMenu({
             closeMenu={closeMenu}
           />
           <MenuItem
-            variant="danger"
             onClick={() => {
               closeMenu()
               onDelete()
