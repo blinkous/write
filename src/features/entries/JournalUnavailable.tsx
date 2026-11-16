@@ -1,4 +1,9 @@
-import { Button, MessagePage, MessageTitle, Text } from '../../design-system'
+import {
+  MessagePage,
+  MessageTitle,
+  ReloadButton,
+  Text,
+} from '../../design-system'
 
 /**
  * Shown instead of the app when the journal's storage (IndexedDB) won't open
@@ -13,9 +18,7 @@ export function JournalUnavailable() {
         This browser’s storage isn’t responding. Your writing is still stored
         here; reload to try again.
       </Text>
-      <Button variant="subtle" onClick={() => window.location.reload()}>
-        Reload
-      </Button>
+      <ReloadButton />
     </MessagePage>
   )
 }

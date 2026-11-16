@@ -105,7 +105,9 @@ older data without them (see the storage tests).
   the panel's edge. Swatch tiles are outlined in the muted color (like section titles), so a
   tile matching the page still shows its edge. Color tiles are buttons that open the system
   color picker (a hidden color input), since WebKit never lets the keyboard reach color inputs. Action rows are `MenuItem`s. Quick, single-purpose choices stay in menus.
-- **Messages in place of the app** (e.g. the journal couldn't open) use `MessagePage`, laid
+- **Messages in place of the app** (e.g. the journal couldn't open, or the app crashed: an
+  error boundary around it in `main.tsx` shows `AppCrashed` with the error's message and
+  Reload, never a blank page) use `MessagePage`, laid
   out like a dialog: a `MessageTitle`, then text and actions.
 - **Dialogs** use the design-system `Dialog` (native `<dialog>`: focus trap, Escape, focus
   return) e.g. the welcome/privacy notice. A dialog you opened closes on a click outside,
