@@ -54,6 +54,14 @@ function fitDistance(distance: number, availableRoom: number): number {
   )
 }
 
+/** How much of the ramp's peak chroma a shade at this lightness gets. */
+function chromaShareAt(lightness: number): number {
+  return Math.max(
+    1 - Math.abs(lightness - PEAK_CHROMA_LIGHTNESS) * CHROMA_FALLOFF,
+    MIN_CHROMA_SHARE,
+  )
+}
+
 function deriveShade(backgroundHex: string, lightnessDistance: number): string {
   const background = oklch(backgroundHex)
   if (!background) return backgroundHex
@@ -72,14 +80,10 @@ function deriveShade(backgroundHex: string, lightnessDistance: number): string {
     MIN_PEAK_CHROMA,
     MAX_PEAK_CHROMA,
   )
-  const chromaShare = Math.max(
-    1 - Math.abs(lightness - PEAK_CHROMA_LIGHTNESS) * CHROMA_FALLOFF,
-    MIN_CHROMA_SHARE,
-  )
   const shade = {
     mode: 'oklch' as const,
     l: lightness,
-    c: peakChroma * chromaShare,
+    c: peakChroma * chromaShareAt(lightness),
     h: hue,
   }
   // Pull chroma in (keeping hue and lightness) if the shade can't be shown on screen.
@@ -89,6 +93,36 @@ function deriveShade(backgroundHex: string, lightnessDistance: number): string {
 /** A default text color from the same ramp: matches the page, gently contrasting. */
 export function deriveCozyTextColor(backgroundHex: string): string {
   return deriveShade(backgroundHex, TEXT_LIGHTNESS_DISTANCE)
+}
+
+/** Pages may sit closer to black or white than text does. */
+const MIN_PAGE_LIGHTNESS = 0.18
+const MAX_PAGE_LIGHTNESS = 0.97
+
+/**
+ * A page color for a text color: the text color's ramp walked back (see
+ * deriveShade), so a text color derived from a page gives about that page
+ * back. Same hue, the text's distance away on the other side, and its chroma
+ * undone from the ramp's mid-tone peak, so pages stay soft.
+ */
+export function deriveCozyBackgroundColor(textHex: string): string {
+  const text = oklch(textHex)
+  if (!text) return textHex
+  const isNeutral = text.c < NEUTRAL_CHROMA
+  const hue = isNeutral ? WARM_NEUTRAL_HUE : (text.h ?? WARM_NEUTRAL_HUE)
+  const direction = text.l > LIGHT_PAGE_LIGHTNESS ? -1 : 1
+  const lightness = clamp(
+    text.l + direction * TEXT_LIGHTNESS_DISTANCE,
+    MIN_PAGE_LIGHTNESS,
+    MAX_PAGE_LIGHTNESS,
+  )
+  const chroma = clamp(
+    text.c / chromaShareAt(text.l) / PEAK_CHROMA_SCALE,
+    0,
+    MAX_PEAK_CHROMA / PEAK_CHROMA_SCALE,
+  )
+  const page = { mode: 'oklch' as const, l: lightness, c: chroma, h: hue }
+  return formatHex(clampChroma(page, 'oklch'))
 }
 
 type ThemeRecipe = {

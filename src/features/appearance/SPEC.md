@@ -55,7 +55,7 @@ title, background blur and opacity).
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
   setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
   changes), as `LabeledRow`s like the font rows: the name, then
-  its swatch tile at the end (only the tile opens the picker, not the name). `ThemeHistoryButtons` (the drawer's
+  its ✨ match button and swatch tile at the end (only the tile opens the picker, not the name). `ThemeHistoryButtons` (the drawer's
   header) are the undo/redo for both sections. They live apart from the
   toolbar's per-text color so the two aren't confused.
   Surface and border colors derive from them with `color-mix()` in `tokens.css`. The muted
@@ -83,8 +83,12 @@ title, background blur and opacity).
     pages, pale pages get a chroma floor so tones don't grey out, and the text color on a
     neutral page gets a warm tint.
     `applyAppearance` sets the theme tones as `--color-theme-1…7`.
-- **Changing the background also sets the page text color** to the derived match; the
-  text color can still be changed afterwards.
+- **Each page color changes only when you change it.** A ✨ button before each tile
+  (`MatchColorButton`) picks a match for the other color, once, as one undo step:
+  Foreground's picks the derived text color for the background (`deriveCozyTextColor`),
+  Background's picks a page for the text color (`deriveCozyBackgroundColor`: the text
+  ramp walked back, so a derived text color gives about its page back; pages stay soft,
+  chroma capped, even for vivid text).
 - **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur and
   opacity together (not choosing or removing the background file, which isn't kept): the last 50
   changes, surviving a refresh (`pageThemeHistory.ts`, stored under `write.pageThemeHistory.v1`;

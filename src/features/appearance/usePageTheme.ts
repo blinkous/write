@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
-import { deriveCozyTextColor } from '../../lib/cozyPalette'
+import {
+  deriveCozyBackgroundColor,
+  deriveCozyTextColor,
+} from '../../lib/cozyPalette'
 import {
   DEFAULT_TEXT_STYLES,
   type TextStyleName,
@@ -93,18 +96,20 @@ export function usePageTheme(
     changeFonts(fonts: Partial<Pick<PageTheme, 'appFont' | 'editorFont'>>) {
       change(fonts, true)
     },
-    /** Changing the background also picks a matching default text color. */
+    /** Only the background: the text color changes only when asked (see matchText). */
     changeBackground(nextBackgroundColor: string) {
-      change(
-        {
-          backgroundColor: nextBackgroundColor,
-          textColor: deriveCozyTextColor(nextBackgroundColor),
-        },
-        false,
-      )
+      change({ backgroundColor: nextBackgroundColor }, false)
     },
     changeText(nextTextColor: string) {
       change({ textColor: nextTextColor }, false)
+    },
+    /** Picks a text color matching the background, as one undo step. */
+    matchText() {
+      change({ textColor: deriveCozyTextColor(backgroundColor) }, true)
+    },
+    /** Picks a background matching the text color, as one undo step. */
+    matchBackground() {
+      change({ backgroundColor: deriveCozyBackgroundColor(textColor) }, true)
     },
     /**
      * Typing shows in the tab at once (isFinal false); the final title (e.g.

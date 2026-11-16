@@ -1,5 +1,9 @@
 import { differenceEuclidean, oklch } from 'culori'
-import { deriveCozyTextColor, deriveCozyThemeColors } from './cozyPalette'
+import {
+  deriveCozyBackgroundColor,
+  deriveCozyTextColor,
+  deriveCozyThemeColors,
+} from './cozyPalette'
 
 const COLORFUL_BACKGROUNDS = {
   burgundy: '#6e2340',
@@ -176,3 +180,45 @@ describe('cozy theme tones', () => {
     }
   })
 })
+
+describe.each(Object.entries(COLORFUL_BACKGROUNDS))(
+  'background for the text color on colorful %s',
+  (_name, background) => {
+    it('gives about that page back', () => {
+      const roundTrip = deriveCozyBackgroundColor(
+        deriveCozyTextColor(background),
+      )
+      expect(differenceEuclidean('oklch')(roundTrip, background)).toBeLessThan(
+        0.06,
+      )
+    })
+  },
+)
+
+const TEXT_COLORS = {
+  ink: '#2a2420',
+  cream: '#f3ead8',
+  vividRed: '#ff0000',
+  vividBlue: '#0000ff',
+  grey: '#808080',
+  white: '#ffffff',
+  black: '#000000',
+}
+
+describe.each(Object.entries(TEXT_COLORS))(
+  'background for the text color %s',
+  (_name, textColor) => {
+    const text = toOklch(textColor)
+    const page = toOklch(deriveCozyBackgroundColor(textColor))
+
+    it('sits on the other side of the text, far enough to read', () => {
+      const lightnessGap = page.l - text.l
+      expect(Math.sign(lightnessGap)).toBe(text.l > 0.6 ? -1 : 1)
+      expect(Math.abs(lightnessGap)).toBeGreaterThanOrEqual(0.18)
+    })
+
+    it('stays soft, never vivid, even for vivid text', () => {
+      expect(page.c).toBeLessThanOrEqual(0.06)
+    })
+  },
+)
