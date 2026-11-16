@@ -3,7 +3,8 @@
   flex-direction: column;
   gap: var(--space-4);
   width: 100%;
-  max-width: var(--width-page);
+  /* The margins setting: its page width, or its share of the room when that's less (phones). */
+  max-width: min(var(--width-page), var(--share-page));
   margin-inline: auto;
 }
 

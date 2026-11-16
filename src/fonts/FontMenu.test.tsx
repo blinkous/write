@@ -35,6 +35,20 @@ describe('FontMenu', () => {
     ).toBeInTheDocument()
   })
 
+  it('captions the default font under Default on the trigger', () => {
+    render(
+      <FontMenu
+        label="Text font"
+        value={null}
+        defaultFont="lora"
+        onChange={() => {}}
+      />,
+    )
+    expect(
+      screen.getByRole('button', { name: /^Text font/ }),
+    ).toHaveTextContent(/^DefaultLora$/)
+  })
+
   it('has no Default option without a default font', async () => {
     const user = userEvent.setup()
     render(<FontMenu label="Page font" value="lora" onChange={() => {}} />)

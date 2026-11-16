@@ -11,10 +11,17 @@ font of selected text (editor) and rendering text fonts in documents (journal-do
 - `FontMenu` is a trigger showing the font in use (in that font) that opens the list, each
   name previewed in its own font (x-heights evened out with `font-size-adjust`). With
   `defaultFont`, a first **Default** option, captioned with that font's name, means "no font of
-  its own; follow the default"; the trigger then reads "Default / Lora". Picking with a click,
-  Enter or Space closes the menu; arrow keys preview without closing.
+  its own; follow the default". On it, the trigger shows the same: "Default" in that font with
+  the font's name captioned underneath, never "Default" alone. Picking with a click, Enter or Space closes the menu; arrow keys preview
+  without closing.
 
 ## Decisions
+
+- On a trigger, "Default" keeps the trigger's size (bigger than the caption) and both lines use
+  `--line-height-stacked`, so the caption fits within the control's height and the toolbar
+  doesn't grow taller.
+- On a trigger, the caption is `--color-faint` (a step quieter than muted), so it still reads
+  as a caption under the trigger's already quiet text.
 
 - Fonts are stored by value, never as CSS strings, so documents can't carry arbitrary CSS
   and a font's CSS can change without touching saved writing.

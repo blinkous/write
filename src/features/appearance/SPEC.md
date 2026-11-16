@@ -12,6 +12,10 @@ title, background blur and opacity).
 - **Units:** line spacing is shown as real multipliers, like word processors; margins keep
   preset names (Wide/Normal/Narrow/None), as word processors do. A test checks the line
   spacing labels match the design tokens.
+- **Margins** set the page's width two ways, and the smaller wins: a page width
+  (`--width-page-*`, which decides on wide windows) and a share of the room (`--share-page-*`:
+  80, 90, 95 or 100%, which decides on phones, where every page width is wider than the
+  screen). So each margin looks different at any window size.
 - **Spacing** is one menu: line spacing as real multipliers (1.4, 1.7, 2.0, 2.4; default 1.4), a
   separator, then actions whose labels flip with the state, like Google Docs: **Add/Remove
   paragraph gap** (off by default; a half-line gap,
@@ -41,7 +45,7 @@ title, background blur and opacity).
   every text style, then each text style (Title, Heading 2–6, Body, Small; see
   `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
   real size). The whole row is the button: it opens a popover beside it (so the rows below
-  stay visible) with labeled rows: **Font** (Default = editor font), **Size**
+  stay visible) with labeled rows: **Font** (Default = editor font, named in a caption under "Default"), **Size**
   (`NumberStepper`, px) and **Letter spacing** (% of the size), then one unlabeled line of the
   toolbar's own controls: color (`TextColorMenu`) first, then bold, italic, underline and
   strikethrough, with a reset for just that style at the line's end (off while it's at its

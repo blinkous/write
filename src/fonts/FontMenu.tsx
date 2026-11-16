@@ -1,4 +1,5 @@
-import { SelectMenu } from '../design-system'
+import type { ReactNode } from 'react'
+import { SelectMenu, Text } from '../design-system'
 import {
   FONT_OPTIONS,
   getFontOption,
@@ -31,17 +32,28 @@ function preview(label: string, family: string) {
   )
 }
 
+/** "Default" above a caption naming the font it currently means. */
+function captionDefault(
+  defaultName: ReactNode,
+  fontLabel: string,
+  className = styles.captionedDefault,
+) {
+  return (
+    <span className={className}>
+      {defaultName}
+      <Text as="span" variant="caption">
+        {fontLabel}
+      </Text>
+    </span>
+  )
+}
+
 /** "Default", in the default font, captioned with that font's name. */
 function getDefaultChoice({ label, family }: FontOption) {
   return {
     value: DEFAULT_CHOICE,
     label: `Default (${label})`,
-    visual: (
-      <span className={styles.defaultChoice}>
-        {preview('Default', family)}
-        <span className={styles.caption}>{label}</span>
-      </span>
-    ),
+    visual: captionDefault(preview('Default', family), label),
   }
 }
 
@@ -64,6 +76,20 @@ export function FontMenu({
     })),
   ]
 
+  /* The font in use, in itself; on Default, captioned with its name (as in the list) within the control's height. */
+  function getTriggerContent() {
+    if (!isDefault) {
+      return (
+        <span style={{ fontFamily: shownFont.family }}>{shownFont.label}</span>
+      )
+    }
+    return captionDefault(
+      <span style={{ fontFamily: shownFont.family }}>Default</span>,
+      shownFont.label,
+      `${styles.captionedDefault} ${styles.captionedDefaultOnTrigger}`,
+    )
+  }
+
   return (
     <SelectMenu
       label={label}
@@ -71,11 +97,7 @@ export function FontMenu({
       value={isDefault ? DEFAULT_CHOICE : shownFont.value}
       onChange={(choice) => onChange(isFontValue(choice) ? choice : null)}
       onClose={onClose}
-      triggerContent={
-        <span style={{ fontFamily: shownFont.family }}>
-          {isDefault ? 'Default' : shownFont.label}
-        </span>
-      }
+      triggerContent={getTriggerContent()}
     />
   )
 }

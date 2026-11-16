@@ -5,14 +5,17 @@
   font-size-adjust: 0.5;
 }
 
-.defaultChoice {
+.captionedDefault {
   display: flex;
   flex-direction: column;
 }
 
-/* Which font "Default" currently means, in the interface font. */
-.caption {
-  color: var(--color-muted);
-  font-size: var(--text-size-caption);
-  font-weight: normal;
+/* On a trigger, both lines fit within the control's height. */
+.captionedDefaultOnTrigger {
+  line-height: var(--line-height-stacked);
+}
+
+/* On a trigger, "Default" is already quiet, so its caption steps back further. */
+.captionedDefaultOnTrigger > :last-child {
+  color: var(--color-faint);
 }

@@ -22,6 +22,7 @@ export function applyAppearance({
   style.setProperty('--font-ui', getFontOption(appFont).family)
   style.setProperty('--font-editor', getFontOption(editorFont).family)
   style.setProperty('--width-page', `var(--width-page-${margins})`)
+  style.setProperty('--share-page', `var(--share-page-${margins})`)
   style.setProperty('--line-height-editor', `var(--line-height-${lineSpacing})`)
   style.setProperty(
     '--space-paragraph',

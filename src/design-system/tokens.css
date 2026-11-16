@@ -79,6 +79,7 @@
   --text-style-small-font: var(--font-editor);
   --text-style-small-color: var(--color-text);
   --width-page: var(--width-page-normal);
+  --share-page: var(--share-page-normal);
   --line-height-editor: var(--line-height-normal);
   --space-paragraph: var(--space-paragraph-gap);
   --paragraph-indent: 0;
@@ -123,6 +124,12 @@
     var(--color-background)
   );
   --color-muted: var(--color-muted-soft);
+  /* A step quieter than muted, for a caption under text that's already quiet (e.g. a menu trigger's). */
+  --color-faint: color-mix(
+    in srgb,
+    var(--color-text) 45%,
+    var(--color-background)
+  );
   --color-focus: color-mix(
     in srgb,
     var(--color-text) 55%,
@@ -148,6 +155,8 @@
   /* Width of a tab, in characters */
   --tab-size: 4;
   --line-height-tight: 1.4;
+  /* Two short lines stacked inside one control's height (e.g. "Default" over its font's name). */
+  --line-height-stacked: 1;
   --line-height-normal: 1.7;
   --line-height-relaxed: 2;
   --line-height-loose: 2.4;
@@ -202,6 +211,15 @@
   --width-page-normal: 44rem;
   --width-page-narrow: 60rem;
   --width-page-none: 100%;
+  /*
+   * The most of the available width each margin lets the page take. Where the
+   * window is narrower than the page widths above (phones), this keeps the
+   * margins apart: wider margins, more space at the sides.
+   */
+  --share-page-wide: 80%;
+  --share-page-normal: 90%;
+  --share-page-narrow: 95%;
+  --share-page-none: 100%;
   --width-sidebar: 16rem;
   --width-popover: 18rem;
   --width-popover-narrow: 15rem;
@@ -250,6 +268,7 @@
 @media (prefers-contrast: more) {
   :root {
     --color-muted: var(--color-muted-readable);
+    --color-faint: var(--color-muted-readable);
   }
 }
 
