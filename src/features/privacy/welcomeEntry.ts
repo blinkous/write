@@ -20,6 +20,9 @@ function paragraph(...inlines: Inline[]): JSONContent {
   }
 }
 
+/* The editor has no paragraph gap by default, so blank lines space the sections, as a writer would. */
+const BLANK_LINE: JSONContent = { type: 'paragraph' }
+
 function heading(level: number, text: string): JSONContent {
   return {
     type: 'heading',
@@ -45,13 +48,13 @@ function bulletList(items: readonly Inline[][]): JSONContent {
 function getTourItems(): Inline[][] {
   return [
     [
-      'Click the title above to rename this entry. Leave it blank and the first line names it.',
+      '✏️ Click the title above to rename this entry. Leave it blank and the first line names it.',
     ],
     [
-      `Pick a text style from the ¶ menu, or step through them with ${formatShortcut('Mod-Shift->')} and ${formatShortcut('Mod-Shift-<')}.`,
+      `🔤 Pick a text style from the ¶ menu, or step through them with ${formatShortcut('Mod-Shift->')} and ${formatShortcut('Mod-Shift-<')}.`,
     ],
     [
-      'Markdown works as you type: ',
+      '⌨️ Markdown works as you type: ',
       { code: '##' },
       ' for a heading, ',
       { code: '-' },
@@ -60,16 +63,16 @@ function getTourItems(): Inline[][] {
       ' for a quote.',
     ],
     [
-      'Select any text to give it its own font, color or case from the toolbar.',
+      '🎨 Select any text to give it its own font, color or case from the toolbar.',
     ],
     [
-      'Settings (⚙ at the bottom of the sidebar) has fonts, colors and backups.',
+      '⚙️ Settings (at the bottom of the sidebar) has fonts, colors, a background picture and backups.',
     ],
     [
-      `${formatShortcut('Mod-s')} saves this entry as a backup; ${formatShortcut('Mod-Shift-s')} saves them all.`,
+      `💾 ${formatShortcut('Mod-s')} saves this entry as a backup; ${formatShortcut('Mod-Shift-s')} exports your whole journal.`,
     ],
     [
-      'Delete this entry from the ⋯ menu at the top right whenever you’re ready.',
+      '🗑️ Delete this entry from the ⋯ menu at the top right whenever you’re ready.',
     ],
   ]
 }
@@ -82,13 +85,20 @@ export function getWelcomeEntry(): { title: string; content: JSONContent } {
       type: 'doc',
       content: [
         paragraph(WELCOME_INTRO),
+        BLANK_LINE,
         // DRAFT heading
         heading(2, 'Your privacy'),
-        bulletList(PRIVACY_NOTES.map(({ lines }) => [lines.join(' ')])),
+        bulletList(
+          PRIVACY_NOTES.map(({ emoji, lines }) => [
+            `${emoji} ${lines.join(' ')}`,
+          ]),
+        ),
+        BLANK_LINE,
         // DRAFT heading
         heading(2, 'A quick tour'),
         bulletList(getTourItems()),
-        paragraph(WELCOME_SIGN_OFF),
+        BLANK_LINE,
+        paragraph(`${WELCOME_SIGN_OFF} ✍️`),
       ],
     },
   }

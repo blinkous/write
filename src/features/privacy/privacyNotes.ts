@@ -15,13 +15,18 @@ export const WELCOME_SIGN_OFF = 'Write away!'
 /** Where the app's source lives, linked from About. */
 export const SOURCE_CODE_URL = 'https://github.com/blinkous/write'
 
-/** How your writing is kept: each note is an icon (in the dialog) and its sentences. */
+/**
+ * How your writing is kept: each note is an icon (in the dialog), an emoji (in
+ * the welcome entry, which can only hold text) and its sentences.
+ */
 export const PRIVACY_NOTES: readonly {
   icon: LucideIcon
+  emoji: string
   lines: readonly string[]
 }[] = [
   {
     icon: Lock,
+    emoji: '🔒',
     lines: [
       'All data is stored locally in the browser.',
       'Your data is cleared when you clear browser data; to save, export it.',
@@ -29,9 +34,14 @@ export const PRIVACY_NOTES: readonly {
       'You can import saved entries anytime.',
     ],
   },
-  { icon: WifiOff, lines: ['Once loaded, this page works offline.'] },
+  {
+    icon: WifiOff,
+    emoji: '📴',
+    lines: ['Once loaded, this page works offline.'],
+  },
   {
     icon: TriangleAlert,
+    emoji: '⚠️',
     lines: [
       'Your browser extensions may read data on all sites.',
       'Disable extensions or use a different profile or a browser without them for a private experience.',
