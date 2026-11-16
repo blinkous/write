@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   Button,
   Checkbox,
@@ -44,6 +44,8 @@ export function ExportDialog({
   onExportSettings,
 }: ExportDialogProps) {
   const [choices, setChoices] = useState(loadExportChoices)
+  // The first Tab lands here, so Tab then Enter exports right away (e.g. after ⇧⌘S).
+  const exportButtonRef = useRef<HTMLButtonElement>(null)
   const { includesJournal, includesSettings, format } = choices
   const settingsAllowed = canIncludeSettings(format)
 
@@ -67,12 +69,14 @@ export function ExportDialog({
       isOpen={isOpen}
       title="Export"
       onClose={onClose}
+      firstTabStopRef={exportButtonRef}
       actions={
         <>
           <Button variant="subtle" onClick={onClose}>
             Cancel
           </Button>
           <Button
+            ref={exportButtonRef}
             variant="subtle"
             disabled={!canExport(choices)}
             onClick={exportChoices}

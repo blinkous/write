@@ -115,7 +115,8 @@ older data without them (see the storage tests).
   Every dialog takes focus itself on open, not its first button: nothing looks chosen until
   Tab, and a stray Enter can't press anything. Inside a dialog, Tab and Shift+Tab step
   through every control and wrap at the ends, in every browser (Safari's plain Tab would
-  otherwise skip buttons and checkboxes, leaving nothing to land on).
+  otherwise skip buttons and checkboxes, leaving nothing to land on). A dialog can name
+  where the first Tab lands (`firstTabStopRef`), e.g. Export's main action.
 - **No warning colors.** People pick their own palette, and a red or orange can clash with
   it or be unreadable on it. Destructive actions look like any other and ask first;
   something gone wrong (a failed save, a toast about a bad file) is marked by `WarningIcon`,

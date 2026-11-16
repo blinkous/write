@@ -136,6 +136,8 @@ The list of journal entries and which one is open.
   is for reading the writing elsewhere, so it holds only the journal: Settings turns off,
   with "Settings export as JSON only.". Export is off while nothing is included. The choices
   are remembered (`exportChoices.ts`); the first time, everything as JSON.
+  The first Tab lands on Export (`firstTabStopRef`), so Tab then Enter exports; when
+  Export is off, it lands on the first control.
 - **Export all as markdown** (`journalMarkdown.ts`) writes one `.md` file, oldest first so it
   reads like a journal: each entry starts with its custom name as `#` (headings shifted down
   a level, as for Copy as markdown) and an italic line saying when it was written; entries

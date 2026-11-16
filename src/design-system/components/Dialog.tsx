@@ -5,6 +5,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
+  type RefObject,
 } from 'react'
 import { tabbable } from 'tabbable'
 import styles from './Dialog.module.css'
@@ -27,6 +28,11 @@ type DialogProps = {
    * dismiss it unread. Dialogs you opened close on one, like Escape.
    */
   opensUnprompted?: boolean
+  /**
+   * Where the first Tab lands, if not the first control, e.g. the main
+   * action. Nothing is focused until that Tab either way.
+   */
+  firstTabStopRef?: RefObject<HTMLElement | null>
 }
 
 /** Whether a pointer event landed on the backdrop, outside the dialog's box. */
@@ -42,14 +48,17 @@ function isOnBackdrop(dialog: HTMLDialogElement, event: PointerEvent) {
  * radios (only Option+Tab reaches them), which left nothing in a dialog to
  * land on, and focus fell out to the page behind it.
  */
-function cycleFocusWithin(dialog: HTMLDialogElement, event: KeyboardEvent) {
+function cycleFocusWithin(
+  dialog: HTMLDialogElement,
+  event: KeyboardEvent,
+  firstStop: HTMLElement | null | undefined,
+) {
   const { key, shiftKey, metaKey, ctrlKey } = event
   if (key !== 'Tab' || metaKey || ctrlKey) return
-  const next = nextInFocusCycle(
-    tabbable(dialog),
-    document.activeElement,
-    shiftKey,
-  )
+  const next = nextInFocusCycle(tabbable(dialog), document.activeElement, {
+    isBackwards: shiftKey,
+    firstStop: firstStop ?? undefined,
+  })
   if (!next) return
   event.preventDefault()
   next.focus()
@@ -73,6 +82,7 @@ export function Dialog({
   actions,
   onClose,
   opensUnprompted = false,
+  firstTabStopRef,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
@@ -97,7 +107,9 @@ export function Dialog({
       tabIndex={-1}
       className={styles.dialog}
       onClose={onClose}
-      onKeyDown={(event) => cycleFocusWithin(event.currentTarget, event)}
+      onKeyDown={(event) =>
+        cycleFocusWithin(event.currentTarget, event, firstTabStopRef?.current)
+      }
       onPointerDown={(event) => {
         pressStartedOnBackdropRef.current =
           !opensUnprompted && isOnBackdrop(event.currentTarget, event)
