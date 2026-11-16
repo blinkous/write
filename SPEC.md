@@ -19,8 +19,11 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
 - **License notices ship with the app.** Builds include `THIRD_PARTY_LICENSES.txt` with the
   license and copyright of every production dependency (fonts included), generated from
   `package.json` (`vite.config.ts`).
-- **Dedicated origin.** The app always runs on `localhost:4791` (`strictPort`), because
-  browser storage is per origin: a shared or shifting port would share or "lose" entries.
+- **Dedicated origin.** Browser storage is per origin, so the app gets one to itself: a
+  shared or shifting one would share or "lose" entries. Locally it always runs on
+  `localhost:4791` (`strictPort`); hosted, on its own subdomain, `write.dhani.dev`.
+- **Deploys** come from `.github/workflows/ci.yml`: every push and pull request runs
+  `npm run check` and builds; pushes to `main` then publish `dist/` to GitHub Pages.
 - **Never silently lose writing.** Stored entries that fail validation are kept in the
   journal database's `backup` store, never dropped (where IndexedDB can't open, under a
   timestamped `.backup.` localStorage key; see `src/lib/localStore.ts`), and a failed save is
