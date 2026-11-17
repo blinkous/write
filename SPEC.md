@@ -44,8 +44,8 @@ spacing and colors, per-text color, glow and case, and export as markdown or JSO
 ## Formatting in both places
 
 Every text formatting option is offered in both places, with the same control: the
-**toolbar** (applied to the selected text, stored in the entry) and **text styles** (settings →
-Editor, applied to every Title, Heading, Body or Small text). Text's own formatting wins over
+**toolbar** (applied to the selected text, stored in the entry) and **text styles** (edited from
+the toolbar's style menu, applied to every Title, Heading, Body or Small text). Text's own formatting wins over
 its style's. A new option is added to both, in the same order (the toolbar's text group).
 
 **The one exception is size, which is style-only, on purpose.** Changing the text style
@@ -100,8 +100,9 @@ older data without them (see the storage tests).
   Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
   arrow keys preview without closing. Menus open with focus on the current choice.
-  Panels open below their trigger, or beside it for a row that opens its own panel (a text
-  style in settings), lined up with its top so the rows below stay visible.
+  Panels open below their trigger, or beside it for a row's own action that opens a panel
+  (`MenuActionRow`, e.g. editing a text style from the style menu), lined up with its top so
+  the rows below stay visible.
   Panels are anchored to their trigger only while open: WebKit (Safari, DuckDuckGo) hangs
   when a menu closes with closed, still-anchored menus nested inside it.
   Closed menus and dialogs render nothing inside (`Popover`, `Dialog`): rendering every
@@ -159,7 +160,7 @@ older data without them (see the storage tests).
   range's precision (e.g. blur to 0.1), which is the step unless set.
 - **Settings show real units** where people expect them (line spacing as a multiplier) rather
   than S/M/L; preset names are fine where editors use them (margins). Text sizes are px
-  (written as rem, so browser zoom still works), set per text style in settings.
+  (written as rem, so browser zoom still works), set per text style from the style menu.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
 - **Phones and touch screens** get the same layout, adapted by CSS rather than separate
   screens: the toolbar scrolls sideways at the top, the sidebar overlays the page below

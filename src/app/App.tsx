@@ -13,6 +13,8 @@ import {
   BackgroundMediaLayer,
   useBackgroundMedia,
   EditorSettings,
+  TextStyleEditButton,
+  TextStylesFooter,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -214,13 +216,7 @@ export function App({ journal }: AppProps) {
               {
                 id: 'editor',
                 title: 'Editor',
-                content: (
-                  <EditorSettings
-                    pageTheme={pageTheme}
-                    customTextColors={customTextColors}
-                    onCustomTextColorsChange={changeCustomTextColors}
-                  />
-                ),
+                content: <EditorSettings pageTheme={pageTheme} />,
               },
               {
                 id: 'data',
@@ -268,7 +264,19 @@ export function App({ journal }: AppProps) {
            */}
           <div className={styles.toolbar}>
             <div role="group" aria-label="Text" className={styles.toolbarGroup}>
-              <TextStyleMenu editor={activeEditor} />
+              <TextStyleMenu
+                editor={activeEditor}
+                isTitle={activeEditor === titleEditor}
+                renderStyleEdit={(name) => (
+                  <TextStyleEditButton
+                    name={name}
+                    pageTheme={pageTheme}
+                    customTextColors={customTextColors}
+                    onCustomTextColorsChange={changeCustomTextColors}
+                  />
+                )}
+                footer={<TextStylesFooter pageTheme={pageTheme} />}
+              />
               <TextFontMenu editor={activeEditor} editorFont={editorFont} />
               <TextColorPicker
                 editor={activeEditor}

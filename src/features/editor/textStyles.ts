@@ -2,6 +2,7 @@ import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { Editor } from '@tiptap/react'
 import {
+  Heading1,
   Heading2,
   Heading3,
   Heading4,
@@ -83,6 +84,16 @@ export const TEXT_STYLES: readonly TextStyle[] = [
     shortcut: 'Mod-Alt-2',
   },
 ]
+
+/**
+ * The title editor's one style: all of its text, so it's never applied or
+ * stepped to, only shown and edited.
+ */
+export const TITLE_STYLE = {
+  name: 'title',
+  label: TEXT_STYLE_LABELS['title'],
+  icon: Heading1,
+} as const satisfies Pick<TextStyle, 'label' | 'icon'> & { name: TextStyleName }
 
 /** The everyday style: plain paragraphs. */
 export const BODY_STYLE =

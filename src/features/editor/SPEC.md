@@ -12,7 +12,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   in: text style, font, color, bold, italic, underline, strikethrough, then the finer
   touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
   and code block (inline code beside blocks, since both mean "this is code"). **Page**:
-  margins, spacing. Text styles in settings list their options in the text group's order.
+  margins, spacing. A text style's edit panel lists its options in the text group's order.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`
   (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). Markdown
@@ -25,7 +25,13 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   caption). The toolbar shows only the current style's icon; the menu repeats it beside
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
-  (size, weight, font, color, glow) is set in settings → Editor (`src/text-styles`).
+  (size, weight, font, color, glow) is edited from the same menu: each row ends in an edit
+  button (sliders, `MenuActionRow`) opening that style's panel beside the menu, and the menu's
+  footer has undo/redo (the settings' history) and **Reset all styles** (styles only, not the
+  editor font). The panel and footer belong to appearance (`TextStyleEditButton`,
+  `TextStylesFooter`); the app hands them in through `renderStyleEdit` and `footer`, so the
+  editor doesn't import appearance. In the title the menu lists just **Title** (selected,
+  heading-1 icon), to edit it; it isn't applied or stepped to.
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
   first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font
@@ -74,8 +80,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   menu (Body ⌥⌘0, Heading 2–6 ⌥⌘2–6). Shortcuts are written once in Tiptap form and
   displayed by `utils/shortcuts.ts` (Mac symbols in Apple's order, or Ctrl+… elsewhere).
   Strikethrough moved off Tiptap's ⇧⌘S, which saves all entries.
-- Buttons and menus whose node or mark the focused editor lacks are off (e.g. lists and text
-  styles in the title), by checking the editor's schema (`editorSupports`).
+- Buttons and menus whose node or mark the focused editor lacks are off (e.g. lists in the
+  title), by checking the editor's schema (`editorSupports`).
 - **The toolbar acts on the last-focused editor** (`useActiveEditor`): the writing or the
   title.
 - `⌘Z` / `⇧⌘Z` (undo / redo) come from Tiptap's StarterKit.

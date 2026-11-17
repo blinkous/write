@@ -1,7 +1,0 @@
-.reset {
-  align-self: flex-start;
-  /* The button's padded edge sits outside, so its text lines up with the labels above. */
-  margin-inline-start: calc(
-    (var(--space-control-inline) + var(--border-width)) * -1
-  );
-}

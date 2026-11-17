@@ -24,7 +24,7 @@ them).
 - Text with its own font or color (toolbar) still wins over its style: marks sit inside.
 - Sizes step by 1px within a range, like a word processor, so styles stay sensible.
 - `TextStylePreview` draws text in a style at its size relative to body (via `-scale`), for
-  showing a style's name in the style menu and in settings.
+  showing a style's name in the style menu.
 - Glow is its own color, separate from the text color, drawn as a stack of `text-shadow`s
   (blur radii in em, so it scales with the text). Neon is white text with a colored glow;
   toolbar colors inside a glowing style change the letters, never the glow, and a toolbar glow
@@ -37,6 +37,6 @@ them).
   lowercase and the editor capitalizes letters itself (`useTextStyleCases`, via
   journal-document's text case). Previews show the style's name, already in title case, so
   `-preview-transform` uses CSS's `capitalize` / `none` for them. `TextCaseMenu` is the
-  shared case control (toolbar and settings), its options in `textCaseOptions.ts`.
+  shared case control (toolbar and style edit panels), its options in `textCaseOptions.ts`.
 - `TextColorMenu` is the shared text color control (the design system's `ColorMenu` with the
-  theme colors as suggestions): the toolbar's color menu and each style's color in settings.
+  theme colors as suggestions): the toolbar's color menu and each style's color (in its edit panel).
