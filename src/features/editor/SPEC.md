@@ -1,128 +1,67 @@
 # Editor
 
-Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
+The rich-text writing surface for one entry, and its toolbar.
 
-## How it works
+## The toolbar
 
-- `useJournalEditor` creates a fresh editor whenever the entry id changes, so each entry
-  has its own undo history. It reports every change as Tiptap JSON via `onChange`.
-- The feature exports parts rather than one component (`FormattingButtons`,
-  `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
-- **The toolbar** sits over the page, lined up with the start of the text. When the header is too narrow for that (sidebar open,
-  small window) it centers in the space between the Entries toggle and the ⋯ instead, and if
-  it still runs out of room it scrolls sideways, each end fading while there's more that way.
-  **It has three groups**, split by dividers. **Text** goes from the broadest choice
-  in: text style, font, color, bold, italic, underline, strikethrough, then the finer
-  touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
-  and code block (inline code beside blocks, since both mean "this is code"). **Page**:
-  margins, spacing.
-- Extensions are defined once in `editorExtensions.ts` and shared with tests.
-- Formatting toolbar buttons are data-driven from `formattingActions.ts`
-  (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). **Every control shows what's
-  active, its text style's included**: bold, italic, underline and strikethrough are pressed
-  in a style that has them, and pressing one turns it off for that text
-  (`journal-document`'s text emphasis). Font, color, glow, case and letter spacing show the
-  text's own value, or its style's (`useOwnAndStyleValue`), and follow one rule
-  (`chooseOwnValue`): **choosing what the style already gives removes the text's own**, so it
-  follows its style again; anything else becomes its own, including "none" values where the
-  style has one (page text color, no glow, as typed). Markdown
-  shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
-- **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
-  2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
-  isn't a content style: typing `# ` stays text, `## ` … `###### ` make that level, and pasted
-  `#` headings become H2 (`journal-document/journalHeading.ts`). Small copies to markdown as a
-  plain paragraph. Body's icon is a T and Small's is captions (it's mostly used like a
-  caption). The toolbar shows only the current style's icon; the menu repeats it beside
-  each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
-  ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
-  (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
-  (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update style to match text**,
-  **Update text to match style** (the reverse: the selected paragraphs, or the cursor's, take
-  the style and lose their own look; links and code stay), **Size** and **Reset style** (its last row). Undo/redo and **Reset text
-  styles** (every style at once) are in settings. The app hands in the styles and the changes
-  (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
-- **Update style to match text** (`matchTextStyle.ts`) gives the style what the toolbar shows
-  for the selected text (or the text at the cursor): font, color, glow, case, letter spacing,
-  bold, italic, underline, strikethrough; not size. Text in the selection's blocks of that
-  style keeps its exact look, rewritten relative to the new style: what the style now gives
-  stops being the text's own, so it follows later style changes, and what still differs
-  stays its own (a word left plain in a now-bold style gets "not bold"). The style change and
-  the text change are separate undo steps: settings' undo reverts the style, the editor's
-  the text (which then looks the same, its own formatting back). Matching closes the menu. In the title the menu lists just **Title** (selected,
-  heading-1 icon), to edit it; it isn't applied or stepped to.
-- **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
-  to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
-  first in the list, removes it so the text follows its style's font (the editor font when
-  the style has none), which captions it. The trigger shows the font at the cursor, always one width (fits "Default"; longer names end in "…"). Fonts don't carry into markdown.
-- **Text color** (`TextColorPicker`) colors the selection, or the text about to be typed
-  when nothing is selected. Closing the menu returns focus to the text so typing
-  continues in that color. The menu has (no titles; rows have accessible names):
-  - **Theme row:** the page text color, then six live tones of the page background, light
-    to dark (see `journal-document`); clicking one applies it and closes the menu. The tile
-    of the color in effect (the text's, or its style's) is selected.
-  - **Custom row:** seven saved slots (stored with appearance). An empty slot (dashed)
-    opens the color picker; picking fills the slot and applies it. A filled slot applies
-    its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
-    colored keeps its color (the color is stored on the text). This is the shared `ColorMenu`
-    (design system), the same menu as each text style's color (see the root `SPEC.md`).
-- **Letter spacing** (`TextLetterSpacingPicker`) gives the selection, or the text about to
-  be typed, its own letter spacing (`journal-document/textLetterSpacing.ts`, % of its size),
-  with the same control as text styles (`LetterSpacingMenu`, from `src/text-styles`). It shows the text's own spacing, or its
-  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); **Reset letter spacing** (its last row) removes the text's own. Letter spacing doesn't carry into markdown.
-- **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
-  to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
-  text color: white text with a pink glow reads as neon. Its menu is text color's with **No
-  glow** (crossed out) in place of the page text color, and the same custom slots. It
-  overrides the text style's glow. Glows don't carry into markdown.
-- **Text case** (`TextCasePicker`, the shared `TextCaseMenu`): UPPERCASE, lowercase, Title
-  Case, Sentence case, or "As typed" (the letters as typed, even in a style with a case). Display-only: the
-  letters typed are stored unchanged (see `journal-document`). Text styles' cases and
-  emphasis reach the editors through `useTextStyleBlocks` (the title is all Title; the
-  writing's blocks map to styles by `getBlockTextStyleName`; code blocks have none).
-- **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯
-  menus) serializes with
-  `@tiptap/markdown` and writes to the clipboard; the app confirms with a toast.
+- Sits over the page, lined up with the start of the text; when the header is too narrow
+  it centers between the sidebar toggle and the ⋯, then scrolls sideways with faded ends.
+- **Three groups**, broadest first. **Text:** style, font, color, bold, italic, underline,
+  strikethrough, then glow, case and letter spacing. **Markup:** lists, quote, code and
+  code block (together, since both mean "this is code"). **Page:** margins, spacing.
+- **Every control shows what's in effect, the text style's included:** bold is pressed in
+  a bold style, and pressing it turns bold off for that text.
+- **Choosing what the style already gives removes the text's own**, so it follows its style
+  again; anything else becomes its own, including "none" where the style has one (page text
+  color, no glow, as typed).
+- It acts on the last-focused editor (the writing or the title); controls the focused
+  editor can't use (e.g. lists in the title) are off.
+- Font, color, glow, case and letter spacing apply to the selection, or to the text about
+  to be typed. Closing the color menu returns focus to the text.
+
+## Text styles
+
+- Small, Body and Heading 2–6 mirror markdown (`##`–`######`). Heading 1 is the entry's
+  title, so `# ` stays text. Small is mostly used like a caption.
+- The menu previews each name in its style. Each row's ⋯ has **Update style to match text**,
+  **Update text to match style**, **Size** and **Reset style**. In the title the menu lists
+  only Title, to edit it.
+- **Update style to match text** gives the style the selected text's look (not size). Text
+  of that style in the selection keeps its exact look, rewritten relative to the new style:
+  what the style now gives stops being the text's own, and what still differs stays (a
+  word left plain in a now-bold style becomes "not bold"). The style change and the text
+  change are separate undo steps (settings' undo and the editor's).
+- **Update text to match style** clears the selected paragraphs' own look; links and code
+  stay.
+
+## Colors and glow
+
+- **Text color:** the theme tones (the page text color first, then six tones of the
+  background, which follow it), then the custom slots. Text keeps its color when a slot
+  changes.
+- **Glow** is its own color, separate from text color (white text, pink glow reads as
+  neon). Its menu is the color menu with **No glow** first.
 
 ## Keyboard
 
-- `⌥↑` / `⌥↓` move the current block (or all selected blocks) up/down, like VS Code
-  (`moveBlocks.ts`). List items move as a whole. At the edge of a container nothing moves,
-  unless the selection fills the container (e.g. a one-paragraph quote), in which case the
-  container moves.
-- Caret navigation (`⌘←/→`, `⌥←/→`, `⌘↑/↓`, with `⇧` to select) is native browser behaviour.
-- **Every styling shortcut has a visible control** (and nothing hides in a shortcut only):
-  the toolbar's buttons (`formattingActions.ts`: bold ⌘B, italic ⌘I, underline ⌘U,
-  strikethrough ⇧⌘X, code ⌘E, bulleted ⇧⌘8 / numbered ⇧⌘7 lists, quote ⇧⌘B, code block ⌥⌘C)
-  show their shortcut in the tooltip and `aria-keyshortcuts`; text styles show theirs in the
-  menu (Body ⌥⌘0, Heading 2–6 ⌥⌘2–6). Shortcuts are written once in Tiptap form and
-  displayed by `utils/shortcuts.ts` (Mac symbols in Apple's order, or Ctrl+… elsewhere).
-  Strikethrough moved off Tiptap's ⇧⌘S, which saves all entries.
-- Buttons and menus whose node or mark the focused editor lacks are off (e.g. lists in the
-  title), by checking the editor's schema (`editorSupports`).
-- **The toolbar acts on the last-focused editor** (`useActiveEditor`): the writing or the
-  title.
-- `⌘Z` / `⇧⌘Z` (undo / redo) come from Tiptap's StarterKit.
-- `⇧⌘>` / `⇧⌘<` step the current paragraph's text style up / down (`textStyleShortcuts.ts`).
-  `⇧⌘+` is left to the browser, where it zooms the page.
-- **Tab** inserts a tab (shown 4 spaces wide, `--tab-size`); **Shift+Tab** removes one from
-  the start of the line. In lists, Tab/Shift+Tab indent and outdent the item instead
-  (`TabIndent` has lower priority than list keymaps). To avoid a keyboard trap,
-  **Escape then Tab** moves focus out as usual; a hidden hint linked via
-  `aria-describedby` says so.
+- **Every shortcut has a visible control,** shown in its tooltip or menu: ⌘B, ⌘I, ⌘U, ⇧⌘X
+  (strikethrough, moved off ⇧⌘S, which exports), ⌘E code, ⇧⌘8 / ⇧⌘7 lists, ⇧⌘B quote, ⌥⌘C
+  code block, ⌥⌘0 Body, ⌥⌘2–6 headings. Shown as Mac symbols or Ctrl+… per platform.
+- ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back. ⇧⌘+ stays the browser's zoom.
+- ⌥↑ / ⌥↓ move blocks, like VS Code; list items move whole, and a container moves when the
+  selection fills it.
+- Markdown shortcuts work while typing (`## `, `- `, `> `, `**bold**`).
+- **Tab** inserts a tab (4 spaces wide); Shift+Tab removes one. In lists they indent and
+  outdent. **Escape then Tab** leaves the editor (no keyboard trap), as a hidden hint says.
+- Undo history is per entry.
 
 ## Decisions
 
-- **Title in markdown:** when the entry has a custom name, Copy as markdown puts it first as
-  the one `#` heading; content headings already start at `##`, so nothing moves.
-- Copied markdown and exports contain text as typed, not as displayed by text case.
-- Markdown export is checked by round-trip tests (`markdownRoundTrip.test.ts`): export, read
-  back as markdown, and structure and text must match. Paragraph text that looks like
-  markdown (`# `, `1. `, `- `, `---`, fences, 4-space indents) is escaped so it stays text.
-- Markdown has no color syntax, so copied markdown drops text colors; JSON export keeps them.
-- Copied markdown turns tabs into two em spaces (outside fenced code), because a leading
-  tab or spaces in markdown makes an indented code block. JSON keeps the real tabs.
-- The editor carries opt-out markers for Grammarly and LanguageTool (`data-gramm`,
-  `data-lt-active`, …) so well-behaved writing assistants don't read or send journal text.
-  They can't stop a malicious extension (see the privacy feature).
-- Content is stored as Tiptap JSON rather than markdown because it is lossless; markdown
-  is produced on export.
+- Content is stored as Tiptap JSON because it's lossless; markdown is made on export.
+- **Copy as markdown** puts a custom name first as the one `#` heading (content headings
+  already start at `##`). Markdown has text as typed, not as cased, and no colors, fonts,
+  glow or letter spacing; JSON keeps them all.
+- Copied markdown turns tabs into two em spaces outside code, since leading whitespace
+  makes a markdown code block.
+- Markdown export is checked by round-trip tests.
+- Editors carry Grammarly and LanguageTool opt-outs (see privacy).

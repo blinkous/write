@@ -1,78 +1,41 @@
 # Journal document
 
-The shape of a journal entry's content, shared by the editor (which edits it) and entries
-(which stores, imports and exports it).
+The shape of an entry's content, shared by the editor (which edits it) and entries (which
+stores, imports and exports it).
 
-## How it works
+## What it holds
 
-- `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
-  code, links, bold/italic/etc.) plus per-text color, font, glow and letter spacing (`textStyleMark.ts`), text case, and a paragraph `size`
-  attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
-- Headings are `JournalHeading`, levels 2–6: level 1 is the entry's title, which lives outside
-  the document (`headingLevels.ts`). Pasted `#` / `<h1>` headings become level 2.
-- Paragraphs are `MarkdownSafeParagraph`: markdown structure at the start of any line of
-  paragraph text (headings, bullets, numbered items, rules, fences, 4-space indents) is
-  escaped on export, so text stays text when pasted into a markdown app.
-- `parseDocument` validates untrusted JSON (e.g. an import) against the schema and returns
-  a clean copy, or null. Unknown node/mark types are rejected; unknown attributes dropped.
-- `createDocumentComparer` checks content equality (including formatting) using
-  ProseMirror's node equality, so key order and other JSON noise don't matter.
+- Paragraphs, headings 2–6, lists, quotes, code and links, with bold, italic, underline,
+  strikethrough, plus per-text color, font, glow, letter spacing and case, and Small
+  paragraphs (plain paragraphs in markdown).
+- **Heading 1 is the entry's title**, which lives outside the document. Pasted `#` headings
+  become level 2.
 
-## Text color
+## Rules
 
-- Text with no color mark inherits the page text color (`--color-text`), so changing the
-  page color later recolors it automatically. A color mark overrides it for that text.
-- A color mark stores either a hex color or a theme name (`theme-1`…`theme-7`). Theme
-  names render as `var(--color-theme-N)`, cozy shades derived from the page background by
-  the appearance feature, so theme-colored text follows background changes. `resolveTextColor`
-  accepts only these two forms; anything else (e.g. from an import) is ignored.
-- Colors are applied through a mark view using the CSSOM (`element.style.color`), because
-  the app's CSP blocks inline `style` attributes, which is how Tiptap renders them by default.
+- **Untrusted content is rebuilt from the schema:** unknown nodes and marks reject it,
+  unknown attributes are dropped, and values outside their allowed forms are ignored.
+- **Equality includes formatting** and ignores JSON noise like key order (used to skip
+  duplicate imports).
+- **Markdown stays text:** paragraph text that looks like markdown at a line start (`# `,
+  `- `, `1. `, `---`, fences, 4-space indents) is escaped on export.
+- **Colors and glows** are a hex color or a theme name (`theme-1`…`theme-7`). Theme names
+  follow the page background, so theme-colored text changes with it. Text without a color
+  follows the page text color. A glow can also be "none", to turn off its style's glow.
+  Glow and color are independent.
+- **Letter spacing** is a whole percent of the text's size (−5 to 30), so it scales with it.
+- **Text can turn off emphasis its style gives** (not bold, not italic, no underline, no
+  strike; dropped from markdown, which can't say "not bold"). Toggling acts on what's shown,
+  so a text's own mark and its "off" never overlap.
+- **Case is display-only:** the letters stay as typed. Upper and lower are CSS; title and
+  sentence case are drawn by capitalizing letters. Sentences end at `.`, `!`, `?` or `…`
+  followed by whitespace (`3.50` doesn't end one). Text's own case wins over its style's;
+  code keeps its letters.
 
-## Text glow
+## Decisions
 
-- A glow is stored on the text style mark (`glow`, like color and font) as a hex color or a
-  theme name, the same forms as text color, or `none` (no glow where its text style has
-  one, `NO_GLOW`); anything else is ignored. It renders as stacked
-  `text-shadow`s (`resolveTextGlow`), blur radii in em so it scales with the text (tight layers stacked for a
-  bright neon halo, then a wide bloom), set through
-  the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
-  independent: changing one never changes the other.
-
-## Text letter spacing
-
-- Stored on the text style mark (`letterSpacing`) as a whole percent of the text's size,
-  within `LETTER_SPACING_RANGE` (−5 to 30, shared with text styles); anything else is
-  ignored. Rendered as em through the same mark view, so it scales with the text.
-
-## Text emphasis
-
-- Text can turn off the bold, italic, underline or strikethrough its text style gives it:
-  `noBold`, `noItalic`, `noUnderline`, `noStrike` on the text style mark (`data-no-bold` and
-  so on in HTML; dropped from markdown, which can't say "not bold"). `toggleEmphasis` acts on
-  what's shown: shown emphasis turns off (its own mark removed, plus an off where its style
-  has it), hidden emphasis turns on (the off removed, plus its own mark where its style lacks
-  it), so a text's own mark and its off never overlap. `isEmphasisShown` is what the toolbar
-  shows as pressed. ⌘B, ⌘I, ⌘U and ⇧⌘X run `toggleEmphasis` too (the extension's shortcuts
-  come before the marks').
-- Blocks get their style's emphasis from `setBlockEmphasis` (storage, like block cases).
-  Not bold and not italic render through the mark view (`font-weight` / `font-style:
-normal`). A style's underline and strikethrough are drawn on its text as decorations
-  (`style-underline`, `style-strike`), skipping text that turned them off, because lines a
-  block draws reach all its text and can't be undone inside it. Like capitals, they redraw
-  only the blocks an edit touched (`changedRanges.ts`).
-
-## Text case
-
-- A `textCase` mark (`upper`, `lower`, `title`, `sentence`, or `as-typed` for the letters as
-  typed where its text style has a case) changes only how text displays;
-  the stored letters stay as typed. It is inclusive, so typing inside it continues the case.
-- Upper/lower are plain CSS `text-transform`. CSS can't do title or sentence case, so the
-  mark displays lowercase and a plugin adds `CAPITAL_LETTER_CLASS` decorations to letters
-  that start a word (title) or a sentence (sentence), computed per block by
-  `findCapitalOffsets`. Sentences end at `.`, `!`, `?` or `…` followed by whitespace; a
-  number right after a period (e.g. `3.50`) doesn't end one.
-- A whole block can also take a case from its text style: the editor app passes
-  `setBlockTextCases` a function from block to case, kept in the mark's storage, and the
-  command redraws every block's capitals (not an undo step). Text's own case wins over its
-  block's; code keeps its letters as typed.
+- Colors, fonts and glows are applied through the DOM rather than inline `style`
+  attributes, which the CSP blocks.
+- A style's underline and strikethrough are drawn per text rather than on the block,
+  because a line the block draws can't be undone for text inside it. Like capitals, they
+  redraw only the blocks an edit touched.

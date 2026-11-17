@@ -4,33 +4,26 @@ The welcome: what the journal is and how it keeps your writing.
 
 ## How it works
 
-- `privacyNotes.ts` holds the author's copy: the title ("Welcome!"), intro, the privacy notes
-  (data is stored only in this browser and cleared with browser data, so export it and import
-  it back; works offline once loaded; browser extensions may read data on all sites, so
-  disable them or use another profile or browser) and the sign-off ("Write away!"). The
-  dialog and the welcome entry both use it, so the wording lives in one place.
-- **First visit** (`isFirstVisit`, no `write.privacyNoticeSeen.v1` key): the journal starts
-  with the **welcome entry** (`welcomeEntry.ts`), a real entry the person can edit or delete:
-  the intro, the privacy notes as a list, a quick tour that uses what it describes (title,
-  headings, lists, code), and the sign-off. The visit is then remembered. Returning visitors,
-  including anyone who saw the old welcome dialog, never get it.
-- **About** (settings drawer → Data) opens `PrivacyNotice`, a dialog with the same intro and the notes
-  as icon rows (each sentence on its own line, icons centered on their note), then a GitHub
-  link to the source (`SOURCE_CODE_URL`, opens in a new tab) beside "Write away!". Closing it returns focus to the entry.
-
-- **Framed by another page** (`isFramed`), `main.tsx` shows `FramedNotice` ("Write opens in
-  its own tab", with a button to open it there) and never opens the journal.
+- **The copy lives in one place**, shared by the welcome entry and the About dialog: the
+  intro, the privacy notes (data stays in this browser and goes with browser data, so
+  export and import it; works offline once loaded; browser extensions can read every site,
+  so disable them or use another profile) and the sign-off.
+- **First visit:** the journal starts with a **welcome entry**, a real entry the person can
+  edit or delete: the intro, the notes, a short tour that uses what it describes, and the
+  sign-off. Returning visitors never get it.
+- **About** (Data) shows the same intro and notes as a dialog, with a link to the source.
+- **Framed by another page**, the app shows "Write opens in its own tab" with a button to
+  open it, and never opens the journal.
 
 ## Decisions
 
-- The frame check stands in for the `frame-ancestors` header, which static hosts like GitHub
-  Pages can't send and a `<meta>` CSP ignores. Without it, another site could show the app
-  disguised under its own page and trick clicks (clickjacking).
-
-- The copy is the author's own; edits are for grammar only, keeping the voice. The tour lines
-  and the welcome entry's two headings are drafts for the author to rewrite (marked in code).
-- Shortcuts in the tour come from `utils/shortcuts.ts`, so they match the reader's platform.
+- The frame check stands in for the `frame-ancestors` header, which GitHub Pages can't send
+  and a `<meta>` CSP ignores. Without it, another site could disguise the app under its own
+  page and trick clicks (clickjacking).
+- The copy is the author's own: edit for grammar only, keeping the voice. The tour lines are
+  drafts for the author to rewrite (marked in code).
+- Tour shortcuts match the reader's platform.
 - Kept generic: the app can't detect the browser, and the advice should suit everyone.
-- If browser storage is cleared, the welcome entry comes back, which is the right moment for it.
-- The editors carry Grammarly/LanguageTool opt-out attributes (`lib/writingAssistants.ts`).
-  They only stop well-behaved writing assistants.
+- If browser storage is cleared, the welcome entry comes back, which is the right moment.
+- The editors opt out of Grammarly and LanguageTool, which only stops well-behaved
+  writing assistants.
