@@ -1,4 +1,4 @@
-import { Ellipsis, Pipette, RotateCcw } from 'lucide-react'
+import { Ellipsis, RotateCcw } from 'lucide-react'
 import {
   ActionList,
   Button,
@@ -47,10 +47,7 @@ export function TextStyleOptions({
       {(_close, refocus) => (
         <>
           <ActionList>
-            <MenuItem onClick={onMatch}>
-              <Pipette aria-hidden="true" />
-              Update to match selection
-            </MenuItem>
+            <MenuItem onClick={onMatch}>Update to match selection</MenuItem>
           </ActionList>
           <Divider orientation="horizontal" />
           <PopoverPanel width="regular">
