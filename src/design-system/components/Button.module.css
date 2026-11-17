@@ -72,26 +72,3 @@
   width: var(--size-control);
   padding: 0;
 }
-
-/*
- * A whole row as one button (e.g. a setting opening its panel). Its padded
- * edges sit outside the row, so its text lines up with the rows around it.
- */
-.row {
-  display: flex;
-  justify-content: flex-start;
-  --row-reach: calc(var(--space-control-inline) + var(--border-width));
-  width: calc(100% + var(--row-reach) * 2);
-  min-width: 0;
-  margin-inline: calc(var(--row-reach) * -1);
-  padding-block: var(--space-1);
-  color: var(--color-text);
-  font-weight: normal;
-  text-align: start;
-}
-
-/* While its panel (right after it) is open, it takes the panel's page background. */
-.row:has(+ :popover-open),
-.row:hover:has(+ :popover-open) {
-  background: var(--color-background);
-}

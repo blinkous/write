@@ -1,7 +1,6 @@
 import styles from './Button.module.css'
 
-/** `row` fills its row edge to edge, its text lined up with the row's other text. */
-export type ButtonVariant = 'ghost' | 'subtle' | 'row'
+export type ButtonVariant = 'ghost' | 'subtle'
 
 type ButtonLookOptions = {
   variant?: ButtonVariant
