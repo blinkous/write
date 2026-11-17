@@ -44,6 +44,23 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   within `LETTER_SPACING_RANGE` (−5 to 30, shared with text styles); anything else is
   ignored. Rendered as em through the same mark view, so it scales with the text.
 
+## Text emphasis
+
+- Text can turn off the bold, italic, underline or strikethrough its text style gives it:
+  `noBold`, `noItalic`, `noUnderline`, `noStrike` on the text style mark (`data-no-bold` and
+  so on in HTML; dropped from markdown, which can't say "not bold"). `toggleEmphasis` acts on
+  what's shown: shown emphasis turns off (its own mark removed, plus an off where its style
+  has it), hidden emphasis turns on (the off removed, plus its own mark where its style lacks
+  it), so a text's own mark and its off never overlap. `isEmphasisShown` is what the toolbar
+  shows as pressed. ⌘B, ⌘I, ⌘U and ⇧⌘X run `toggleEmphasis` too (the extension's shortcuts
+  come before the marks').
+- Blocks get their style's emphasis from `setBlockEmphasis` (storage, like block cases).
+  Not bold and not italic render through the mark view (`font-weight` / `font-style:
+normal`). A style's underline and strikethrough are drawn on its text as decorations
+  (`style-underline`, `style-strike`), skipping text that turned them off, because lines a
+  block draws reach all its text and can't be undone inside it. Like capitals, they redraw
+  only the blocks an edit touched (`changedRanges.ts`).
+
 ## Text case
 
 - A `textCase` mark (`upper`, `lower`, `title`, `sentence`) changes only how text displays;

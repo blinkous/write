@@ -33,7 +33,7 @@ import {
   TextLetterSpacingPicker,
   TextStyleMenu,
   useJournalEditor,
-  useTextStyleCases,
+  useTextStyleBlocks,
 } from '../features/editor'
 import {
   EntryList,
@@ -103,8 +103,8 @@ export function App({ journal }: AppProps) {
   })
   // The toolbar styles whichever was typed in last: the writing or the title.
   const activeEditor = useActiveEditor(editor, titleEditor)
-  useTextStyleCases(editor, pageTheme.textStyles, false)
-  useTextStyleCases(titleEditor, pageTheme.textStyles, true)
+  useTextStyleBlocks(editor, pageTheme.textStyles, false)
+  useTextStyleBlocks(titleEditor, pageTheme.textStyles, true)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
   const backgroundMedia = useBackgroundMedia(setToastMessage)

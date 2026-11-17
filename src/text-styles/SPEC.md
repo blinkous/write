@@ -33,7 +33,7 @@ draws them), the entry title, and the style menu (which previews and edits them)
   when there's none, so it still reads as glow). The menu is `TextColorMenu` with "No glow" (a crossed-out tile) in place of the page
   text color; the theme color tiles come from the shared `getThemeColorSuggestions`.
 - Case: CSS can only do UPPER and lower, so title and sentence case set `-transform` to
-  lowercase and the editor capitalizes letters itself (`useTextStyleCases`, via
+  lowercase and the editor capitalizes letters itself (`useTextStyleBlocks`, via
   journal-document's text case). Previews show the style's name, already in title case, so
   `-preview-transform` uses CSS's `capitalize` / `none` for them. `TextCaseMenu` is the
   shared case control (toolbar and style edit panels), its options in `textCaseOptions.ts`.

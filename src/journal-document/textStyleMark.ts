@@ -1,5 +1,10 @@
 import { Color, TextStyle } from '@tiptap/extension-text-style'
 import { resolveTextColor } from './textColor'
+import {
+  EMPHASIS_OFF_ATTRIBUTES,
+  EMPHASIS_OFF_DATA_ATTRIBUTES,
+  TextEmphasis,
+} from './textEmphasis'
 import { resolveTextFont, TextFont } from './textFont'
 import { resolveTextGlow, TextGlow } from './textGlow'
 import {
@@ -9,17 +14,22 @@ import {
 
 /*
  * TextStyle renders through an inline `style` attribute, which the app's CSP
- * blocks. This mark view sets the text's color, font, glow and letter spacing through the
+ * blocks. This mark view sets the text's color, font, glow, letter spacing and
+ * emphasis turned off through the
  * CSSOM instead, which CSP allows and which can only ever set those properties.
  */
 const CspSafeTextStyle = TextStyle.extend({
-  // Also read spans carrying only a font, glow or letter spacing (copied within the app), not just styled spans.
+  // Also read spans carrying only a font, glow, letter spacing or emphasis off (copied within the app), not just styled spans.
   parseHTML() {
     return [
       ...(this.parent?.() ?? []),
       { tag: 'span[data-font]', consuming: false },
       { tag: 'span[data-glow]', consuming: false },
       { tag: 'span[data-letter-spacing]', consuming: false },
+      ...EMPHASIS_OFF_DATA_ATTRIBUTES.map((dataAttribute) => ({
+        tag: `span[${dataAttribute}]`,
+        consuming: false,
+      })),
     ]
   },
 
@@ -36,16 +46,22 @@ const CspSafeTextStyle = TextStyle.extend({
         mark.attrs.letterSpacing,
       )
       if (cssLetterSpacing) dom.style.letterSpacing = cssLetterSpacing
+      // Its style's bold or italic, turned off (its lines are skipped instead; see textEmphasis).
+      if (mark.attrs[EMPHASIS_OFF_ATTRIBUTES.bold] === true)
+        dom.style.fontWeight = 'normal'
+      if (mark.attrs[EMPHASIS_OFF_ATTRIBUTES.italic] === true)
+        dom.style.fontStyle = 'normal'
       return { dom, contentDOM: dom }
     }
   },
 })
 
-/** Per-text color, font, glow and letter spacing. Text without them follows its text style's. */
+/** Per-text color, font, glow, letter spacing and emphasis off. Text without them follows its text style's. */
 export const textStyleExtensions = [
   CspSafeTextStyle,
   Color,
   TextFont,
   TextGlow,
   TextLetterSpacing,
+  TextEmphasis,
 ]

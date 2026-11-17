@@ -1,9 +1,9 @@
 import { Mark } from '@tiptap/core'
 import type { MarkType, Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state'
-import { AddMarkStep, RemoveMarkStep } from '@tiptap/pm/transform'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { findCapitalOffsets, isTextCase, type TextCase } from './capitalization'
+import { getChangedRanges } from './changedRanges'
 
 /** Class on letters shown as capitals inside title/sentence case; styled by the editor. */
 export const CAPITAL_LETTER_CLASS = 'text-case-capital'
@@ -119,21 +119,6 @@ function buildCapitalDecorations(
     return false
   })
   return DecorationSet.create(doc, decorations)
-}
-
-/** Where a transaction changed the document (text, or marks), in the new document. */
-function getChangedRanges(transaction: Transaction): [number, number][] {
-  const ranges: [number, number][] = []
-  transaction.steps.forEach((step, index) => {
-    const laterMapping = transaction.mapping.slice(index + 1)
-    const addRange = (from: number, to: number) =>
-      ranges.push([laterMapping.map(from, -1), laterMapping.map(to, 1)])
-    step.getMap().forEach((_oldFrom, _oldTo, from, to) => addRange(from, to))
-    // Mark changes move nothing, so their map is empty.
-    if (step instanceof AddMarkStep || step instanceof RemoveMarkStep)
-      addRange(step.from, step.to)
-  })
-  return ranges
 }
 
 /**

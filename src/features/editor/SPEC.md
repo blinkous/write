@@ -15,7 +15,10 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   margins, spacing. A text style's edit panel lists its options in the text group's order.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`
-  (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). Markdown
+  (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). **Every control shows what's
+  active, its text style's included**: bold, italic, underline and strikethrough are pressed
+  in a style that has them, and pressing one turns it off for that text
+  (`journal-document`'s text emphasis). Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
   2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
@@ -58,9 +61,9 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   same custom slots. It overrides the text style's glow. Glows don't carry into markdown.
 - **Text case** (`TextCasePicker`, the shared `TextCaseMenu`): UPPERCASE, lowercase, Title
   Case, Sentence case, or "As typed" (back to its text style's case). Display-only: the
-  letters typed are stored unchanged (see `journal-document`). Text styles' cases reach the
-  editors through `useTextStyleCases` (the title is all Title; the writing's blocks map to
-  styles by `getBlockTextStyleName`; code blocks have none).
+  letters typed are stored unchanged (see `journal-document`). Text styles' cases and
+  emphasis reach the editors through `useTextStyleBlocks` (the title is all Title; the
+  writing's blocks map to styles by `getBlockTextStyleName`; code blocks have none).
 - **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯
   menus) serializes with
   `@tiptap/markdown` and writes to the clipboard; the app confirms with a toast.

@@ -19,6 +19,12 @@ export {
   TITLE_HEADING_LEVEL,
   type ContentHeadingLevel,
 } from './headingLevels'
+export {
+  EMPHASES,
+  isEmphasisShown,
+  type Emphasis,
+  type GetBlockEmphasis,
+} from './textEmphasis'
 export { resolveTextFont } from './textFont'
 export { resolveTextGlow } from './textGlow'
 export {
