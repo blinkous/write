@@ -13,6 +13,7 @@ import {
   BackgroundMediaLayer,
   useBackgroundMedia,
   EditorSettings,
+  JournalNameSetting,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -226,12 +227,15 @@ export function App({ journal }: AppProps) {
                 id: 'data',
                 title: 'Data',
                 content: (
-                  <DataSettings
-                    onExport={() => setIsExportOpen(true)}
-                    onChooseImportFile={openImportPicker}
-                    onShowAbout={privacyNotice.open}
-                    onResetSettings={() => setIsResetSettingsOpen(true)}
-                  />
+                  <>
+                    <JournalNameSetting pageTheme={pageTheme} />
+                    <DataSettings
+                      onExport={() => setIsExportOpen(true)}
+                      onChooseImportFile={openImportPicker}
+                      onShowAbout={privacyNotice.open}
+                      onResetSettings={() => setIsResetSettingsOpen(true)}
+                    />
+                  </>
                 ),
               },
             ]}

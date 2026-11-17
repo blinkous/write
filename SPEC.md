@@ -68,7 +68,7 @@ Sync, sharing, images/attachments in entries, page breaks / print layout (the pa
 | `write.entriesMovedToIndexedDb.v1` | entries    | The entries moved to IndexedDB, so a journal here would be out of date       |
 | `write.selectedEntryId.v1`         | entries    | Last open entry id                                                           |
 | `write.entrySort.v1`               | entries    | How the entries list is sorted                                               |
-| `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, tab title, background blur/opacity          |
+| `write.appearance.v1`              | appearance | Fonts, margins, spacing, colors, journal name, background blur/opacity       |
 | `write.settingsOpen.v1`            | settings   | Whether the settings drawer is open                                          |
 | `write.settingsOpenSections.v1`    | settings   | Open settings sections, by id (all start folded)                             |
 | `write.settingsClosedSections.v1`  | settings   | Folded sections, from before they started folded (read once, kept as backup) |
