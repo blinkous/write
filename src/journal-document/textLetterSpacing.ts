@@ -44,9 +44,12 @@ export const TextLetterSpacing = Extension.create({
           letterSpacing: {
             default: null,
             parseHTML: (element) => {
-              const letterSpacing = Number(
-                element.getAttribute('data-letter-spacing'),
+              const storedLetterSpacing = element.getAttribute(
+                'data-letter-spacing',
               )
+              // Absent isn't 0 (which Number(null) would give): the text has no spacing of its own.
+              if (storedLetterSpacing === null) return null
+              const letterSpacing = Number(storedLetterSpacing)
               return isLetterSpacing(letterSpacing) ? letterSpacing : null
             },
             renderHTML: ({ letterSpacing }) =>

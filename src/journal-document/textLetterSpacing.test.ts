@@ -59,3 +59,13 @@ describe('text letter spacing commands', () => {
     ).toEqual([])
   })
 })
+
+describe('pasted styled text', () => {
+  it('gets no letter spacing of its own unless it carried one', () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<p><span data-font="lora">calm</span></p>',
+    })
+    expect(editor.getHTML()).not.toContain('data-letter-spacing')
+  })
+})
