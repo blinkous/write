@@ -2,7 +2,6 @@ import { Ellipsis, RotateCcw } from 'lucide-react'
 import {
   ActionList,
   Button,
-  Divider,
   LabeledRow,
   MenuFooter,
   MenuItem,
@@ -17,6 +16,8 @@ type TextStyleOptionsProps = {
   label: string
   /** Makes the style look like the selected text (see matchTextStyle). */
   onMatch: () => void
+  /** Makes the selected text look like the style (see resetToTextStyle). */
+  onResetSelection: () => void
   /** px; only a style has a size (see the root SPEC). */
   size: number
   onSizeChange: (size: number) => void
@@ -27,12 +28,14 @@ type TextStyleOptionsProps = {
 
 /**
  * A text style's ⋯ at the end of its row in the style menu: update it to match
- * the selected text (the toolbar is the one place formatting is set), its
- * size, and a reset at the bottom right.
+ * the selected text (the toolbar is the one place formatting is set), or the
+ * reverse, reset the selected text to it; its size; and a reset of the style
+ * at the bottom right.
  */
 export function TextStyleOptions({
   label,
   onMatch,
+  onResetSelection,
   size,
   onSizeChange,
   canReset,
@@ -48,8 +51,10 @@ export function TextStyleOptions({
         <>
           <ActionList>
             <MenuItem onClick={onMatch}>Update to match selection</MenuItem>
+            <MenuItem onClick={onResetSelection}>
+              Reset selection to style
+            </MenuItem>
           </ActionList>
-          <Divider orientation="horizontal" />
           <PopoverPanel width="regular">
             <LabeledRow label="Size" control="icon">
               <NumberStepper

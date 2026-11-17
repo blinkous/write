@@ -22,7 +22,9 @@ import {
   getActiveTextStyle,
   TEXT_STYLES,
   TITLE_STYLE,
+  type TextStyle,
 } from './textStyles'
+import { resetToTextStyle } from './resetToTextStyle'
 import { matchTextStyle } from './matchTextStyle'
 import type { TextStyleContext } from './ownOrStyleValue'
 import { TextStyleOptions } from './TextStyleOptions'
@@ -117,7 +119,12 @@ export function TextStyleMenu({
     >
       {(close) => {
         /* A style's ⋯: matching closes the menu, back to the text, which now follows the style. */
-        const renderOptions = (name: TextStyleName, label: string) => (
+        const renderOptions = (
+          name: TextStyleName,
+          label: string,
+          /** The paragraph style to give the selection; null in the title, which has one style. */
+          textStyle: TextStyle | null,
+        ) => (
           <TextStyleOptions
             label={label}
             onMatch={() => {
@@ -128,6 +135,10 @@ export function TextStyleMenu({
                 name,
                 onChangeTextStyle,
               )
+              close()
+            }}
+            onResetSelection={() => {
+              resetToTextStyle(editor, textStyle)
               close()
             }}
             size={textStyles[name].size}
@@ -146,7 +157,11 @@ export function TextStyleMenu({
                 {...TITLE_STYLE}
                 isSelected
                 onSelect={close}
-                editControl={renderOptions(TITLE_STYLE.name, TITLE_STYLE.label)}
+                editControl={renderOptions(
+                  TITLE_STYLE.name,
+                  TITLE_STYLE.label,
+                  null,
+                )}
               />
             ) : (
               MENU_STYLES.map((textStyle) => (
@@ -158,7 +173,11 @@ export function TextStyleMenu({
                     applyTextStyle(editor, textStyle)
                     close()
                   }}
-                  editControl={renderOptions(textStyle.name, textStyle.label)}
+                  editControl={renderOptions(
+                    textStyle.name,
+                    textStyle.label,
+                    textStyle,
+                  )}
                 />
               ))
             )}

@@ -34,7 +34,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
   (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
   (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update to match selection**,
-  **Size** and a reset (↺, bottom right, off at the style's defaults). Undo/redo and
+  **Reset selection to style** (the reverse: the selected paragraphs, or the cursor's, take
+  the style and lose their own look; links and code stay), **Size** and a reset (↺, bottom right, off at the style's defaults). Undo/redo and
   resetting every style stay in settings. The app hands in the styles and the changes
   (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
 - **Update to match selection** (`matchTextStyle.ts`) gives the style what the toolbar shows

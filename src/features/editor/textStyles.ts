@@ -1,6 +1,6 @@
 import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
-import type { Editor } from '@tiptap/react'
+import type { ChainedCommands, Editor } from '@tiptap/react'
 import {
   Heading1,
   Heading2,
@@ -141,14 +141,19 @@ export function getTextStyleNameAt(
   return isTitle ? 'title' : getActiveTextStyle(editor).name
 }
 
-export function applyTextStyle(editor: Editor, { block }: TextStyle): boolean {
-  const chain = editor.chain().focus()
-  if (block.kind === 'heading')
-    return chain.setHeading({ level: block.level }).run()
+/** Adds giving the selection's blocks this style to a chain of commands. */
+export function chainTextStyle(
+  chain: ChainedCommands,
+  { block }: TextStyle,
+): ChainedCommands {
+  if (block.kind === 'heading') return chain.setHeading({ level: block.level })
   return chain
     .setParagraph()
     .updateAttributes('paragraph', { size: block.size })
-    .run()
+}
+
+export function applyTextStyle(editor: Editor, textStyle: TextStyle): boolean {
+  return chainTextStyle(editor.chain().focus(), textStyle).run()
 }
 
 /** Moves the current paragraph one style larger (1) or smaller (-1); stops at the ends. */

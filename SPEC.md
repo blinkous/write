@@ -47,7 +47,7 @@ Text formatting is set only with the **toolbar** (applied to the selected text, 
 entry). A **text style** (Title, Heading, Body or Small, applied to all its text) takes its
 look from text: **Update to match selection** in the style's ⋯ (the style menu) makes the
 style look like the selected text, so every toolbar option is a style option too, with no
-second set of controls. Text's own formatting wins over its style's, and the toolbar always
+second set of controls; **Reset selection to style** does the reverse. Text's own formatting wins over its style's, and the toolbar always
 shows what's in effect, the style's included (see the editor's SPEC).
 
 **The one exception is size, which is style-only, on purpose** (set in the style's ⋯). Changing the text style
