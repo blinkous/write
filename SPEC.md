@@ -99,7 +99,8 @@ older data without them (see the storage tests).
   and `Divider` between sections. Same padding, row height, hover and selected states.
   Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
-  arrow keys preview without closing. Menus open with focus on the current choice.
+  arrow keys preview without closing. Menus open with focus on the current choice; without one (action menus,
+  panels) the panel itself takes focus, so nothing looks chosen until Tab.
   Panels open below their trigger, or beside it for a row's own action that opens a panel
   (`MenuActionRow`, e.g. editing a text style from the style menu), lined up with its top so
   the rows below stay visible.

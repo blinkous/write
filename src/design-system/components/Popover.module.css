@@ -18,6 +18,11 @@
   text-align: start;
 }
 
+/* Focused on open so keystrokes land nowhere until Tab; it isn't a control, so no ring. */
+.panel:focus {
+  outline: none;
+}
+
 .panel {
   margin: var(--space-2) 0;
   width: max-content;
