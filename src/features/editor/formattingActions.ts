@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-type FormattingAction = {
+export type FormattingAction = {
   name: string
   label: string
   /** Tiptap's keyboard shortcut for it (e.g. "Mod-b"), shown with the label. */
@@ -25,12 +25,14 @@ type FormattingAction = {
   run: (editor: Editor) => void
 }
 
-/**
+/*
  * Every styling shortcut the editors support has a button here (or, for
  * headings, a row in TextStyleMenu), so nothing is reachable only by keyboard.
  * Markdown shortcuts (`- `, `> `, `**bold**`, `~~strike~~`) also work while typing.
  */
-export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
+
+/** Emphasis on the text itself, between color and glow in the toolbar. */
+export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
     label: 'Bold',
@@ -67,15 +69,10 @@ export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
     isActive: (editor) => editor.isActive('strike'),
     run: (editor) => editor.chain().focus().toggleStrike().run(),
   },
-  {
-    name: 'code',
-    label: 'Code',
-    shortcut: 'Mod-e',
-    icon: Code,
-    requires: 'code',
-    isActive: (editor) => editor.isActive('code'),
-    run: (editor) => editor.chain().focus().toggleCode().run(),
-  },
+]
+
+/** Markup: lists, quotes and code (inline beside blocks, since both mean "this is code"). */
+export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bullet-list',
     label: 'Bulleted list',
@@ -102,6 +99,15 @@ export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
     requires: 'blockquote',
     isActive: (editor) => editor.isActive('blockquote'),
     run: (editor) => editor.chain().focus().toggleBlockquote().run(),
+  },
+  {
+    name: 'code',
+    label: 'Code',
+    shortcut: 'Mod-e',
+    icon: Code,
+    requires: 'code',
+    isActive: (editor) => editor.isActive('code'),
+    run: (editor) => editor.chain().focus().toggleCode().run(),
   },
   {
     name: 'code-block',

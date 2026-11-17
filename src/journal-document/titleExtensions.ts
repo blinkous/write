@@ -2,14 +2,14 @@ import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
 import { JournalStrike } from './journalStrike'
 import { TextCaseMark } from './textCase'
-import { textStyleExtensions } from './textColor'
+import { textStyleExtensions } from './textStyleMark'
 
 /** A title is one line: a single paragraph. */
 const TitleDocument = Document.extend({ content: 'paragraph' })
 
 /**
  * What an entry's title can contain: one line of text with the same inline
- * styles as the writing (bold, italic, underline, strike, color, font, case),
+ * styles as the writing (bold, italic, underline, strike, color, font, glow, case),
  * but no blocks, links or code.
  */
 export const titleExtensions = [

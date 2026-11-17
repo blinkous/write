@@ -5,8 +5,9 @@ import {
   resolveTextColor,
   THEME_TEXT_COLORS,
 } from '../journal-document'
+import { getThemeColorSuggestions } from './themeColorSuggestions'
 
-type TextColorMenuProps = {
+export type TextColorMenuProps = {
   /** Names the menu, e.g. "Text color" or "Title color". */
   label: string
   /** The chosen color (theme name or #rrggbb), or null for the page text color. */
@@ -22,6 +23,8 @@ type TextColorMenuProps = {
   onPickEnd?: () => void
   onClose?: () => void
 }
+
+const [PAGE_TEXT_THEME_COLOR, ...OTHER_THEME_COLORS] = THEME_TEXT_COLORS
 
 /**
  * The color icon, showing the current color, opening the text color menu:
@@ -46,19 +49,15 @@ export function TextColorMenu({
         />
       }
       suggestionsLabel="Theme colors"
-      suggestions={THEME_TEXT_COLORS.map((themeColor, index) => {
-        const isPageTextColor = index === 0
-        return {
-          color: getThemeColorToken(themeColor),
-          label: isPageTextColor
-            ? 'Page text color'
-            : `Theme color ${index + 1}`,
-          isSelected: isPageTextColor
-            ? value === null || value === themeColor
-            : value === themeColor,
-          onSelect: () => onSelect(isPageTextColor ? null : themeColor),
-        }
-      })}
+      suggestions={[
+        {
+          color: getThemeColorToken(PAGE_TEXT_THEME_COLOR),
+          label: 'Page text color',
+          isSelected: value === null || value === PAGE_TEXT_THEME_COLOR,
+          onSelect: () => onSelect(null),
+        },
+        ...getThemeColorSuggestions(OTHER_THEME_COLORS, value, onSelect),
+      ]}
       value={value}
       emptyPickerColor={pageTextColor}
       onSelectCustom={onSelect}

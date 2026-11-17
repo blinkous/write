@@ -95,3 +95,49 @@ describe('TextCaseMark capitals while editing', () => {
     expect(capitalsOf(editor)).toEqual([])
   })
 })
+
+describe('TextCaseMark with cases from text styles', () => {
+  const capitalsOf = (editor: ReturnType<typeof createTestEditor>) =>
+    [...editor.view.dom.querySelectorAll(`.${CAPITAL_LETTER_CLASS}`)].map(
+      ({ textContent }) => textContent,
+    )
+  const headingsInTitleCase = (editor: ReturnType<typeof createTestEditor>) =>
+    editor.commands.setBlockTextCases((block) =>
+      block.type.name === 'heading' ? 'title' : null,
+    )
+
+  it('capitalizes blocks whose style has a case, and redraws when the cases change', () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<h2>rainy day</h2><p>plain words</p>',
+    })
+    expect(capitalsOf(editor)).toEqual([])
+    headingsInTitleCase(editor)
+    expect(capitalsOf(editor)).toEqual(['r', 'd'])
+    editor.commands.setBlockTextCases(() => null)
+    expect(capitalsOf(editor)).toEqual([])
+  })
+
+  it("lets the text's own case win, and leaves code as typed", () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content:
+        '<h2>rainy <span data-text-case="upper">day</span> <code>npm run</code></h2>',
+    })
+    headingsInTitleCase(editor)
+    expect(capitalsOf(editor)).toEqual(['r'])
+  })
+
+  it('follows a block into a style with a case, and isn’t undone', () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<p>rainy day</p>',
+    })
+    headingsInTitleCase(editor)
+    editor.commands.setHeading({ level: 2 })
+    expect(capitalsOf(editor)).toEqual(['r', 'd'])
+    editor.commands.undo()
+    expect(editor.isActive('heading')).toBe(false)
+    expect(capitalsOf(editor)).toEqual([])
+  })
+})

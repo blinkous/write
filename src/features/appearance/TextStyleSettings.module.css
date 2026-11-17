@@ -1,6 +1,6 @@
 /*
- * Color, then the toggles, then reset at the end: the end icons, not their
- * padded edges, line up with the labels and controls above.
+ * The toggles, then reset at the end: the end icons, not their padded edges,
+ * line up with the labels and controls above.
  */
 .formatting {
   display: flex;

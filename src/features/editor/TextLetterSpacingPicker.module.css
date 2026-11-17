@@ -1,0 +1,6 @@
+/* The stepper, then its reset at the row's end. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}

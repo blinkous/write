@@ -1,4 +1,5 @@
 import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { Editor } from '@tiptap/react'
 import {
   Heading2,
@@ -6,7 +7,7 @@ import {
   Heading4,
   Heading5,
   Heading6,
-  Pilcrow,
+  Captions,
   Type,
   type LucideIcon,
 } from 'lucide-react'
@@ -36,13 +37,13 @@ export const TEXT_STYLES: readonly TextStyle[] = [
   {
     name: 'small',
     label: TEXT_STYLE_LABELS['small'],
-    icon: Type,
+    icon: Captions,
     block: { kind: 'paragraph', size: 'small' },
   },
   {
     name: 'body',
     label: TEXT_STYLE_LABELS['body'],
-    icon: Pilcrow,
+    icon: Type,
     block: { kind: 'paragraph', size: null },
     shortcut: 'Mod-Alt-0',
   },
@@ -99,6 +100,34 @@ function isActive(editor: Editor, block: TextStyleBlock): boolean {
 /** The style of the paragraph at the cursor (body for anything not listed, e.g. a list item's text). */
 export function getActiveTextStyle(editor: Editor): TextStyle {
   return TEXT_STYLES.find(({ block }) => isActive(editor, block)) ?? BODY_STYLE
+}
+
+function isBlockOfStyle(node: ProseMirrorNode, block: TextStyleBlock): boolean {
+  if (block.kind === 'heading')
+    return node.type.name === 'heading' && node.attrs.level === block.level
+  return (
+    node.type.name === 'paragraph' && (node.attrs.size ?? null) === block.size
+  )
+}
+
+/** A writing block's text style, by its settings name; null for blocks without one (code blocks). */
+export function getBlockTextStyleName(
+  node: ProseMirrorNode,
+): TextStyleName | null {
+  return (
+    TEXT_STYLES.find(({ block }) => isBlockOfStyle(node, block))?.name ?? null
+  )
+}
+
+/**
+ * The text style at the cursor, by its settings name: the title editor's text
+ * is all Title; the writing's follows its paragraph (see getActiveTextStyle).
+ */
+export function getTextStyleNameAt(
+  editor: Editor,
+  isTitle: boolean,
+): TextStyleName {
+  return isTitle ? 'title' : getActiveTextStyle(editor).name
 }
 
 export function applyTextStyle(editor: Editor, { block }: TextStyle): boolean {

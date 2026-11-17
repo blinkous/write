@@ -4,8 +4,8 @@ export {
   parseDocument,
   parseTitleContent,
 } from './validateDocument'
-export { type TextCase } from './capitalization'
-export { CAPITAL_LETTER_CLASS } from './textCase'
+export { isTextCase, type TextCase } from './capitalization'
+export { CAPITAL_LETTER_CLASS, type GetBlockTextCase } from './textCase'
 export {
   getThemeColorToken,
   resolveTextColor,
@@ -20,4 +20,9 @@ export {
   type ContentHeadingLevel,
 } from './headingLevels'
 export { resolveTextFont } from './textFont'
+export { resolveTextGlow } from './textGlow'
+export {
+  LETTER_SPACING_RANGE,
+  resolveTextLetterSpacing,
+} from './textLetterSpacing'
 export { titleExtensions } from './titleExtensions'

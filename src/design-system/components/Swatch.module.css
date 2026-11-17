@@ -54,6 +54,17 @@
   outline-offset: var(--focus-ring-width);
 }
 
+/* "No color": the classic crossed-out tile, a diagonal line on nothing. */
+.swatch[data-no-color='true'] {
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - var(--border-width)),
+    var(--color-muted) calc(50% - var(--border-width)),
+    var(--color-muted) calc(50% + var(--border-width)),
+    transparent calc(50% + var(--border-width))
+  );
+}
+
 .swatch[data-empty='true'] {
   border-style: dashed;
   background: transparent;

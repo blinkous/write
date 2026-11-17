@@ -1,6 +1,13 @@
 import { z } from 'zod'
 import { getFontOption, isFontValue, type FontValue } from '../fonts'
-import { resolveTextColor } from '../journal-document'
+import {
+  isTextCase,
+  LETTER_SPACING_RANGE,
+  resolveTextColor,
+  resolveTextGlow,
+  resolveTextLetterSpacing,
+  type TextCase,
+} from '../journal-document'
 import { pxToRem } from '../utils/units'
 
 /*
@@ -36,8 +43,8 @@ export const TEXT_STYLE_LABELS: Record<TextStyleName, string> = {
 /** Sizes in px at normal browser zoom (written as rem, so zoom still works), stepped by 1. */
 export const TEXT_STYLE_SIZE_RANGE = { min: 10, max: 48 } as const
 
-/** Letter spacing as a percent of the style's size (so it scales with it), stepped by 1. */
-export const TEXT_STYLE_LETTER_SPACING_RANGE = { min: -5, max: 30 } as const
+/** Letter spacing as a percent of the style's size, the same range as per-text letter spacing. */
+export const TEXT_STYLE_LETTER_SPACING_RANGE = LETTER_SPACING_RANGE
 
 export type TextStyleSettings = {
   /** px, within TEXT_STYLE_SIZE_RANGE. */
@@ -48,10 +55,14 @@ export type TextStyleSettings = {
   strike: boolean
   /** Percent of the size, within TEXT_STYLE_LETTER_SPACING_RANGE; 0 is the font's own. */
   letterSpacing: number
+  /** How its letters display (UPPER, lower, Title, Sentence), or null for as typed. */
+  textCase: TextCase | null
   /** Its own font, or null for the editor font. */
   font: FontValue | null
   /** Its own color (a theme color name or #rrggbb), or null for the page text color. */
   color: string | null
+  /** A glow behind the letters in this color (a theme color name or #rrggbb), or null for none. */
+  glow: string | null
 }
 
 export type TextStyles = Record<TextStyleName, TextStyleSettings>
@@ -64,8 +75,10 @@ function style(size: number, bold: boolean): TextStyleSettings {
     underline: false,
     strike: false,
     letterSpacing: 0,
+    textCase: null,
     font: null,
     color: null,
+    glow: null,
   }
 }
 
@@ -80,6 +93,13 @@ export const DEFAULT_TEXT_STYLES: TextStyles = {
   body: style(16, false),
   small: style(14, false),
 }
+
+/** A text color or glow: a theme color name or #rrggbb, or null; anything else reads as null. */
+const optionalTextColorSchema = z
+  .string()
+  .refine((color) => resolveTextColor(color) !== null)
+  .nullable()
+  .catch(null)
 
 /* Each setting falls back on its own, so one bad value resets only itself. */
 function createStyleSchema(name: TextStyleName) {
@@ -102,12 +122,10 @@ function createStyleSchema(name: TextStyleName) {
         .min(TEXT_STYLE_LETTER_SPACING_RANGE.min)
         .max(TEXT_STYLE_LETTER_SPACING_RANGE.max)
         .catch(defaults.letterSpacing),
+      textCase: z.custom<TextCase>(isTextCase).nullable().catch(null),
       font: z.custom<FontValue>(isFontValue).nullable().catch(null),
-      color: z
-        .string()
-        .refine((color) => resolveTextColor(color) !== null)
-        .nullable()
-        .catch(null),
+      color: optionalTextColorSchema,
+      glow: optionalTextColorSchema,
     })
     .catch(defaults)
 }
@@ -126,6 +144,23 @@ export const textStylesSchema = z
   })
   .catch(DEFAULT_TEXT_STYLES)
 
+/*
+ * CSS can only do UPPER and lower; title and sentence case display lowercase
+ * and the editor capitalizes letters itself (journal-document's textCase).
+ * Previews show a style's name, which is already in title case, so CSS's
+ * `capitalize` is enough there.
+ */
+const CASE_TRANSFORMS: Record<
+  TextCase | 'as-typed',
+  { text: string; preview: string }
+> = {
+  upper: { text: 'uppercase', preview: 'uppercase' },
+  lower: { text: 'lowercase', preview: 'lowercase' },
+  title: { text: 'lowercase', preview: 'capitalize' },
+  sentence: { text: 'lowercase', preview: 'none' },
+  'as-typed': { text: 'none', preview: 'none' },
+}
+
 function getTextDecoration(underline: boolean, strike: boolean): string {
   const lines = [underline && 'underline', strike && 'line-through'].filter(
     Boolean,
@@ -136,7 +171,8 @@ function getTextDecoration(underline: boolean, strike: boolean): string {
 /**
  * The CSS variables for every style: size (rem), scale (relative to body, for
  * previews at another size), weight, style (italic), decoration (underline,
- * strikethrough), letter spacing, font and color. Defaults resolve to the editor font and the
+ * strikethrough), letter spacing, case (text-transform, and one for previews),
+ * font, color and glow (a text-shadow). Defaults resolve to the editor font and the
  * page text color.
  */
 export function getTextStyleVariables(
@@ -152,9 +188,12 @@ export function getTextStyleVariables(
         underline,
         strike,
         letterSpacing,
+        textCase,
         font,
         color,
+        glow,
       } = textStyles[name]
+      const caseTransforms = CASE_TRANSFORMS[textCase ?? 'as-typed']
       const prefix = `--text-style-${name}`
       return [
         [`${prefix}-size`, pxToRem(size)],
@@ -165,12 +204,18 @@ export function getTextStyleVariables(
         ],
         [`${prefix}-style`, italic ? 'italic' : 'normal'],
         [`${prefix}-decoration`, getTextDecoration(underline, strike)],
-        [`${prefix}-letter-spacing`, `${letterSpacing / 100}em`],
+        [
+          `${prefix}-letter-spacing`,
+          resolveTextLetterSpacing(letterSpacing) ?? '0em',
+        ],
+        [`${prefix}-transform`, caseTransforms.text],
+        [`${prefix}-preview-transform`, caseTransforms.preview],
         [
           `${prefix}-font`,
           font ? getFontOption(font).family : 'var(--font-editor)',
         ],
         [`${prefix}-color`, resolveTextColor(color) ?? 'var(--color-text)'],
+        [`${prefix}-glow`, resolveTextGlow(glow) ?? 'none'],
       ]
     }),
   )

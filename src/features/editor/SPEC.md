@@ -6,19 +6,26 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 
 - `useJournalEditor` creates a fresh editor whenever the entry id changes, so each entry
   has its own undo history. It reports every change as Tiptap JSON via `onChange`.
-- The feature exports parts rather than one component (`FormattingToolbar`,
+- The feature exports parts rather than one component (`FormattingButtons`,
   `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
+- **The toolbar has three groups**, split by dividers. **Text** goes from the broadest choice
+  in: text style, font, color, bold, italic, underline, strikethrough, then the finer
+  touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
+  and code block (inline code beside blocks, since both mean "this is code"). **Page**:
+  margins, spacing. Text styles in settings list their options in the text group's order.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
-- Formatting toolbar buttons are data-driven from `formattingActions.ts`. Markdown
+- Formatting toolbar buttons are data-driven from `formattingActions.ts`
+  (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
   2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
   isn't a content style: typing `# ` stays text, `## ` … `###### ` make that level, and pasted
   `#` headings become H2 (`journal-document/journalHeading.ts`). Small copies to markdown as a
-  plain paragraph. The toolbar shows only the current style's icon; the menu repeats it beside
+  plain paragraph. Body's icon is a T and Small's is captions (it's mostly used like a
+  caption). The toolbar shows only the current style's icon; the menu repeats it beside
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
-  (size, weight, font, color) is set in settings → Editor (`src/text-styles`).
+  (size, weight, font, color, glow) is set in settings → Editor (`src/text-styles`).
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
   first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font
@@ -34,8 +41,21 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
     its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
     colored keeps its color (the color is stored on the text). This is the shared `ColorMenu`
     (design system), the same menu as each text style's color (see the root `SPEC.md`).
-- **Text case** (`TextCasePicker`): UPPERCASE, lowercase, Title Case, Sentence case, or
-  "As typed". Display-only: the letters typed are stored unchanged (see `journal-document`).
+- **Letter spacing** (`TextLetterSpacingPicker`) gives the selection, or the text about to
+  be typed, its own letter spacing (`journal-document/textLetterSpacing.ts`, % of its size),
+  with the same stepper and range as text styles. It shows the text's own spacing, or its
+  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); a reset beside
+  the stepper (↺, off when there's nothing to reset) removes the text's own. Letter spacing doesn't carry into markdown.
+- **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
+  to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
+  text color: white text with a pink glow reads as neon. Its menu is text color's with **No
+  glow** (crossed out; removes the text's own glow) in place of the page text color, and the
+  same custom slots. It overrides the text style's glow. Glows don't carry into markdown.
+- **Text case** (`TextCasePicker`, the shared `TextCaseMenu`): UPPERCASE, lowercase, Title
+  Case, Sentence case, or "As typed" (back to its text style's case). Display-only: the
+  letters typed are stored unchanged (see `journal-document`). Text styles' cases reach the
+  editors through `useTextStyleCases` (the title is all Title; the writing's blocks map to
+  styles by `getBlockTextStyleName`; code blocks have none).
 - **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯
   menus) serializes with
   `@tiptap/markdown` and writes to the clipboard; the app confirms with a toast.

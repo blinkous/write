@@ -9,10 +9,12 @@ import {
 import { FontMenu } from '../../fonts'
 import {
   DEFAULT_TEXT_STYLES,
+  GlowColorMenu,
   TEXT_STYLE_LABELS,
   TEXT_STYLE_NAMES,
   TEXT_STYLE_LETTER_SPACING_RANGE,
   TEXT_STYLE_SIZE_RANGE,
+  TextCaseMenu,
   TextColorMenu,
   TextStylePreview,
   type TextStyleName,
@@ -40,8 +42,8 @@ const STYLE_TOGGLES = [
 
 /**
  * One style: its name drawn in the style, the whole row opening its controls
- * beside it (font, size, letter spacing, the toolbar's toggles and color), so
- * every change shows in the row right away.
+ * beside it in the toolbar's order (font, size, color, the emphasis toggles,
+ * glow, case, letter spacing), so every change shows in the row right away.
  */
 function TextStyleRow({
   name,
@@ -90,20 +92,7 @@ function TextStyleRow({
               onChange={(size) => changeTextStyle(name, { size })}
             />
           </LabeledRow>
-          <LabeledRow label="Letter spacing" control="icon">
-            <NumberStepper
-              label={`${label} letter spacing`}
-              value={settings.letterSpacing}
-              min={TEXT_STYLE_LETTER_SPACING_RANGE.min}
-              max={TEXT_STYLE_LETTER_SPACING_RANGE.max}
-              unit="%"
-              onChange={(letterSpacing) =>
-                changeTextStyle(name, { letterSpacing })
-              }
-            />
-          </LabeledRow>
-          {/* The toolbar's own controls, in a line of their own: color, then the toggles; reset at the end. */}
-          <div className={styles.formatting}>
+          <LabeledRow label="Color" control="icon">
             <TextColorMenu
               label={`${label} color`}
               value={settings.color}
@@ -115,6 +104,9 @@ function TextStyleRow({
               onPick={(color) => changeTextStyle(name, { color }, false)}
               onPickEnd={commit}
             />
+          </LabeledRow>
+          {/* The toolbar's emphasis toggles in a line of their own; reset at its end. */}
+          <div className={styles.formatting}>
             <div
               role="group"
               aria-label={`${label} formatting`}
@@ -150,6 +142,37 @@ function TextStyleRow({
               <RotateCcw aria-hidden="true" />
             </Button>
           </div>
+          <LabeledRow label="Glow" control="icon">
+            <GlowColorMenu
+              label={`${label} glow`}
+              value={settings.glow}
+              pageTextColor={textColor}
+              customColors={customTextColors}
+              onCustomColorsChange={onCustomTextColorsChange}
+              onSelect={(glow) => changeTextStyle(name, { glow })}
+              onPick={(glow) => changeTextStyle(name, { glow }, false)}
+              onPickEnd={commit}
+            />
+          </LabeledRow>
+          <LabeledRow label="Case" control="icon">
+            <TextCaseMenu
+              label={`${label} case`}
+              value={settings.textCase}
+              onSelect={(textCase) => changeTextStyle(name, { textCase })}
+            />
+          </LabeledRow>
+          <LabeledRow label="Letter spacing" control="icon">
+            <NumberStepper
+              label={`${label} letter spacing`}
+              value={settings.letterSpacing}
+              min={TEXT_STYLE_LETTER_SPACING_RANGE.min}
+              max={TEXT_STYLE_LETTER_SPACING_RANGE.max}
+              unit="%"
+              onChange={(letterSpacing) =>
+                changeTextStyle(name, { letterSpacing })
+              }
+            />
+          </LabeledRow>
         </PopoverPanel>
       )}
     </Popover>

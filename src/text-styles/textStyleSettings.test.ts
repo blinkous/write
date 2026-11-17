@@ -1,4 +1,5 @@
 import tokensCss from '../design-system/tokens.css?raw'
+import { resolveTextGlow } from '../journal-document'
 import {
   DEFAULT_TEXT_STYLES,
   getTextStyleVariables,
@@ -19,8 +20,15 @@ describe('text style settings', () => {
         italic: true,
         font: 'inter',
         color: 'theme-3',
+        glow: '#ff2fa0',
       },
-      body: { size: 999, font: 'comic-sans', color: 'red; x' },
+      body: {
+        size: 999,
+        textCase: 'shouting',
+        font: 'comic-sans',
+        color: 'red; x',
+        glow: 'red; x',
+      },
     })
     expect(parsed['heading-2']).toEqual({
       size: 32,
@@ -29,8 +37,10 @@ describe('text style settings', () => {
       underline: false,
       strike: false,
       letterSpacing: 0,
+      textCase: null,
       font: 'inter',
       color: 'theme-3',
+      glow: '#ff2fa0',
     })
     expect(parsed.body).toEqual(DEFAULT_TEXT_STYLES.body)
   })
@@ -45,8 +55,10 @@ describe('text style settings', () => {
         underline: true,
         strike: true,
         letterSpacing: 5,
+        textCase: 'title',
         font: 'inter',
         color: 'theme-3',
+        glow: 'theme-5',
       },
     })
     expect(variables['--text-style-heading-2-size']).toBe('2rem')
@@ -63,6 +75,15 @@ describe('text style settings', () => {
     expect(variables['--text-style-heading-2-color']).toBe(
       'var(--color-theme-3)',
     )
+    expect(variables['--text-style-heading-2-glow']).toBe(
+      resolveTextGlow('theme-5'),
+    )
+    expect(variables['--text-style-body-glow']).toBe('none')
+    expect(variables['--text-style-heading-2-transform']).toBe('lowercase')
+    expect(variables['--text-style-heading-2-preview-transform']).toBe(
+      'capitalize',
+    )
+    expect(variables['--text-style-body-transform']).toBe('none')
     expect(variables['--text-style-body-font']).toBe('var(--font-editor)')
     expect(variables['--text-style-body-color']).toBe('var(--color-text)')
   })
@@ -77,8 +98,11 @@ describe('text style settings', () => {
         'style',
         'decoration',
         'letter-spacing',
+        'transform',
+        'preview-transform',
         'font',
         'color',
+        'glow',
       ]) {
         const variable = `--text-style-${name}-${property}`
         expect(tokensCss).toContain(`${variable}: ${variables[variable]};`)

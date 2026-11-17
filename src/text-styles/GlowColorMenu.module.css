@@ -1,0 +1,14 @@
+/*
+ * The glow menu's trigger: a letter drawn with the glow, icon-sized so it
+ * sits in a toolbar or row like the other icons.
+ */
+.glowLetter {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  font-family: var(--font-ui);
+  font-size: var(--size-icon);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}

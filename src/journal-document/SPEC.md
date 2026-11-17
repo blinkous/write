@@ -6,7 +6,7 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## How it works
 
 - `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
-  code, links, bold/italic/etc.) plus per-text color, text case, and a paragraph `size`
+  code, links, bold/italic/etc.) plus per-text color, font, glow and letter spacing (`textStyleMark.ts`), text case, and a paragraph `size`
   attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
 - Headings are `JournalHeading`, levels 2–6: level 1 is the entry's title, which lives outside
   the document (`headingLevels.ts`). Pasted `#` / `<h1>` headings become level 2.
@@ -29,6 +29,21 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 - Colors are applied through a mark view using the CSSOM (`element.style.color`), because
   the app's CSP blocks inline `style` attributes, which is how Tiptap renders them by default.
 
+## Text glow
+
+- A glow is stored on the text style mark (`glow`, like color and font) as a hex color or a
+  theme name, the same forms as text color; anything else is ignored. It renders as stacked
+  `text-shadow`s (`resolveTextGlow`), blur radii in em so it scales with the text (tight layers stacked for a
+  bright neon halo, then a wide bloom), set through
+  the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
+  independent: changing one never changes the other.
+
+## Text letter spacing
+
+- Stored on the text style mark (`letterSpacing`) as a whole percent of the text's size,
+  within `LETTER_SPACING_RANGE` (−5 to 30, shared with text styles); anything else is
+  ignored. Rendered as em through the same mark view, so it scales with the text.
+
 ## Text case
 
 - A `textCase` mark (`upper`, `lower`, `title`, `sentence`) changes only how text displays;
@@ -38,3 +53,7 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   that start a word (title) or a sentence (sentence), computed per block by
   `findCapitalOffsets`. Sentences end at `.`, `!`, `?` or `…` followed by whitespace; a
   number right after a period (e.g. `3.50`) doesn't end one.
+- A whole block can also take a case from its text style: the editor app passes
+  `setBlockTextCases` a function from block to case, kept in the mark's storage, and the
+  command redraws every block's capitals (not an undo step). Text's own case wins over its
+  block's; code keeps its letters as typed.

@@ -20,14 +20,19 @@ import {
 } from '../features/appearance'
 import {
   documentToMarkdown,
-  FormattingToolbar,
+  FormattingButtons,
   JournalPage,
+  MARKUP_FORMATTING_ACTIONS,
+  TEXT_FORMATTING_ACTIONS,
   TextCasePicker,
   TextFontMenu,
   useActiveEditor,
   TextColorPicker,
+  TextGlowPicker,
+  TextLetterSpacingPicker,
   TextStyleMenu,
   useJournalEditor,
+  useTextStyleCases,
 } from '../features/editor'
 import {
   EntryList,
@@ -97,6 +102,8 @@ export function App({ journal }: AppProps) {
   })
   // The toolbar styles whichever was typed in last: the writing or the title.
   const activeEditor = useActiveEditor(editor, titleEditor)
+  useTextStyleCases(editor, pageTheme.textStyles, false)
+  useTextStyleCases(titleEditor, pageTheme.textStyles, true)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
   const backgroundMedia = useBackgroundMedia(setToastMessage)
@@ -254,21 +261,51 @@ export function App({ journal }: AppProps) {
             <PanelLeft aria-hidden="true" />
           </Button>
 
+          {/*
+           * Text, then markup, then page. Text goes from the broadest choice in: paragraph style,
+           * font, color, emphasis, then the finer touches (glow, case, letter spacing). Text
+           * styles in settings follow the same order.
+           */}
           <div className={styles.toolbar}>
-            <div
-              role="group"
-              aria-label="Text and page style"
-              className={styles.toolbarGroup}
-            >
-              <TextFontMenu editor={activeEditor} editorFont={editorFont} />
+            <div role="group" aria-label="Text" className={styles.toolbarGroup}>
               <TextStyleMenu editor={activeEditor} />
+              <TextFontMenu editor={activeEditor} editorFont={editorFont} />
               <TextColorPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
               />
+              <FormattingButtons
+                editor={activeEditor}
+                actions={TEXT_FORMATTING_ACTIONS}
+              />
+              <TextGlowPicker
+                editor={activeEditor}
+                pageTextColor={textColor}
+                customTextColors={customTextColors}
+                onCustomTextColorsChange={changeCustomTextColors}
+              />
               <TextCasePicker editor={activeEditor} />
+              <TextLetterSpacingPicker
+                editor={activeEditor}
+                isTitle={activeEditor === titleEditor}
+                textStyles={pageTheme.textStyles}
+              />
+            </div>
+            <Divider />
+            <div
+              role="group"
+              aria-label="Markup"
+              className={styles.toolbarGroup}
+            >
+              <FormattingButtons
+                editor={activeEditor}
+                actions={MARKUP_FORMATTING_ACTIONS}
+              />
+            </div>
+            <Divider />
+            <div role="group" aria-label="Page" className={styles.toolbarGroup}>
               <MarginsMenu
                 value={margins}
                 onChange={(value) => updateAppearance({ margins: value })}
@@ -280,8 +317,6 @@ export function App({ journal }: AppProps) {
                 onChange={updateAppearance}
               />
             </div>
-            <Divider />
-            <FormattingToolbar editor={activeEditor} />
           </div>
 
           <div className={styles.headerActions}>

@@ -45,15 +45,15 @@ title, background blur and opacity).
   every text style, then each text style (Title, Heading 2–6, Body, Small; see
   `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
   real size). The whole row is the button: it opens a popover beside it (so the rows below
-  stay visible) with labeled rows: **Font** (Default = editor font, named in a caption under "Default"), **Size**
-  (`NumberStepper`, px) and **Letter spacing** (% of the size), then one unlabeled line of the
-  toolbar's own controls: color (`TextColorMenu`) first, then bold, italic, underline and
-  strikethrough, with a reset for just that style at the line's end (off while it's at its
-  defaults). While open, the row takes
+  stay visible) with labeled rows in the toolbar's order: **Font** (Default = editor font,
+  named in a caption under "Default"), **Size** (`NumberStepper`, px), **Color**
+  (`TextColorMenu`), one unlabeled line of the toolbar's toggles (bold, italic, underline,
+  strikethrough) with a reset for just that style at its end (off while it's at its
+  defaults), then **Glow** (`GlowColorMenu`), **Case** (`TextCaseMenu`) and **Letter
+  spacing** (% of the size). While open, the row takes
   the page background, so its color is judged against the page, and it previews every change.
   Then **Reset all styles**, which resets every
-  style and sets the editor font to the app font. Letter spacing lives only here, per style
-  (not as a toolbar mark), so writing stays simple. **Page colors**
+  style and sets the editor font to the app font. Size is only here, on purpose (see "Formatting in both places" in the root `SPEC.md`). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
