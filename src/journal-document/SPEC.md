@@ -53,3 +53,7 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   that start a word (title) or a sentence (sentence), computed per block by
   `findCapitalOffsets`. Sentences end at `.`, `!`, `?` or `…` followed by whitespace; a
   number right after a period (e.g. `3.50`) doesn't end one.
+- A whole block can also take a case from its text style: the editor app passes
+  `setBlockTextCases` a function from block to case, kept in the mark's storage, and the
+  command redraws every block's capitals (not an undo step). Text's own case wins over its
+  block's; code keeps its letters as typed.

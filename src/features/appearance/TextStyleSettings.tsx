@@ -14,6 +14,7 @@ import {
   TEXT_STYLE_NAMES,
   TEXT_STYLE_LETTER_SPACING_RANGE,
   TEXT_STYLE_SIZE_RANGE,
+  TextCaseMenu,
   TextColorMenu,
   TextStylePreview,
   type TextStyleName,
@@ -41,8 +42,8 @@ const STYLE_TOGGLES = [
 
 /**
  * One style: its name drawn in the style, the whole row opening its controls
- * beside it (font, size, letter spacing, glow, the toolbar's toggles and color), so
- * every change shows in the row right away.
+ * beside it in the toolbar's order (font, size, letter spacing, case, color,
+ * glow, then the toggles), so every change shows in the row right away.
  */
 function TextStyleRow({
   name,
@@ -103,21 +104,14 @@ function TextStyleRow({
               }
             />
           </LabeledRow>
-          <LabeledRow label="Glow" control="icon">
-            <GlowColorMenu
-              label={`${label} glow`}
-              value={settings.glow}
-              pageTextColor={textColor}
-              customColors={customTextColors}
-              onCustomColorsChange={onCustomTextColorsChange}
-              onSelect={(glow) => changeTextStyle(name, { glow })}
-              // A drag in the system picker previews live and becomes one undo step when it ends.
-              onPick={(glow) => changeTextStyle(name, { glow }, false)}
-              onPickEnd={commit}
+          <LabeledRow label="Case" control="icon">
+            <TextCaseMenu
+              label={`${label} case`}
+              value={settings.textCase}
+              onSelect={(textCase) => changeTextStyle(name, { textCase })}
             />
           </LabeledRow>
-          {/* The toolbar's own controls, in a line of their own: color, then the toggles; reset at the end. */}
-          <div className={styles.formatting}>
+          <LabeledRow label="Color" control="icon">
             <TextColorMenu
               label={`${label} color`}
               value={settings.color}
@@ -129,6 +123,21 @@ function TextStyleRow({
               onPick={(color) => changeTextStyle(name, { color }, false)}
               onPickEnd={commit}
             />
+          </LabeledRow>
+          <LabeledRow label="Glow" control="icon">
+            <GlowColorMenu
+              label={`${label} glow`}
+              value={settings.glow}
+              pageTextColor={textColor}
+              customColors={customTextColors}
+              onCustomColorsChange={onCustomTextColorsChange}
+              onSelect={(glow) => changeTextStyle(name, { glow })}
+              onPick={(glow) => changeTextStyle(name, { glow }, false)}
+              onPickEnd={commit}
+            />
+          </LabeledRow>
+          {/* The toolbar's toggles in a line of their own; reset at the end. */}
+          <div className={styles.formatting}>
             <div
               role="group"
               aria-label={`${label} formatting`}

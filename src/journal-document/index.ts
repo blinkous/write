@@ -4,8 +4,8 @@ export {
   parseDocument,
   parseTitleContent,
 } from './validateDocument'
-export { type TextCase } from './capitalization'
-export { CAPITAL_LETTER_CLASS } from './textCase'
+export { isTextCase, type TextCase } from './capitalization'
+export { CAPITAL_LETTER_CLASS, type GetBlockTextCase } from './textCase'
 export {
   getThemeColorToken,
   resolveTextColor,

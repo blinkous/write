@@ -1,4 +1,5 @@
 import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { Editor } from '@tiptap/react'
 import {
   Heading2,
@@ -99,6 +100,23 @@ function isActive(editor: Editor, block: TextStyleBlock): boolean {
 /** The style of the paragraph at the cursor (body for anything not listed, e.g. a list item's text). */
 export function getActiveTextStyle(editor: Editor): TextStyle {
   return TEXT_STYLES.find(({ block }) => isActive(editor, block)) ?? BODY_STYLE
+}
+
+function isBlockOfStyle(node: ProseMirrorNode, block: TextStyleBlock): boolean {
+  if (block.kind === 'heading')
+    return node.type.name === 'heading' && node.attrs.level === block.level
+  return (
+    node.type.name === 'paragraph' && (node.attrs.size ?? null) === block.size
+  )
+}
+
+/** A writing block's text style, by its settings name; null for blocks without one (code blocks). */
+export function getBlockTextStyleName(
+  node: ProseMirrorNode,
+): TextStyleName | null {
+  return (
+    TEXT_STYLES.find(({ block }) => isBlockOfStyle(node, block))?.name ?? null
+  )
 }
 
 /**

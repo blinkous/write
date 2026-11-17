@@ -8,18 +8,34 @@ import { findCapitalOffsets, isTextCase, type TextCase } from './capitalization'
 /** Class on letters shown as capitals inside title/sentence case; styled by the editor. */
 export const CAPITAL_LETTER_CLASS = 'text-case-capital'
 
+/** A block's own case, from its text style (e.g. every Heading 2 in title case); null when none. */
+export type GetBlockTextCase = (block: ProseMirrorNode) => TextCase | null
+
+type TextCaseStorage = { getBlockTextCase: GetBlockTextCase }
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     textCase: {
       /** Displays the selection (or the text about to be typed) in a case. */
       setTextCase: (textCase: TextCase) => ReturnType
       unsetTextCase: () => ReturnType
+      /** Sets where blocks get a case from their text style, and redraws the capitals to match. */
+      setBlockTextCases: (getBlockTextCase: GetBlockTextCase) => ReturnType
     }
+  }
+  interface Storage {
+    textCase: TextCaseStorage
   }
 }
 
-/** Text in a block, with the case applied to each position (null when none). */
-function readBlock(block: ProseMirrorNode, markType: MarkType) {
+const capitalsKey = new PluginKey<DecorationSet>('textCaseCapitals')
+
+/** Text in a block, with the case applied to each position: the text's own, else the block's (null when neither). */
+function readBlock(
+  block: ProseMirrorNode,
+  markType: MarkType,
+  blockCase: TextCase | null,
+) {
   let text = ''
   const casesByOffset: (TextCase | null)[] = []
   block.forEach((child) => {
@@ -28,10 +44,12 @@ function readBlock(block: ProseMirrorNode, markType: MarkType) {
       ? (child.text ?? '')
       : ' '.repeat(child.nodeSize)
     const textCase = markType.isInSet(child.marks)?.attrs.textCase
+    // Code keeps its letters as typed (it takes no other marks, so only a block's case reaches it).
+    const isCode = child.marks.some(({ type }) => type.name === 'code')
     text += childText
     casesByOffset.push(
       ...Array<TextCase | null>(childText.length).fill(
-        isTextCase(textCase) ? textCase : null,
+        isTextCase(textCase) ? textCase : isCode ? null : blockCase,
       ),
     )
   })
@@ -41,11 +59,18 @@ function readBlock(block: ProseMirrorNode, markType: MarkType) {
 /** The cases that capitalize some letters, which CSS can't do. */
 const CAPITALIZING_CASES = ['title', 'sentence'] as const
 
-function hasCapitalizingCase(block: ProseMirrorNode, markType: MarkType) {
-  let hasCase = false
+const isCapitalizingCase = (textCase: unknown) =>
+  CAPITALIZING_CASES.some((capitalizingCase) => capitalizingCase === textCase)
+
+function hasCapitalizingCase(
+  block: ProseMirrorNode,
+  markType: MarkType,
+  blockCase: TextCase | null,
+) {
+  let hasCase = isCapitalizingCase(blockCase)
   block.forEach((child) => {
     const textCase = markType.isInSet(child.marks)?.attrs.textCase
-    if (CAPITALIZING_CASES.includes(textCase)) hasCase = true
+    if (isCapitalizingCase(textCase)) hasCase = true
   })
   return hasCase
 }
@@ -55,10 +80,12 @@ function buildBlockCapitals(
   block: ProseMirrorNode,
   position: number,
   markType: MarkType,
+  getBlockTextCase: GetBlockTextCase,
 ): Decoration[] {
-  if (!hasCapitalizingCase(block, markType)) return []
+  const blockCase = getBlockTextCase(block)
+  if (!hasCapitalizingCase(block, markType, blockCase)) return []
   const decorations: Decoration[] = []
-  const { text, casesByOffset } = readBlock(block, markType)
+  const { text, casesByOffset } = readBlock(block, markType, blockCase)
   for (const textCase of CAPITALIZING_CASES) {
     if (!casesByOffset.includes(textCase)) continue
     for (const offset of findCapitalOffsets(text, textCase)) {
@@ -81,11 +108,14 @@ function buildBlockCapitals(
 function buildCapitalDecorations(
   doc: ProseMirrorNode,
   markType: MarkType,
+  getBlockTextCase: GetBlockTextCase,
 ): DecorationSet {
   const decorations: Decoration[] = []
   doc.descendants((node, position) => {
     if (!node.isTextblock) return true
-    decorations.push(...buildBlockCapitals(node, position, markType))
+    decorations.push(
+      ...buildBlockCapitals(node, position, markType, getBlockTextCase),
+    )
     return false
   })
   return DecorationSet.create(doc, decorations)
@@ -115,6 +145,7 @@ function updateCapitalDecorations(
   transaction: Transaction,
   decorations: DecorationSet,
   markType: MarkType,
+  getBlockTextCase: GetBlockTextCase,
 ): DecorationSet {
   const { doc } = transaction
   let updated = decorations.map(transaction.mapping, doc)
@@ -123,7 +154,10 @@ function updateCapitalDecorations(
       if (!node.isTextblock) return true
       updated = updated
         .remove(updated.find(position, position + node.nodeSize))
-        .add(doc, buildBlockCapitals(node, position, markType))
+        .add(
+          doc,
+          buildBlockCapitals(node, position, markType, getBlockTextCase),
+        )
       return false
     })
   }
@@ -133,9 +167,15 @@ function updateCapitalDecorations(
 /**
  * Changes how text is displayed (UPPER, lower, Title, Sentence) without
  * changing the letters typed. Like bold, typing inside it continues the case.
+ * Blocks can also get a case from their text style (`setBlockTextCases`);
+ * the text's own case wins.
  */
-export const TextCaseMark = Mark.create({
+export const TextCaseMark = Mark.create<object, TextCaseStorage>({
   name: 'textCase',
+
+  addStorage() {
+    return { getBlockTextCase: () => null }
+  },
 
   addAttributes() {
     return {
@@ -166,21 +206,46 @@ export const TextCaseMark = Mark.create({
         () =>
         ({ commands }) =>
           commands.unsetMark(this.name),
+      setBlockTextCases:
+        (getBlockTextCase) =>
+        ({ tr }) => {
+          this.storage.getBlockTextCase = getBlockTextCase
+          // Not an edit: nothing to undo, only the capitals to redraw.
+          tr.setMeta(capitalsKey, true).setMeta('addToHistory', false)
+          return true
+        },
     }
   },
 
   /* CSS can't do title or sentence case, so capitals are marked with decorations. */
   addProseMirrorPlugins() {
     const markType = this.type
+    const { storage } = this
+    // Read at use, so a later setBlockTextCases applies.
+    const getBlockTextCase: GetBlockTextCase = (block) =>
+      storage.getBlockTextCase(block)
     return [
       new Plugin({
-        key: new PluginKey('textCaseCapitals'),
+        key: capitalsKey,
         state: {
-          init: (_, { doc }) => buildCapitalDecorations(doc, markType),
-          apply: (transaction, decorations) =>
-            transaction.docChanged
-              ? updateCapitalDecorations(transaction, decorations, markType)
-              : decorations,
+          init: (_, { doc }) =>
+            buildCapitalDecorations(doc, markType, getBlockTextCase),
+          apply: (transaction, decorations) => {
+            if (transaction.getMeta(capitalsKey))
+              return buildCapitalDecorations(
+                transaction.doc,
+                markType,
+                getBlockTextCase,
+              )
+            return transaction.docChanged
+              ? updateCapitalDecorations(
+                  transaction,
+                  decorations,
+                  markType,
+                  getBlockTextCase,
+                )
+              : decorations
+          },
         },
         props: {
           decorations(state) {

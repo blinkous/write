@@ -8,6 +8,7 @@
   font-style: var(--text-style-title-style);
   text-decoration-line: var(--text-style-title-decoration);
   letter-spacing: var(--text-style-title-letter-spacing);
+  text-transform: var(--text-style-title-preview-transform);
   text-shadow: var(--text-style-title-glow);
 }
 
@@ -19,6 +20,7 @@
   font-style: var(--text-style-heading-2-style);
   text-decoration-line: var(--text-style-heading-2-decoration);
   letter-spacing: var(--text-style-heading-2-letter-spacing);
+  text-transform: var(--text-style-heading-2-preview-transform);
   text-shadow: var(--text-style-heading-2-glow);
 }
 
@@ -30,6 +32,7 @@
   font-style: var(--text-style-heading-3-style);
   text-decoration-line: var(--text-style-heading-3-decoration);
   letter-spacing: var(--text-style-heading-3-letter-spacing);
+  text-transform: var(--text-style-heading-3-preview-transform);
   text-shadow: var(--text-style-heading-3-glow);
 }
 
@@ -41,6 +44,7 @@
   font-style: var(--text-style-heading-4-style);
   text-decoration-line: var(--text-style-heading-4-decoration);
   letter-spacing: var(--text-style-heading-4-letter-spacing);
+  text-transform: var(--text-style-heading-4-preview-transform);
   text-shadow: var(--text-style-heading-4-glow);
 }
 
@@ -52,6 +56,7 @@
   font-style: var(--text-style-heading-5-style);
   text-decoration-line: var(--text-style-heading-5-decoration);
   letter-spacing: var(--text-style-heading-5-letter-spacing);
+  text-transform: var(--text-style-heading-5-preview-transform);
   text-shadow: var(--text-style-heading-5-glow);
 }
 
@@ -63,6 +68,7 @@
   font-style: var(--text-style-heading-6-style);
   text-decoration-line: var(--text-style-heading-6-decoration);
   letter-spacing: var(--text-style-heading-6-letter-spacing);
+  text-transform: var(--text-style-heading-6-preview-transform);
   text-shadow: var(--text-style-heading-6-glow);
 }
 
@@ -74,6 +80,7 @@
   font-style: var(--text-style-body-style);
   text-decoration-line: var(--text-style-body-decoration);
   letter-spacing: var(--text-style-body-letter-spacing);
+  text-transform: var(--text-style-body-preview-transform);
   text-shadow: var(--text-style-body-glow);
 }
 
@@ -85,5 +92,6 @@
   font-style: var(--text-style-small-style);
   text-decoration-line: var(--text-style-small-decoration);
   letter-spacing: var(--text-style-small-letter-spacing);
+  text-transform: var(--text-style-small-preview-transform);
   text-shadow: var(--text-style-small-glow);
 }

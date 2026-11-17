@@ -20,6 +20,8 @@
   --text-style-title-style: normal;
   --text-style-title-decoration: none;
   --text-style-title-letter-spacing: 0em;
+  --text-style-title-transform: none;
+  --text-style-title-preview-transform: none;
   --text-style-title-font: var(--font-editor);
   --text-style-title-color: var(--color-text);
   --text-style-title-glow: none;
@@ -29,6 +31,8 @@
   --text-style-heading-2-style: normal;
   --text-style-heading-2-decoration: none;
   --text-style-heading-2-letter-spacing: 0em;
+  --text-style-heading-2-transform: none;
+  --text-style-heading-2-preview-transform: none;
   --text-style-heading-2-font: var(--font-editor);
   --text-style-heading-2-color: var(--color-text);
   --text-style-heading-2-glow: none;
@@ -38,6 +42,8 @@
   --text-style-heading-3-style: normal;
   --text-style-heading-3-decoration: none;
   --text-style-heading-3-letter-spacing: 0em;
+  --text-style-heading-3-transform: none;
+  --text-style-heading-3-preview-transform: none;
   --text-style-heading-3-font: var(--font-editor);
   --text-style-heading-3-color: var(--color-text);
   --text-style-heading-3-glow: none;
@@ -47,6 +53,8 @@
   --text-style-heading-4-style: normal;
   --text-style-heading-4-decoration: none;
   --text-style-heading-4-letter-spacing: 0em;
+  --text-style-heading-4-transform: none;
+  --text-style-heading-4-preview-transform: none;
   --text-style-heading-4-font: var(--font-editor);
   --text-style-heading-4-color: var(--color-text);
   --text-style-heading-4-glow: none;
@@ -56,6 +64,8 @@
   --text-style-heading-5-style: normal;
   --text-style-heading-5-decoration: none;
   --text-style-heading-5-letter-spacing: 0em;
+  --text-style-heading-5-transform: none;
+  --text-style-heading-5-preview-transform: none;
   --text-style-heading-5-font: var(--font-editor);
   --text-style-heading-5-color: var(--color-text);
   --text-style-heading-5-glow: none;
@@ -65,6 +75,8 @@
   --text-style-heading-6-style: normal;
   --text-style-heading-6-decoration: none;
   --text-style-heading-6-letter-spacing: 0em;
+  --text-style-heading-6-transform: none;
+  --text-style-heading-6-preview-transform: none;
   --text-style-heading-6-font: var(--font-editor);
   --text-style-heading-6-color: var(--color-text);
   --text-style-heading-6-glow: none;
@@ -74,6 +86,8 @@
   --text-style-body-style: normal;
   --text-style-body-decoration: none;
   --text-style-body-letter-spacing: 0em;
+  --text-style-body-transform: none;
+  --text-style-body-preview-transform: none;
   --text-style-body-font: var(--font-editor);
   --text-style-body-color: var(--color-text);
   --text-style-body-glow: none;
@@ -83,6 +97,8 @@
   --text-style-small-style: normal;
   --text-style-small-decoration: none;
   --text-style-small-letter-spacing: 0em;
+  --text-style-small-transform: none;
+  --text-style-small-preview-transform: none;
   --text-style-small-font: var(--font-editor);
   --text-style-small-color: var(--color-text);
   --text-style-small-glow: none;

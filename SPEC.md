@@ -43,13 +43,16 @@ spacing and colors, per-text color, glow and case, and export as markdown or JSO
 
 ## Formatting in both places
 
-Every text formatting option is offered in both places, as close to 1:1 as the two allow: the
+Every text formatting option is offered in both places, with the same control: the
 **toolbar** (applied to the selected text, stored in the entry) and **text styles** (settings →
-Editor, applied to every Title, Heading, Body or Small text). Each uses the same control
-in both (e.g. `TextColorMenu`, `GlowColorMenu`), and text's own formatting wins over its
-style's. A new option is added to both. Today: font, color, glow, bold, italic, underline
-and strikethrough are in both; size and letter spacing are only in text styles, and text case
-only in the toolbar.
+Editor, applied to every Title, Heading, Body or Small text). Text's own formatting wins over
+its style's. A new option is added to both, in the same order (the toolbar's text group).
+
+**The one exception is size, which is style-only, on purpose.** Changing the text style
+(Small, Body, Headings, Title) already gives seven sizes, and size usually stands for
+importance, which a heading also carries into markdown and screen readers. Per-text size
+would also be stored in entries (hard to take back) and wouldn't follow later style changes.
+Revisit it if it's missed in practice.
 
 ## Out of scope
 

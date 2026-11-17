@@ -11,5 +11,6 @@ export {
   type TextStyleSettings,
 } from './textStyleSettings'
 export { GlowColorMenu } from './GlowColorMenu'
+export { TextCaseMenu } from './TextCaseMenu'
 export { TextColorMenu } from './TextColorMenu'
 export { TextStylePreview } from './TextStylePreview'

@@ -50,8 +50,11 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   text color: white text with a pink glow reads as neon. Its menu is text color's with **No
   glow** (crossed out; removes the text's own glow) in place of the page text color, and the
   same custom slots. It overrides the text style's glow. Glows don't carry into markdown.
-- **Text case** (`TextCasePicker`): UPPERCASE, lowercase, Title Case, Sentence case, or
-  "As typed". Display-only: the letters typed are stored unchanged (see `journal-document`).
+- **Text case** (`TextCasePicker`, the shared `TextCaseMenu`): UPPERCASE, lowercase, Title
+  Case, Sentence case, or "As typed" (back to its text style's case). Display-only: the
+  letters typed are stored unchanged (see `journal-document`). Text styles' cases reach the
+  editors through `useTextStyleCases` (the title is all Title; the writing's blocks map to
+  styles by `getBlockTextStyleName`; code blocks have none).
 - **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯
   menus) serializes with
   `@tiptap/markdown` and writes to the clipboard; the app confirms with a toast.
