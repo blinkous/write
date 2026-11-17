@@ -53,8 +53,8 @@ opacity), in the settings drawer's header.
   (`GlowColorMenu`), **case** (`TextCaseMenu`), **letter spacing** (`LetterSpacingMenu`, %
   of the size), then a reset for the whole style (off while it's at its defaults). Font and
   the size stepper share the first line (a long font name ends in "…" to make room); the
-  nine icons follow on two lines of five columns: color and the emphasis toggles, then glow,
-  case, letter spacing and the reset. Letter spacing resets to the style's default beside
+  icons follow on two lines: color and the emphasis toggles, then glow, case and letter
+  spacing, with the reset at the bottom right. Letter spacing resets to the style's default beside
   its stepper. The menu's
   rows preview every change on the page background. Size is only here, on purpose (see
   "Formatting in both places" in the root `SPEC.md`). **Page colors**

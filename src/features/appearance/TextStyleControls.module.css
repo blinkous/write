@@ -17,13 +17,14 @@
   min-width: 0;
 }
 
-/*
- * Five columns, so the icons always make the same two lines (color and the
- * emphasis toggles; glow, case, letter spacing and the reset), lined up in
- * columns, at any width or touch size.
- */
-.icons {
-  display: grid;
-  grid-template-columns: repeat(5, var(--size-control));
+/* A line of icons, spaced as the toolbar spaces them; both lines start together, so their icons line up. */
+.line {
+  display: flex;
+  align-items: center;
   gap: var(--space-1);
+}
+
+/* Bottom right, as every panel's reset. */
+.reset {
+  margin-inline-start: auto;
 }

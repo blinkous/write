@@ -98,6 +98,8 @@ older data without them (see the storage tests).
   from `MenuItem` (actions) or `ChoiceGroup` (pick one), swatch sections in `PopoverPanel`,
   and `Divider` between sections. Same padding, row height, hover and selected states.
   Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
+  **A panel's reset (↺) is always at its bottom right**: the end of its last line, or a
+  `MenuFooter` (e.g. a text style's panel, letter spacing's).
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
   arrow keys preview without closing. Menus open with focus on the current choice; without one (action menus,
   panels) the panel itself takes focus, so nothing looks chosen until Tab.

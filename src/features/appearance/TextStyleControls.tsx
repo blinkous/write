@@ -34,8 +34,9 @@ const STYLE_TOGGLES = [
  * Everything a text style sets, as the toolbar's text group: the same
  * controls in the same order, then a reset for the whole style. Font and size
  * (the one control the toolbar lacks; style-only, see the root SPEC) share the
- * first line; the icons follow in two lines of five columns: color and the
- * emphasis toggles, then glow, case, letter spacing and the reset. `refocus`
+ * first line; the icons follow in two lines: color and the emphasis toggles,
+ * then glow, case and letter spacing, with the reset at the bottom right (as
+ * every panel's reset). `refocus`
  * comes from the popover holding it, so focus moves on once the reset turns
  * itself off.
  */
@@ -77,7 +78,7 @@ export function TextStyleControls({
           onChange={(size) => changeTextStyle(name, { size })}
         />
       </div>
-      <div className={styles.icons}>
+      <div className={styles.line}>
         <TextColorMenu
           label={`${label} color`}
           value={settings.color}
@@ -101,6 +102,8 @@ export function TextStyleControls({
             <Icon aria-hidden="true" />
           </Button>
         ))}
+      </div>
+      <div className={styles.line}>
         <GlowColorMenu
           label={`${label} glow`}
           value={settings.glow}
@@ -127,6 +130,7 @@ export function TextStyleControls({
         />
         <Button
           iconOnly
+          className={styles.reset}
           aria-label={`Reset ${label.toLowerCase()} style`}
           title={`Reset ${label.toLowerCase()} style`}
           disabled={isDefault}
