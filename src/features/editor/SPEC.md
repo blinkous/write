@@ -12,7 +12,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   in: text style, font, color, bold, italic, underline, strikethrough, then the finer
   touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
   and code block (inline code beside blocks, since both mean "this is code"). **Page**:
-  margins, spacing. A text style's edit panel lists its options in the text group's order.
+  margins, spacing.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`
   (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). **Every control shows what's
@@ -32,11 +32,19 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   caption). The toolbar shows only the current style's icon; the menu repeats it beside
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
-  (size, weight, font, color, glow) is edited from the same menu: each row ends in an edit
-  button (sliders, `MenuActionRow`) opening that style's panel beside the menu, with a reset
-  for that style. Undo/redo and resetting every style stay in settings, so the menu is only
-  about styles. The panel belongs to appearance (`TextStyleEditButton`); the app hands it in
-  through `renderStyleEdit`, so the editor doesn't import appearance. In the title the menu lists just **Title** (selected,
+  (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
+  (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update to match selection**,
+  **Size** and a reset (↺, bottom right, off at the style's defaults). Undo/redo and
+  resetting every style stay in settings. The app hands in the styles and the changes
+  (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
+- **Update to match selection** (`matchTextStyle.ts`) gives the style what the toolbar shows
+  for the selected text (or the text at the cursor): font, color, glow, case, letter spacing,
+  bold, italic, underline, strikethrough; not size. Text in the selection's blocks of that
+  style keeps its exact look, rewritten relative to the new style: what the style now gives
+  stops being the text's own, so it follows later style changes, and what still differs
+  stays its own (a word left plain in a now-bold style gets "not bold"). The style change and
+  the text change are separate undo steps: settings' undo reverts the style, the editor's
+  the text (which then looks the same, its own formatting back). Matching closes the menu. In the title the menu lists just **Title** (selected,
   heading-1 icon), to edit it; it isn't applied or stepped to.
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,

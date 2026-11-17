@@ -44,20 +44,8 @@ opacity), in the settings drawer's header.
   (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
   every text style, then **Reset all styles**, which resets every style and sets the editor
   font to the app font. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
-  edited from the toolbar's style menu: `TextStyleEditButton` (sliders, at the end of each
-  style's row) opens a panel beside it (`TextStyleControls`) laid out like the toolbar's text
-  group, with the same controls in the same order and no labels (each has its tooltip and
-  accessible name): **font** (Default = editor font, named in a caption under "Default"),
-  **size** (`NumberStepper`, px, the one control the toolbar lacks),
-  **color** (`TextColorMenu`), bold, italic, underline, strikethrough, **glow**
-  (`GlowColorMenu`), **case** (`TextCaseMenu`), **letter spacing** (`LetterSpacingMenu`, %
-  of the size), then a reset for the whole style (off while it's at its defaults). Font and
-  the size stepper share the first line (a long font name ends in "…" to make room); the
-  icons follow on two lines: color and the emphasis toggles, then glow, case and letter
-  spacing, with the reset at the bottom right. Letter spacing resets to the style's default beside
-  its stepper. The menu's
-  rows preview every change on the page background. Size is only here, on purpose (see
-  "Formatting in both places" in the root `SPEC.md`). **Page colors**
+  kept here (`changeTextStyle`, `resetTextStyle`, with undo/redo) and edited from the
+  toolbar's style menu (see the editor's SPEC). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system

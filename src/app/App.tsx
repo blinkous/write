@@ -13,7 +13,6 @@ import {
   BackgroundMediaLayer,
   useBackgroundMedia,
   EditorSettings,
-  TextStyleEditButton,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -270,15 +269,10 @@ export function App({ journal }: AppProps) {
             <div role="group" aria-label="Text" className={styles.toolbarGroup}>
               <TextStyleMenu
                 editor={activeEditor}
-                isTitle={activeEditor === titleEditor}
-                renderStyleEdit={(name) => (
-                  <TextStyleEditButton
-                    name={name}
-                    pageTheme={pageTheme}
-                    customTextColors={customTextColors}
-                    onCustomTextColorsChange={changeCustomTextColors}
-                  />
-                )}
+                editorFont={editorFont}
+                onChangeTextStyle={pageTheme.changeTextStyle}
+                onResetTextStyle={pageTheme.resetTextStyle}
+                {...textStyleContext}
               />
               <TextFontMenu
                 editor={activeEditor}

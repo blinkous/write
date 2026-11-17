@@ -7,7 +7,7 @@ import styles from './EditorSettings.module.css'
 /**
  * The editor's font (every text style's default) and one reset for it and
  * every style. The styles themselves are edited from the toolbar's style menu
- * (TextStyleEditButton), each with its own reset.
+ * (its ⋯ options: update to match the text, size, reset).
  */
 export function EditorSettings({
   pageTheme,

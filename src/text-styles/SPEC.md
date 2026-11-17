@@ -1,7 +1,7 @@
 # Text styles
 
 How each text style looks: Title, Heading 2–6, Body and Small. Shared by the editor (which
-draws them), the entry title, and the style menu (which previews and edits them).
+draws them), the entry title, and the style menu (which previews them, and sets them by matching text).
 
 ## How it works
 
@@ -36,9 +36,8 @@ draws them), the entry title, and the style menu (which previews and edits them)
   lowercase and the editor capitalizes letters itself (`useTextStyleBlocks`, via
   journal-document's text case). Previews show the style's name, already in title case, so
   `-preview-transform` uses CSS's `capitalize` / `none` for them. `TextCaseMenu` is the
-  shared case control (toolbar and style edit panels), its options in `textCaseOptions.ts`.
-- `LetterSpacingMenu` is the shared letter spacing control (the design system's
-  `StepperMenu` behind the letter-spacing icon, with this module's range): the toolbar's and
-  each style's.
+  case control (the toolbar's), its options in `textCaseOptions.ts`.
+- `LetterSpacingMenu` is the letter spacing control (the design system's `StepperMenu`
+  behind the letter-spacing icon, with this module's range): the toolbar's.
 - `TextColorMenu` is the shared text color control (the design system's `ColorMenu` with the
-  theme colors as suggestions): the toolbar's color menu and each style's color (in its edit panel).
+  theme colors as suggestions): the toolbar's color menu.

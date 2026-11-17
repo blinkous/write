@@ -8,7 +8,13 @@ import {
   MenuItem,
   Popover,
 } from '../../design-system'
-import { TextStylePreview, type TextStyleName } from '../../text-styles'
+import type { FontValue } from '../../fonts'
+import {
+  DEFAULT_TEXT_STYLES,
+  TextStylePreview,
+  type TextStyleName,
+  type TextStyleSettings,
+} from '../../text-styles'
 import { formatShortcut } from '../../utils/shortcuts'
 import {
   applyTextStyle,
@@ -17,6 +23,9 @@ import {
   TEXT_STYLES,
   TITLE_STYLE,
 } from './textStyles'
+import { matchTextStyle } from './matchTextStyle'
+import type { TextStyleContext } from './ownOrStyleValue'
+import { TextStyleOptions } from './TextStyleOptions'
 
 /*
  * Body first (the everyday style), then the rest largest first. The order for
@@ -27,12 +36,15 @@ const MENU_STYLES = [
   ...TEXT_STYLES.toReversed().filter((textStyle) => textStyle !== BODY_STYLE),
 ]
 
-type TextStyleMenuProps = {
+type TextStyleMenuProps = TextStyleContext & {
   editor: Editor
-  /** The title editor has one style, Title, so the menu lists just that. */
-  isTitle: boolean
-  /** A style's edit control, at the end of its row (the app supplies it, as styles live in appearance). */
-  renderStyleEdit: (name: TextStyleName) => ReactNode
+  /** The entries' font, which text and styles without their own follow. */
+  editorFont: FontValue
+  onChangeTextStyle: (
+    name: TextStyleName,
+    changes: Partial<TextStyleSettings>,
+  ) => void
+  onResetTextStyle: (name: TextStyleName) => void
 }
 
 type StyleRowProps = {
@@ -68,14 +80,18 @@ function StyleRow({
 /**
  * The current paragraph's style. The toolbar shows just its icon; the menu
  * repeats that icon beside each spelled-out name, shown in its style. A row
- * applies its style; the edit control at its end changes how the style looks.
+ * applies its style; its ⋯ updates the style to match the selected text, or
+ * sets its size or resets it.
  * In the title the menu lists just Title, to edit it.
  */
 export function TextStyleMenu({
   editor,
-  isTitle,
-  renderStyleEdit,
+  editorFont,
+  onChangeTextStyle,
+  onResetTextStyle,
+  ...textStyleContext
 }: TextStyleMenuProps) {
+  const { isTitle, textStyles } = textStyleContext
   const activeStyle = useEditorState({
     editor,
     selector: ({ editor: currentEditor }) =>
@@ -99,31 +115,56 @@ export function TextStyleMenu({
       // Back to the text, so writing continues in the new style.
       onClose={() => editor.commands.focus()}
     >
-      {(close) => (
-        <ActionList>
-          {isTitle ? (
-            <StyleRow
-              {...TITLE_STYLE}
-              isSelected
-              onSelect={close}
-              editControl={renderStyleEdit(TITLE_STYLE.name)}
-            />
-          ) : (
-            MENU_STYLES.map((textStyle) => (
+      {(close) => {
+        /* A style's ⋯: matching closes the menu, back to the text, which now follows the style. */
+        const renderOptions = (name: TextStyleName, label: string) => (
+          <TextStyleOptions
+            label={label}
+            onMatch={() => {
+              matchTextStyle(
+                editor,
+                textStyleContext,
+                editorFont,
+                name,
+                onChangeTextStyle,
+              )
+              close()
+            }}
+            size={textStyles[name].size}
+            onSizeChange={(size) => onChangeTextStyle(name, { size })}
+            canReset={
+              JSON.stringify(textStyles[name]) !==
+              JSON.stringify(DEFAULT_TEXT_STYLES[name])
+            }
+            onReset={() => onResetTextStyle(name)}
+          />
+        )
+        return (
+          <ActionList>
+            {isTitle ? (
               <StyleRow
-                key={textStyle.name}
-                {...textStyle}
-                isSelected={textStyle.name === activeStyle.name}
-                onSelect={() => {
-                  applyTextStyle(editor, textStyle)
-                  close()
-                }}
-                editControl={renderStyleEdit(textStyle.name)}
+                {...TITLE_STYLE}
+                isSelected
+                onSelect={close}
+                editControl={renderOptions(TITLE_STYLE.name, TITLE_STYLE.label)}
               />
-            ))
-          )}
-        </ActionList>
-      )}
+            ) : (
+              MENU_STYLES.map((textStyle) => (
+                <StyleRow
+                  key={textStyle.name}
+                  {...textStyle}
+                  isSelected={textStyle.name === activeStyle.name}
+                  onSelect={() => {
+                    applyTextStyle(editor, textStyle)
+                    close()
+                  }}
+                  editControl={renderOptions(textStyle.name, textStyle.label)}
+                />
+              ))
+            )}
+          </ActionList>
+        )
+      }}
     </Popover>
   )
 }

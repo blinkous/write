@@ -41,14 +41,16 @@ spacing and colors, per-text color, glow and case, and export as markdown or JSO
   (`plainWhenExpanded`): the open sidebar shows it, as in most apps. Both keep
   `aria-expanded`.
 
-## Formatting in both places
+## Formatting is set in one place
 
-Every text formatting option is offered in both places, with the same control: the
-**toolbar** (applied to the selected text, stored in the entry) and **text styles** (edited from
-the toolbar's style menu, applied to every Title, Heading, Body or Small text). Text's own formatting wins over
-its style's. A new option is added to both, in the same order (the toolbar's text group).
+Text formatting is set only with the **toolbar** (applied to the selected text, stored in the
+entry). A **text style** (Title, Heading, Body or Small, applied to all its text) takes its
+look from text: **Update to match selection** in the style's ⋯ (the style menu) makes the
+style look like the selected text, so every toolbar option is a style option too, with no
+second set of controls. Text's own formatting wins over its style's, and the toolbar always
+shows what's in effect, the style's included (see the editor's SPEC).
 
-**The one exception is size, which is style-only, on purpose.** Changing the text style
+**The one exception is size, which is style-only, on purpose** (set in the style's ⋯). Changing the text style
 (Small, Body, Headings, Title) already gives seven sizes, and size usually stands for
 importance, which a heading also carries into markdown and screen readers. Per-text size
 would also be stored in entries (hard to take back) and wouldn't follow later style changes.

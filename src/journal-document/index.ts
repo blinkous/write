@@ -27,6 +27,7 @@ export {
 } from './headingLevels'
 export {
   EMPHASES,
+  EMPHASIS_OFF_ATTRIBUTES,
   isEmphasisShown,
   type Emphasis,
   type GetBlockEmphasis,
