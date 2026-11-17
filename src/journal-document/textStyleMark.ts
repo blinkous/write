@@ -6,7 +6,7 @@ import {
   TextEmphasis,
 } from './textEmphasis'
 import { resolveTextFont, TextFont } from './textFont'
-import { resolveTextGlow, TextGlow } from './textGlow'
+import { NO_GLOW, resolveTextGlow, TextGlow } from './textGlow'
 import {
   resolveTextLetterSpacing,
   TextLetterSpacing,
@@ -42,6 +42,8 @@ const CspSafeTextStyle = TextStyle.extend({
       if (cssFont) dom.style.fontFamily = cssFont
       const cssGlow = resolveTextGlow(mark.attrs.glow)
       if (cssGlow) dom.style.textShadow = cssGlow
+      // No glow, where its style has one.
+      if (mark.attrs.glow === NO_GLOW) dom.style.textShadow = 'none'
       const cssLetterSpacing = resolveTextLetterSpacing(
         mark.attrs.letterSpacing,
       )

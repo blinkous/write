@@ -1,51 +1,48 @@
-import { useEditorState, type Editor } from '@tiptap/react'
+import type { Editor } from '@tiptap/react'
 import { resolveTextLetterSpacing } from '../../journal-document'
-import { LetterSpacingMenu, type TextStyles } from '../../text-styles'
-import { getTextStyleNameAt } from './textStyles'
-
-type TextLetterSpacingPickerProps = {
-  editor: Editor
-  /** Whether `editor` is the entry's title, whose text style is Title. */
-  isTitle: boolean
-  /** How each text style looks, for the spacing text without its own follows. */
-  textStyles: TextStyles
-}
+import { LetterSpacingMenu } from '../../text-styles'
+import {
+  chooseOwnValue,
+  useOwnAndStyleValue,
+  type TextStyleContext,
+} from './ownOrStyleValue'
 
 /**
  * Gives the selected text, or the text about to be typed, its own letter
  * spacing (% of its size; the same control as each text style's). It shows
- * the text's own spacing, or its style's; the reset removes the text's own.
+ * the text's own spacing, or its style's; stepping to the style's, or the
+ * reset, removes the text's own (see chooseOwnValue).
  */
 export function TextLetterSpacingPicker({
   editor,
-  isTitle,
-  textStyles,
-}: TextLetterSpacingPickerProps) {
-  const { ownLetterSpacing, styleLetterSpacing } = useEditorState({
+  ...textStyleContext
+}: TextStyleContext & { editor: Editor }) {
+  const { own, style } = useOwnAndStyleValue(
     editor,
-    selector: ({ editor: currentEditor }) => {
+    textStyleContext,
+    'letterSpacing',
+    (currentEditor): number | null => {
       const { letterSpacing } = currentEditor.getAttributes('textStyle')
-      return {
-        ownLetterSpacing:
-          resolveTextLetterSpacing(letterSpacing) === null
-            ? null
-            : Number(letterSpacing),
-        styleLetterSpacing:
-          textStyles[getTextStyleNameAt(currentEditor, isTitle)].letterSpacing,
-      }
+      return resolveTextLetterSpacing(letterSpacing) === null
+        ? null
+        : Number(letterSpacing)
     },
-  })
+  )
+  const unsetLetterSpacing = () => editor.chain().unsetTextLetterSpacing().run()
 
   return (
     <LetterSpacingMenu
       label="Letter spacing"
-      value={ownLetterSpacing ?? styleLetterSpacing}
+      value={own ?? style}
       onChange={(letterSpacing) =>
-        editor.chain().setTextLetterSpacing(letterSpacing).run()
+        chooseOwnValue(letterSpacing, style, {
+          set: (ownLetterSpacing) =>
+            editor.chain().setTextLetterSpacing(ownLetterSpacing).run(),
+          unset: unsetLetterSpacing,
+        })
       }
-      // Removes the text's own spacing, so it follows its style again.
-      onReset={() => editor.chain().unsetTextLetterSpacing().run()}
-      canReset={ownLetterSpacing !== null}
+      onReset={unsetLetterSpacing}
+      canReset={own !== null}
       // Return to the text with its selection, so typing continues with the chosen spacing.
       onClose={() => editor.commands.focus()}
     />

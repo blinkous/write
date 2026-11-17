@@ -4,7 +4,10 @@ import { resolveTextColor } from './textColor'
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     textGlow: {
-      /** Gives the selected text (or text about to be typed) a glow in this color (theme name or #rrggbb). */
+      /**
+       * Gives the selected text (or text about to be typed) a glow in this
+       * color (theme name or #rrggbb), or `none` where its style glows.
+       */
       setTextGlow: (glow: string) => ReturnType
       /** Removes the text's own glow, so it follows its text style's. */
       unsetTextGlow: () => ReturnType
@@ -18,6 +21,13 @@ declare module '@tiptap/core' {
  * saturated halo, then wider ones spread a soft bloom around them.
  */
 const GLOW_BLUR_RADII_EM = [0.02, 0.05, 0.1, 0.18, 0.3, 0.5, 0.8, 1.2] as const
+
+/** Text's own "no glow", where its text style has one. */
+export const NO_GLOW = 'none'
+
+/** A glow text can store as its own: a color (theme name or #rrggbb), or none. */
+export const isOwnTextGlow = (glow: unknown): glow is string =>
+  glow === NO_GLOW || resolveTextColor(glow) !== null
 
 /**
  * The CSS text-shadow for a stored glow color (a theme name or #rrggbb), or
@@ -48,10 +58,10 @@ export const TextGlow = Extension.create({
             default: null,
             parseHTML: (element) => {
               const glow = element.getAttribute('data-glow')
-              return resolveTextColor(glow) ? glow : null
+              return isOwnTextGlow(glow) ? glow : null
             },
             renderHTML: ({ glow }) =>
-              resolveTextColor(glow) ? { 'data-glow': glow } : {},
+              isOwnTextGlow(glow) ? { 'data-glow': glow } : {},
           },
         },
       },

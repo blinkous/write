@@ -22,6 +22,11 @@
   text-transform: lowercase;
 }
 
+/* As typed, where its text style has a case. */
+.tiptap [data-text-case='as-typed'] {
+  text-transform: none;
+}
+
 /* Must match CAPITAL_LETTER_CLASS in textCase.ts. */
 .tiptap .text-case-capital {
   text-transform: uppercase;

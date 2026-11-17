@@ -18,7 +18,11 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). **Every control shows what's
   active, its text style's included**: bold, italic, underline and strikethrough are pressed
   in a style that has them, and pressing one turns it off for that text
-  (`journal-document`'s text emphasis). Markdown
+  (`journal-document`'s text emphasis). Font, color, glow, case and letter spacing show the
+  text's own value, or its style's (`useOwnAndStyleValue`), and follow one rule
+  (`chooseOwnValue`): **choosing what the style already gives removes the text's own**, so it
+  follows its style again; anything else becomes its own, including "none" values where the
+  style has one (page text color, no glow, as typed). Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
   2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
@@ -36,14 +40,14 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   heading-1 icon), to edit it; it isn't applied or stepped to.
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
-  first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font
-  at the cursor. Fonts don't carry into markdown.
+  first in the list, removes it so the text follows its style's font (the editor font when
+  the style has none), which captions it. The trigger shows the font at the cursor. Fonts don't carry into markdown.
 - **Text color** (`TextColorPicker`) colors the selection, or the text about to be typed
   when nothing is selected. Closing the menu returns focus to the text so typing
   continues in that color. The menu has (no titles; rows have accessible names):
   - **Theme row:** the page text color, then six live tones of the page background, light
-    to dark (see `journal-document`); clicking one applies it and closes the menu. The first
-    tile removes the text's own color (so it doubles as reset) and is selected by default.
+    to dark (see `journal-document`); clicking one applies it and closes the menu. The tile
+    of the color in effect (the text's, or its style's) is selected.
   - **Custom row:** seven saved slots (stored with appearance). An empty slot (dashed)
     opens the color picker; picking fills the slot and applies it. A filled slot applies
     its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
@@ -57,10 +61,10 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
   to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
   text color: white text with a pink glow reads as neon. Its menu is text color's with **No
-  glow** (crossed out; removes the text's own glow) in place of the page text color, and the
-  same custom slots. It overrides the text style's glow. Glows don't carry into markdown.
+  glow** (crossed out) in place of the page text color, and the same custom slots. It
+  overrides the text style's glow. Glows don't carry into markdown.
 - **Text case** (`TextCasePicker`, the shared `TextCaseMenu`): UPPERCASE, lowercase, Title
-  Case, Sentence case, or "As typed" (back to its text style's case). Display-only: the
+  Case, Sentence case, or "As typed" (the letters as typed, even in a style with a case). Display-only: the
   letters typed are stored unchanged (see `journal-document`). Text styles' cases and
   emphasis reach the editors through `useTextStyleBlocks` (the title is all Title; the
   writing's blocks map to styles by `getBlockTextStyleName`; code blocks have none).

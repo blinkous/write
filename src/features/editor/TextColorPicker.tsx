@@ -1,8 +1,16 @@
-import { useEditorState, type Editor } from '@tiptap/react'
-import { resolveTextColor } from '../../journal-document'
+import type { Editor } from '@tiptap/react'
+import { resolveTextColor, THEME_TEXT_COLORS } from '../../journal-document'
 import { TextColorMenu } from '../../text-styles'
+import {
+  chooseOwnValue,
+  useOwnAndStyleValue,
+  type TextStyleContext,
+} from './ownOrStyleValue'
 
-type TextColorPickerProps = {
+/** The theme color that is the page text color, stored where the text's style has another. */
+const [PAGE_TEXT_THEME_COLOR] = THEME_TEXT_COLORS
+
+type TextColorPickerProps = TextStyleContext & {
   editor: Editor
   /** Shown as the starting color when filling an empty custom slot. */
   pageTextColor: string
@@ -13,32 +21,42 @@ type TextColorPickerProps = {
 /**
  * Colors the selected text, or the text about to be typed. Theme colors are
  * live shades of the page background; custom colors are user-filled slots.
- * The first theme tile is the page text color: choosing it removes the text's
- * own color, so it also serves as reset.
+ * It shows the text's own color, or its style's. Choosing the style's color
+ * removes the text's own (see chooseOwnValue); the first tile is the page text color.
  */
 export function TextColorPicker({
   editor,
   pageTextColor,
   customTextColors,
   onCustomTextColorsChange,
+  ...textStyleContext
 }: TextColorPickerProps) {
-  const textColor = useEditorState({
+  const { own, style } = useOwnAndStyleValue(
     editor,
-    selector: ({ editor: currentEditor }): string | null => {
+    textStyleContext,
+    'color',
+    (currentEditor): string | null => {
       const { color } = currentEditor.getAttributes('textStyle')
       return resolveTextColor(color) === null ? null : color
     },
-  })
+  )
 
+  /* Null is the page text color. */
   function applyColor(color: string | null) {
-    if (color) editor.chain().setColor(color).run()
-    else editor.chain().unsetColor().run()
+    chooseOwnValue(color, style, {
+      set: (ownColor) =>
+        editor
+          .chain()
+          .setColor(ownColor ?? PAGE_TEXT_THEME_COLOR)
+          .run(),
+      unset: () => editor.chain().unsetColor().run(),
+    })
   }
 
   return (
     <TextColorMenu
       label="Text color"
-      value={textColor}
+      value={own ?? style}
       pageTextColor={pageTextColor}
       customColors={customTextColors}
       onCustomColorsChange={onCustomTextColorsChange}

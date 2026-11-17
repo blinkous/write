@@ -66,3 +66,17 @@ describe('text glow commands', () => {
     })
   })
 })
+
+describe('no glow', () => {
+  it("is kept as the text's own, drawing no glow where its style has one", () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<h2>neon <span data-glow="none">sign</span></h2>',
+    })
+    expect(editor.getHTML()).toContain('<span data-glow="none">sign</span>')
+    const span = [...editor.view.dom.querySelectorAll('span')].find(
+      ({ textContent }) => textContent === 'sign',
+    )
+    expect(span?.style.textShadow).toBe('none')
+  })
+})

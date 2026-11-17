@@ -32,7 +32,8 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## Text glow
 
 - A glow is stored on the text style mark (`glow`, like color and font) as a hex color or a
-  theme name, the same forms as text color; anything else is ignored. It renders as stacked
+  theme name, the same forms as text color, or `none` (no glow where its text style has
+  one, `NO_GLOW`); anything else is ignored. It renders as stacked
   `text-shadow`s (`resolveTextGlow`), blur radii in em so it scales with the text (tight layers stacked for a
   bright neon halo, then a wide bloom), set through
   the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
@@ -63,7 +64,8 @@ normal`). A style's underline and strikethrough are drawn on its text as decorat
 
 ## Text case
 
-- A `textCase` mark (`upper`, `lower`, `title`, `sentence`) changes only how text displays;
+- A `textCase` mark (`upper`, `lower`, `title`, `sentence`, or `as-typed` for the letters as
+  typed where its text style has a case) changes only how text displays;
   the stored letters stay as typed. It is inclusive, so typing inside it continues the case.
 - Upper/lower are plain CSS `text-transform`. CSS can't do title or sentence case, so the
   mark displays lowercase and a plugin adds `CAPITAL_LETTER_CLASS` decorations to letters

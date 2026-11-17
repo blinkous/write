@@ -103,6 +103,11 @@ export function App({ journal }: AppProps) {
   })
   // The toolbar styles whichever was typed in last: the writing or the title.
   const activeEditor = useActiveEditor(editor, titleEditor)
+  // What the toolbar's text controls need to show a text style's values where the text has none.
+  const textStyleContext = {
+    isTitle: activeEditor === titleEditor,
+    textStyles: pageTheme.textStyles,
+  }
   useTextStyleBlocks(editor, pageTheme.textStyles, false)
   useTextStyleBlocks(titleEditor, pageTheme.textStyles, true)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
@@ -275,12 +280,17 @@ export function App({ journal }: AppProps) {
                   />
                 )}
               />
-              <TextFontMenu editor={activeEditor} editorFont={editorFont} />
+              <TextFontMenu
+                editor={activeEditor}
+                editorFont={editorFont}
+                {...textStyleContext}
+              />
               <TextColorPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
+                {...textStyleContext}
               />
               <FormattingButtons
                 editor={activeEditor}
@@ -291,12 +301,12 @@ export function App({ journal }: AppProps) {
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
+                {...textStyleContext}
               />
-              <TextCasePicker editor={activeEditor} />
+              <TextCasePicker editor={activeEditor} {...textStyleContext} />
               <TextLetterSpacingPicker
                 editor={activeEditor}
-                isTitle={activeEditor === titleEditor}
-                textStyles={pageTheme.textStyles}
+                {...textStyleContext}
               />
             </div>
             <Divider />
