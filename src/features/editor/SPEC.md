@@ -8,20 +8,21 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   has its own undo history. It reports every change as Tiptap JSON via `onChange`.
 - The feature exports parts rather than one component (`FormattingButtons`,
   `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
-- **The toolbar goes from the letters out**, in three groups split by dividers: **Text**
-  (font, letter spacing, case, color, glow, then bold, italic, underline, strikethrough,
-  code), **Structure** (text style, bulleted and numbered lists, quote, code block), then
-  **Page** (margins, spacing). Text styles in settings list their options in the text
-  group's order.
+- **The toolbar has three groups**, split by dividers. **Text** goes from the broadest choice
+  in: text style, font, color, bold, italic, underline, strikethrough, then the finer
+  touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
+  and code block (inline code beside blocks, since both mean "this is code"). **Page**:
+  margins, spacing. Text styles in settings list their options in the text group's order.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
 - Formatting toolbar buttons are data-driven from `formattingActions.ts`
-  (`TEXT_FORMATTING_ACTIONS`, `STRUCTURE_FORMATTING_ACTIONS`). Markdown
+  (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
   2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
   isn't a content style: typing `# ` stays text, `## ` … `###### ` make that level, and pasted
   `#` headings become H2 (`journal-document/journalHeading.ts`). Small copies to markdown as a
-  plain paragraph. The toolbar shows only the current style's icon; the menu repeats it beside
+  plain paragraph. Body's icon is a T and Small's is captions (it's mostly used like a
+  caption). The toolbar shows only the current style's icon; the menu repeats it beside
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
   (size, weight, font, color, glow) is set in settings → Editor (`src/text-styles`).

@@ -7,7 +7,7 @@ import {
   Heading4,
   Heading5,
   Heading6,
-  Pilcrow,
+  Captions,
   Type,
   type LucideIcon,
 } from 'lucide-react'
@@ -37,13 +37,13 @@ export const TEXT_STYLES: readonly TextStyle[] = [
   {
     name: 'small',
     label: TEXT_STYLE_LABELS['small'],
-    icon: Type,
+    icon: Captions,
     block: { kind: 'paragraph', size: 'small' },
   },
   {
     name: 'body',
     label: TEXT_STYLE_LABELS['body'],
-    icon: Pilcrow,
+    icon: Type,
     block: { kind: 'paragraph', size: null },
     shortcut: 'Mod-Alt-0',
   },

@@ -1,7 +1,7 @@
 export { documentToMarkdown, type MarkdownHeader } from './getEditorMarkdown'
 export { FormattingButtons } from './FormattingButtons'
 export {
-  STRUCTURE_FORMATTING_ACTIONS,
+  MARKUP_FORMATTING_ACTIONS,
   TEXT_FORMATTING_ACTIONS,
 } from './formattingActions'
 export { JournalPage } from './JournalPage'

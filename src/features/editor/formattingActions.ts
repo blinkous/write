@@ -31,7 +31,7 @@ export type FormattingAction = {
  * Markdown shortcuts (`- `, `> `, `**bold**`, `~~strike~~`) also work while typing.
  */
 
-/** Marks on the text itself; the toolbar's text group ends with these. */
+/** Emphasis on the text itself, between color and glow in the toolbar. */
 export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
@@ -69,19 +69,10 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     isActive: (editor) => editor.isActive('strike'),
     run: (editor) => editor.chain().focus().toggleStrike().run(),
   },
-  {
-    name: 'code',
-    label: 'Code',
-    shortcut: 'Mod-e',
-    icon: Code,
-    requires: 'code',
-    isActive: (editor) => editor.isActive('code'),
-    run: (editor) => editor.chain().focus().toggleCode().run(),
-  },
 ]
 
-/** Blocks; the toolbar's structure group follows the text style menu with these. */
-export const STRUCTURE_FORMATTING_ACTIONS: readonly FormattingAction[] = [
+/** Markup: lists, quotes and code (inline beside blocks, since both mean "this is code"). */
+export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bullet-list',
     label: 'Bulleted list',
@@ -108,6 +99,15 @@ export const STRUCTURE_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     requires: 'blockquote',
     isActive: (editor) => editor.isActive('blockquote'),
     run: (editor) => editor.chain().focus().toggleBlockquote().run(),
+  },
+  {
+    name: 'code',
+    label: 'Code',
+    shortcut: 'Mod-e',
+    icon: Code,
+    requires: 'code',
+    isActive: (editor) => editor.isActive('code'),
+    run: (editor) => editor.chain().focus().toggleCode().run(),
   },
   {
     name: 'code-block',

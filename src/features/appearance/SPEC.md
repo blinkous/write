@@ -46,11 +46,11 @@ title, background blur and opacity).
   `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
   real size). The whole row is the button: it opens a popover beside it (so the rows below
   stay visible) with labeled rows in the toolbar's order: **Font** (Default = editor font,
-  named in a caption under "Default"), **Size** (`NumberStepper`, px), **Letter spacing** (%
-  of the size), **Case** (`TextCaseMenu`), **Color** (`TextColorMenu`) and **Glow**
-  (`GlowColorMenu`), then one unlabeled line of the toolbar's toggles: bold, italic,
-  underline and strikethrough, with a reset for just that style at the line's end (off while it's at its
-  defaults). While open, the row takes
+  named in a caption under "Default"), **Size** (`NumberStepper`, px), **Color**
+  (`TextColorMenu`), one unlabeled line of the toolbar's toggles (bold, italic, underline,
+  strikethrough) with a reset for just that style at its end (off while it's at its
+  defaults), then **Glow** (`GlowColorMenu`), **Case** (`TextCaseMenu`) and **Letter
+  spacing** (% of the size). While open, the row takes
   the page background, so its color is judged against the page, and it previews every change.
   Then **Reset all styles**, which resets every
   style and sets the editor font to the app font. Size is only here, on purpose (see "Formatting in both places" in the root `SPEC.md`). **Page colors**

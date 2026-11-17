@@ -22,7 +22,7 @@ import {
   documentToMarkdown,
   FormattingButtons,
   JournalPage,
-  STRUCTURE_FORMATTING_ACTIONS,
+  MARKUP_FORMATTING_ACTIONS,
   TEXT_FORMATTING_ACTIONS,
   TextCasePicker,
   TextFontMenu,
@@ -261,23 +261,16 @@ export function App({ journal }: AppProps) {
             <PanelLeft aria-hidden="true" />
           </Button>
 
-          {/* Text, then structure, then page: from the letters out (text styles in settings follow the same order). */}
+          {/*
+           * Text, then markup, then page. Text goes from the broadest choice in: paragraph style,
+           * font, color, emphasis, then the finer touches (glow, case, letter spacing). Text
+           * styles in settings follow the same order.
+           */}
           <div className={styles.toolbar}>
             <div role="group" aria-label="Text" className={styles.toolbarGroup}>
+              <TextStyleMenu editor={activeEditor} />
               <TextFontMenu editor={activeEditor} editorFont={editorFont} />
-              <TextLetterSpacingPicker
-                editor={activeEditor}
-                isTitle={activeEditor === titleEditor}
-                textStyles={pageTheme.textStyles}
-              />
-              <TextCasePicker editor={activeEditor} />
               <TextColorPicker
-                editor={activeEditor}
-                pageTextColor={textColor}
-                customTextColors={customTextColors}
-                onCustomTextColorsChange={changeCustomTextColors}
-              />
-              <TextGlowPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
@@ -287,17 +280,28 @@ export function App({ journal }: AppProps) {
                 editor={activeEditor}
                 actions={TEXT_FORMATTING_ACTIONS}
               />
+              <TextGlowPicker
+                editor={activeEditor}
+                pageTextColor={textColor}
+                customTextColors={customTextColors}
+                onCustomTextColorsChange={changeCustomTextColors}
+              />
+              <TextCasePicker editor={activeEditor} />
+              <TextLetterSpacingPicker
+                editor={activeEditor}
+                isTitle={activeEditor === titleEditor}
+                textStyles={pageTheme.textStyles}
+              />
             </div>
             <Divider />
             <div
               role="group"
-              aria-label="Structure"
+              aria-label="Markup"
               className={styles.toolbarGroup}
             >
-              <TextStyleMenu editor={activeEditor} />
               <FormattingButtons
                 editor={activeEditor}
-                actions={STRUCTURE_FORMATTING_ACTIONS}
+                actions={MARKUP_FORMATTING_ACTIONS}
               />
             </div>
             <Divider />
