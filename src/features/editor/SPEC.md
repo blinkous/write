@@ -33,12 +33,12 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
   (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
-  (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update to match selection**,
+  (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update style to match text**,
   **Update text to match style** (the reverse: the selected paragraphs, or the cursor's, take
   the style and lose their own look; links and code stay), **Size** and **Reset style** (its last row). Undo/redo stays in
   settings; "Reset settings" (Data) resets every style at once. The app hands in the styles and the changes
   (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
-- **Update to match selection** (`matchTextStyle.ts`) gives the style what the toolbar shows
+- **Update style to match text** (`matchTextStyle.ts`) gives the style what the toolbar shows
   for the selected text (or the text at the cursor): font, color, glow, case, letter spacing,
   bold, italic, underline, strikethrough; not size. Text in the selection's blocks of that
   style keeps its exact look, rewritten relative to the new style: what the style now gives

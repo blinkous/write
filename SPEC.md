@@ -45,7 +45,7 @@ spacing and colors, per-text color, glow and case, and export as markdown or JSO
 
 Text formatting is set only with the **toolbar** (applied to the selected text, stored in the
 entry). A **text style** (Title, Heading, Body or Small, applied to all its text) takes its
-look from text: **Update to match selection** in the style's ⋯ (the style menu) makes the
+look from text: **Update style to match text** in the style's ⋯ (the style menu) makes the
 style look like the selected text, so every toolbar option is a style option too, with no
 second set of controls; **Update text to match style** does the reverse. Text's own formatting wins over its style's, and the toolbar always
 shows what's in effect, the style's included (see the editor's SPEC).

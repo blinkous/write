@@ -54,7 +54,7 @@ describe('TextStyleMenu', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: /^Text style: Body/ }))
     await user.click(button('Heading 3 options'))
-    await user.click(button(/Update to match selection/))
+    await user.click(button(/Update style to match text/))
     expect(onChangeTextStyle).toHaveBeenCalledWith(
       'heading-3',
       expect.objectContaining({ bold: false, font: null }),

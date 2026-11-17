@@ -49,7 +49,7 @@ export function TextStyleOptions({
       {(_close, refocus) => (
         <>
           <ActionList>
-            <MenuItem onClick={onMatch}>Update to match selection</MenuItem>
+            <MenuItem onClick={onMatch}>Update style to match text</MenuItem>
             <MenuItem onClick={onMatchText}>
               Update text to match style
             </MenuItem>
