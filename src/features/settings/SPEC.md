@@ -38,7 +38,7 @@ The settings drawer at the bottom of the sidebar.
   one Import: a settings file applies its settings (read like stored ones, so bad values fall
   back on their own; newer versions are refused); anything else goes to the journal import.
 
-- **Reset settings…** (Data, above About; a plain row, as there are no warning colors)
+- **Reset all settings and styles…** (Data, above About; a plain row, as there are no warning colors)
   asks first (`ConfirmDialog`, Cancel focused), then puts every look back to a first visit's: all appearance settings, colors for
   the system's light or dark mode (`getFirstVisitAppearance`), the background file, and an
   empty undo history (`clearHistory`), since a first visit has none. Entries, the sort and UI

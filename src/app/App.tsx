@@ -135,7 +135,7 @@ export function App({ journal }: AppProps) {
     pageTheme.clearHistory()
     backgroundMedia.remove()
     setIsResetSettingsOpen(false)
-    setToastMessage({ text: 'Settings reset.', tone: 'neutral' })
+    setToastMessage({ text: 'Settings and styles reset.', tone: 'neutral' })
   }
   const importFilePickerRef = useRef<HTMLInputElement>(null)
   const openImportPicker = () => importFilePickerRef.current?.click()
@@ -383,9 +383,9 @@ export function App({ journal }: AppProps) {
       />
       <ConfirmDialog
         isOpen={isResetSettingsOpen}
-        title="Reset settings?"
+        title="Reset all settings and styles?"
         message="Fonts, colors, text styles, spacing, the tab title and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
-        confirmLabel="Reset settings"
+        confirmLabel="Reset all"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}
       />
