@@ -1,11 +1,12 @@
 import type { Editor } from '@tiptap/react'
-import { resolveTextColor, THEME_TEXT_COLORS } from '../../journal-document'
+import { THEME_TEXT_COLORS } from '../../journal-document'
 import { TextColorMenu } from '../../text-styles'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
   type TextStyleContext,
 } from './ownOrStyleValue'
+import { readOwnColor } from './ownFormatting'
 
 /** The theme color that is the page text color, stored where the text's style has another. */
 const [PAGE_TEXT_THEME_COLOR] = THEME_TEXT_COLORS
@@ -35,10 +36,7 @@ export function TextColorPicker({
     editor,
     textStyleContext,
     'color',
-    (currentEditor): string | null => {
-      const { color } = currentEditor.getAttributes('textStyle')
-      return resolveTextColor(color) === null ? null : color
-    },
+    readOwnColor,
   )
 
   /* Null is the page text color. */

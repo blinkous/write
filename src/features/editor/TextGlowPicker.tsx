@@ -1,11 +1,12 @@
 import type { Editor } from '@tiptap/react'
-import { isOwnTextGlow, NO_GLOW } from '../../journal-document'
+import { NO_GLOW } from '../../journal-document'
 import { GlowColorMenu } from '../../text-styles'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
   type TextStyleContext,
 } from './ownOrStyleValue'
+import { readOwnGlow } from './ownFormatting'
 
 type TextGlowPickerProps = TextStyleContext & {
   editor: Editor
@@ -31,10 +32,7 @@ export function TextGlowPicker({
     editor,
     textStyleContext,
     'glow',
-    (currentEditor): string | null => {
-      const { glow } = currentEditor.getAttributes('textStyle')
-      return isOwnTextGlow(glow) ? glow : null
-    },
+    readOwnGlow,
   )
 
   /* Null is no glow. */

@@ -1,11 +1,11 @@
 import type { Editor } from '@tiptap/react'
-import { resolveTextLetterSpacing } from '../../journal-document'
 import { LetterSpacingMenu } from '../../text-styles'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
   type TextStyleContext,
 } from './ownOrStyleValue'
+import { readOwnLetterSpacing } from './ownFormatting'
 
 /**
  * Gives the selected text, or the text about to be typed, its own letter
@@ -21,12 +21,7 @@ export function TextLetterSpacingPicker({
     editor,
     textStyleContext,
     'letterSpacing',
-    (currentEditor): number | null => {
-      const { letterSpacing } = currentEditor.getAttributes('textStyle')
-      return resolveTextLetterSpacing(letterSpacing) === null
-        ? null
-        : Number(letterSpacing)
-    },
+    readOwnLetterSpacing,
   )
   const unsetLetterSpacing = () => editor.chain().unsetTextLetterSpacing().run()
 

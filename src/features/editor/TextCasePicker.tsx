@@ -1,15 +1,12 @@
 import type { Editor } from '@tiptap/react'
-import {
-  AS_TYPED_CASE,
-  isOwnTextCase,
-  type OwnTextCase,
-} from '../../journal-document'
+import { AS_TYPED_CASE } from '../../journal-document'
 import { TextCaseMenu } from '../../text-styles'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
   type TextStyleContext,
 } from './ownOrStyleValue'
+import { readOwnTextCase } from './ownFormatting'
 
 /**
  * Displays the selection (or the text about to be typed) in a case. Only the
@@ -25,10 +22,7 @@ export function TextCasePicker({
     editor,
     textStyleContext,
     'textCase',
-    (currentEditor): OwnTextCase | null => {
-      const { textCase } = currentEditor.getAttributes('textCase')
-      return isOwnTextCase(textCase) ? textCase : null
-    },
+    readOwnTextCase,
   )
 
   return (

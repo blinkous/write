@@ -1,10 +1,11 @@
 import type { Editor } from '@tiptap/react'
-import { FontMenu, isFontValue, type FontValue } from '../../fonts'
+import { FontMenu, type FontValue } from '../../fonts'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
   type TextStyleContext,
 } from './ownOrStyleValue'
+import { readOwnFont } from './ownFormatting'
 
 type TextFontMenuProps = TextStyleContext & {
   editor: Editor
@@ -26,10 +27,7 @@ export function TextFontMenu({
     editor,
     textStyleContext,
     'font',
-    (currentEditor): FontValue | null => {
-      const { font } = currentEditor.getAttributes('textStyle')
-      return isFontValue(font) ? font : null
-    },
+    readOwnFont,
   )
 
   return (
