@@ -1,8 +1,7 @@
 # Text styles
 
 How each text style looks: Title, Heading 2–6, Body and Small. Shared by the editor (which
-draws them), the entry title, the style menu (which previews them) and settings (which edits
-them).
+draws them), the entry title, and the style menu (which previews them, and sets them by matching text).
 
 ## How it works
 
@@ -24,19 +23,13 @@ them).
 - Text with its own font or color (toolbar) still wins over its style: marks sit inside.
 - Sizes step by 1px within a range, like a word processor, so styles stay sensible.
 - `TextStylePreview` draws text in a style at its size relative to body (via `-scale`), for
-  showing a style's name in the style menu and in settings.
+  showing a style's name in the style menu.
 - Glow is its own color, separate from the text color, drawn as a stack of `text-shadow`s
   (blur radii in em, so it scales with the text). Neon is white text with a colored glow;
   toolbar colors inside a glowing style change the letters, never the glow, and a toolbar glow
   replaces the style's for that text. The glow's look (`resolveTextGlow`) is shared with the
   toolbar's, from `journal-document`.
-- `GlowColorMenu`'s trigger is the letter "A" drawn with the current glow (a soft theme glow
-  when there's none, so it still reads as glow). The menu is `TextColorMenu` with "No glow" (a crossed-out tile) in place of the page
-  text color; the theme color tiles come from the shared `getThemeColorSuggestions`.
 - Case: CSS can only do UPPER and lower, so title and sentence case set `-transform` to
-  lowercase and the editor capitalizes letters itself (`useTextStyleCases`, via
+  lowercase and the editor capitalizes letters itself (`useTextStyleBlocks`, via
   journal-document's text case). Previews show the style's name, already in title case, so
-  `-preview-transform` uses CSS's `capitalize` / `none` for them. `TextCaseMenu` is the
-  shared case control (toolbar and settings), its options in `textCaseOptions.ts`.
-- `TextColorMenu` is the shared text color control (the design system's `ColorMenu` with the
-  theme colors as suggestions): the toolbar's color menu and each style's color in settings.
+  `-preview-transform` uses CSS's `capitalize` / `none` for them.

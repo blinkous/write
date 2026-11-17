@@ -1,0 +1,15 @@
+/*
+ * A text style's underline and strikethrough, drawn on its text (see
+ * textEmphasis.ts) so text can turn them off; lines a block drew would reach all of it.
+ */
+.style-underline {
+  text-decoration-line: underline;
+}
+
+.style-strike {
+  text-decoration-line: line-through;
+}
+
+.style-underline.style-strike {
+  text-decoration-line: underline line-through;
+}

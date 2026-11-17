@@ -1,7 +1,8 @@
 import { TEXT_STYLE_LABELS, type TextStyleName } from '../../text-styles'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
-import type { Editor } from '@tiptap/react'
+import type { ChainedCommands, Editor } from '@tiptap/react'
 import {
+  Heading1,
   Heading2,
   Heading3,
   Heading4,
@@ -84,6 +85,16 @@ export const TEXT_STYLES: readonly TextStyle[] = [
   },
 ]
 
+/**
+ * The title editor's one style: all of its text, so it's never applied or
+ * stepped to, only shown and edited.
+ */
+export const TITLE_STYLE = {
+  name: 'title',
+  label: TEXT_STYLE_LABELS['title'],
+  icon: Heading1,
+} as const satisfies Pick<TextStyle, 'label' | 'icon'> & { name: TextStyleName }
+
 /** The everyday style: plain paragraphs. */
 export const BODY_STYLE =
   TEXT_STYLES.find(({ name }) => name === 'body') ?? TEXT_STYLES[0]
@@ -130,14 +141,19 @@ export function getTextStyleNameAt(
   return isTitle ? 'title' : getActiveTextStyle(editor).name
 }
 
-export function applyTextStyle(editor: Editor, { block }: TextStyle): boolean {
-  const chain = editor.chain().focus()
-  if (block.kind === 'heading')
-    return chain.setHeading({ level: block.level }).run()
+/** Adds giving the selection's blocks this style to a chain of commands. */
+export function chainTextStyle(
+  chain: ChainedCommands,
+  { block }: TextStyle,
+): ChainedCommands {
+  if (block.kind === 'heading') return chain.setHeading({ level: block.level })
   return chain
     .setParagraph()
     .updateAttributes('paragraph', { size: block.size })
-    .run()
+}
+
+export function applyTextStyle(editor: Editor, textStyle: TextStyle): boolean {
+  return chainTextStyle(editor.chain().focus(), textStyle).run()
 }
 
 /** Moves the current paragraph one style larger (1) or smaller (-1); stops at the ends. */

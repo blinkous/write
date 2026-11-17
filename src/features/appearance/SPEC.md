@@ -1,8 +1,8 @@
 # Appearance
 
 User-adjustable look: fonts, text styles, margins, vertical spacing and colors. All
-page-wide, with one shared undo/redo for the settings drawer (fonts, styles, colors, tab
-title, background blur and opacity).
+page-wide, with one shared undo/redo (fonts, styles, colors, tab title, background blur and
+opacity), in the settings drawer's header.
 
 ## How it works
 
@@ -33,28 +33,19 @@ title, background blur and opacity).
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Settings sections** (shown in the settings drawer): **App** (`AppSettings`) has the
-  **tab title** (`EditableText`: quiet text at the row's end, like the font's name, showing
-  the app's name, "Write", while empty; the whole space after the label is the button (hover included); click it to type in place, Enter or clicking away
-  keeps it, Escape puts it back; up to 60 characters, a longer saved one falls back to
-  empty; it's the tab's title, or "Write" when empty), the
+- **Tab title** (`TabTitleSetting`, first in Data): the browser
+  tab's title, "Write" while empty. Typed in place (click, Enter or clicking away keeps it,
+  Escape puts it back), up to 60 characters; a longer saved one falls back to empty.
+- **Settings sections** (shown in the settings drawer): **Theme** (`AppSettings`) has the
   interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter), then the page
   colors (`PageColorSettings`, below): **Foreground**, then **Background** with the background
   picture or video. **Editor**
-  (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
-  every text style, then each text style (Title, Heading 2–6, Body, Small; see
-  `src/text-styles`) as a row showing its name drawn in the style (`TextStylePreview`, at its
-  real size). The whole row is the button: it opens a popover beside it (so the rows below
-  stay visible) with labeled rows in the toolbar's order: **Font** (Default = editor font,
-  named in a caption under "Default"), **Size** (`NumberStepper`, px), **Color**
-  (`TextColorMenu`), one unlabeled line of the toolbar's toggles (bold, italic, underline,
-  strikethrough) with a reset for just that style at its end (off while it's at its
-  defaults), then **Glow** (`GlowColorMenu`), **Case** (`TextCaseMenu`) and **Letter
-  spacing** (% of the size). While open, the row takes
-  the page background, so its color is judged against the page, and it previews every change.
-  Then **Reset all styles**, which resets every
-  style and sets the editor font to the app font. Size is only here, on purpose (see "Formatting in both places" in the root `SPEC.md`). **Page colors**
-  (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
+  (`EditorSettings`) has the **Default font**, the editor font (sets `--font-editor`; default Lora), the default for
+  every text style, then **Reset text styles** (every style back to its defaults; the
+  default font stays). **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
+  kept here (`changeTextStyle`, `resetTextStyle`, with undo/redo) and edited from the
+  toolbar's style menu (see the editor's SPEC). **Page colors**
+  (`PageColorSettings`, in Theme) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
   setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
@@ -111,7 +102,7 @@ title, background blur and opacity).
 
 ## Background picture or video
 
-- Chosen in **App**, on the **Background** row: a tile (`FileSwatch`, via
+- Chosen in **Theme**, on the **Background** row: a tile (`FileSwatch`, via
   `BackgroundMediaTile`) before the color tile. Empty, it shows + and a picture icon; clicking it
   opens a file picker (any image, including GIFs, or video, up to 100 MB). Once one is set, it
   shows a small still of it (a video's first moment); clicking changes it, and an × on hover or

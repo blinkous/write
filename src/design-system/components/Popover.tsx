@@ -21,7 +21,7 @@ type PopoverProps = {
   /**
    * Content, or a function receiving `close` for actions that should dismiss the
    * panel, and `refocus` for actions that disable themselves (e.g. a reset), so
-   * focus moves to the panel's first control instead of being lost.
+   * focus moves back to where the panel opened with it instead of being lost.
    */
   children: ReactNode | ((close: () => void, refocus: () => void) => ReactNode)
   /** `below` the trigger, lined up with its `align` edge, or `beside` it, lined up with its top. */
@@ -32,23 +32,18 @@ type PopoverProps = {
   onClose?: () => void
 }
 
-/* In order of preference: the selected choice, otherwise the first control. */
-const INITIAL_FOCUS_SELECTORS = [
-  'input:checked',
-  'button, input, select, [tabindex]',
-]
-
 /**
- * Moves focus into the panel on open, as expected for a dialog. Only this
- * panel's own controls count, not those of a closed menu nested inside it.
+ * Moves focus into the panel on open, as expected for a dialog: onto the
+ * current choice of a pick-one menu (already shown as chosen, and where the
+ * arrow keys start), otherwise onto the panel itself, so nothing looks chosen
+ * until Tab and a stray Enter or Space can't press anything (as in `Dialog`).
+ * Only this panel's own choices count, not those of a menu nested inside it.
  */
 function focusInitialControl(panel: HTMLDivElement) {
-  for (const selector of INITIAL_FOCUS_SELECTORS) {
-    const control = [...panel.querySelectorAll<HTMLElement>(selector)].find(
-      (candidate) => candidate.closest('[popover]') === panel,
-    )
-    if (control) return control.focus()
-  }
+  const currentChoice = [
+    ...panel.querySelectorAll<HTMLElement>('input:checked'),
+  ].find((choice) => choice.closest('[popover]') === panel)
+  ;(currentChoice ?? panel).focus()
 }
 
 /** Focus was inside the closed panel, or nowhere (e.g. a nested menu closed after a click). */
@@ -119,11 +114,7 @@ export function Popover({
         ref={triggerRef}
         iconOnly={isTriggerIconOnly}
         variant={triggerVariant}
-        className={
-          isTriggerIconOnly || triggerVariant === 'row'
-            ? undefined
-            : styles.textTrigger
-        }
+        className={isTriggerIconOnly ? undefined : styles.textTrigger}
         aria-label={label}
         title={label}
         popoverTarget={popoverId}
@@ -135,6 +126,8 @@ export function Popover({
         id={popoverId}
         popover="auto"
         role="dialog"
+        // Focusable only from code, on open; never a Tab stop.
+        tabIndex={-1}
         aria-label={label}
         onBeforeToggle={handleBeforeToggle}
         onToggle={handleToggle}

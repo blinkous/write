@@ -32,7 +32,8 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## Text glow
 
 - A glow is stored on the text style mark (`glow`, like color and font) as a hex color or a
-  theme name, the same forms as text color; anything else is ignored. It renders as stacked
+  theme name, the same forms as text color, or `none` (no glow where its text style has
+  one, `NO_GLOW`); anything else is ignored. It renders as stacked
   `text-shadow`s (`resolveTextGlow`), blur radii in em so it scales with the text (tight layers stacked for a
   bright neon halo, then a wide bloom), set through
   the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
@@ -44,9 +45,27 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   within `LETTER_SPACING_RANGE` (−5 to 30, shared with text styles); anything else is
   ignored. Rendered as em through the same mark view, so it scales with the text.
 
+## Text emphasis
+
+- Text can turn off the bold, italic, underline or strikethrough its text style gives it:
+  `noBold`, `noItalic`, `noUnderline`, `noStrike` on the text style mark (`data-no-bold` and
+  so on in HTML; dropped from markdown, which can't say "not bold"). `toggleEmphasis` acts on
+  what's shown: shown emphasis turns off (its own mark removed, plus an off where its style
+  has it), hidden emphasis turns on (the off removed, plus its own mark where its style lacks
+  it), so a text's own mark and its off never overlap. `isEmphasisShown` is what the toolbar
+  shows as pressed. ⌘B, ⌘I, ⌘U and ⇧⌘X run `toggleEmphasis` too (the extension's shortcuts
+  come before the marks').
+- Blocks get their style's emphasis from `setBlockEmphasis` (storage, like block cases).
+  Not bold and not italic render through the mark view (`font-weight` / `font-style:
+normal`). A style's underline and strikethrough are drawn on its text as decorations
+  (`style-underline`, `style-strike`), skipping text that turned them off, because lines a
+  block draws reach all its text and can't be undone inside it. Like capitals, they redraw
+  only the blocks an edit touched (`changedRanges.ts`).
+
 ## Text case
 
-- A `textCase` mark (`upper`, `lower`, `title`, `sentence`) changes only how text displays;
+- A `textCase` mark (`upper`, `lower`, `title`, `sentence`, or `as-typed` for the letters as
+  typed where its text style has a case) changes only how text displays;
   the stored letters stay as typed. It is inclusive, so typing inside it continues the case.
 - Upper/lower are plain CSS `text-transform`. CSS can't do title or sentence case, so the
   mark displays lowercase and a plugin adds `CAPITAL_LETTER_CLASS` decorations to letters

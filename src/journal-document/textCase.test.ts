@@ -118,6 +118,16 @@ describe('TextCaseMark with cases from text styles', () => {
     expect(capitalsOf(editor)).toEqual([])
   })
 
+  it("shows text set to as typed without its style's capitals", () => {
+    const editor = createTestEditor({
+      extensions: documentExtensions,
+      content: '<h2>rainy <span data-text-case="as-typed">day out</span></h2>',
+    })
+    headingsInTitleCase(editor)
+    expect(capitalsOf(editor)).toEqual(['r'])
+    expect(editor.getHTML()).toContain('data-text-case="as-typed"')
+  })
+
   it("lets the text's own case win, and leaves code as typed", () => {
     const editor = createTestEditor({
       extensions: documentExtensions,

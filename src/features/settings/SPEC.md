@@ -23,7 +23,7 @@ The settings drawer at the bottom of the sidebar.
 - Rows in a section use regular weight (menu rows are medium in popover menus), so the Data
   actions match the font and color rows.
 - The app passes the sections in (id, title, contents), so features don't import each other: App and
-  Editor (appearance), Data (entries: exports, import, About). The drawer has no header: while open, the
+  Editor (appearance), Data (the tab title from appearance, then entries: exports, import, reset, About). The drawer has no header: while open, the
   bottom bar shows one undo/redo for every setting but the background file (appearance's theme history)
   beside the ⚙, which is shaded while open (like any open panel's toggle, via `aria-expanded`).
   Closed, the bar is just the ⚙. This saves a row; the drawer is still named "Settings" for
@@ -38,7 +38,7 @@ The settings drawer at the bottom of the sidebar.
   one Import: a settings file applies its settings (read like stored ones, so bad values fall
   back on their own; newer versions are refused); anything else goes to the journal import.
 
-- **Reset settings…** (Data, above About; a plain row, as there are no warning colors)
+- **Reset all settings and styles** (Data, above About; a plain row, as there are no warning colors)
   asks first (`ConfirmDialog`, Cancel focused), then puts every look back to a first visit's: all appearance settings, colors for
   the system's light or dark mode (`getFirstVisitAppearance`), the background file, and an
   empty undo history (`clearHistory`), since a first visit has none. Entries, the sort and UI

@@ -1,0 +1,42 @@
+.row {
+  --fade-start: 0rem;
+  --fade-end: 0rem;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* An alpha mask (only its opacity counts), so the fade works over any background, a picture included. */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-start),
+    black calc(100% - var(--fade-end)),
+    transparent
+  );
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Centered while it fits: auto margins, unlike justify-content, give way when
+ * it overflows, so the start stays reachable. A row can start at its start
+ * edge instead by setting --scroll-row-start to 0 (e.g. on wide screens only).
+ */
+.row > :first-child {
+  margin-inline-start: var(--scroll-row-start, auto);
+}
+
+.row > :last-child {
+  margin-inline-end: auto;
+}
+
+.row[data-more-start] {
+  --fade-start: var(--space-8);
+}
+
+.row[data-more-end] {
+  --fade-end: var(--space-8);
+}

@@ -15,6 +15,14 @@ describe('getEditorMarkdown', () => {
     )
   })
 
+  it("leaves out a style's emphasis turned off, which markdown can't say", () => {
+    const editor = createTestEditor({
+      extensions: editorExtensions,
+      content: '<h2><span data-no-bold="">rainy</span> day</h2>',
+    })
+    expect(getEditorMarkdown(editor)).toBe('## rainy day\n')
+  })
+
   it('keeps an indent on the very first line', () => {
     const editor = createTestEditor({
       extensions: editorExtensions,

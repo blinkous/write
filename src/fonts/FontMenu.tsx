@@ -21,6 +21,8 @@ type FontMenuProps = {
   defaultFont?: FontValue
   onChange: (value: FontValue | null) => void
   onClose?: () => void
+  /** Keeps the trigger one width whatever the font (e.g. in the toolbar). */
+  hasFixedWidth?: boolean
 }
 
 /* Each name is shown in its own font, so the list doubles as a preview. */
@@ -64,6 +66,7 @@ export function FontMenu({
   defaultFont,
   onChange,
   onClose,
+  hasFixedWidth,
 }: FontMenuProps) {
   const shownFont = getFontOption(value ?? defaultFont ?? FONT_OPTIONS[0].value)
   const isDefault = value === null && defaultFont !== undefined
@@ -98,6 +101,7 @@ export function FontMenu({
       onChange={(choice) => onChange(isFontValue(choice) ? choice : null)}
       onClose={onClose}
       triggerContent={getTriggerContent()}
+      hasFixedWidth={hasFixedWidth}
     />
   )
 }

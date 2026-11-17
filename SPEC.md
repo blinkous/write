@@ -41,14 +41,16 @@ spacing and colors, per-text color, glow and case, and export as markdown or JSO
   (`plainWhenExpanded`): the open sidebar shows it, as in most apps. Both keep
   `aria-expanded`.
 
-## Formatting in both places
+## Formatting is set in one place
 
-Every text formatting option is offered in both places, with the same control: the
-**toolbar** (applied to the selected text, stored in the entry) and **text styles** (settings →
-Editor, applied to every Title, Heading, Body or Small text). Text's own formatting wins over
-its style's. A new option is added to both, in the same order (the toolbar's text group).
+Text formatting is set only with the **toolbar** (applied to the selected text, stored in the
+entry). A **text style** (Title, Heading, Body or Small, applied to all its text) takes its
+look from text: **Update style to match text** in the style's ⋯ (the style menu) makes the
+style look like the selected text, so every toolbar option is a style option too, with no
+second set of controls; **Update text to match style** does the reverse. Text's own formatting wins over its style's, and the toolbar always
+shows what's in effect, the style's included (see the editor's SPEC).
 
-**The one exception is size, which is style-only, on purpose.** Changing the text style
+**The one exception is size, which is style-only, on purpose** (set in the style's ⋯). Changing the text style
 (Small, Body, Headings, Title) already gives seven sizes, and size usually stands for
 importance, which a heading also carries into markdown and screen readers. Per-text size
 would also be stored in entries (hard to take back) and wouldn't follow later style changes.
@@ -97,11 +99,15 @@ older data without them (see the storage tests).
 - **Menus** open from a toolbar or ⋯ button and share one look: the `Popover` panel, rows
   from `MenuItem` (actions) or `ChoiceGroup` (pick one), swatch sections in `PopoverPanel`,
   and `Divider` between sections. Same padding, row height, hover and selected states.
-  Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
+  **A menu's reset is its last row**: ↺ and what it resets (e.g. "Reset style"), off while
+  there's nothing to reset. "Reset" means back to defaults only; bringing text in line with
+  its style is "Update text to match style".
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
-  arrow keys preview without closing. Menus open with focus on the current choice.
-  Panels open below their trigger, or beside it for a row that opens its own panel (a text
-  style in settings), lined up with its top so the rows below stay visible.
+  arrow keys preview without closing. Menus open with focus on the current choice; without one (action menus,
+  panels) the panel itself takes focus, so nothing looks chosen until Tab.
+  Panels open below their trigger, or beside it for a row's own action that opens a panel
+  (`MenuActionRow`, e.g. editing a text style from the style menu), lined up with its top so
+  the rows below stay visible.
   Panels are anchored to their trigger only while open: WebKit (Safari, DuckDuckGo) hangs
   when a menu closes with closed, still-anchored menus nested inside it.
   Closed menus and dialogs render nothing inside (`Popover`, `Dialog`): rendering every
@@ -159,10 +165,10 @@ older data without them (see the storage tests).
   range's precision (e.g. blur to 0.1), which is the step unless set.
 - **Settings show real units** where people expect them (line spacing as a multiplier) rather
   than S/M/L; preset names are fine where editors use them (margins). Text sizes are px
-  (written as rem, so browser zoom still works), set per text style in settings.
+  (written as rem, so browser zoom still works), set per text style from the style menu.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
 - **Phones and touch screens** get the same layout, adapted by CSS rather than separate
-  screens: the toolbar scrolls sideways at the top, the sidebar overlays the page below
+  screens: the toolbar scrolls sideways at the top when it runs out of room, the sidebar overlays the page below
   48rem, and on touch screens (`pointer: coarse`) controls are 44px and swatch menus widen
   so tiles are too. Hover styles apply only where there's hover (`hover: hover`), since a
   tap would leave them stuck. Fields are at

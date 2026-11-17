@@ -41,12 +41,13 @@
 /*
  * Three columns with the toolbar in the middle, sized and centered like the
  * page at normal margins, so the toolbar lines up with the start of the text
- * and stays put when the margins change.
+ * and stays put when the margins change. Narrow screens center it instead.
  */
 .header {
   position: sticky;
   top: 0;
   z-index: 1;
+  container: header / inline-size;
   display: grid;
   grid-template-columns:
     minmax(max-content, 1fr)
@@ -62,17 +63,27 @@
 }
 
 .toolbar {
-  /* Fills its column, so it scrolls within it rather than growing past it. */
+  /* Fills its column, so it scrolls within it (rather than wrapping into a tall header) only when it runs out. */
   justify-self: stretch;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-  /* Pulls the first control's label, not its padded edge, in line with the text. */
+  /* The same as between icons, so groups and dividers space like the rest. */
+  gap: var(--space-1);
+  /* Starts with the text: the first control's label, not its padded edge, in line with it. */
+  --scroll-row-start: 0;
   margin-inline-start: calc(var(--inset-icon-button) * -1);
-  /* Scrolls sideways on narrow screens rather than wrapping into a tall header. */
-  overflow-x: auto;
-  scrollbar-width: none;
+}
+
+/*
+ * Once the header can't give the toolbar the page's full width (sidebar open,
+ * narrow window), the toolbar no longer lines up with the text, so it centers
+ * in its space instead. 51rem: --width-page-normal (44rem) plus the Entries
+ * toggle and the ⋯ (2rem each), their gaps and the header's padding; a
+ * container query can't read the variables.
+ */
+@container header (width < 51rem) {
+  .toolbar {
+    --scroll-row-start: auto;
+    margin-inline-start: 0;
+  }
 }
 
 .toolbarGroup {
@@ -146,11 +157,6 @@
       var(--space-4) - var(--inset-icon-button) +
         env(safe-area-inset-right, 0px)
     );
-  }
-
-  /* The text isn't centered here, so there's nothing to line up with; keep clear of the Entries toggle. */
-  .toolbar {
-    margin-inline-start: 0;
   }
 
   .main {

@@ -1,0 +1,24 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-small);
+}
+
+/* The item fills the row; the action keeps its own size at the end. */
+.row > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The row and its action hover as one (only where there's hover; it would stick after a tap). */
+@media (hover: hover) {
+  .row:hover {
+    background: var(--color-surface-strong);
+  }
+}
+
+/* A selected item lights the whole row, its action included. */
+.row:has(> [data-selected='true']) {
+  background: var(--color-surface-strong);
+}

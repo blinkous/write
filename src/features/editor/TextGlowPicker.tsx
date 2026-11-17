@@ -1,8 +1,14 @@
-import { useEditorState, type Editor } from '@tiptap/react'
-import { resolveTextColor } from '../../journal-document'
-import { GlowColorMenu } from '../../text-styles'
+import type { Editor } from '@tiptap/react'
+import { NO_GLOW } from '../../journal-document'
+import { GlowColorMenu } from './GlowColorMenu'
+import {
+  chooseOwnValue,
+  useOwnAndStyleValue,
+  type TextStyleContext,
+} from './ownOrStyleValue'
+import { readOwnGlow } from './ownFormatting'
 
-type TextGlowPickerProps = {
+type TextGlowPickerProps = TextStyleContext & {
   editor: Editor
   /** Shown as the starting color when filling an empty custom slot. */
   pageTextColor: string
@@ -12,32 +18,39 @@ type TextGlowPickerProps = {
 
 /**
  * Gives the selected text, or the text about to be typed, a glow in its own
- * color, separate from the text color. The first tile, No glow, removes the
- * text's own glow, so it also serves as reset.
+ * color, separate from the text color. It shows the text's own glow, or its
+ * style's; choosing the style's removes the text's own (see chooseOwnValue).
  */
 export function TextGlowPicker({
   editor,
   pageTextColor,
   customTextColors,
   onCustomTextColorsChange,
+  ...textStyleContext
 }: TextGlowPickerProps) {
-  const textGlow = useEditorState({
+  const { own, style } = useOwnAndStyleValue(
     editor,
-    selector: ({ editor: currentEditor }): string | null => {
-      const { glow } = currentEditor.getAttributes('textStyle')
-      return resolveTextColor(glow) === null ? null : glow
-    },
-  })
+    textStyleContext,
+    'glow',
+    readOwnGlow,
+  )
 
+  /* Null is no glow. */
   function applyGlow(glow: string | null) {
-    if (glow) editor.chain().setTextGlow(glow).run()
-    else editor.chain().unsetTextGlow().run()
+    chooseOwnValue(glow, style, {
+      set: (ownGlow) =>
+        editor
+          .chain()
+          .setTextGlow(ownGlow ?? NO_GLOW)
+          .run(),
+      unset: () => editor.chain().unsetTextGlow().run(),
+    })
   }
 
   return (
     <GlowColorMenu
       label="Text glow"
-      value={textGlow}
+      value={own === NO_GLOW ? null : (own ?? style)}
       pageTextColor={pageTextColor}
       customColors={customTextColors}
       onCustomColorsChange={onCustomTextColorsChange}

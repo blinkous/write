@@ -32,7 +32,7 @@ export function DataSettings({
       <ImportAction onChooseFile={onChooseImportFile} />
       <MenuItem onClick={onResetSettings}>
         <RotateCcw aria-hidden="true" />
-        Reset settings…
+        Reset all settings and styles
       </MenuItem>
       <MenuItem onClick={onShowAbout}>
         <Info aria-hidden="true" />

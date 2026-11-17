@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/react'
+import { isEmphasisShown } from '../../journal-document'
 import {
   Bold,
   Code,
@@ -21,7 +22,8 @@ export type FormattingAction = {
   icon: LucideIcon
   /** The node or mark this needs; the button is off in editors without it (e.g. the title). */
   requires: string
-  isActive: (editor: Editor) => boolean
+  /** For a toggle, whether it's on (shown pressed); absent for a one-off action. */
+  isActive?: (editor: Editor) => boolean
   run: (editor: Editor) => void
 }
 
@@ -31,7 +33,10 @@ export type FormattingAction = {
  * Markdown shortcuts (`- `, `> `, `**bold**`, `~~strike~~`) also work while typing.
  */
 
-/** Emphasis on the text itself, between color and glow in the toolbar. */
+/**
+ * Emphasis on the text itself, between color and glow in the toolbar. Each
+ * shows and toggles what's shown, its text style's included (see journal-document's textEmphasis).
+ */
 export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
@@ -39,8 +44,8 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     shortcut: 'Mod-b',
     icon: Bold,
     requires: 'bold',
-    isActive: (editor) => editor.isActive('bold'),
-    run: (editor) => editor.chain().focus().toggleBold().run(),
+    isActive: (editor) => isEmphasisShown(editor, 'bold'),
+    run: (editor) => editor.chain().focus().toggleEmphasis('bold').run(),
   },
   {
     name: 'italic',
@@ -48,8 +53,8 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     shortcut: 'Mod-i',
     icon: Italic,
     requires: 'italic',
-    isActive: (editor) => editor.isActive('italic'),
-    run: (editor) => editor.chain().focus().toggleItalic().run(),
+    isActive: (editor) => isEmphasisShown(editor, 'italic'),
+    run: (editor) => editor.chain().focus().toggleEmphasis('italic').run(),
   },
   {
     name: 'underline',
@@ -57,8 +62,8 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     shortcut: 'Mod-u',
     icon: Underline,
     requires: 'underline',
-    isActive: (editor) => editor.isActive('underline'),
-    run: (editor) => editor.chain().focus().toggleUnderline().run(),
+    isActive: (editor) => isEmphasisShown(editor, 'underline'),
+    run: (editor) => editor.chain().focus().toggleEmphasis('underline').run(),
   },
   {
     name: 'strike',
@@ -66,8 +71,8 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     shortcut: 'Mod-Shift-x',
     icon: Strikethrough,
     requires: 'strike',
-    isActive: (editor) => editor.isActive('strike'),
-    run: (editor) => editor.chain().focus().toggleStrike().run(),
+    isActive: (editor) => isEmphasisShown(editor, 'strike'),
+    run: (editor) => editor.chain().focus().toggleEmphasis('strike').run(),
   },
 ]
 

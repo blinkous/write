@@ -5,7 +5,6 @@
   font-size: var(--text-style-title-size);
   font-weight: var(--text-style-title-weight);
   font-style: var(--text-style-title-style);
-  text-decoration-line: var(--text-style-title-decoration);
   letter-spacing: var(--text-style-title-letter-spacing);
   text-transform: var(--text-style-title-transform);
   text-shadow: var(--text-style-title-glow);

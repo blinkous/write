@@ -4,6 +4,7 @@ import {
   Button,
   ConfirmDialog,
   Divider,
+  ScrollRow,
   Toast,
   type ToastMessage,
 } from '../design-system'
@@ -13,6 +14,7 @@ import {
   BackgroundMediaLayer,
   useBackgroundMedia,
   EditorSettings,
+  TabTitleSetting,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -32,7 +34,7 @@ import {
   TextLetterSpacingPicker,
   TextStyleMenu,
   useJournalEditor,
-  useTextStyleCases,
+  useTextStyleBlocks,
 } from '../features/editor'
 import {
   EntryList,
@@ -102,8 +104,13 @@ export function App({ journal }: AppProps) {
   })
   // The toolbar styles whichever was typed in last: the writing or the title.
   const activeEditor = useActiveEditor(editor, titleEditor)
-  useTextStyleCases(editor, pageTheme.textStyles, false)
-  useTextStyleCases(titleEditor, pageTheme.textStyles, true)
+  // What the toolbar's text controls need to show a text style's values where the text has none.
+  const textStyleContext = {
+    isTitle: activeEditor === titleEditor,
+    textStyles: pageTheme.textStyles,
+  }
+  useTextStyleBlocks(editor, pageTheme.textStyles, false)
+  useTextStyleBlocks(titleEditor, pageTheme.textStyles, true)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
   const backgroundMedia = useBackgroundMedia(setToastMessage)
@@ -130,7 +137,7 @@ export function App({ journal }: AppProps) {
     pageTheme.clearHistory()
     backgroundMedia.remove()
     setIsResetSettingsOpen(false)
-    setToastMessage({ text: 'Settings reset.', tone: 'neutral' })
+    setToastMessage({ text: 'Settings and styles reset.', tone: 'neutral' })
   }
   const importFilePickerRef = useRef<HTMLInputElement>(null)
   const openImportPicker = () => importFilePickerRef.current?.click()
@@ -202,8 +209,9 @@ export function App({ journal }: AppProps) {
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
             sections={[
               {
+                // Kept as 'app': which sections are folded is saved by id.
                 id: 'app',
-                title: 'App',
+                title: 'Theme',
                 content: (
                   <AppSettings
                     pageTheme={pageTheme}
@@ -214,24 +222,21 @@ export function App({ journal }: AppProps) {
               {
                 id: 'editor',
                 title: 'Editor',
-                content: (
-                  <EditorSettings
-                    pageTheme={pageTheme}
-                    customTextColors={customTextColors}
-                    onCustomTextColorsChange={changeCustomTextColors}
-                  />
-                ),
+                content: <EditorSettings pageTheme={pageTheme} />,
               },
               {
                 id: 'data',
                 title: 'Data',
                 content: (
-                  <DataSettings
-                    onExport={() => setIsExportOpen(true)}
-                    onChooseImportFile={openImportPicker}
-                    onShowAbout={privacyNotice.open}
-                    onResetSettings={() => setIsResetSettingsOpen(true)}
-                  />
+                  <>
+                    <TabTitleSetting pageTheme={pageTheme} />
+                    <DataSettings
+                      onExport={() => setIsExportOpen(true)}
+                      onChooseImportFile={openImportPicker}
+                      onShowAbout={privacyNotice.open}
+                      onResetSettings={() => setIsResetSettingsOpen(true)}
+                    />
+                  </>
                 ),
               },
             ]}
@@ -266,15 +271,26 @@ export function App({ journal }: AppProps) {
            * font, color, emphasis, then the finer touches (glow, case, letter spacing). Text
            * styles in settings follow the same order.
            */}
-          <div className={styles.toolbar}>
+          <ScrollRow className={styles.toolbar}>
             <div role="group" aria-label="Text" className={styles.toolbarGroup}>
-              <TextStyleMenu editor={activeEditor} />
-              <TextFontMenu editor={activeEditor} editorFont={editorFont} />
+              <TextStyleMenu
+                editor={activeEditor}
+                editorFont={editorFont}
+                onChangeTextStyle={pageTheme.changeTextStyle}
+                onResetTextStyle={pageTheme.resetTextStyle}
+                {...textStyleContext}
+              />
+              <TextFontMenu
+                editor={activeEditor}
+                editorFont={editorFont}
+                {...textStyleContext}
+              />
               <TextColorPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
+                {...textStyleContext}
               />
               <FormattingButtons
                 editor={activeEditor}
@@ -285,12 +301,12 @@ export function App({ journal }: AppProps) {
                 pageTextColor={textColor}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
+                {...textStyleContext}
               />
-              <TextCasePicker editor={activeEditor} />
+              <TextCasePicker editor={activeEditor} {...textStyleContext} />
               <TextLetterSpacingPicker
                 editor={activeEditor}
-                isTitle={activeEditor === titleEditor}
-                textStyles={pageTheme.textStyles}
+                {...textStyleContext}
               />
             </div>
             <Divider />
@@ -317,7 +333,7 @@ export function App({ journal }: AppProps) {
                 onChange={updateAppearance}
               />
             </div>
-          </div>
+          </ScrollRow>
 
           <div className={styles.headerActions}>
             {renderEntryMenu(openEntry.id)}
@@ -372,9 +388,9 @@ export function App({ journal }: AppProps) {
       />
       <ConfirmDialog
         isOpen={isResetSettingsOpen}
-        title="Reset settings?"
+        title="Reset all settings and styles?"
         message="Fonts, colors, text styles, spacing, the tab title and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
-        confirmLabel="Reset settings"
+        confirmLabel="Reset all"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}
       />

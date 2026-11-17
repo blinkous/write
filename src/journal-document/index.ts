@@ -4,7 +4,13 @@ export {
   parseDocument,
   parseTitleContent,
 } from './validateDocument'
-export { isTextCase, type TextCase } from './capitalization'
+export {
+  AS_TYPED_CASE,
+  isOwnTextCase,
+  isTextCase,
+  type OwnTextCase,
+  type TextCase,
+} from './capitalization'
 export { CAPITAL_LETTER_CLASS, type GetBlockTextCase } from './textCase'
 export {
   getThemeColorToken,
@@ -19,8 +25,15 @@ export {
   TITLE_HEADING_LEVEL,
   type ContentHeadingLevel,
 } from './headingLevels'
+export {
+  EMPHASES,
+  EMPHASIS_OFF_ATTRIBUTES,
+  isEmphasisShown,
+  type Emphasis,
+  type GetBlockEmphasis,
+} from './textEmphasis'
 export { resolveTextFont } from './textFont'
-export { resolveTextGlow } from './textGlow'
+export { isOwnTextGlow, NO_GLOW, resolveTextGlow } from './textGlow'
 export {
   LETTER_SPACING_RANGE,
   resolveTextLetterSpacing,

@@ -1,4 +1,14 @@
 .trigger {
+  min-width: 0;
+  overflow: hidden;
   font-size: var(--text-size-small);
   font-weight: normal;
+  /* A long choice ends in "…" where its row gives it less room than it needs. */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fixedWidth {
+  flex: none;
+  width: var(--width-trigger-label);
 }

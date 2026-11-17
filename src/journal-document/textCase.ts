@@ -1,9 +1,16 @@
 import { Mark } from '@tiptap/core'
 import type { MarkType, Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state'
-import { AddMarkStep, RemoveMarkStep } from '@tiptap/pm/transform'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
-import { findCapitalOffsets, isTextCase, type TextCase } from './capitalization'
+import {
+  AS_TYPED_CASE,
+  findCapitalOffsets,
+  isOwnTextCase,
+  isTextCase,
+  type OwnTextCase,
+  type TextCase,
+} from './capitalization'
+import { getChangedRanges } from './changedRanges'
 
 /** Class on letters shown as capitals inside title/sentence case; styled by the editor. */
 export const CAPITAL_LETTER_CLASS = 'text-case-capital'
@@ -16,8 +23,8 @@ type TextCaseStorage = { getBlockTextCase: GetBlockTextCase }
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     textCase: {
-      /** Displays the selection (or the text about to be typed) in a case. */
-      setTextCase: (textCase: TextCase) => ReturnType
+      /** Displays the selection (or the text about to be typed) in a case, or as typed where its style has one. */
+      setTextCase: (textCase: OwnTextCase) => ReturnType
       unsetTextCase: () => ReturnType
       /** Sets where blocks get a case from their text style, and redraws the capitals to match. */
       setBlockTextCases: (getBlockTextCase: GetBlockTextCase) => ReturnType
@@ -49,7 +56,14 @@ function readBlock(
     text += childText
     casesByOffset.push(
       ...Array<TextCase | null>(childText.length).fill(
-        isTextCase(textCase) ? textCase : isCode ? null : blockCase,
+        // As typed wins over its block's case, showing no capitals.
+        textCase === AS_TYPED_CASE
+          ? null
+          : isTextCase(textCase)
+            ? textCase
+            : isCode
+              ? null
+              : blockCase,
       ),
     )
   })
@@ -121,21 +135,6 @@ function buildCapitalDecorations(
   return DecorationSet.create(doc, decorations)
 }
 
-/** Where a transaction changed the document (text, or marks), in the new document. */
-function getChangedRanges(transaction: Transaction): [number, number][] {
-  const ranges: [number, number][] = []
-  transaction.steps.forEach((step, index) => {
-    const laterMapping = transaction.mapping.slice(index + 1)
-    const addRange = (from: number, to: number) =>
-      ranges.push([laterMapping.map(from, -1), laterMapping.map(to, 1)])
-    step.getMap().forEach((_oldFrom, _oldTo, from, to) => addRange(from, to))
-    // Mark changes move nothing, so their map is empty.
-    if (step instanceof AddMarkStep || step instanceof RemoveMarkStep)
-      addRange(step.from, step.to)
-  })
-  return ranges
-}
-
 /**
  * Keeps the capitals in step with an edit: the rest move with the text, and
  * only the blocks it touched are read again, so typing costs the same however
@@ -183,7 +182,7 @@ export const TextCaseMark = Mark.create<object, TextCaseStorage>({
         default: null,
         parseHTML: (element) => element.getAttribute('data-text-case'),
         renderHTML: ({ textCase }) =>
-          isTextCase(textCase) ? { 'data-text-case': textCase } : {},
+          isOwnTextCase(textCase) ? { 'data-text-case': textCase } : {},
       },
     }
   },

@@ -1,9 +1,9 @@
-import type { ColorSuggestion } from '../design-system'
+import type { ColorSuggestion } from '../../design-system'
 import {
   getThemeColorToken,
   THEME_TEXT_COLORS,
   type ThemeTextColor,
-} from '../journal-document'
+} from '../../journal-document'
 
 /**
  * Theme colors (live shades of the page background) as color menu tiles,

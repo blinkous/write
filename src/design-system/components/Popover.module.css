@@ -12,10 +12,17 @@
  * starts at the left, like the list it opens (buttons center by default).
  */
 .anchor > .textTrigger {
+  /* Shrinks with its anchor when the row is tight (its text then ends in "…", see SelectMenu). */
+  max-width: 100%;
   --space-control-inline: var(--space-trigger-inline);
   gap: var(--space-1);
   justify-content: start;
   text-align: start;
+}
+
+/* Focused on open so keystrokes land nowhere until Tab; it isn't a control, so no ring. */
+.panel:focus {
+  outline: none;
 }
 
 .panel {

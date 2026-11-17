@@ -1,6 +1,17 @@
 export const TEXT_CASES = ['upper', 'lower', 'title', 'sentence'] as const
 export type TextCase = (typeof TEXT_CASES)[number]
 
+/**
+ * What text can store as its own case: a case, or `as-typed`, which shows the
+ * letters as typed where its text style has a case.
+ */
+export const AS_TYPED_CASE = 'as-typed'
+export type OwnTextCase = TextCase | typeof AS_TYPED_CASE
+
+export function isOwnTextCase(value: unknown): value is OwnTextCase {
+  return value === AS_TYPED_CASE || isTextCase(value)
+}
+
 export function isTextCase(value: unknown): value is TextCase {
   return TEXT_CASES.some((textCase) => textCase === value)
 }

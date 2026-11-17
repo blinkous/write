@@ -131,9 +131,9 @@ export function usePageTheme(
         true,
       )
     },
-    /** Editor back to its defaults: every text style, and the editor font matching the app's. */
-    resetEditor() {
-      change({ editorFont: appFont, textStyles: DEFAULT_TEXT_STYLES }, true)
+    /** Every text style back to its default (the editor's default font stays). */
+    resetTextStyles() {
+      change({ textStyles: DEFAULT_TEXT_STYLES }, true)
     },
     /** Ends the current edit (e.g. a finished drag) as one undo step. */
     commit() {

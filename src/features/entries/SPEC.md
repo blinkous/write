@@ -128,7 +128,7 @@ The list of journal entries and which one is open.
   imported too.", or why they were skipped).
   The entry ⋯ menu has copy as markdown, export entry, import and delete. The settings
   drawer's **Data** section (`DataSettings`) has **Export…**, import (journal backups or
-  settings files; see settings `SPEC.md`), **Reset settings…** (see settings `SPEC.md`),
+  settings files; see settings `SPEC.md`), **Reset all settings and styles** (see settings `SPEC.md`),
   and About.
 - **Export…** opens `ExportDialog`: two columns (stacking when narrow), **Include** Journal
   and/or Settings (checkboxes) and **Format** JSON or Markdown (radios), then Cancel | Export. JSON saves the journal with its

@@ -19,6 +19,8 @@ type SelectMenuProps<Value extends string> = {
   onChange: (value: Value) => void
   /** What the trigger shows for the current choice; its label by default. */
   triggerContent?: ReactNode
+  /** Keeps the trigger one width whatever the choice (e.g. in a toolbar); longer ones end in "…". */
+  hasFixedWidth?: boolean
   onClose?: () => void
 }
 
@@ -32,6 +34,7 @@ export function SelectMenu<Value extends string>({
   value,
   onChange,
   triggerContent,
+  hasFixedWidth = false,
   onClose,
 }: SelectMenuProps<Value>) {
   const currentLabel =
@@ -44,7 +47,9 @@ export function SelectMenu<Value extends string>({
       onClose={onClose}
       trigger={
         <>
-          <span className={styles.trigger}>
+          <span
+            className={`${styles.trigger} ${hasFixedWidth ? styles.fixedWidth : ''}`}
+          >
             {triggerContent ?? currentLabel}
           </span>
           <Chevron />
