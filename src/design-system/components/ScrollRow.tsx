@@ -22,7 +22,7 @@ function markHiddenEnds(row: HTMLDivElement) {
 }
 
 /**
- * A row of controls, centered in its space, that scrolls sideways when it
+ * A row of controls, centered in its space (or at its start, see the CSS), that scrolls sideways when it
  * doesn't fit (no scrollbar); either end fades while there's more that way.
  * Which ends fade is set on the element directly, so scrolling never re-renders.
  */

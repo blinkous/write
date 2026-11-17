@@ -20,9 +20,13 @@
   display: none;
 }
 
-/* Centered while it fits: auto margins, unlike justify-content, give way when it overflows, so the start stays reachable. */
+/*
+ * Centered while it fits: auto margins, unlike justify-content, give way when
+ * it overflows, so the start stays reachable. A row can start at its start
+ * edge instead by setting --scroll-row-start to 0 (e.g. on wide screens only).
+ */
 .row > :first-child {
-  margin-inline-start: auto;
+  margin-inline-start: var(--scroll-row-start, auto);
 }
 
 .row > :last-child {
