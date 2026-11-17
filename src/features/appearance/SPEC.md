@@ -33,7 +33,7 @@ opacity), in the settings drawer's header.
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Settings sections** (shown in the settings drawer): **App** (`AppSettings`) has the
+- **Settings sections** (shown in the settings drawer): **Theme** (`AppSettings`) has the
   **tab title** (`EditableText`: quiet text at the row's end, like the font's name, showing
   the app's name, "Write", while empty; the whole space after the label is the button (hover included); click it to type in place, Enter or clicking away
   keeps it, Escape puts it back; up to 60 characters, a longer saved one falls back to
@@ -41,11 +41,11 @@ opacity), in the settings drawer's header.
   interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter), then the page
   colors (`PageColorSettings`, below): **Foreground**, then **Background** with the background
   picture or video. **Editor**
-  (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
+  (`EditorSettings`) has the **Default font**, the editor font (sets `--font-editor`; default Lora), the default for
   every text style. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
   kept here (`changeTextStyle`, `resetTextStyle`, with undo/redo) and edited from the
   toolbar's style menu (see the editor's SPEC). **Page colors**
-  (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
+  (`PageColorSettings`, in Theme) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system
   setting, `DEFAULT_PAGE_COLORS`; saved colors always win and don't follow later system
@@ -102,7 +102,7 @@ opacity), in the settings drawer's header.
 
 ## Background picture or video
 
-- Chosen in **App**, on the **Background** row: a tile (`FileSwatch`, via
+- Chosen in **Theme**, on the **Background** row: a tile (`FileSwatch`, via
   `BackgroundMediaTile`) before the color tile. Empty, it shows + and a picture icon; clicking it
   opens a file picker (any image, including GIFs, or video, up to 100 MB). Once one is set, it
   shows a small still of it (a video's first moment); clicking changes it, and an × on hover or

@@ -207,8 +207,9 @@ export function App({ journal }: AppProps) {
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
             sections={[
               {
+                // Kept as 'app': which sections are folded is saved by id.
                 id: 'app',
-                title: 'App',
+                title: 'Theme',
                 content: (
                   <AppSettings
                     pageTheme={pageTheme}

@@ -13,9 +13,9 @@ export function EditorSettings({
 }) {
   const { editorFont, changeFonts } = pageTheme
   return (
-    <LabeledRow label="Font" control="button">
+    <LabeledRow label="Default font" control="button">
       <FontMenu
-        label="Editor font"
+        label="Default font"
         value={editorFont}
         onChange={(nextFont) =>
           nextFont && changeFonts({ editorFont: nextFont })
