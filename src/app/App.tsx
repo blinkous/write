@@ -14,7 +14,6 @@ import {
   useBackgroundMedia,
   EditorSettings,
   TextStyleEditButton,
-  TextStylesFooter,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -275,7 +274,6 @@ export function App({ journal }: AppProps) {
                     onCustomTextColorsChange={changeCustomTextColors}
                   />
                 )}
-                footer={<TextStylesFooter pageTheme={pageTheme} />}
               />
               <TextFontMenu editor={activeEditor} editorFont={editorFont} />
               <TextColorPicker

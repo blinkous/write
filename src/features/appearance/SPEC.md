@@ -2,7 +2,7 @@
 
 User-adjustable look: fonts, text styles, margins, vertical spacing and colors. All
 page-wide, with one shared undo/redo (fonts, styles, colors, tab title, background blur and
-opacity), in the settings drawer's header and at the foot of the style menu.
+opacity), in the settings drawer's header.
 
 ## How it works
 
@@ -41,8 +41,9 @@ opacity), in the settings drawer's header and at the foot of the style menu.
   interface font (sidebar, toolbar, menus; sets `--font-ui`; default Inter), then the page
   colors (`PageColorSettings`, below): **Foreground**, then **Background** with the background
   picture or video. **Editor**
-  (`EditorSettings`) has just the editor font (sets `--font-editor`; default Lora), the default for
-  every text style. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
+  (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
+  every text style, then **Reset all styles**, which resets every style and sets the editor
+  font to the app font. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
   edited from the toolbar's style menu: `TextStyleEditButton` (sliders, at the end of each
   style's row) opens a panel beside it (`TextStyleControls`) with labeled rows in the
   toolbar's order: **Font** (Default = editor font, named in a caption under "Default"),
@@ -50,8 +51,7 @@ opacity), in the settings drawer's header and at the foot of the style menu.
   toolbar's toggles (bold, italic, underline, strikethrough) with a reset for just that style
   at its end (off while it's at its defaults), then **Glow** (`GlowColorMenu`), **Case**
   (`TextCaseMenu`) and **Letter spacing** (% of the size). The menu's rows preview every
-  change on the page background. `TextStylesFooter`, at the menu's foot, has undo/redo and
-  **Reset all styles** (every style; the editor font stays). Size is only here, on purpose (see
+  change on the page background. Size is only here, on purpose (see
   "Formatting in both places" in the root `SPEC.md`). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background

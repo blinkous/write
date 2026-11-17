@@ -15,7 +15,6 @@ function renderMenu(isTitle: boolean) {
       editor={editor}
       isTitle={isTitle}
       renderStyleEdit={(name) => <button type="button">Edit {name}</button>}
-      footer={<button type="button">Reset all styles</button>}
     />,
   )
   return editor
@@ -27,7 +26,7 @@ const queryButton = (name: string | RegExp) =>
   screen.queryByRole('button', { name, hidden: true })
 
 describe('TextStyleMenu', () => {
-  it('gives each style row its own edit control, and the menu its footer', async () => {
+  it('gives each style row its own edit control', async () => {
     renderMenu(false)
     await userEvent
       .setup()
@@ -35,7 +34,6 @@ describe('TextStyleMenu', () => {
     for (const name of ['body', 'small', 'heading-2', 'heading-6'])
       expect(button(`Edit ${name}`)).toBeInTheDocument()
     expect(queryButton('Edit title')).not.toBeInTheDocument()
-    expect(button('Reset all styles')).toBeInTheDocument()
   })
 
   it('applies a style from its row', async () => {

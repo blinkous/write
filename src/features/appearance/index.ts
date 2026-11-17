@@ -1,7 +1,7 @@
 export { ThemeHistoryButtons } from './ThemeSettings'
 export { AppSettings } from './AppSettings'
 export { EditorSettings } from './EditorSettings'
-export { TextStyleEditButton, TextStylesFooter } from './TextStyleEditButton'
+export { TextStyleEditButton } from './TextStyleEditButton'
 export { MarginsMenu, SpacingMenu } from './settingMenus'
 export { type Appearance } from './appearanceOptions'
 export { parseAppearance } from './appearanceStorage'

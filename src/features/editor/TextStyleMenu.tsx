@@ -33,8 +33,6 @@ type TextStyleMenuProps = {
   isTitle: boolean
   /** A style's edit control, at the end of its row (the app supplies it, as styles live in appearance). */
   renderStyleEdit: (name: TextStyleName) => ReactNode
-  /** Actions for every style at the foot of the menu (e.g. undo, reset all). */
-  footer: ReactNode
 }
 
 type StyleRowProps = {
@@ -77,7 +75,6 @@ export function TextStyleMenu({
   editor,
   isTitle,
   renderStyleEdit,
-  footer,
 }: TextStyleMenuProps) {
   const activeStyle = useEditorState({
     editor,
@@ -103,32 +100,29 @@ export function TextStyleMenu({
       onClose={() => editor.commands.focus()}
     >
       {(close) => (
-        <>
-          <ActionList>
-            {isTitle ? (
+        <ActionList>
+          {isTitle ? (
+            <StyleRow
+              {...TITLE_STYLE}
+              isSelected
+              onSelect={close}
+              editControl={renderStyleEdit(TITLE_STYLE.name)}
+            />
+          ) : (
+            MENU_STYLES.map((textStyle) => (
               <StyleRow
-                {...TITLE_STYLE}
-                isSelected
-                onSelect={close}
-                editControl={renderStyleEdit(TITLE_STYLE.name)}
+                key={textStyle.name}
+                {...textStyle}
+                isSelected={textStyle.name === activeStyle.name}
+                onSelect={() => {
+                  applyTextStyle(editor, textStyle)
+                  close()
+                }}
+                editControl={renderStyleEdit(textStyle.name)}
               />
-            ) : (
-              MENU_STYLES.map((textStyle) => (
-                <StyleRow
-                  key={textStyle.name}
-                  {...textStyle}
-                  isSelected={textStyle.name === activeStyle.name}
-                  onSelect={() => {
-                    applyTextStyle(editor, textStyle)
-                    close()
-                  }}
-                  editControl={renderStyleEdit(textStyle.name)}
-                />
-              ))
-            )}
-          </ActionList>
-          {footer}
-        </>
+            ))
+          )}
+        </ActionList>
       )}
     </Popover>
   )

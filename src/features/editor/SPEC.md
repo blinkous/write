@@ -26,11 +26,10 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
   (size, weight, font, color, glow) is edited from the same menu: each row ends in an edit
-  button (sliders, `MenuActionRow`) opening that style's panel beside the menu, and the menu's
-  footer has undo/redo (the settings' history) and **Reset all styles** (styles only, not the
-  editor font). The panel and footer belong to appearance (`TextStyleEditButton`,
-  `TextStylesFooter`); the app hands them in through `renderStyleEdit` and `footer`, so the
-  editor doesn't import appearance. In the title the menu lists just **Title** (selected,
+  button (sliders, `MenuActionRow`) opening that style's panel beside the menu, with a reset
+  for that style. Undo/redo and resetting every style stay in settings, so the menu is only
+  about styles. The panel belongs to appearance (`TextStyleEditButton`); the app hands it in
+  through `renderStyleEdit`, so the editor doesn't import appearance. In the title the menu lists just **Title** (selected,
   heading-1 icon), to edit it; it isn't applied or stepped to.
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
