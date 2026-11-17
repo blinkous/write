@@ -44,8 +44,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - **Letter spacing** (`TextLetterSpacingPicker`) gives the selection, or the text about to
   be typed, its own letter spacing (`journal-document/textLetterSpacing.ts`, % of its size),
   with the same stepper and range as text styles. It shows the text's own spacing, or its
-  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); **Match style**
-  removes the text's own. Letter spacing doesn't carry into markdown.
+  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); a reset beside
+  the stepper (↺, off when there's nothing to reset) removes the text's own. Letter spacing doesn't carry into markdown.
 - **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
   to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
   text color: white text with a pink glow reads as neon. Its menu is text color's with **No

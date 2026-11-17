@@ -1,5 +1,5 @@
 import { useEditorState, type Editor } from '@tiptap/react'
-import { LetterSpacing } from 'lucide-react'
+import { LetterSpacing, RotateCcw } from 'lucide-react'
 import {
   Button,
   LabeledRow,
@@ -13,6 +13,7 @@ import {
 } from '../../journal-document'
 import type { TextStyles } from '../../text-styles'
 import { getTextStyleNameAt } from './textStyles'
+import styles from './TextLetterSpacingPicker.module.css'
 
 type TextLetterSpacingPickerProps = {
   editor: Editor
@@ -25,8 +26,8 @@ type TextLetterSpacingPickerProps = {
 /**
  * Gives the selected text, or the text about to be typed, its own letter
  * spacing (% of its size, the same stepper as each text style's in
- * settings). It shows the text's own spacing, or its style's; Match style
- * removes the text's own.
+ * settings). It shows the text's own spacing, or its style's; the reset
+ * beside it removes the text's own.
  */
 export function TextLetterSpacingPicker({
   editor,
@@ -59,28 +60,32 @@ export function TextLetterSpacingPicker({
       {(_close, refocus) => (
         <PopoverPanel width="regular">
           <LabeledRow label="Letter spacing" control="icon">
-            <NumberStepper
-              label="Letter spacing"
-              value={shownLetterSpacing}
-              min={LETTER_SPACING_RANGE.min}
-              max={LETTER_SPACING_RANGE.max}
-              unit="%"
-              onChange={(letterSpacing) =>
-                editor.chain().setTextLetterSpacing(letterSpacing).run()
-              }
-            />
+            <div className={styles.controls}>
+              <NumberStepper
+                label="Letter spacing"
+                value={shownLetterSpacing}
+                min={LETTER_SPACING_RANGE.min}
+                max={LETTER_SPACING_RANGE.max}
+                unit="%"
+                onChange={(letterSpacing) =>
+                  editor.chain().setTextLetterSpacing(letterSpacing).run()
+                }
+              />
+              <Button
+                iconOnly
+                aria-label="Reset letter spacing"
+                title="Reset letter spacing"
+                disabled={ownLetterSpacing === null}
+                onClick={() => {
+                  // It turns off once reset, so focus moves on rather than being lost.
+                  refocus()
+                  editor.chain().unsetTextLetterSpacing().run()
+                }}
+              >
+                <RotateCcw aria-hidden="true" />
+              </Button>
+            </div>
           </LabeledRow>
-          <Button
-            variant="ghost"
-            disabled={ownLetterSpacing === null}
-            onClick={() => {
-              // It turns off once used, so focus moves on rather than being lost.
-              refocus()
-              editor.chain().unsetTextLetterSpacing().run()
-            }}
-          >
-            Match style
-          </Button>
         </PopoverPanel>
       )}
     </Popover>
