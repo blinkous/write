@@ -48,12 +48,14 @@ opacity), in the settings drawer's header.
   style's row) opens a panel beside it (`TextStyleControls`) laid out like the toolbar's text
   group, with the same controls in the same order and no labels (each has its tooltip and
   accessible name): **font** (Default = editor font, named in a caption under "Default"),
-  **size** (`StepperMenu` behind an "Aa" icon, px, the one control the toolbar lacks),
+  **size** (`NumberStepper`, px, the one control the toolbar lacks),
   **color** (`TextColorMenu`), bold, italic, underline, strikethrough, **glow**
   (`GlowColorMenu`), **case** (`TextCaseMenu`), **letter spacing** (`LetterSpacingMenu`, %
-  of the size), then a reset for the whole style (off while it's at its defaults). Size and
-  letter spacing reset to the style's default beside their steppers. When narrow it wraps
-  between groups (font and size; color and emphasis; the rest), never inside one. The menu's
+  of the size), then a reset for the whole style (off while it's at its defaults). Font and
+  the size stepper share the first line (a long font name ends in "…" to make room); the
+  nine icons follow on two lines of five columns: color and the emphasis toggles, then glow,
+  case, letter spacing and the reset. Letter spacing resets to the style's default beside
+  its stepper. The menu's
   rows preview every change on the page background. Size is only here, on purpose (see
   "Formatting in both places" in the root `SPEC.md`). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so

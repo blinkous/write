@@ -1,12 +1,5 @@
-import {
-  ALargeSmall,
-  Bold,
-  Italic,
-  RotateCcw,
-  Strikethrough,
-  Underline,
-} from 'lucide-react'
-import { Button, StepperMenu } from '../../design-system'
+import { Bold, Italic, RotateCcw, Strikethrough, Underline } from 'lucide-react'
+import { Button, NumberStepper } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import {
   DEFAULT_TEXT_STYLES,
@@ -39,11 +32,12 @@ const STYLE_TOGGLES = [
 
 /**
  * Everything a text style sets, as the toolbar's text group: the same
- * controls in the same order (font, size, color, the emphasis toggles, glow,
- * case, letter spacing), then a reset for the whole style. Size is the one
- * control the toolbar lacks (style-only, see the root SPEC). It wraps between
- * its groups when narrow. `refocus` comes from the popover holding it, so
- * focus moves on once the reset turns itself off.
+ * controls in the same order, then a reset for the whole style. Font and size
+ * (the one control the toolbar lacks; style-only, see the root SPEC) share the
+ * first line; the icons follow in two lines of five columns: color and the
+ * emphasis toggles, then glow, case, letter spacing and the reset. `refocus`
+ * comes from the popover holding it, so focus moves on once the reset turns
+ * itself off.
  */
 export function TextStyleControls({
   name,
@@ -67,26 +61,23 @@ export function TextStyleControls({
 
   return (
     <div role="group" aria-label={`${label} style`} className={styles.strip}>
-      <div className={styles.group}>
+      <div className={styles.fontAndSize}>
         <FontMenu
           label={`${label} font`}
           value={settings.font}
           defaultFont={editorFont}
           onChange={(font) => changeTextStyle(name, { font })}
         />
-        <StepperMenu
+        <NumberStepper
           label={`${label} size`}
-          icon={<ALargeSmall aria-hidden="true" />}
           value={settings.size}
           min={TEXT_STYLE_SIZE_RANGE.min}
           max={TEXT_STYLE_SIZE_RANGE.max}
           unit="px"
           onChange={(size) => changeTextStyle(name, { size })}
-          onReset={() => changeTextStyle(name, { size: defaults.size })}
-          canReset={settings.size !== defaults.size}
         />
       </div>
-      <div className={styles.group}>
+      <div className={styles.icons}>
         <TextColorMenu
           label={`${label} color`}
           value={settings.color}
@@ -110,8 +101,6 @@ export function TextStyleControls({
             <Icon aria-hidden="true" />
           </Button>
         ))}
-      </div>
-      <div className={styles.group}>
         <GlowColorMenu
           label={`${label} glow`}
           value={settings.glow}

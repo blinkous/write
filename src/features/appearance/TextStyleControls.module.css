@@ -1,17 +1,29 @@
-/*
- * Laid out like the toolbar's text group: icon controls in a line, spaced as
- * the toolbar spaces its groups. When the panel is narrow it wraps between
- * groups (font and size; color and emphasis; the finer touches), never inside one.
- */
+/* Font and size on the first line, then the icons below. */
 .strip {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1) var(--space-2);
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.group {
+/* The font takes the room its name needs, shortened if the stepper (at the end) needs it. */
+.fontAndSize {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.fontAndSize > :first-child {
+  min-width: 0;
+}
+
+/*
+ * Five columns, so the icons always make the same two lines (color and the
+ * emphasis toggles; glow, case, letter spacing and the reset), lined up in
+ * columns, at any width or touch size.
+ */
+.icons {
+  display: grid;
+  grid-template-columns: repeat(5, var(--size-control));
   gap: var(--space-1);
 }
