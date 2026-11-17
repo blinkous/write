@@ -13,7 +13,7 @@ import {
   BackgroundMediaLayer,
   useBackgroundMedia,
   EditorSettings,
-  JournalNameSetting,
+  TabTitleSetting,
   ThemeHistoryButtons,
   SpacingMenu,
   useAppearance,
@@ -228,7 +228,7 @@ export function App({ journal }: AppProps) {
                 title: 'Data',
                 content: (
                   <>
-                    <JournalNameSetting pageTheme={pageTheme} />
+                    <TabTitleSetting pageTheme={pageTheme} />
                     <DataSettings
                       onExport={() => setIsExportOpen(true)}
                       onChooseImportFile={openImportPicker}

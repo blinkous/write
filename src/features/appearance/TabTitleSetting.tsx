@@ -3,19 +3,19 @@ import { APP_NAME, TAB_TITLE_MAX_LENGTH } from './appearanceOptions'
 import type { usePageTheme } from './usePageTheme'
 
 /**
- * The journal's name, shown as the browser tab's title ("Write" while
- * empty). Typed in place; part of the settings' undo history.
+ * The browser tab's title ("Write" while empty). Typed in place; part of the
+ * settings' undo history.
  */
-export function JournalNameSetting({
+export function TabTitleSetting({
   pageTheme,
 }: {
   pageTheme: ReturnType<typeof usePageTheme>
 }) {
   const { tabTitle, changeTabTitle } = pageTheme
   return (
-    <LabeledRow label="Journal name" control="text">
+    <LabeledRow label="Tab title" control="text">
       <EditableText
-        label="Journal name"
+        label="Tab title"
         value={tabTitle}
         placeholder={APP_NAME}
         maxLength={TAB_TITLE_MAX_LENGTH}

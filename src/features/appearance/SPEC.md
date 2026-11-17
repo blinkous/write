@@ -1,7 +1,7 @@
 # Appearance
 
 User-adjustable look: fonts, text styles, margins, vertical spacing and colors. All
-page-wide, with one shared undo/redo (fonts, styles, colors, journal name, background blur and
+page-wide, with one shared undo/redo (fonts, styles, colors, tab title, background blur and
 opacity), in the settings drawer's header.
 
 ## How it works
@@ -33,7 +33,7 @@ opacity), in the settings drawer's header.
   page doesn't lag behind the header and sidebar while dragging a color picker.
 - Options live in `appearanceOptions.ts`. Each choice maps to a design token or CSS
   variable, which `applyAppearance.ts` sets on `<html>`; components only read variables.
-- **Journal name** (`JournalNameSetting`, first in Data; stored as `tabTitle`): the browser
+- **Tab title** (`TabTitleSetting`, first in Data): the browser
   tab's title, "Write" while empty. Typed in place (click, Enter or clicking away keeps it,
   Escape puts it back), up to 60 characters; a longer saved one falls back to empty.
 - **Settings sections** (shown in the settings drawer): **Theme** (`AppSettings`) has the
@@ -84,13 +84,13 @@ opacity), in the settings drawer's header.
   Background's picks a page for the text color (`deriveCozyBackgroundColor`: the text
   ramp walked back, so a derived text color gives about its page back; pages stay soft,
   chroma capped, even for vivid text).
-- **Undo/redo** covers fonts, colors, text styles, the journal name and the background's blur and
+- **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur and
   opacity together (not choosing or removing the background file, which isn't kept): the last 50
   changes, surviving a refresh (`pageThemeHistory.ts`, stored under `write.pageThemeHistory.v1`;
   unreadable steps are dropped, never more than 50 kept). The older color-only history
   (`write.pageColorHistory.v1`) is read once, its steps given the current font, and left as a
   backup. Steps saved before a setting joined history take its current value. A font pick, a
-  stepper press or a typed blur/opacity is one step; typing a journal name is one step once the
+  stepper press or a typed blur/opacity is one step; typing a tab title is one step once the
   field is left. Steps saved with one font (before the app font) treat it as
   the editor font. A whole drag in a color picker is one step: an edit begins on
   the first change and is committed on the input's native `change` event or when the

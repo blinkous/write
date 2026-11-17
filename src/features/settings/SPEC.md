@@ -23,7 +23,7 @@ The settings drawer at the bottom of the sidebar.
 - Rows in a section use regular weight (menu rows are medium in popover menus), so the Data
   actions match the font and color rows.
 - The app passes the sections in (id, title, contents), so features don't import each other: App and
-  Editor (appearance), Data (the journal name from appearance, then entries: exports, import, reset, About). The drawer has no header: while open, the
+  Editor (appearance), Data (the tab title from appearance, then entries: exports, import, reset, About). The drawer has no header: while open, the
   bottom bar shows one undo/redo for every setting but the background file (appearance's theme history)
   beside the ⚙, which is shaded while open (like any open panel's toggle, via `aria-expanded`).
   Closed, the bar is just the ⚙. This saves a row; the drawer is still named "Settings" for
