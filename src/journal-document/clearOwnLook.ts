@@ -6,24 +6,24 @@ const OWN_LOOK_MARKS = ['textStyle', 'textCase', ...EMPHASES] as const
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    resetTextLook: {
+    clearOwnLook: {
       /**
        * Removes the selected text's own look (font, color, glow, case, letter
        * spacing, emphasis), so it looks like its text style; without a
        * selection, the cursor's whole block.
        */
-      resetTextLook: () => ReturnType
+      clearOwnLook: () => ReturnType
     }
   }
 }
 
-/** Text back to its text style's look, on ⌘\\ as in Docs. */
-export const ResetTextLook = Extension.create({
-  name: 'resetTextLook',
+/** Text back to its text style's look (see the style menu's Update text to match style). */
+export const ClearOwnLook = Extension.create({
+  name: 'clearOwnLook',
 
   addCommands() {
     return {
-      resetTextLook:
+      clearOwnLook:
         () =>
         ({ tr }) => {
           const { from, to, empty, $from, $to } = tr.selection
@@ -39,9 +39,5 @@ export const ResetTextLook = Extension.create({
           return true
         },
     }
-  },
-
-  addKeyboardShortcuts() {
-    return { 'Mod-\\': () => this.editor.commands.resetTextLook() }
   },
 })

@@ -24,7 +24,6 @@ import {
   JournalPage,
   MARKUP_FORMATTING_ACTIONS,
   TEXT_FORMATTING_ACTIONS,
-  TEXT_RESET_ACTIONS,
   TextCasePicker,
   TextFontMenu,
   useActiveEditor,
@@ -302,10 +301,6 @@ export function App({ journal }: AppProps) {
               <TextLetterSpacingPicker
                 editor={activeEditor}
                 {...textStyleContext}
-              />
-              <FormattingButtons
-                editor={activeEditor}
-                actions={TEXT_RESET_ACTIONS}
               />
             </div>
             <Divider />

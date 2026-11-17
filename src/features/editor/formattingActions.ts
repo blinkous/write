@@ -7,7 +7,6 @@ import {
   List,
   ListOrdered,
   Quote,
-  RemoveFormatting,
   SquareCode,
   Strikethrough,
   Underline,
@@ -74,18 +73,6 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     requires: 'strike',
     isActive: (editor) => isEmphasisShown(editor, 'strike'),
     run: (editor) => editor.chain().focus().toggleEmphasis('strike').run(),
-  },
-]
-
-/** Text back to its style's look, ending the toolbar's text group. */
-export const TEXT_RESET_ACTIONS: readonly FormattingAction[] = [
-  {
-    name: 'reset-text',
-    label: 'Reset text to style',
-    shortcut: 'Mod-\\',
-    icon: RemoveFormatting,
-    requires: 'textStyle',
-    run: (editor) => editor.chain().focus().resetTextLook().run(),
   },
 ]
 

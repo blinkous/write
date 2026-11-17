@@ -1,11 +1,9 @@
-import { RotateCcw } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Button } from './Button'
 import { LabeledRow } from './LabeledRow'
 import { NumberStepper } from './NumberStepper'
 import { Popover } from './Popover'
 import { PopoverPanel } from './PopoverPanel'
-import styles from './StepperMenu.module.css'
+import { ResetMenuItem } from './ResetMenuItem'
 
 type StepperMenuProps = {
   /** Names the value, e.g. "Letter spacing"; the trigger adds the current value to it. */
@@ -26,7 +24,7 @@ type StepperMenuProps = {
 
 /**
  * An icon that opens a number stepper, for a toolbar-sized control (e.g.
- * letter spacing). The reset beside the stepper puts it back.
+ * letter spacing), with a reset row under it that puts it back.
  */
 export function StepperMenu({
   label,
@@ -47,9 +45,9 @@ export function StepperMenu({
       onClose={onClose}
     >
       {(_close, refocus) => (
-        <PopoverPanel width="regular">
-          <LabeledRow label={label} control="icon">
-            <div className={styles.controls}>
+        <>
+          <PopoverPanel width="regular">
+            <LabeledRow label={label} control="icon">
               <NumberStepper
                 label={label}
                 value={value}
@@ -58,22 +56,15 @@ export function StepperMenu({
                 unit={unit}
                 onChange={onChange}
               />
-              <Button
-                iconOnly
-                aria-label={`Reset ${label.toLowerCase()}`}
-                title={`Reset ${label.toLowerCase()}`}
-                disabled={!canReset}
-                onClick={() => {
-                  // It turns off once reset, so focus moves on rather than being lost.
-                  refocus()
-                  onReset()
-                }}
-              >
-                <RotateCcw aria-hidden="true" />
-              </Button>
-            </div>
-          </LabeledRow>
-        </PopoverPanel>
+            </LabeledRow>
+          </PopoverPanel>
+          <ResetMenuItem
+            label={`Reset ${label.toLowerCase()}`}
+            canReset={canReset}
+            onReset={onReset}
+            refocus={refocus}
+          />
+        </>
       )}
     </Popover>
   )

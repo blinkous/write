@@ -18,9 +18,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   (`TEXT_FORMATTING_ACTIONS`, `MARKUP_FORMATTING_ACTIONS`). **Every control shows what's
   active, its text style's included**: bold, italic, underline and strikethrough are pressed
   in a style that has them, and pressing one turns it off for that text
-  (`journal-document`'s text emphasis). **Reset text to style** (⌘\\, at the end of the
-  text group) removes the selected text's own look (or the cursor paragraph's), so it looks
-  like its style again; links and code stay. Font, color, glow, case and letter spacing show the
+  (`journal-document`'s text emphasis). Font, color, glow, case and letter spacing show the
   text's own value, or its style's (`useOwnAndStyleValue`), and follow one rule
   (`chooseOwnValue`): **choosing what the style already gives removes the text's own**, so it
   follows its style again; anything else becomes its own, including "none" values where the
@@ -36,8 +34,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
   (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
   (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update to match selection**,
-  **Reset selection to style** (the reverse: the selected paragraphs, or the cursor's, take
-  the style and lose their own look; links and code stay), **Size** and a reset (↺, bottom right, off at the style's defaults). Undo/redo stays in
+  **Update text to match style** (the reverse: the selected paragraphs, or the cursor's, take
+  the style and lose their own look; links and code stay), **Size** and **Reset style** (its last row). Undo/redo stays in
   settings; "Reset settings" (Data) resets every style at once. The app hands in the styles and the changes
   (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
 - **Update to match selection** (`matchTextStyle.ts`) gives the style what the toolbar shows
@@ -67,8 +65,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - **Letter spacing** (`TextLetterSpacingPicker`) gives the selection, or the text about to
   be typed, its own letter spacing (`journal-document/textLetterSpacing.ts`, % of its size),
   with the same control as text styles (`LetterSpacingMenu`, from `src/text-styles`). It shows the text's own spacing, or its
-  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); a reset beside
-  the stepper (↺, off when there's nothing to reset) removes the text's own. Letter spacing doesn't carry into markdown.
+  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); **Reset letter spacing** (its last row) removes the text's own. Letter spacing doesn't carry into markdown.
 - **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
   to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
   text color: white text with a pink glow reads as neon. Its menu is text color's with **No

@@ -7,12 +7,12 @@ import { chainTextStyle, type TextStyle } from './textStyles'
  * text. Without a selection, the cursor's whole block. The title's one style
  * isn't applied, only returned to (`textStyle` null). One undo step.
  */
-export function resetToTextStyle(
+export function matchTextToStyle(
   editor: Editor,
   textStyle: TextStyle | null,
 ): boolean {
   const chain = editor.chain().focus()
   return (textStyle ? chainTextStyle(chain, textStyle) : chain)
-    .resetTextLook()
+    .clearOwnLook()
     .run()
 }

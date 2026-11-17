@@ -1,13 +1,12 @@
-import { Ellipsis, RotateCcw } from 'lucide-react'
+import { Ellipsis } from 'lucide-react'
 import {
   ActionList,
-  Button,
   LabeledRow,
-  MenuFooter,
   MenuItem,
   NumberStepper,
   Popover,
   PopoverPanel,
+  ResetMenuItem,
 } from '../../design-system'
 import { TEXT_STYLE_SIZE_RANGE } from '../../text-styles'
 
@@ -16,8 +15,8 @@ type TextStyleOptionsProps = {
   label: string
   /** Makes the style look like the selected text (see matchTextStyle). */
   onMatch: () => void
-  /** Makes the selected text look like the style (see resetToTextStyle). */
-  onResetSelection: () => void
+  /** Makes the selected text look like the style (see matchTextToStyle). */
+  onMatchText: () => void
   /** px; only a style has a size (see the root SPEC). */
   size: number
   onSizeChange: (size: number) => void
@@ -29,13 +28,13 @@ type TextStyleOptionsProps = {
 /**
  * A text style's ⋯ at the end of its row in the style menu: update it to match
  * the selected text (the toolbar is the one place formatting is set), or the
- * reverse, reset the selected text to it; its size; and a reset of the style
- * at the bottom right.
+ * reverse, update the selected text to match it; its size; and a reset of the style
+ * as the last row.
  */
 export function TextStyleOptions({
   label,
   onMatch,
-  onResetSelection,
+  onMatchText,
   size,
   onSizeChange,
   canReset,
@@ -51,8 +50,8 @@ export function TextStyleOptions({
         <>
           <ActionList>
             <MenuItem onClick={onMatch}>Update to match selection</MenuItem>
-            <MenuItem onClick={onResetSelection}>
-              Reset selection to style
+            <MenuItem onClick={onMatchText}>
+              Update text to match style
             </MenuItem>
           </ActionList>
           <PopoverPanel width="regular">
@@ -67,21 +66,12 @@ export function TextStyleOptions({
               />
             </LabeledRow>
           </PopoverPanel>
-          <MenuFooter>
-            <Button
-              iconOnly
-              aria-label={`Reset ${label.toLowerCase()} style`}
-              title={`Reset ${label.toLowerCase()} style`}
-              disabled={!canReset}
-              onClick={() => {
-                // It turns off once reset, so focus moves on rather than being lost.
-                refocus()
-                onReset()
-              }}
-            >
-              <RotateCcw aria-hidden="true" />
-            </Button>
-          </MenuFooter>
+          <ResetMenuItem
+            label="Reset style"
+            canReset={canReset}
+            onReset={onReset}
+            refocus={refocus}
+          />
         </>
       )}
     </Popover>

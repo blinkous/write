@@ -47,7 +47,7 @@ Text formatting is set only with the **toolbar** (applied to the selected text, 
 entry). A **text style** (Title, Heading, Body or Small, applied to all its text) takes its
 look from text: **Update to match selection** in the style's ⋯ (the style menu) makes the
 style look like the selected text, so every toolbar option is a style option too, with no
-second set of controls; **Reset selection to style** does the reverse. Text's own formatting wins over its style's, and the toolbar always
+second set of controls; **Update text to match style** does the reverse. Text's own formatting wins over its style's, and the toolbar always
 shows what's in effect, the style's included (see the editor's SPEC).
 
 **The one exception is size, which is style-only, on purpose** (set in the style's ⋯). Changing the text style
@@ -99,9 +99,9 @@ older data without them (see the storage tests).
 - **Menus** open from a toolbar or ⋯ button and share one look: the `Popover` panel, rows
   from `MenuItem` (actions) or `ChoiceGroup` (pick one), swatch sections in `PopoverPanel`,
   and `Divider` between sections. Same padding, row height, hover and selected states.
-  Rarely used actions (undo, reset, clear) are small icons in a `MenuFooter`, not rows.
-  **A panel's reset (↺) is always at its bottom right**: the end of its last line, or a
-  `MenuFooter` (e.g. a text style's panel, letter spacing's).
+  **A menu's reset is its last row**: ↺ and what it resets (e.g. "Reset style"), off while
+  there's nothing to reset. "Reset" means back to defaults only; bringing text in line with
+  its style is "Update text to match style".
   A menu that is a single pick-one list closes once a choice is made (click, Enter, Space);
   arrow keys preview without closing. Menus open with focus on the current choice; without one (action menus,
   panels) the panel itself takes focus, so nothing looks chosen until Tab.

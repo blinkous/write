@@ -24,7 +24,7 @@ import {
   TITLE_STYLE,
   type TextStyle,
 } from './textStyles'
-import { resetToTextStyle } from './resetToTextStyle'
+import { matchTextToStyle } from './matchTextToStyle'
 import { matchTextStyle } from './matchTextStyle'
 import type { TextStyleContext } from './ownOrStyleValue'
 import { TextStyleOptions } from './TextStyleOptions'
@@ -82,8 +82,8 @@ function StyleRow({
 /**
  * The current paragraph's style. The toolbar shows just its icon; the menu
  * repeats that icon beside each spelled-out name, shown in its style. A row
- * applies its style; its ⋯ updates the style to match the selected text, or
- * sets its size or resets it.
+ * applies its style; its ⋯ updates the style to match the selected text (or
+ * the text to match the style), sets its size, or resets it.
  * In the title the menu lists just Title, to edit it.
  */
 export function TextStyleMenu({
@@ -137,8 +137,8 @@ export function TextStyleMenu({
               )
               close()
             }}
-            onResetSelection={() => {
-              resetToTextStyle(editor, textStyle)
+            onMatchText={() => {
+              matchTextToStyle(editor, textStyle)
               close()
             }}
             size={textStyles[name].size}
