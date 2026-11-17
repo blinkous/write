@@ -7,6 +7,7 @@ import {
   List,
   ListOrdered,
   Quote,
+  RemoveFormatting,
   SquareCode,
   Strikethrough,
   Underline,
@@ -22,7 +23,8 @@ export type FormattingAction = {
   icon: LucideIcon
   /** The node or mark this needs; the button is off in editors without it (e.g. the title). */
   requires: string
-  isActive: (editor: Editor) => boolean
+  /** For a toggle, whether it's on (shown pressed); absent for a one-off action. */
+  isActive?: (editor: Editor) => boolean
   run: (editor: Editor) => void
 }
 
@@ -72,6 +74,18 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     requires: 'strike',
     isActive: (editor) => isEmphasisShown(editor, 'strike'),
     run: (editor) => editor.chain().focus().toggleEmphasis('strike').run(),
+  },
+]
+
+/** Text back to its style's look, ending the toolbar's text group. */
+export const TEXT_RESET_ACTIONS: readonly FormattingAction[] = [
+  {
+    name: 'reset-text',
+    label: 'Reset text to style',
+    shortcut: 'Mod-\\',
+    icon: RemoveFormatting,
+    requires: 'textStyle',
+    run: (editor) => editor.chain().focus().resetTextLook().run(),
   },
 ]
 

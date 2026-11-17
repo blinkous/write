@@ -42,8 +42,7 @@ opacity), in the settings drawer's header.
   colors (`PageColorSettings`, below): **Foreground**, then **Background** with the background
   picture or video. **Editor**
   (`EditorSettings`) has the editor font (sets `--font-editor`; default Lora), the default for
-  every text style, then **Reset all styles**, which resets every style and sets the editor
-  font to the app font. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
+  every text style. **Text styles** (Title, Heading 2–6, Body, Small; see `src/text-styles`) are
   kept here (`changeTextStyle`, `resetTextStyle`, with undo/redo) and edited from the
   toolbar's style menu (see the editor's SPEC). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so

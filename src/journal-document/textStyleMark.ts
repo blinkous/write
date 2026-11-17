@@ -1,4 +1,5 @@
 import { Color, TextStyle } from '@tiptap/extension-text-style'
+import { ResetTextLook } from './resetTextLook'
 import { resolveTextColor } from './textColor'
 import {
   EMPHASIS_OFF_ATTRIBUTES,
@@ -66,4 +67,5 @@ export const textStyleExtensions = [
   TextGlow,
   TextLetterSpacing,
   TextEmphasis,
+  ResetTextLook,
 ]
