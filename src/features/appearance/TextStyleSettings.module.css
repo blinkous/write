@@ -1,22 +1,3 @@
-/*
- * The toggles, then reset at the end: the end icons, not their padded edges,
- * line up with the labels and controls above.
- */
-.formatting {
-  display: flex;
-  gap: var(--space-1);
-  margin-inline: calc(var(--inset-icon-button) * -1);
-}
-
-.resetStyle {
-  margin-inline-start: auto;
-}
-
-.toggles {
-  display: flex;
-  gap: var(--space-1);
-}
-
 .reset {
   align-self: flex-start;
   /* The button's padded edge sits outside, so its text lines up with the labels above. */
