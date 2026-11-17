@@ -246,6 +246,8 @@
   --share-page-none: 100%;
   --width-sidebar: 16rem;
   --width-popover: 18rem;
+  /* A fixed-width menu trigger's text (e.g. the toolbar's font): fits "Default"; longer names end in "…". */
+  --width-trigger-label: 4rem;
   --width-popover-narrow: 15rem;
   --width-dialog: 36rem;
   /* Narrowest a dialog's column gets before the columns stack. */

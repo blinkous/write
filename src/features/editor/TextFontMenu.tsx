@@ -34,6 +34,8 @@ export function TextFontMenu({
     <FontMenu
       label="Text font"
       value={own}
+      // One width whatever the font, so the toolbar doesn't shift or outgrow the page.
+      hasFixedWidth
       defaultFont={style ?? editorFont}
       // Null is Default: the style's font.
       onChange={(font) =>

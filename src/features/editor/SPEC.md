@@ -54,7 +54,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
   first in the list, removes it so the text follows its style's font (the editor font when
-  the style has none), which captions it. The trigger shows the font at the cursor. Fonts don't carry into markdown.
+  the style has none), which captions it. The trigger shows the font at the cursor, always one width (fits "Default"; longer names end in "…"). Fonts don't carry into markdown.
 - **Text color** (`TextColorPicker`) colors the selection, or the text about to be typed
   when nothing is selected. Closing the menu returns focus to the text so typing
   continues in that color. The menu has (no titles; rows have accessible names):
