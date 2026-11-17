@@ -168,7 +168,7 @@ older data without them (see the storage tests).
   (written as rem, so browser zoom still works), set per text style from the style menu.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
 - **Phones and touch screens** get the same layout, adapted by CSS rather than separate
-  screens: the toolbar scrolls sideways at the top, the sidebar overlays the page below
+  screens: the toolbar scrolls sideways at the top when it runs out of room, the sidebar overlays the page below
   48rem, and on touch screens (`pointer: coarse`) controls are 44px and swatch menus widen
   so tiles are too. Hover styles apply only where there's hover (`hover: hover`), since a
   tap would leave them stuck. Fields are at

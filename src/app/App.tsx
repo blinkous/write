@@ -4,6 +4,7 @@ import {
   Button,
   ConfirmDialog,
   Divider,
+  ScrollRow,
   Toast,
   type ToastMessage,
 } from '../design-system'
@@ -270,7 +271,7 @@ export function App({ journal }: AppProps) {
            * font, color, emphasis, then the finer touches (glow, case, letter spacing). Text
            * styles in settings follow the same order.
            */}
-          <div className={styles.toolbar}>
+          <ScrollRow className={styles.toolbar}>
             <div role="group" aria-label="Text" className={styles.toolbarGroup}>
               <TextStyleMenu
                 editor={activeEditor}
@@ -332,7 +333,7 @@ export function App({ journal }: AppProps) {
                 onChange={updateAppearance}
               />
             </div>
-          </div>
+          </ScrollRow>
 
           <div className={styles.headerActions}>
             {renderEntryMenu(openEntry.id)}

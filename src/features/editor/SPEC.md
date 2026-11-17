@@ -8,7 +8,9 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   has its own undo history. It reports every change as Tiptap JSON via `onChange`.
 - The feature exports parts rather than one component (`FormattingButtons`,
   `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
-- **The toolbar has three groups**, split by dividers. **Text** goes from the broadest choice
+- **The toolbar** fills the header between the Entries toggle and the entry's ⋯, centered;
+  when it runs out of room it scrolls sideways, each end fading while there's more that way.
+  **It has three groups**, split by dividers. **Text** goes from the broadest choice
   in: text style, font, color, bold, italic, underline, strikethrough, then the finer
   touches, glow, case and letter spacing. **Markup**: bulleted and numbered lists, quote, code
   and code block (inline code beside blocks, since both mean "this is code"). **Page**:
