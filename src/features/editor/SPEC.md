@@ -35,8 +35,8 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   (size, weight, font, color, glow) is set from the same menu: each row ends in a ⋯
   (`TextStyleOptions`, beside the menu; `MenuActionRow`) with **Update style to match text**,
   **Update text to match style** (the reverse: the selected paragraphs, or the cursor's, take
-  the style and lose their own look; links and code stay), **Size** and **Reset style** (its last row). Undo/redo stays in
-  settings; "Reset settings" (Data) resets every style at once. The app hands in the styles and the changes
+  the style and lose their own look; links and code stay), **Size** and **Reset style** (its last row). Undo/redo and **Reset text
+  styles** (every style at once) are in settings. The app hands in the styles and the changes
   (`onChangeTextStyle`, `onResetTextStyle`), so the editor doesn't import appearance.
 - **Update style to match text** (`matchTextStyle.ts`) gives the style what the toolbar shows
   for the selected text (or the text at the cursor): font, color, glow, case, letter spacing,

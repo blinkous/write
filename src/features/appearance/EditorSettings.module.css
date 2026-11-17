@@ -1,0 +1,4 @@
+/* Only groups the section's rows for focus; the section lays them out. */
+.rows {
+  display: contents;
+}

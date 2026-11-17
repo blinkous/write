@@ -131,6 +131,10 @@ export function usePageTheme(
         true,
       )
     },
+    /** Every text style back to its default (the editor's default font stays). */
+    resetTextStyles() {
+      change({ textStyles: DEFAULT_TEXT_STYLES }, true)
+    },
     /** Ends the current edit (e.g. a finished drag) as one undo step. */
     commit() {
       setHistory((currentHistory) => commitEdit(currentHistory, current))
