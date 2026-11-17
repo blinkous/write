@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-type FormattingAction = {
+export type FormattingAction = {
   name: string
   label: string
   /** Tiptap's keyboard shortcut for it (e.g. "Mod-b"), shown with the label. */
@@ -25,12 +25,14 @@ type FormattingAction = {
   run: (editor: Editor) => void
 }
 
-/**
+/*
  * Every styling shortcut the editors support has a button here (or, for
  * headings, a row in TextStyleMenu), so nothing is reachable only by keyboard.
  * Markdown shortcuts (`- `, `> `, `**bold**`, `~~strike~~`) also work while typing.
  */
-export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
+
+/** Marks on the text itself; the toolbar's text group ends with these. */
+export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
     label: 'Bold',
@@ -76,6 +78,10 @@ export const FORMATTING_ACTIONS: readonly FormattingAction[] = [
     isActive: (editor) => editor.isActive('code'),
     run: (editor) => editor.chain().focus().toggleCode().run(),
   },
+]
+
+/** Blocks; the toolbar's structure group follows the text style menu with these. */
+export const STRUCTURE_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bullet-list',
     label: 'Bulleted list',

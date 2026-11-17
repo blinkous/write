@@ -6,7 +6,7 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## How it works
 
 - `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
-  code, links, bold/italic/etc.) plus per-text color, font and glow (`textStyleMark.ts`), text case, and a paragraph `size`
+  code, links, bold/italic/etc.) plus per-text color, font, glow and letter spacing (`textStyleMark.ts`), text case, and a paragraph `size`
   attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
 - Headings are `JournalHeading`, levels 2–6: level 1 is the entry's title, which lives outside
   the document (`headingLevels.ts`). Pasted `#` / `<h1>` headings become level 2.
@@ -37,6 +37,12 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   bright neon halo, then a wide bloom), set through
   the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
   independent: changing one never changes the other.
+
+## Text letter spacing
+
+- Stored on the text style mark (`letterSpacing`) as a whole percent of the text's size,
+  within `LETTER_SPACING_RANGE` (−5 to 30, shared with text styles); anything else is
+  ignored. Rendered as em through the same mark view, so it scales with the text.
 
 ## Text case
 

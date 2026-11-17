@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { getFontOption, isFontValue, type FontValue } from '../fonts'
-import { resolveTextColor, resolveTextGlow } from '../journal-document'
+import {
+  LETTER_SPACING_RANGE,
+  resolveTextColor,
+  resolveTextGlow,
+  resolveTextLetterSpacing,
+} from '../journal-document'
 import { pxToRem } from '../utils/units'
 
 /*
@@ -36,8 +41,8 @@ export const TEXT_STYLE_LABELS: Record<TextStyleName, string> = {
 /** Sizes in px at normal browser zoom (written as rem, so zoom still works), stepped by 1. */
 export const TEXT_STYLE_SIZE_RANGE = { min: 10, max: 48 } as const
 
-/** Letter spacing as a percent of the style's size (so it scales with it), stepped by 1. */
-export const TEXT_STYLE_LETTER_SPACING_RANGE = { min: -5, max: 30 } as const
+/** Letter spacing as a percent of the style's size, the same range as per-text letter spacing. */
+export const TEXT_STYLE_LETTER_SPACING_RANGE = LETTER_SPACING_RANGE
 
 export type TextStyleSettings = {
   /** px, within TEXT_STYLE_SIZE_RANGE. */
@@ -173,7 +178,10 @@ export function getTextStyleVariables(
         ],
         [`${prefix}-style`, italic ? 'italic' : 'normal'],
         [`${prefix}-decoration`, getTextDecoration(underline, strike)],
-        [`${prefix}-letter-spacing`, `${letterSpacing / 100}em`],
+        [
+          `${prefix}-letter-spacing`,
+          resolveTextLetterSpacing(letterSpacing) ?? '0em',
+        ],
         [
           `${prefix}-font`,
           font ? getFontOption(font).family : 'var(--font-editor)',

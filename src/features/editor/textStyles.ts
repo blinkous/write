@@ -101,6 +101,17 @@ export function getActiveTextStyle(editor: Editor): TextStyle {
   return TEXT_STYLES.find(({ block }) => isActive(editor, block)) ?? BODY_STYLE
 }
 
+/**
+ * The text style at the cursor, by its settings name: the title editor's text
+ * is all Title; the writing's follows its paragraph (see getActiveTextStyle).
+ */
+export function getTextStyleNameAt(
+  editor: Editor,
+  isTitle: boolean,
+): TextStyleName {
+  return isTitle ? 'title' : getActiveTextStyle(editor).name
+}
+
 export function applyTextStyle(editor: Editor, { block }: TextStyle): boolean {
   const chain = editor.chain().focus()
   if (block.kind === 'heading')

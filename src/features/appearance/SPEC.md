@@ -52,8 +52,7 @@ title, background blur and opacity).
   defaults). While open, the row takes
   the page background, so its color is judged against the page, and it previews every change.
   Then **Reset all styles**, which resets every
-  style and sets the editor font to the app font. Size and letter spacing are only here for now (see "Formatting in both places" in the root
-  `SPEC.md`). **Page colors**
+  style and sets the editor font to the app font. Size is only here, on purpose (see "Formatting in both places" in the root `SPEC.md`). **Page colors**
   (`PageColorSettings`, in App) are the free-form foreground (the default text color, named so
   it isn't mistaken for a text setting) and background
   (first visit: oat `#ede3d6` in light mode, cocoa `#2b211c` in dark, from the system

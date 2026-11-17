@@ -20,13 +20,16 @@ import {
 } from '../features/appearance'
 import {
   documentToMarkdown,
-  FormattingToolbar,
+  FormattingButtons,
   JournalPage,
+  STRUCTURE_FORMATTING_ACTIONS,
+  TEXT_FORMATTING_ACTIONS,
   TextCasePicker,
   TextFontMenu,
   useActiveEditor,
   TextColorPicker,
   TextGlowPicker,
+  TextLetterSpacingPicker,
   TextStyleMenu,
   useJournalEditor,
 } from '../features/editor'
@@ -255,14 +258,16 @@ export function App({ journal }: AppProps) {
             <PanelLeft aria-hidden="true" />
           </Button>
 
+          {/* Text, then structure, then page: from the letters out (text styles in settings follow the same order). */}
           <div className={styles.toolbar}>
-            <div
-              role="group"
-              aria-label="Text and page style"
-              className={styles.toolbarGroup}
-            >
+            <div role="group" aria-label="Text" className={styles.toolbarGroup}>
               <TextFontMenu editor={activeEditor} editorFont={editorFont} />
-              <TextStyleMenu editor={activeEditor} />
+              <TextLetterSpacingPicker
+                editor={activeEditor}
+                isTitle={activeEditor === titleEditor}
+                textStyles={pageTheme.textStyles}
+              />
+              <TextCasePicker editor={activeEditor} />
               <TextColorPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
@@ -275,7 +280,25 @@ export function App({ journal }: AppProps) {
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
               />
-              <TextCasePicker editor={activeEditor} />
+              <FormattingButtons
+                editor={activeEditor}
+                actions={TEXT_FORMATTING_ACTIONS}
+              />
+            </div>
+            <Divider />
+            <div
+              role="group"
+              aria-label="Structure"
+              className={styles.toolbarGroup}
+            >
+              <TextStyleMenu editor={activeEditor} />
+              <FormattingButtons
+                editor={activeEditor}
+                actions={STRUCTURE_FORMATTING_ACTIONS}
+              />
+            </div>
+            <Divider />
+            <div role="group" aria-label="Page" className={styles.toolbarGroup}>
               <MarginsMenu
                 value={margins}
                 onChange={(value) => updateAppearance({ margins: value })}
@@ -287,8 +310,6 @@ export function App({ journal }: AppProps) {
                 onChange={updateAppearance}
               />
             </div>
-            <Divider />
-            <FormattingToolbar editor={activeEditor} />
           </div>
 
           <div className={styles.headerActions}>

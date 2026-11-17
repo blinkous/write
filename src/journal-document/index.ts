@@ -21,4 +21,8 @@ export {
 } from './headingLevels'
 export { resolveTextFont } from './textFont'
 export { resolveTextGlow } from './textGlow'
+export {
+  LETTER_SPACING_RANGE,
+  resolveTextLetterSpacing,
+} from './textLetterSpacing'
 export { titleExtensions } from './titleExtensions'

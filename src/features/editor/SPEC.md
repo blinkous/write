@@ -6,10 +6,16 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
 
 - `useJournalEditor` creates a fresh editor whenever the entry id changes, so each entry
   has its own undo history. It reports every change as Tiptap JSON via `onChange`.
-- The feature exports parts rather than one component (`FormattingToolbar`,
+- The feature exports parts rather than one component (`FormattingButtons`,
   `JournalPage`, pickers, `documentToMarkdown`) so the app can arrange them.
+- **The toolbar goes from the letters out**, in three groups split by dividers: **Text**
+  (font, letter spacing, case, color, glow, then bold, italic, underline, strikethrough,
+  code), **Structure** (text style, bulleted and numbered lists, quote, code block), then
+  **Page** (margins, spacing). Text styles in settings list their options in the text
+  group's order.
 - Extensions are defined once in `editorExtensions.ts` and shared with tests.
-- Formatting toolbar buttons are data-driven from `formattingActions.ts`. Markdown
+- Formatting toolbar buttons are data-driven from `formattingActions.ts`
+  (`TEXT_FORMATTING_ACTIONS`, `STRUCTURE_FORMATTING_ACTIONS`). Markdown
   shortcuts (`# `, `- `, `> `, `**bold**`) also work while typing.
 - **Text styles** (`TextStyleMenu`, `textStyles.ts`) mirror markdown: Small, Body, Heading
   2–6 (`##`–`######`). Heading 1 / `#` is the entry's title (shown above the page), so it
@@ -34,6 +40,11 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
     its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
     colored keeps its color (the color is stored on the text). This is the shared `ColorMenu`
     (design system), the same menu as each text style's color (see the root `SPEC.md`).
+- **Letter spacing** (`TextLetterSpacingPicker`) gives the selection, or the text about to
+  be typed, its own letter spacing (`journal-document/textLetterSpacing.ts`, % of its size),
+  with the same stepper and range as text styles. It shows the text's own spacing, or its
+  style's (`getTextStyleNameAt`: Title in the title, else the paragraph's); **Match style**
+  removes the text's own. Letter spacing doesn't carry into markdown.
 - **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
   to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
   text color: white text with a pink glow reads as neon. Its menu is text color's with **No
