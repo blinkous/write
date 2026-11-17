@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { getFontOption, isFontValue, type FontValue } from '../fonts'
-import { resolveTextColor } from '../journal-document'
+import { resolveTextColor, resolveTextGlow } from '../journal-document'
 import { pxToRem } from '../utils/units'
 
 /*
@@ -52,6 +52,8 @@ export type TextStyleSettings = {
   font: FontValue | null
   /** Its own color (a theme color name or #rrggbb), or null for the page text color. */
   color: string | null
+  /** A glow behind the letters in this color (a theme color name or #rrggbb), or null for none. */
+  glow: string | null
 }
 
 export type TextStyles = Record<TextStyleName, TextStyleSettings>
@@ -66,6 +68,7 @@ function style(size: number, bold: boolean): TextStyleSettings {
     letterSpacing: 0,
     font: null,
     color: null,
+    glow: null,
   }
 }
 
@@ -80,6 +83,13 @@ export const DEFAULT_TEXT_STYLES: TextStyles = {
   body: style(16, false),
   small: style(14, false),
 }
+
+/** A text color or glow: a theme color name or #rrggbb, or null; anything else reads as null. */
+const optionalTextColorSchema = z
+  .string()
+  .refine((color) => resolveTextColor(color) !== null)
+  .nullable()
+  .catch(null)
 
 /* Each setting falls back on its own, so one bad value resets only itself. */
 function createStyleSchema(name: TextStyleName) {
@@ -103,11 +113,8 @@ function createStyleSchema(name: TextStyleName) {
         .max(TEXT_STYLE_LETTER_SPACING_RANGE.max)
         .catch(defaults.letterSpacing),
       font: z.custom<FontValue>(isFontValue).nullable().catch(null),
-      color: z
-        .string()
-        .refine((color) => resolveTextColor(color) !== null)
-        .nullable()
-        .catch(null),
+      color: optionalTextColorSchema,
+      glow: optionalTextColorSchema,
     })
     .catch(defaults)
 }
@@ -136,7 +143,7 @@ function getTextDecoration(underline: boolean, strike: boolean): string {
 /**
  * The CSS variables for every style: size (rem), scale (relative to body, for
  * previews at another size), weight, style (italic), decoration (underline,
- * strikethrough), letter spacing, font and color. Defaults resolve to the editor font and the
+ * strikethrough), letter spacing, font, color and glow (a text-shadow). Defaults resolve to the editor font and the
  * page text color.
  */
 export function getTextStyleVariables(
@@ -154,6 +161,7 @@ export function getTextStyleVariables(
         letterSpacing,
         font,
         color,
+        glow,
       } = textStyles[name]
       const prefix = `--text-style-${name}`
       return [
@@ -171,6 +179,7 @@ export function getTextStyleVariables(
           font ? getFontOption(font).family : 'var(--font-editor)',
         ],
         [`${prefix}-color`, resolveTextColor(color) ?? 'var(--color-text)'],
+        [`${prefix}-glow`, resolveTextGlow(glow) ?? 'none'],
       ]
     }),
   )

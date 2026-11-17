@@ -26,6 +26,7 @@ import {
   TextFontMenu,
   useActiveEditor,
   TextColorPicker,
+  TextGlowPicker,
   TextStyleMenu,
   useJournalEditor,
 } from '../features/editor'
@@ -263,6 +264,12 @@ export function App({ journal }: AppProps) {
               <TextFontMenu editor={activeEditor} editorFont={editorFont} />
               <TextStyleMenu editor={activeEditor} />
               <TextColorPicker
+                editor={activeEditor}
+                pageTextColor={textColor}
+                customTextColors={customTextColors}
+                onCustomTextColorsChange={changeCustomTextColors}
+              />
+              <TextGlowPicker
                 editor={activeEditor}
                 pageTextColor={textColor}
                 customTextColors={customTextColors}

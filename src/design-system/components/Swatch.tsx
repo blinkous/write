@@ -18,8 +18,8 @@ export function SwatchRow({ label, children }: SwatchRowProps) {
 }
 
 type SwatchButtonProps = {
-  /** Any CSS color, including a design token like var(--color-theme-1). */
-  color: string
+  /** Any CSS color, including a design token like var(--color-theme-1); null is "no color", drawn crossed out. */
+  color: string | null
   label: string
   isSelected: boolean
   onClick: () => void
@@ -35,7 +35,8 @@ export function SwatchButton({
     <button
       type="button"
       className={styles.swatch}
-      style={{ background: color }}
+      style={color ? { background: color } : undefined}
+      data-no-color={color === null || undefined}
       aria-label={label}
       title={label}
       aria-pressed={isSelected}

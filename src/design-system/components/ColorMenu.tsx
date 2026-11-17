@@ -4,8 +4,8 @@ import { PopoverPanel } from './PopoverPanel'
 import { SwatchButton, SwatchColorInput, SwatchRow } from './Swatch'
 
 export type ColorSuggestion = {
-  /** Any CSS color, including a design token like var(--color-theme-1). */
-  color: string
+  /** Any CSS color, including a design token like var(--color-theme-1); null is "no color" (e.g. no glow). */
+  color: string | null
   label: string
   isSelected: boolean
   onSelect: () => void
@@ -36,7 +36,7 @@ type ColorMenuProps = {
 }
 
 /**
- * A color menu (text colors): suggested tiles, then the person's custom
+ * A color menu (text colors, glows): suggested tiles, then the person's custom
  * slots (an empty one opens the system picker; a filled one is chosen and the
  * picker opens to change it). A filled slot's × empties it, shown on hover
  * or focus.

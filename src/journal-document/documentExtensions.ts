@@ -5,7 +5,7 @@ import { JournalStrike } from './journalStrike'
 import { MarkdownSafeParagraph } from './markdownSafeParagraph'
 import { ParagraphSize } from './paragraphSize'
 import { TextCaseMark } from './textCase'
-import { textStyleExtensions } from './textColor'
+import { textStyleExtensions } from './textStyleMark'
 
 /**
  * Extensions that define what a journal document can contain. Anything that

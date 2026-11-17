@@ -1,6 +1,4 @@
-import { Color, TextStyle } from '@tiptap/extension-text-style'
 import { isHexColor } from '../utils/color'
-import { resolveTextFont, TextFont } from './textFont'
 
 /**
  * Theme colors are stored by name, not value, so text colored with one
@@ -36,32 +34,3 @@ export function resolveTextColor(storedColor: unknown): string | null {
     ? storedColor
     : null
 }
-
-/*
- * TextStyle renders through an inline `style` attribute, which the app's CSP
- * blocks. This mark view sets the text's color and font through the CSSOM
- * instead, which CSP allows and which can only ever set those properties.
- */
-const CspSafeTextStyle = TextStyle.extend({
-  // Also read spans carrying only a font (copied within the app), not just styled spans.
-  parseHTML() {
-    return [
-      ...(this.parent?.() ?? []),
-      { tag: 'span[data-font]', consuming: false },
-    ]
-  },
-
-  addMarkView() {
-    return ({ mark }) => {
-      const dom = document.createElement('span')
-      const cssColor = resolveTextColor(mark.attrs.color)
-      if (cssColor) dom.style.color = cssColor
-      const cssFont = resolveTextFont(mark.attrs.font)
-      if (cssFont) dom.style.fontFamily = cssFont
-      return { dom, contentDOM: dom }
-    }
-  },
-})
-
-/** Per-text color and font. Text without them follows the page's. */
-export const textStyleExtensions = [CspSafeTextStyle, Color, TextFont]

@@ -18,7 +18,7 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
   plain paragraph. The toolbar shows only the current style's icon; the menu repeats it beside
   each name, previewed in its style (the `--text-style-*` variables, scaled relative to body).
   ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back, stopping at the ends. How each style looks
-  (size, weight, font, color) is set in settings → Editor (`src/text-styles`).
+  (size, weight, font, color, glow) is set in settings → Editor (`src/text-styles`).
 - **Text font** (`TextFontMenu`, first in the toolbar) gives the selection, or the text about
   to be typed, its own font (`journal-document/textFont.ts`, stored by name). **Default**,
   first in the list, removes it so the text follows the editor font (settings → Fonts). The trigger shows the font
@@ -34,6 +34,11 @@ Rich-text writing surface for one entry, built on Tiptap (ProseMirror).
     its color on click and can be re-picked. Hovering or focusing it shows a small × to empty it. Text already
     colored keeps its color (the color is stored on the text). This is the shared `ColorMenu`
     (design system), the same menu as each text style's color (see the root `SPEC.md`).
+- **Text glow** (`TextGlowPicker`, after text color) gives the selection, or the text about
+  to be typed, a glow in its own color (`journal-document/textGlow.ts`), separate from the
+  text color: white text with a pink glow reads as neon. Its menu is text color's with **No
+  glow** (crossed out; removes the text's own glow) in place of the page text color, and the
+  same custom slots. It overrides the text style's glow. Glows don't carry into markdown.
 - **Text case** (`TextCasePicker`): UPPERCASE, lowercase, Title Case, Sentence case, or
   "As typed". Display-only: the letters typed are stored unchanged (see `journal-document`).
 - **Copy as markdown** (entries' `copyEntryAsMarkdown`, via `documentToMarkdown`; in the entry ⋯

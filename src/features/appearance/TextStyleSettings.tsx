@@ -9,6 +9,7 @@ import {
 import { FontMenu } from '../../fonts'
 import {
   DEFAULT_TEXT_STYLES,
+  GlowColorMenu,
   TEXT_STYLE_LABELS,
   TEXT_STYLE_NAMES,
   TEXT_STYLE_LETTER_SPACING_RANGE,
@@ -40,7 +41,7 @@ const STYLE_TOGGLES = [
 
 /**
  * One style: its name drawn in the style, the whole row opening its controls
- * beside it (font, size, letter spacing, the toolbar's toggles and color), so
+ * beside it (font, size, letter spacing, glow, the toolbar's toggles and color), so
  * every change shows in the row right away.
  */
 function TextStyleRow({
@@ -100,6 +101,19 @@ function TextStyleRow({
               onChange={(letterSpacing) =>
                 changeTextStyle(name, { letterSpacing })
               }
+            />
+          </LabeledRow>
+          <LabeledRow label="Glow" control="icon">
+            <GlowColorMenu
+              label={`${label} glow`}
+              value={settings.glow}
+              pageTextColor={textColor}
+              customColors={customTextColors}
+              onCustomColorsChange={onCustomTextColorsChange}
+              onSelect={(glow) => changeTextStyle(name, { glow })}
+              // A drag in the system picker previews live and becomes one undo step when it ends.
+              onPick={(glow) => changeTextStyle(name, { glow }, false)}
+              onPickEnd={commit}
             />
           </LabeledRow>
           {/* The toolbar's own controls, in a line of their own: color, then the toggles; reset at the end. */}

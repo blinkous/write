@@ -20,4 +20,5 @@ export {
   type ContentHeadingLevel,
 } from './headingLevels'
 export { resolveTextFont } from './textFont'
+export { resolveTextGlow } from './textGlow'
 export { titleExtensions } from './titleExtensions'

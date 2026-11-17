@@ -8,6 +8,7 @@
   font-style: var(--text-style-title-style);
   text-decoration-line: var(--text-style-title-decoration);
   letter-spacing: var(--text-style-title-letter-spacing);
+  text-shadow: var(--text-style-title-glow);
 }
 
 .heading-2 {
@@ -18,6 +19,7 @@
   font-style: var(--text-style-heading-2-style);
   text-decoration-line: var(--text-style-heading-2-decoration);
   letter-spacing: var(--text-style-heading-2-letter-spacing);
+  text-shadow: var(--text-style-heading-2-glow);
 }
 
 .heading-3 {
@@ -28,6 +30,7 @@
   font-style: var(--text-style-heading-3-style);
   text-decoration-line: var(--text-style-heading-3-decoration);
   letter-spacing: var(--text-style-heading-3-letter-spacing);
+  text-shadow: var(--text-style-heading-3-glow);
 }
 
 .heading-4 {
@@ -38,6 +41,7 @@
   font-style: var(--text-style-heading-4-style);
   text-decoration-line: var(--text-style-heading-4-decoration);
   letter-spacing: var(--text-style-heading-4-letter-spacing);
+  text-shadow: var(--text-style-heading-4-glow);
 }
 
 .heading-5 {
@@ -48,6 +52,7 @@
   font-style: var(--text-style-heading-5-style);
   text-decoration-line: var(--text-style-heading-5-decoration);
   letter-spacing: var(--text-style-heading-5-letter-spacing);
+  text-shadow: var(--text-style-heading-5-glow);
 }
 
 .heading-6 {
@@ -58,6 +63,7 @@
   font-style: var(--text-style-heading-6-style);
   text-decoration-line: var(--text-style-heading-6-decoration);
   letter-spacing: var(--text-style-heading-6-letter-spacing);
+  text-shadow: var(--text-style-heading-6-glow);
 }
 
 .body {
@@ -68,6 +74,7 @@
   font-style: var(--text-style-body-style);
   text-decoration-line: var(--text-style-body-decoration);
   letter-spacing: var(--text-style-body-letter-spacing);
+  text-shadow: var(--text-style-body-glow);
 }
 
 .small {
@@ -78,4 +85,5 @@
   font-style: var(--text-style-small-style);
   text-decoration-line: var(--text-style-small-decoration);
   letter-spacing: var(--text-style-small-letter-spacing);
+  text-shadow: var(--text-style-small-glow);
 }

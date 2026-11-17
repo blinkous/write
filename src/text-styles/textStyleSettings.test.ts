@@ -1,4 +1,5 @@
 import tokensCss from '../design-system/tokens.css?raw'
+import { resolveTextGlow } from '../journal-document'
 import {
   DEFAULT_TEXT_STYLES,
   getTextStyleVariables,
@@ -19,8 +20,9 @@ describe('text style settings', () => {
         italic: true,
         font: 'inter',
         color: 'theme-3',
+        glow: '#ff2fa0',
       },
-      body: { size: 999, font: 'comic-sans', color: 'red; x' },
+      body: { size: 999, font: 'comic-sans', color: 'red; x', glow: 'red; x' },
     })
     expect(parsed['heading-2']).toEqual({
       size: 32,
@@ -31,6 +33,7 @@ describe('text style settings', () => {
       letterSpacing: 0,
       font: 'inter',
       color: 'theme-3',
+      glow: '#ff2fa0',
     })
     expect(parsed.body).toEqual(DEFAULT_TEXT_STYLES.body)
   })
@@ -47,6 +50,7 @@ describe('text style settings', () => {
         letterSpacing: 5,
         font: 'inter',
         color: 'theme-3',
+        glow: 'theme-5',
       },
     })
     expect(variables['--text-style-heading-2-size']).toBe('2rem')
@@ -63,6 +67,10 @@ describe('text style settings', () => {
     expect(variables['--text-style-heading-2-color']).toBe(
       'var(--color-theme-3)',
     )
+    expect(variables['--text-style-heading-2-glow']).toBe(
+      resolveTextGlow('theme-5'),
+    )
+    expect(variables['--text-style-body-glow']).toBe('none')
     expect(variables['--text-style-body-font']).toBe('var(--font-editor)')
     expect(variables['--text-style-body-color']).toBe('var(--color-text)')
   })
@@ -79,6 +87,7 @@ describe('text style settings', () => {
         'letter-spacing',
         'font',
         'color',
+        'glow',
       ]) {
         const variable = `--text-style-${name}-${property}`
         expect(tokensCss).toContain(`${variable}: ${variables[variable]};`)

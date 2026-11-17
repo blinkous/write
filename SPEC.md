@@ -1,7 +1,7 @@
 # Write
 
 A minimal, private web journal: a clean writing page with adjustable font, size, margins,
-spacing and colors, per-text color and case, and export as markdown or JSON.
+spacing and colors, per-text color, glow and case, and export as markdown or JSON.
 
 ## Hard rules
 
@@ -40,6 +40,16 @@ spacing and colors, per-text color and case, and export as markdown or JSON.
   sidebar (the ⚙'s fades unless motion is reduced). The sidebar toggle doesn't
   (`plainWhenExpanded`): the open sidebar shows it, as in most apps. Both keep
   `aria-expanded`.
+
+## Formatting in both places
+
+Every text formatting option is offered in both places, as close to 1:1 as the two allow: the
+**toolbar** (applied to the selected text, stored in the entry) and **text styles** (settings →
+Editor, applied to every Title, Heading, Body or Small text). Each uses the same control
+in both (e.g. `TextColorMenu`, `GlowColorMenu`), and text's own formatting wins over its
+style's. A new option is added to both. Today: font, color, glow, bold, italic, underline
+and strikethrough are in both; size and letter spacing are only in text styles, and text case
+only in the toolbar.
 
 ## Out of scope
 

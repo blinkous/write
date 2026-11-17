@@ -6,7 +6,7 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
 ## How it works
 
 - `documentExtensions` defines the schema: StarterKit (paragraphs, headings, lists, quotes,
-  code, links, bold/italic/etc.) plus per-text color, text case, and a paragraph `size`
+  code, links, bold/italic/etc.) plus per-text color, font and glow (`textStyleMark.ts`), text case, and a paragraph `size`
   attribute (`small`, rendered as `data-size`; copies to markdown as a plain paragraph).
 - Headings are `JournalHeading`, levels 2–6: level 1 is the entry's title, which lives outside
   the document (`headingLevels.ts`). Pasted `#` / `<h1>` headings become level 2.
@@ -28,6 +28,15 @@ The shape of a journal entry's content, shared by the editor (which edits it) an
   accepts only these two forms; anything else (e.g. from an import) is ignored.
 - Colors are applied through a mark view using the CSSOM (`element.style.color`), because
   the app's CSP blocks inline `style` attributes, which is how Tiptap renders them by default.
+
+## Text glow
+
+- A glow is stored on the text style mark (`glow`, like color and font) as a hex color or a
+  theme name, the same forms as text color; anything else is ignored. It renders as stacked
+  `text-shadow`s (`resolveTextGlow`), blur radii in em so it scales with the text (tight layers stacked for a
+  bright neon halo, then a wide bloom), set through
+  the same CSP-safe mark view (`textStyleMark.ts`) as color and font. Glow and color are
+  independent: changing one never changes the other.
 
 ## Text case
 
