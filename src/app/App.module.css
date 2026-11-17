@@ -65,7 +65,8 @@
 .toolbar {
   /* Fills its column, so it scrolls within it (rather than wrapping into a tall header) only when it runs out. */
   justify-self: stretch;
-  gap: var(--space-2);
+  /* The same as between icons, so groups and dividers space like the rest. */
+  gap: var(--space-1);
   /* Starts with the text: the first control's label, not its padded edge, in line with it. */
   --scroll-row-start: 0;
   margin-inline-start: calc(var(--inset-icon-button) * -1);
