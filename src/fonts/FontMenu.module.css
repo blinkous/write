@@ -19,3 +19,9 @@
 .captionedDefaultOnTrigger > :last-child {
   color: var(--color-faint);
 }
+
+/* Each line ends in "…" too where the trigger is shortened (see SelectMenu). */
+.captionedDefaultOnTrigger > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
