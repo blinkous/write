@@ -1,18 +1,17 @@
 /*
- * The toggles, then reset at the end: the end icons, not their padded edges,
- * line up with the labels and controls above.
+ * Laid out like the toolbar's text group: icon controls in a line, spaced as
+ * the toolbar spaces its groups. When the panel is narrow it wraps between
+ * groups (font and size; color and emphasis; the finer touches), never inside one.
  */
-.formatting {
+.strip {
   display: flex;
-  gap: var(--space-1);
-  margin-inline: calc(var(--inset-icon-button) * -1);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
 }
 
-.resetStyle {
-  margin-inline-start: auto;
-}
-
-.toggles {
+.group {
   display: flex;
+  align-items: center;
   gap: var(--space-1);
 }
