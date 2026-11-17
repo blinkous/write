@@ -65,8 +65,7 @@
 .toolbar {
   /* Fills its column, so it scrolls within it (rather than wrapping into a tall header) only when it runs out. */
   justify-self: stretch;
-  /* Tight, so the whole toolbar fits the page's width: the buttons' own padding spaces the icons. */
-  gap: var(--space-1);
+  gap: var(--space-2);
   /* Starts with the text: the first control's label, not its padded edge, in line with it. */
   --scroll-row-start: 0;
   margin-inline-start: calc(var(--inset-icon-button) * -1);
@@ -89,6 +88,7 @@
 .toolbarGroup {
   display: flex;
   align-items: center;
+  gap: var(--space-1);
 }
 
 .headerActions {
