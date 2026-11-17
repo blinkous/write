@@ -1,10 +1,10 @@
 import { Baseline } from 'lucide-react'
-import { ColorMenu } from '../design-system'
+import { ColorMenu } from '../../design-system'
 import {
   getThemeColorToken,
   resolveTextColor,
   THEME_TEXT_COLORS,
-} from '../journal-document'
+} from '../../journal-document'
 import { getThemeColorSuggestions } from './themeColorSuggestions'
 
 export type TextColorMenuProps = {
@@ -30,7 +30,7 @@ const [PAGE_TEXT_THEME_COLOR, ...OTHER_THEME_COLORS] = THEME_TEXT_COLORS
  * The color icon, showing the current color, opening the text color menu:
  * theme colors (live shades of the page background; the first is the page
  * text color itself, so it also serves as reset), then the custom colors.
- * Used for text (toolbar) and text styles (settings).
+ * The toolbar's text color menu (TextColorPicker); GlowColorMenu builds on it.
  */
 export function TextColorMenu({
   label,

@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import { AS_TYPED_CASE } from '../../journal-document'
-import { TextCaseMenu } from '../../text-styles'
+import { TextCaseMenu } from './TextCaseMenu'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,

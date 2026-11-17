@@ -1,6 +1,6 @@
 import { CaseSensitive } from 'lucide-react'
-import { ActionList, MenuItem, Popover } from '../design-system'
-import type { TextCase } from '../journal-document'
+import { ActionList, MenuItem, Popover } from '../../design-system'
+import type { TextCase } from '../../journal-document'
 import { TEXT_CASE_OPTIONS } from './textCaseOptions'
 
 type TextCaseMenuProps = {
@@ -16,7 +16,7 @@ type TextCaseMenuProps = {
 /**
  * The case icon, opening the case menu: UPPERCASE, lowercase, Title Case,
  * Sentence case, then As typed. Only the display changes; the letters typed
- * are kept. Used for text (toolbar) and text styles (settings).
+ * are kept. The toolbar's case menu (TextCasePicker).
  */
 export function TextCaseMenu({
   label,

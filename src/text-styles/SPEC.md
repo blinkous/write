@@ -29,15 +29,7 @@ draws them), the entry title, and the style menu (which previews them, and sets 
   toolbar colors inside a glowing style change the letters, never the glow, and a toolbar glow
   replaces the style's for that text. The glow's look (`resolveTextGlow`) is shared with the
   toolbar's, from `journal-document`.
-- `GlowColorMenu`'s trigger is the letter "A" drawn with the current glow (a soft theme glow
-  when there's none, so it still reads as glow). The menu is `TextColorMenu` with "No glow" (a crossed-out tile) in place of the page
-  text color; the theme color tiles come from the shared `getThemeColorSuggestions`.
 - Case: CSS can only do UPPER and lower, so title and sentence case set `-transform` to
   lowercase and the editor capitalizes letters itself (`useTextStyleBlocks`, via
   journal-document's text case). Previews show the style's name, already in title case, so
-  `-preview-transform` uses CSS's `capitalize` / `none` for them. `TextCaseMenu` is the
-  case control (the toolbar's), its options in `textCaseOptions.ts`.
-- `LetterSpacingMenu` is the letter spacing control (the design system's `StepperMenu`
-  behind the letter-spacing icon, with this module's range): the toolbar's.
-- `TextColorMenu` is the shared text color control (the design system's `ColorMenu` with the
-  theme colors as suggestions): the toolbar's color menu.
+  `-preview-transform` uses CSS's `capitalize` / `none` for them.

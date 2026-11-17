@@ -1,6 +1,6 @@
 import { LetterSpacing } from 'lucide-react'
-import { StepperMenu } from '../design-system'
-import { TEXT_STYLE_LETTER_SPACING_RANGE } from './textStyleSettings'
+import { StepperMenu } from '../../design-system'
+import { TEXT_STYLE_LETTER_SPACING_RANGE } from '../../text-styles'
 
 type LetterSpacingMenuProps = {
   /** Names the value, e.g. "Letter spacing" or "Title letter spacing". */

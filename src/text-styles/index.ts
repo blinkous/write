@@ -10,8 +10,4 @@ export {
   type TextStyles,
   type TextStyleSettings,
 } from './textStyleSettings'
-export { GlowColorMenu } from './GlowColorMenu'
-export { LetterSpacingMenu } from './LetterSpacingMenu'
-export { TextCaseMenu } from './TextCaseMenu'
-export { TextColorMenu } from './TextColorMenu'
 export { TextStylePreview } from './TextStylePreview'

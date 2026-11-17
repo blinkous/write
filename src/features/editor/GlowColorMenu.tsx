@@ -1,9 +1,9 @@
-import { ColorMenu } from '../design-system'
+import { ColorMenu } from '../../design-system'
 import {
   resolveTextGlow,
   THEME_TEXT_COLORS,
   type ThemeTextColor,
-} from '../journal-document'
+} from '../../journal-document'
 import styles from './GlowColorMenu.module.css'
 import type { TextColorMenuProps } from './TextColorMenu'
 import { getThemeColorSuggestions } from './themeColorSuggestions'

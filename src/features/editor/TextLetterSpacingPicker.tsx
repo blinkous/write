@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/react'
-import { LetterSpacingMenu } from '../../text-styles'
+import { LetterSpacingMenu } from './LetterSpacingMenu'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,

@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import { THEME_TEXT_COLORS } from '../../journal-document'
-import { TextColorMenu } from '../../text-styles'
+import { TextColorMenu } from './TextColorMenu'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,

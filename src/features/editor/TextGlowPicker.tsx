@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import { NO_GLOW } from '../../journal-document'
-import { GlowColorMenu } from '../../text-styles'
+import { GlowColorMenu } from './GlowColorMenu'
 import {
   chooseOwnValue,
   useOwnAndStyleValue,
