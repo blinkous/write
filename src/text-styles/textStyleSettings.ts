@@ -94,6 +94,14 @@ export const DEFAULT_TEXT_STYLES: TextStyles = {
   small: style(14, false),
 }
 
+/** Whether two sets of text styles look the same (stored styles always list settings in one order). */
+export function areTextStylesEqual(
+  textStyles: TextStyles,
+  otherTextStyles: TextStyles,
+): boolean {
+  return JSON.stringify(textStyles) === JSON.stringify(otherTextStyles)
+}
+
 /** A text color or glow: a theme color name or #rrggbb(aa), or null; anything else reads as null. */
 const optionalTextColorSchema = z
   .string()

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { LabeledRow, ResetMenuItem } from '../../design-system'
 import { FontMenu } from '../../fonts'
-import { DEFAULT_TEXT_STYLES } from '../../text-styles'
+import { areTextStylesEqual, DEFAULT_TEXT_STYLES } from '../../text-styles'
 import type { usePageTheme } from './usePageTheme'
 import styles from './EditorSettings.module.css'
 
@@ -16,8 +16,7 @@ export function EditorSettings({
 }) {
   const { editorFont, textStyles, changeFonts, resetTextStyles } = pageTheme
   const rowsRef = useRef<HTMLDivElement>(null)
-  const isAllDefault =
-    JSON.stringify(textStyles) === JSON.stringify(DEFAULT_TEXT_STYLES)
+  const isAllDefault = areTextStylesEqual(textStyles, DEFAULT_TEXT_STYLES)
   return (
     <div ref={rowsRef} className={styles.rows}>
       <LabeledRow label="Default font" control="button">
