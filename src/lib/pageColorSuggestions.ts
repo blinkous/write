@@ -1,4 +1,3 @@
-import { oklch } from 'culori'
 import {
   deriveBackgroundShadeAt,
   deriveTextShadeAt,
@@ -8,6 +7,7 @@ import {
   TONE_VARIATIONS,
   type ToneVariation,
 } from './cozyPalette'
+import { getPerceivedLightness } from './perceivedLightness'
 
 /** Lighter or darker than the color suggestions are for. */
 export type LightnessSide = 'lighter' | 'darker'
@@ -120,7 +120,7 @@ export function suggestTextColors(
   preferredSide: LightnessSide,
   count: number,
 ): string[] {
-  const from = oklch(backgroundHex)?.l ?? 0
+  const from = getPerceivedLightness(backgroundHex)
   return unique(
     suggestLightnesses(from, preferredSide, TEXT_LIGHTNESS_RANGE, count).map(
       (lightness, index) =>
@@ -140,7 +140,7 @@ export function suggestBackgroundColors(
   preferredSide: LightnessSide,
   count: number,
 ): string[] {
-  const from = oklch(textHex)?.l ?? 0
+  const from = getPerceivedLightness(textHex)
   return unique(
     suggestLightnesses(from, preferredSide, PAGE_LIGHTNESS_RANGE, count).map(
       (lightness, index) =>

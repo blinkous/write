@@ -1,3 +1,4 @@
+import { getPerceivedLightness } from '../../lib/perceivedLightness'
 import {
   areTextStylesEqual,
   DEFAULT_TEXT_STYLES,
@@ -56,11 +57,11 @@ const DEFAULT_FONTS = {
 }
 
 /**
- * Curated looks, shown as a row of tiles. Colors are fixed hex values (not
+ * Curated looks, shown as a row of tiles (in THEME_PACKS' order, light to dark). Colors are fixed hex values (not
  * theme color names), so each tile previews exactly what it applies. The page
  * text color always reads at 4.5:1 (tested); styles may be softer for the look.
  */
-export const THEME_PACKS: readonly ThemePack[] = [
+const CURATED_THEME_PACKS: readonly ThemePack[] = [
   {
     id: 'default-light',
     label: 'Default light',
@@ -172,6 +173,13 @@ export const THEME_PACKS: readonly ThemePack[] = [
     },
   },
 ]
+
+/** Lightest page first, so the row reads as one gradient; a new pack finds its own place. */
+export const THEME_PACKS: readonly ThemePack[] = CURATED_THEME_PACKS.toSorted(
+  (first, second) =>
+    getPerceivedLightness(second.look.backgroundColor) -
+    getPerceivedLightness(first.look.backgroundColor),
+)
 
 /** Whether the current settings are exactly this pack's look (it shows as chosen). */
 export function hasThemeLook(current: ThemeLook, { look }: ThemePack): boolean {

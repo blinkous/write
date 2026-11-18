@@ -1,5 +1,6 @@
 import { wcagContrast } from 'culori'
 import { flattenColor } from '../../lib/flattenColor'
+import { getPerceivedLightness } from '../../lib/perceivedLightness'
 import { DEFAULT_TEXT_STYLES, textStylesSchema } from '../../text-styles'
 import { DEFAULT_APPEARANCE, DEFAULT_PAGE_COLORS } from './appearanceOptions'
 import { getThemePackColors, hasThemeLook, THEME_PACKS } from './themePacks'
@@ -47,6 +48,13 @@ describe('THEME_PACKS', () => {
           ),
         ),
       ).toBe(true)
+  })
+
+  it('runs from the lightest page to the darkest', () => {
+    const lightnesses = THEME_PACKS.map(({ look }) =>
+      getPerceivedLightness(look.backgroundColor),
+    )
+    expect(lightnesses).toEqual(lightnesses.toSorted((a, b) => b - a))
   })
 
   it('has unique ids and labels', () => {
