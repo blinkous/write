@@ -49,12 +49,18 @@
   );
 }
 
-/* A tile filling the control it sits in (e.g. a menu trigger), edged like a swatch. */
+/*
+ * A tile filling the control it sits in (e.g. a menu trigger), edged like a
+ * swatch. Stretched, not height: 100% (the control's height isn't fixed, so
+ * that would be 0), and over the control's own transparent border, so it's
+ * exactly as big as the swatches beside it.
+ */
 .face {
   display: block;
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
+  flex: 1 1 auto;
+  align-self: stretch;
+  margin: calc(var(--border-width) * -1);
   border: var(--border-width) solid var(--color-muted);
   border-radius: var(--radius-small);
 }

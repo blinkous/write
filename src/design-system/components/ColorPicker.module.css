@@ -1,4 +1,5 @@
 .picker {
+  --color-picker-pointer-size: var(--size-control-small);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -24,13 +25,27 @@
 .picker :global(.react-colorful__hue),
 .picker :global(.react-colorful__alpha),
 .picker :global(.react-colorful__last-control) {
-  height: var(--size-control-small);
+  height: var(--color-picker-pointer-size);
   border-radius: var(--radius-small);
 }
 
 .picker :global(.react-colorful__pointer) {
-  width: var(--size-control-small);
-  height: var(--size-control-small);
+  width: var(--color-picker-pointer-size);
+  height: var(--color-picker-pointer-size);
+}
+
+/*
+ * Pointers are centered on the color they point at, so at the ends they'd
+ * hang half outside. Their track is inset by half a pointer instead, keeping
+ * them inside the square and bars.
+ */
+.picker :global(.react-colorful__saturation .react-colorful__interactive) {
+  inset: calc(var(--color-picker-pointer-size) / 2);
+}
+
+.picker :global(.react-colorful__hue .react-colorful__interactive),
+.picker :global(.react-colorful__alpha .react-colorful__interactive) {
+  inset: 0 calc(var(--color-picker-pointer-size) / 2);
 }
 
 /* Its focus is only a slight grow; keyboard focus gets the usual ring too. */
