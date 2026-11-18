@@ -22,8 +22,6 @@ import {
 type JournalOptions = {
   /** Where entries are kept (see openEntryStore). */
   entryStore: EntryStore
-  /** What an empty journal starts with (e.g. a welcome entry); a blank entry by default. */
-  createFirstEntry?: () => JournalEntry
 }
 
 /** The entry in the editor, and the writing it opened with (the editor holds it from then on). */
@@ -48,16 +46,14 @@ export type JournalState = {
 export type Journal = Awaited<ReturnType<typeof openJournal>>
 
 /** Rejects if the open entry's writing can't be read. */
-export async function openJournal({
-  entryStore,
-  createFirstEntry = createJournalEntry,
-}: JournalOptions) {
+export async function openJournal({ entryStore }: JournalOptions) {
   const summaries = new Map(
     entryStore.storedSummaries.map((summary) => [summary.id, summary]),
   )
+  // An empty journal starts with a blank entry, ready to write in.
   let firstEntry: JournalEntry | null = null
   if (summaries.size === 0) {
-    firstEntry = createFirstEntry()
+    firstEntry = createJournalEntry()
     entryStore.putEntries([firstEntry])
     summaries.set(firstEntry.id, summarizeEntry(firstEntry))
   }

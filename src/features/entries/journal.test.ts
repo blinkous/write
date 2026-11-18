@@ -65,15 +65,15 @@ describe('journal', () => {
     expect(journal.getState().openEntry.id).toBe(olderEntry.id)
   })
 
-  it('starts an empty journal with the first entry, and saves it', async () => {
-    const welcome = { ...createJournalEntry(), title: 'Welcome' }
+  it('starts an empty journal with a blank entry, and saves it', async () => {
     const entryStore = createMemoryEntryStore([])
-    const journal = await openJournal({
-      entryStore,
-      createFirstEntry: () => welcome,
+    const journal = await openJournal({ entryStore })
+    const savedEntries = await entryStore.getAllEntries()
+    expect(savedEntries).toHaveLength(1)
+    expect(savedEntries[0]).toMatchObject({
+      id: journal.getState().openEntry.id,
+      title: null,
     })
-    expect(journal.getState().openEntry.id).toBe(welcome.id)
-    expect(await entryStore.getAllEntries()).toEqual([welcome])
   })
 
   it('saves writing to its entry, which actions then read', async () => {

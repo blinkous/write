@@ -8,9 +8,9 @@ import {
 import {
   PRIVACY_NOTES,
   SOURCE_CODE_URL,
-  WELCOME_INTRO,
-  WELCOME_SIGN_OFF,
-  WELCOME_TITLE,
+  ABOUT_INTRO,
+  ABOUT_SIGN_OFF,
+  ABOUT_TITLE,
 } from './privacyNotes'
 import styles from './PrivacyNotice.module.css'
 
@@ -27,7 +27,7 @@ export function PrivacyNotice({ isOpen, onClose }: PrivacyNoticeProps) {
   return (
     <Dialog
       isOpen={isOpen}
-      title={WELCOME_TITLE}
+      title={ABOUT_TITLE}
       onClose={onClose}
       actions={
         <>
@@ -36,12 +36,12 @@ export function PrivacyNotice({ isOpen, onClose }: PrivacyNoticeProps) {
             GitHub
           </ExternalLinkButton>
           <Button variant="subtle" onClick={onClose}>
-            {WELCOME_SIGN_OFF}
+            {ABOUT_SIGN_OFF}
           </Button>
         </>
       }
     >
-      <p>{WELCOME_INTRO}</p>
+      <p>{ABOUT_INTRO}</p>
       <ul className={styles.notes}>
         {PRIVACY_NOTES.map(({ icon: Icon, lines }) => (
           <li key={lines[0]} className={styles.note}>

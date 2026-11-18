@@ -1,32 +1,27 @@
 import { Lock, TriangleAlert, WifiOff, type LucideIcon } from 'lucide-react'
 
 /*
- * The author's words, shown in the About dialog and the welcome entry. Edit
- * for grammar only, keeping the voice.
+ * The author's words, shown in the About dialog. Edit for grammar only,
+ * keeping the voice.
  */
 
-export const WELCOME_TITLE = 'Welcome!'
+export const ABOUT_TITLE = 'Welcome!'
 
-export const WELCOME_INTRO =
+export const ABOUT_INTRO =
   'This is a simple journaling app. I created this as a quick, cozy, and private place to jot things down. No account, no cloud, just you and the page. Hope you enjoy!'
 
-export const WELCOME_SIGN_OFF = 'Write away!'
+export const ABOUT_SIGN_OFF = 'Write away!'
 
 /** Where the app's source lives, linked from About. */
 export const SOURCE_CODE_URL = 'https://github.com/blinkous/write'
 
-/**
- * How your writing is kept: each note is an icon (in the dialog), an emoji (in
- * the welcome entry, which can only hold text) and its sentences.
- */
+/** How your writing is kept: each note is an icon and its sentences. */
 export const PRIVACY_NOTES: readonly {
   icon: LucideIcon
-  emoji: string
   lines: readonly string[]
 }[] = [
   {
     icon: Lock,
-    emoji: '🔒',
     lines: [
       'All data is stored locally in the browser.',
       'Your data is cleared when you clear browser data; to save, export it.',
@@ -36,12 +31,10 @@ export const PRIVACY_NOTES: readonly {
   },
   {
     icon: WifiOff,
-    emoji: '📴',
     lines: ['Once loaded, this page works offline.'],
   },
   {
     icon: TriangleAlert,
-    emoji: '⚠️',
     lines: [
       'Your browser extensions may read data on all sites.',
       'Disable extensions or use a different profile or a browser without them for a private experience.',

@@ -50,11 +50,7 @@ import {
   useFileShortcuts,
   ImportFilePicker,
 } from '../features/entries'
-import {
-  PrivacyNotice,
-  usePrivacyNotice,
-  useRememberVisit,
-} from '../features/privacy'
+import { PrivacyNotice, usePrivacyNotice } from '../features/privacy'
 import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
 import styles from './App.module.css'
 
@@ -70,7 +66,6 @@ export function App({ journal }: AppProps) {
   const { appearance, updateAppearance, resetAppearance } = useAppearance()
   const pageTheme = usePageTheme(appearance, updateAppearance)
   const privacyNotice = usePrivacyNotice()
-  useRememberVisit()
   // The entry awaiting delete confirmation, from the page's menu or a list row's.
   const [entryIdToDelete, setEntryIdToDelete] = useState<string | null>(null)
   const {

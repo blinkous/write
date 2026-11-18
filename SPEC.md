@@ -62,7 +62,6 @@ scrolls endlessly).
 | `write.settingsClosedSections.v1`  | Folded sections from before they started folded (read once, kept)   |
 | `write.exportChoices.v1`           | The Export dialog's last choices                                    |
 | `write.pageThemeHistory.v1`        | Settings undo/redo, max 50 steps (older color-only history kept)    |
-| `write.privacyNoticeSeen.v1`       | This browser has visited (no welcome entry)                         |
 
 IndexedDB `write-journal`: `entry` (one record per entry, format 2), `meta` (when entries
 moved from localStorage) and `backup` (unreadable records, with when and where).

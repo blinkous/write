@@ -5,17 +5,11 @@ import './design-system'
 import { App } from './app/App'
 import { AppCrashed } from './app/AppCrashed'
 import {
-  createJournalEntry,
   JournalUnavailable,
   openEntryStore,
   openJournal,
 } from './features/entries'
-import {
-  FramedNotice,
-  getWelcomeEntry,
-  isFirstVisit,
-  isFramed,
-} from './features/privacy'
+import { FramedNotice, isFramed } from './features/privacy'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Missing #root element')
@@ -25,20 +19,11 @@ if (!rootElement) throw new Error('Missing #root element')
  * journal, so nothing in it can be clicked through a disguise (clickjacking).
  *
  * Otherwise the journal opens (from IndexedDB, with the open entry's writing)
- * before the first render, so the app never shows a loading state. A first
- * visit starts with the welcome entry instead of a blank page.
+ * before the first render, so the app never shows a loading state.
  */
 async function openApp() {
-  const firstVisit = isFirstVisit()
   return openEntryStore()
-    .then((entryStore) =>
-      openJournal({
-        entryStore,
-        createFirstEntry: firstVisit
-          ? () => ({ ...createJournalEntry(), ...getWelcomeEntry() })
-          : undefined,
-      }),
-    )
+    .then((entryStore) => openJournal({ entryStore }))
     .then(
       (journal) => <App journal={journal} />,
       () => <JournalUnavailable />,
