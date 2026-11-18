@@ -2,12 +2,6 @@
 .row {
   --scroll-row-start: 0;
   gap: var(--space-2);
-  /*
-   * Room for the chosen tile's ring, which the scrolling row would clip,
-   * pulled back out at the sides so the tiles line up with the rows below.
-   */
-  padding: var(--focus-ring-room);
-  margin-inline: calc(var(--focus-ring-room) * -1);
 }
 
 /* A little page: its color, its title's "Aa", and a row of its colors. */

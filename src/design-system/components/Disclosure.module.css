@@ -95,15 +95,15 @@
 
   /*
    * Clipped only top to bottom, so rows' hover backgrounds and focus rings
-   * still reach out sideways. Room below for the last row's focus ring, pulled
-   * back so nothing moves.
+   * still reach out sideways. Room above and below for the first and last
+   * rows' focus rings, pulled back so nothing moves.
    */
   .content {
     min-height: 0;
     overflow-x: visible;
     overflow-y: clip;
-    padding-bottom: var(--focus-ring-room);
-    margin-bottom: calc(var(--focus-ring-room) * -1);
+    padding-block: var(--focus-ring-room);
+    margin-block: calc(var(--focus-ring-room) * -1);
   }
 
   .disclosure .disclosure > .content {
