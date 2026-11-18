@@ -108,10 +108,9 @@ Derived from the background, never harsh:
   (so it doesn't strain browser storage); other files get a toast and the current
   background stays. Once set, the tile shows a still of it, and an × (hover or focus)
   removes it.
-- While set, **Blur** (0–40 px) and **Opacity** (0–100 %, default 50: how much shows over
-  the page color, so writing stays readable) follow the row. A video also gets
-  **Playback** (play/pause) and **Speed** (0.25–2×). All four share the settings undo
-  and travel in settings files.
+- While set, you can blur it and set its opacity over the page color (half by default,
+  so writing stays readable). A video can also be paused and sped up or slowed down.
+  These share the settings undo and travel in settings files.
 - The file is saved before it's shown, so what's shown is what comes back after a refresh.
   Settings files don't carry it.
 - It covers the whole window: the sidebar and header turn transparent, while the settings
