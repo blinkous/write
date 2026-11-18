@@ -69,7 +69,7 @@ export function ColorMenu({
   }
 
   return (
-    <Popover label={label} trigger={trigger} onClose={onClose}>
+    <Popover label={label} trigger={trigger} isShownWhole onClose={onClose}>
       <PopoverPanel>
         <SwatchRow label={suggestionsLabel}>
           {suggestions.map(
