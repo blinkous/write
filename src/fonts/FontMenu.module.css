@@ -20,8 +20,15 @@
   color: var(--color-faint);
 }
 
-/* Each line ends in "…" too where the trigger is shortened (see SelectMenu). */
+/*
+ * Each line on a trigger is exactly one line tall, whatever font draws it, so
+ * the text sits still in its fixed-height button as the font changes; each
+ * ends in "…" where the trigger is shortened (see SelectMenu).
+ */
+.triggerLine,
 .captionedDefaultOnTrigger > * {
+  display: block;
+  height: 1lh;
   overflow: hidden;
   text-overflow: ellipsis;
 }
