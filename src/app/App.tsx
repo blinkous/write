@@ -213,6 +213,7 @@ export function App({ journal }: AppProps) {
                 // Kept as 'app': which sections are folded is saved by id.
                 id: 'app',
                 title: 'Theme',
+                isOpenByDefault: true,
                 content: (
                   <AppSettings
                     pageTheme={pageTheme}

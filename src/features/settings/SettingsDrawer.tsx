@@ -14,18 +14,20 @@ export type SettingsSection = {
   id: string
   title: string
   content: ReactNode
+  /** Open until folded for the first time; otherwise starts folded. */
+  isOpenByDefault?: boolean
 }
 
 type SettingsDrawerProps = {
   /** Small controls shown in the bottom bar while open, e.g. undo/redo. */
   headerActions?: ReactNode
-  /** Each folds away under its title; all start folded. */
+  /** Each folds away under its title. */
   sections: readonly SettingsSection[]
 }
 
 /**
  * Settings at the bottom of the sidebar: a ⚙ toggle that slides the drawer up
- * above it. It stays open (across visits too) until toggled closed, sharing
+ * above it. It starts open and stays open (across visits too) until toggled closed, sharing
  * the sidebar with the entries; folded sections are remembered too. The bar
  * holds the drawer's controls: while open, undo/redo sit by the highlighted toggle.
  */
@@ -36,7 +38,12 @@ export function SettingsDrawer({
   const drawerId = useId()
   const [isOpen, setIsOpen] = useState(loadIsSettingsOpen)
   const [openSectionIds, setOpenSectionIds] = useState(() =>
-    loadOpenSectionIds(sections.map(({ id }) => id)),
+    loadOpenSectionIds(
+      sections.map(({ id }) => id),
+      sections
+        .filter(({ isOpenByDefault }) => isOpenByDefault)
+        .map(({ id }) => id),
+    ),
   )
   useEffect(() => saveIsSettingsOpen(isOpen), [isOpen])
   useEffect(() => saveOpenSectionIds(openSectionIds), [openSectionIds])

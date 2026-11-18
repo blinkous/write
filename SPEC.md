@@ -58,7 +58,7 @@ scrolls endlessly).
 | `write.entrySort.v1`               | Entries list sort                                                   |
 | `write.appearance.v1`              | Fonts, text styles, margins, spacing, colors, tab title, background |
 | `write.settingsOpen.v1`            | Whether the settings drawer is open                                 |
-| `write.settingsOpenSections.v1`    | Open settings sections (all start folded)                           |
+| `write.settingsOpenSections.v1`    | Open settings sections                                              |
 | `write.settingsClosedSections.v1`  | Folded sections from before they started folded (read once, kept)   |
 | `write.exportChoices.v1`           | The Export dialog's last choices                                    |
 | `write.pageThemeHistory.v1`        | Settings undo/redo, max 50 steps (older color-only history kept)    |

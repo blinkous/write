@@ -12,8 +12,7 @@ The settings drawer at the bottom of the sidebar.
   setting but the background file, beside the ⚙. No header (it saves a row); it's still
   named "Settings" for screen readers.
 - **Sections fold** under their titles: Theme and Editor (appearance), then Data (tab title,
-  export, import, reset, About). All start folded, so a first look shows just the titles;
-  open ones are remembered, so new sections appear folded. An open section's chevron shows
+  export, import, reset, About). Open ones are remembered. An open section's chevron shows
   only on hover or focus (as in macOS sidebars), so it isn't mistaken for a dropdown's.
 - Features hand their sections to the app, so features don't import each other.
 - **Settings backups:** exported from Data's Export dialog, alone or inside a journal file
