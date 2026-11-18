@@ -38,6 +38,18 @@ describe('ColorPicker', () => {
     expect(field).toHaveValue('#123456')
   })
 
+  it('copies the current color, not a half-typed one, and says so', async () => {
+    const { field } = renderPicker()
+    const user = userEvent.setup()
+    await user.clear(field)
+    await user.type(field, '#ff')
+    await user.click(
+      screen.getByRole('button', { name: 'Copy text color hex' }),
+    )
+    expect(await navigator.clipboard.readText()).toBe('#123456')
+    expect(screen.getByText('Copied')).toBeInTheDocument()
+  })
+
   it('offers the system color picker as the dropper where the screen dropper is missing', () => {
     renderPicker()
     expect(

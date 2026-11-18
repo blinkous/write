@@ -54,6 +54,7 @@ and works the same on every platform:
   hover or focus) empties it.
 - A typed color applies on Enter or on leaving the field; text that isn't a color goes back
   to the current color.
+- A copy button inside the field's end copies the current color's hex.
 - The **dropper** picks from anywhere on the screen where the browser can (Chromium).
   Other browsers can't start one, so a palette button opens the system color picker
   instead (its own dropper is a click away on macOS and iOS). Either keeps the current

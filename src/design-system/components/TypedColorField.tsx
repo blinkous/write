@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { parseTypedColor } from '../../lib/typedColor'
 import styles from './ColorPicker.module.css'
+import { CopyButton } from './CopyButton'
 import { TextInput } from './TextInput'
 
 type TypedColorFieldProps = {
@@ -14,7 +15,8 @@ type TypedColorFieldProps = {
 /**
  * The color as hex, which can be typed over in any CSS form. While typing,
  * the field holds the draft; Enter or leaving applies it if it's a color,
- * otherwise the field goes back to the current color.
+ * otherwise the field goes back to the current color. A copy button at its
+ * end copies the current color's hex.
  */
 export function TypedColorField({
   label,
@@ -32,20 +34,23 @@ export function TypedColorField({
   }
 
   return (
-    <TextInput
-      className={styles.typedColor}
-      aria-label={`${label} value`}
-      title="Hex, rgb() or hsl()"
-      spellCheck={false}
-      autoComplete="off"
-      value={draft ?? color}
-      onChange={({ target }) => setDraft(target.value)}
-      onKeyDown={(event) => {
-        if (event.key !== 'Enter') return
-        event.preventDefault()
-        applyDraft()
-      }}
-      onBlur={applyDraft}
-    />
+    <div className={styles.typedColorField}>
+      <TextInput
+        className={styles.typedColor}
+        aria-label={`${label} value`}
+        title="Hex, rgb() or hsl()"
+        spellCheck={false}
+        autoComplete="off"
+        value={draft ?? color}
+        onChange={({ target }) => setDraft(target.value)}
+        onKeyDown={(event) => {
+          if (event.key !== 'Enter') return
+          event.preventDefault()
+          applyDraft()
+        }}
+        onBlur={applyDraft}
+      />
+      <CopyButton label={`Copy ${label.toLowerCase()} hex`} text={color} />
+    </div>
   )
 }

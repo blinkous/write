@@ -62,10 +62,24 @@
   gap: var(--space-2);
 }
 
-/* Under .fields, so it wins over TextInput's own font whatever order the stylesheets load in. */
-.fields .typedColor {
+/* The typed color, with its copy button inside its end. */
+.typedColorField {
+  position: relative;
+  display: flex;
   flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.typedColorField > button {
+  position: absolute;
+  right: var(--space-1);
+}
+
+/* Nested, so it wins over TextInput's own font and padding whatever order the stylesheets load in. */
+.typedColorField .typedColor {
   min-height: var(--size-control);
+  padding-inline-end: calc(var(--size-control-small) + var(--space-1) * 2);
   font-family: var(--font-mono);
 }
 
