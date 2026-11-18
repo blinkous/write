@@ -104,9 +104,10 @@ Derived from the background, never harsh:
 
 ## Background picture or video
 
-- Chosen on the Background row: any image (GIFs included) or video, up to 100 MB; other
-  files get a toast and the current background stays. Once set, the tile shows a still of
-  it, and an × (hover or focus) removes it.
+- Chosen on the Background row: any image (GIFs included) or video under a size limit
+  (so it doesn't strain browser storage); other files get a toast and the current
+  background stays. Once set, the tile shows a still of it, and an × (hover or focus)
+  removes it.
 - While set, **Blur** (0–40 px) and **Opacity** (0–100 %, default 50: how much shows over
   the page color, so writing stays readable) follow the row. A video also gets
   **Playback** (play/pause) and **Speed** (0.25–2×). All four share the settings undo
