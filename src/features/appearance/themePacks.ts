@@ -130,7 +130,7 @@ export const THEME_PACKS: readonly ThemePack[] = [
     },
   },
   {
-    // Sunlit leaves on a bright, rich green floor.
+    // Sunlit leaves on a bright, rich green floor, under a mossy, shaggy title.
     id: 'forest',
     label: 'Forest',
     look: {
@@ -139,7 +139,13 @@ export const THEME_PACKS: readonly ThemePack[] = [
       backgroundColor: '#175900',
       textColor: '#e2f7d4',
       textStyles: textStylesWith({
-        title: { font: 'eb-garamond', color: '#d4ff6b', glow: '#a8f03a40' },
+        // Rubik Beastly has one weight; bold would be faked.
+        title: {
+          font: 'rubik-beastly',
+          bold: false,
+          color: '#d4ff6b',
+          glow: '#a8f03a40',
+        },
         ...allHeadings({ font: 'eb-garamond', color: '#9ff0a8' }),
       }),
     },
