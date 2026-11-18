@@ -145,7 +145,7 @@ export const THEME_PACKS: readonly ThemePack[] = [
           bold: false,
           color: '#75a368',
         },
-        ...allHeadings({ font: 'eb-garamond', color: '#9ff0a8' }),
+        ...allHeadings({ font: 'eb-garamond', color: '#91c522' }),
       }),
     },
   },
