@@ -25,6 +25,7 @@ background picture or video, with one shared undo/redo.
   light and dark looks (the first-visit colors with default fonts and styles), Blinkous
   (white neon glowing red on a moody teal sign), Unicorn (soft pastel rainbow), Forest,
   and high contrast light and dark.
+- **Only Blinkous glows:** glow is its neon-sign look; the other packs stay flat.
 - **Named only in tooltips** and for screen readers; the tiles are the vibe. Each is a
   little page in the pack's background color showing "Aa" in its title style (font,
   color, glow, case) and dots of its text color, then its glows, then its style colors.

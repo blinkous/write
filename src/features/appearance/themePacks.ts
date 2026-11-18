@@ -144,7 +144,6 @@ export const THEME_PACKS: readonly ThemePack[] = [
           font: 'rubik-beastly',
           bold: false,
           color: '#d4ff6b',
-          glow: '#a8f03a40',
         },
         ...allHeadings({ font: 'eb-garamond', color: '#9ff0a8' }),
       }),
