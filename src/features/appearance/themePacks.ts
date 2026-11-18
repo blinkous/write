@@ -143,7 +143,7 @@ export const THEME_PACKS: readonly ThemePack[] = [
         title: {
           font: 'rubik-beastly',
           bold: false,
-          color: '#d4ff6b',
+          color: '#75a368',
         },
         ...allHeadings({ font: 'eb-garamond', color: '#9ff0a8' }),
       }),
