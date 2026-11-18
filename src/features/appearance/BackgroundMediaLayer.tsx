@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from '../../utils/motion'
+import { BackgroundVideo } from './BackgroundVideo'
 import type { BackgroundMedia } from './useBackgroundMedia'
 import styles from './BackgroundMediaLayer.module.css'
 
@@ -15,6 +15,9 @@ function getBlurFilterId(blur: number): string {
 type BackgroundMediaLayerProps = BackgroundMedia & {
   /** px; 0 for none. */
   blur: number
+  isVideoPaused: boolean
+  /** × normal speed. */
+  videoSpeed: number
 }
 
 /**
@@ -27,6 +30,8 @@ export function BackgroundMediaLayer({
   url,
   kind,
   blur,
+  isVideoPaused,
+  videoSpeed,
 }: BackgroundMediaLayerProps) {
   const filterId = getBlurFilterId(blur)
   const filter = blur > 0 ? `url(#${filterId})` : undefined
@@ -62,15 +67,12 @@ export function BackgroundMediaLayer({
       {kind === 'image' ? (
         <img className={styles.media} style={{ filter }} src={url} alt="" />
       ) : (
-        // Loops silently; held on its first frame when the system asks for less motion.
-        <video
+        <BackgroundVideo
+          url={url}
           className={styles.media}
           style={{ filter }}
-          src={url}
-          autoPlay={!prefersReducedMotion()}
-          muted
-          loop
-          playsInline
+          isPaused={isVideoPaused}
+          speed={videoSpeed}
         />
       )}
     </div>

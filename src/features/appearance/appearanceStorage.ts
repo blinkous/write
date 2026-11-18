@@ -5,9 +5,11 @@ import { deriveCozyTextColor } from '../../lib/cozyPalette'
 import { textStylesSchema } from '../../text-styles'
 import { isHexColor, isOpaqueHexColor } from '../../utils/color'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
+import { prefersReducedMotion } from '../../utils/motion'
 import {
   BACKGROUND_BLUR_RANGE,
   BACKGROUND_OPACITY_RANGE,
+  BACKGROUND_VIDEO_SPEED_RANGE,
   CUSTOM_TEXT_COLOR_SLOT_COUNT,
   DEFAULT_APPEARANCE,
   DEFAULT_PAGE_COLORS,
@@ -81,6 +83,13 @@ const appearanceSchema = z.object({
   backgroundOpacity: backgroundPercentSchema.optional().catch(undefined),
   /** Briefly saved instead of opacity: how much page color covered the media. */
   backgroundFade: backgroundPercentSchema.optional().catch(undefined),
+  // Resolved below: nothing saved follows the system's reduced-motion setting.
+  isBackgroundVideoPaused: z.boolean().optional().catch(undefined),
+  backgroundVideoSpeed: z
+    .number()
+    .min(BACKGROUND_VIDEO_SPEED_RANGE.min)
+    .max(BACKGROUND_VIDEO_SPEED_RANGE.max)
+    .catch(DEFAULT_APPEARANCE.backgroundVideoSpeed),
 })
 
 /*
@@ -138,7 +147,7 @@ function resolvePageColors(
   }
 }
 
-/* Stored (or imported) settings, with migrations and first-visit colors resolved. */
+/* Stored (or imported) settings, with migrations and first-visit colors and motion resolved. */
 function toAppearance(
   {
     backgroundColor,
@@ -150,6 +159,7 @@ function toAppearance(
     font,
     backgroundOpacity,
     backgroundFade,
+    isBackgroundVideoPaused,
     ...stored
   }: z.infer<typeof appearanceSchema>,
   colorScheme: ColorScheme,
@@ -158,6 +168,7 @@ function toAppearance(
     ...stored,
     ...resolvePageColors(backgroundColor, textColor, colorScheme),
     editorFont: migrateEditorFont(editorFont, entryFont, font),
+    isBackgroundVideoPaused: isBackgroundVideoPaused ?? prefersReducedMotion(),
     backgroundOpacity: migrateBackgroundOpacity(
       backgroundOpacity,
       backgroundFade,

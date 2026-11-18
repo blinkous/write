@@ -186,6 +186,8 @@ export function App({ journal }: AppProps) {
         <BackgroundMediaLayer
           {...backgroundMedia.media}
           blur={pageTheme.backgroundBlur}
+          isVideoPaused={pageTheme.isBackgroundVideoPaused}
+          videoSpeed={pageTheme.backgroundVideoSpeed}
         />
       )}
       {isSidebarOpen && (

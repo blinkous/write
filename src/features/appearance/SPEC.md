@@ -108,13 +108,16 @@ Derived from the background, never harsh:
   files get a toast and the current background stays. Once set, the tile shows a still of
   it, and an × (hover or focus) removes it.
 - While set, **Blur** (0–40 px) and **Opacity** (0–100 %, default 50: how much shows over
-  the page color, so writing stays readable) follow the row.
+  the page color, so writing stays readable) follow the row. A video also gets
+  **Playback** (play/pause) and **Speed** (0.25–2×). All four share the settings undo
+  and travel in settings files.
 - The file is saved before it's shown, so what's shown is what comes back after a refresh.
   Settings files don't carry it.
 - It covers the whole window: the sidebar and header turn transparent, while the settings
   drawer, menus, dialogs and the narrow-screen sidebar stay solid so they're readable.
-  Videos loop silently and stay still when the system asks for less motion (GIFs can't be
-  paused). Hidden from screen readers.
+  Videos loop silently. On a first visit a video starts paused if the system asks for
+  less motion; after that the saved choice wins. GIFs can't be paused. Hidden from
+  screen readers.
 
 ## Decisions
 

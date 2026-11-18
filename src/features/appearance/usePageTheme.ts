@@ -40,8 +40,8 @@ const PREFERRED_SIDES: Record<
 }
 
 /**
- * The fonts, page colors, text styles, tab title and background blur and
- * opacity, with one shared undo/redo over recent changes (kept across refreshes).
+ * The fonts, page colors, text styles, tab title and background effects
+ * (blur, opacity, video playback), with one shared undo/redo over recent changes (kept across refreshes).
  */
 export function usePageTheme(
   {
@@ -53,6 +53,8 @@ export function usePageTheme(
     tabTitle,
     backgroundBlur,
     backgroundOpacity,
+    isBackgroundVideoPaused,
+    backgroundVideoSpeed,
   }: Appearance,
   updateAppearance: (changes: Partial<Appearance>) => void,
 ) {
@@ -65,6 +67,8 @@ export function usePageTheme(
     tabTitle,
     backgroundBlur,
     backgroundOpacity,
+    isBackgroundVideoPaused,
+    backgroundVideoSpeed,
   }
   const [history, setHistory] = useState(() => loadPageThemeHistory(current))
   const systemColorScheme = getSystemColorScheme()
@@ -95,6 +99,8 @@ export function usePageTheme(
     tabTitle,
     backgroundBlur,
     backgroundOpacity,
+    isBackgroundVideoPaused,
+    backgroundVideoSpeed,
     /**
      * Changes one text style. Picks are one undo step each; a color drag
      * (isFinal false) becomes one step when committed.
@@ -146,9 +152,17 @@ export function usePageTheme(
     changeTabTitle(nextTabTitle: string, isFinal = false) {
       change({ tabTitle: nextTabTitle }, isFinal)
     },
-    /** Each blur or opacity step (a press or a typed value) is one undo step. */
+    /** Each blur, opacity, speed or play/pause step (a press or a typed value) is one undo step. */
     changeBackgroundEffects(
-      effects: Partial<Pick<PageTheme, 'backgroundBlur' | 'backgroundOpacity'>>,
+      effects: Partial<
+        Pick<
+          PageTheme,
+          | 'backgroundBlur'
+          | 'backgroundOpacity'
+          | 'isBackgroundVideoPaused'
+          | 'backgroundVideoSpeed'
+        >
+      >,
     ) {
       change(effects, true)
     },

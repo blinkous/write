@@ -43,6 +43,8 @@ describe('loadAppearance', () => {
       tabTitle: DEFAULT_APPEARANCE.tabTitle,
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
       backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,
+      isBackgroundVideoPaused: DEFAULT_APPEARANCE.isBackgroundVideoPaused,
+      backgroundVideoSpeed: DEFAULT_APPEARANCE.backgroundVideoSpeed,
     })
   })
 
@@ -126,6 +128,52 @@ describe('loadAppearance', () => {
     expect(loadAppearance()).toMatchObject({
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
       backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,
+    })
+  })
+
+  it('keeps a saved video speed, and drops one out of range', () => {
+    const save = (backgroundVideoSpeed: number) =>
+      window.localStorage.setItem(
+        'write.appearance.v1',
+        JSON.stringify({ ...DEFAULT_APPEARANCE, backgroundVideoSpeed }),
+      )
+    save(1.5)
+    expect(loadAppearance().backgroundVideoSpeed).toBe(1.5)
+    save(8)
+    expect(loadAppearance().backgroundVideoSpeed).toBe(
+      DEFAULT_APPEARANCE.backgroundVideoSpeed,
+    )
+  })
+
+  describe('background video pause', () => {
+    const askForLessMotion = (isReduced: boolean) =>
+      vi.stubGlobal(
+        'matchMedia',
+        (query: string) =>
+          ({
+            matches: isReduced && query.includes('reduce'),
+          }) as MediaQueryList,
+      )
+    afterEach(() => vi.unstubAllGlobals())
+
+    it.each([true, false])(
+      'follows the system on a first visit (less motion: %s)',
+      (isReduced) => {
+        askForLessMotion(isReduced)
+        expect(loadAppearance().isBackgroundVideoPaused).toBe(isReduced)
+      },
+    )
+
+    it('keeps a saved choice over the system', () => {
+      askForLessMotion(true)
+      window.localStorage.setItem(
+        'write.appearance.v1',
+        JSON.stringify({
+          ...DEFAULT_APPEARANCE,
+          isBackgroundVideoPaused: false,
+        }),
+      )
+      expect(loadAppearance().isBackgroundVideoPaused).toBe(false)
     })
   })
 
