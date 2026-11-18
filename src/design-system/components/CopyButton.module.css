@@ -1,0 +1,27 @@
+/* A small icon button, sized to sit inside a field's end (like the search field's ×). */
+.copyButton {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--size-control-small);
+  height: var(--size-control-small);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+/* Hover only where there is one: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+  .copyButton:hover {
+    background: var(--color-shade);
+    color: var(--color-text);
+  }
+}
+
+.copyButton svg {
+  width: var(--size-icon-small);
+  height: var(--size-icon-small);
+}

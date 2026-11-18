@@ -37,8 +37,8 @@ The rich-text writing surface for one entry, and its toolbar.
 ## Colors and glow
 
 - **Text color:** the theme tones (the page text color first, then six tones of the
-  background, which follow it), then the custom slots. Text keeps its color when a slot
-  changes.
+  background, which follow it), then the custom slots, then the color picker (see
+  appearance). Text keeps its color when a slot changes.
 - **Glow** is its own color, separate from text color (white text, pink glow reads as
   neon). Its menu is the color menu with **No glow** first.
 

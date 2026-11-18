@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react'
 import {
-  deriveCozyBackgroundColor,
-  deriveCozyTextColor,
-} from '../../lib/cozyPalette'
+  suggestBackgroundColors,
+  suggestTextColors,
+} from '../../lib/pageColorSuggestions'
 import { DEFAULT_APPEARANCE } from './appearanceOptions'
 import { usePageTheme } from './usePageTheme'
 
@@ -31,21 +31,22 @@ describe('usePageTheme colors', () => {
     })
   })
 
-  it('matches the text color to the background when asked, as one undo step', () => {
+  it('makes a suggested text color one undo step', () => {
     const { result, updateAppearance } = renderPageTheme()
-    act(() => result.current.matchText())
-    expect(updateAppearance).toHaveBeenCalledWith({
-      textColor: deriveCozyTextColor('#ede3d6'),
-    })
+    const [suggestion] = result.current.textColorSuggestions
+    act(() => result.current.changeText(suggestion, true))
+    expect(updateAppearance).toHaveBeenCalledWith({ textColor: suggestion })
     expect(result.current.canUndo).toBe(true)
   })
 
-  it('matches the background to the text color when asked, as one undo step', () => {
-    const { result, updateAppearance } = renderPageTheme()
-    act(() => result.current.matchBackground())
-    expect(updateAppearance).toHaveBeenCalledWith({
-      backgroundColor: deriveCozyBackgroundColor('#123456'),
-    })
-    expect(result.current.canUndo).toBe(true)
+  it('suggests text colors for the background, and backgrounds for the text color', () => {
+    const { result } = renderPageTheme()
+    // Tests read as light mode: darker text and lighter pages first.
+    expect(result.current.textColorSuggestions).toEqual(
+      suggestTextColors('#ede3d6', 'darker', 7),
+    )
+    expect(result.current.backgroundColorSuggestions).toEqual(
+      suggestBackgroundColors('#123456', 'lighter', 7),
+    )
   })
 })

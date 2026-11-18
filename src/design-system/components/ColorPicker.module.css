@@ -1,0 +1,102 @@
+.picker {
+  --color-picker-pointer-size: var(--size-control-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/*
+ * react-colorful's own look (sizes, radii) is restyled to the design system.
+ * Scoped under .picker, so these win over its built-in stylesheet.
+ */
+.picker :global(.react-colorful) {
+  width: 100%;
+  height: auto;
+  gap: var(--space-2);
+}
+
+.picker :global(.react-colorful__saturation) {
+  flex-grow: 0;
+  aspect-ratio: 4 / 3;
+  border-bottom: 0;
+  border-radius: var(--radius-small);
+}
+
+.picker :global(.react-colorful__hue),
+.picker :global(.react-colorful__alpha),
+.picker :global(.react-colorful__last-control) {
+  height: var(--color-picker-pointer-size);
+  border-radius: var(--radius-small);
+}
+
+.picker :global(.react-colorful__pointer) {
+  width: var(--color-picker-pointer-size);
+  height: var(--color-picker-pointer-size);
+}
+
+/*
+ * Pointers are centered on the color they point at, so at the ends they'd
+ * hang half outside. Their track is inset by half a pointer instead, keeping
+ * them inside the square and bars.
+ */
+.picker :global(.react-colorful__saturation .react-colorful__interactive) {
+  inset: calc(var(--color-picker-pointer-size) / 2);
+}
+
+.picker :global(.react-colorful__hue .react-colorful__interactive),
+.picker :global(.react-colorful__alpha .react-colorful__interactive) {
+  inset: 0 calc(var(--color-picker-pointer-size) / 2);
+}
+
+/* Its focus is only a slight grow; keyboard focus gets the usual ring too. */
+.picker
+  :global(.react-colorful__interactive:focus-visible .react-colorful__pointer) {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
+/* The typed color and the dropper (or system picker), under the sliders. */
+.fields {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The typed color, with its copy button inside its end. */
+.typedColorField {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.typedColorField > button {
+  position: absolute;
+  right: var(--space-1);
+}
+
+/* Nested, so it wins over TextInput's own font and padding whatever order the stylesheets load in. */
+.typedColorField .typedColor {
+  min-height: var(--size-control);
+  padding-inline-end: calc(var(--size-control-small) + var(--space-1) * 2);
+  font-family: var(--font-mono);
+}
+
+/* Positions the system color input under its button. */
+.systemPicker {
+  position: relative;
+}
+
+/* Invisible, under the system picker button, so the system picker opens beside it. */
+.colorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}

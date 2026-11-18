@@ -29,6 +29,11 @@ type PopoverProps = {
   align?: 'start' | 'end'
   /** Turns the trigger off, e.g. when the menu doesn't apply right now. */
   isDisabled?: boolean
+  /**
+   * Never scrolls: if it doesn't fit below or above the trigger, it opens
+   * beside it, using the window's full height (e.g. a color picker).
+   */
+  isShownWhole?: boolean
   onClose?: () => void
 }
 
@@ -72,6 +77,7 @@ export function Popover({
   placement = 'below',
   align = 'end',
   isDisabled = false,
+  isShownWhole = false,
   onClose,
 }: PopoverProps) {
   const popoverId = useId()
@@ -131,7 +137,13 @@ export function Popover({
         aria-label={label}
         onBeforeToggle={handleBeforeToggle}
         onToggle={handleToggle}
-        className={`${styles.panel} ${placement === 'beside' ? styles.beside : styles[align]}`}
+        className={[
+          styles.panel,
+          placement === 'beside' ? styles.beside : styles[align],
+          isShownWhole ? styles.shownWhole : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
         {isOpen &&
           (typeof children === 'function'

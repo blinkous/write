@@ -1,5 +1,5 @@
-import { Redo2, Sparkles, Undo2 } from 'lucide-react'
-import { Button, LabeledRow, SwatchColorInput } from '../../design-system'
+import { Redo2, Undo2 } from 'lucide-react'
+import { Button, ColorMenu, LabeledRow, SwatchFace } from '../../design-system'
 import {
   BackgroundMediaEffects,
   BackgroundMediaTile,
@@ -11,76 +11,110 @@ type PageThemeProps = {
   pageTheme: ReturnType<typeof usePageTheme>
 }
 
-type PageColorSettingsProps = PageThemeProps & {
-  backgroundMedia: ReturnType<typeof useBackgroundMedia>
+type CustomColorProps = {
+  /** The custom color slots shared by every color menu. */
+  customColors: readonly (string | null)[]
+  onCustomColorsChange: (customColors: (string | null)[]) => void
 }
+
+type PageColorMenuProps = CustomColorProps & {
+  label: string
+  value: string
+  /** Colors matching the other page color. */
+  suggestions: readonly string[]
+  allowsTransparency: boolean
+  /** isFinal: one undo step now (a tile); otherwise when the picker commits. */
+  onChange: (color: string, isFinal?: boolean) => void
+  onCommit: () => void
+}
+
+/** A page color's tile, opening its color menu: matches for the other page color, custom colors, the picker. */
+function PageColorMenu({
+  label,
+  value,
+  suggestions,
+  allowsTransparency,
+  onChange,
+  onCommit,
+  ...customColorProps
+}: PageColorMenuProps) {
+  return (
+    <ColorMenu
+      label={label}
+      trigger={<SwatchFace color={value} />}
+      suggestionsLabel="Suggested colors"
+      suggestions={suggestions.map((color, index) => ({
+        color,
+        label: `Suggested color ${index + 1}`,
+        isSelected: color === value,
+        onSelect: () => onChange(color, true),
+      }))}
+      value={value}
+      pickerColor={value}
+      allowsTransparency={allowsTransparency}
+      onSelectCustom={(color) => onChange(color, true)}
+      onPick={onChange}
+      onPickEnd={onCommit}
+      {...customColorProps}
+    />
+  )
+}
+
+type PageColorSettingsProps = PageThemeProps &
+  CustomColorProps & {
+    backgroundMedia: ReturnType<typeof useBackgroundMedia>
+  }
 
 /**
  * The page's foreground (default text) and background colors, each a label
- * with its tile at the end (part of the App section); only the tiles open
- * pickers. The background row also holds the background picture or video,
- * followed by its blur and opacity while there's one. Each color changes
- * only when you change it; the ✨ before a tile picks a match for the other
- * color, once. A drag in a picker is committed when it ends.
+ * with its tile at the end (part of the App section); a tile opens its color
+ * menu, suggesting matches for the other color. The background row also holds
+ * the background picture or video, followed by its blur and opacity while
+ * there's one. Each color changes only when you change it.
  */
 export function PageColorSettings({
   pageTheme,
   backgroundMedia,
+  ...customColorProps
 }: PageColorSettingsProps) {
   const {
     backgroundColor,
     textColor,
+    textColorSuggestions,
+    backgroundColorSuggestions,
     changeBackground,
     changeText,
-    matchText,
-    matchBackground,
     commit,
   } = pageTheme
   return (
     <>
       <LabeledRow label="Foreground" control="swatch">
-        <MatchColorButton
-          label="Match foreground to background"
-          onClick={matchText}
-        />
-        <SwatchColorInput
-          value={textColor}
+        <PageColorMenu
           label="Foreground"
+          value={textColor}
+          suggestions={textColorSuggestions}
+          allowsTransparency
           onChange={changeText}
           onCommit={commit}
+          {...customColorProps}
         />
       </LabeledRow>
       <LabeledRow label="Background" control="swatch">
         <BackgroundMediaTile backgroundMedia={backgroundMedia} />
-        <MatchColorButton
-          label="Match background to foreground"
-          onClick={matchBackground}
-        />
-        <SwatchColorInput
-          value={backgroundColor}
+        <PageColorMenu
           label="Background color"
+          value={backgroundColor}
+          suggestions={backgroundColorSuggestions}
+          allowsTransparency={false}
           onChange={changeBackground}
           onCommit={commit}
+          {...customColorProps}
         />
       </LabeledRow>
       {backgroundMedia.media && (
         <BackgroundMediaEffects pageTheme={pageTheme} />
       )}
     </>
-  )
-}
-
-type MatchColorButtonProps = {
-  label: string
-  onClick: () => void
-}
-
-/** ✨ before a color tile: picks a color matching the other page color, once. */
-function MatchColorButton({ label, onClick }: MatchColorButtonProps) {
-  return (
-    <Button iconOnly aria-label={label} title={label} onClick={onClick}>
-      <Sparkles aria-hidden="true" />
-    </Button>
   )
 }
 

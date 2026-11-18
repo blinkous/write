@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
+import { deriveCozyThemeColors } from '../../lib/cozyPalette'
+import { flattenColor } from '../../lib/flattenColor'
 import {
-  deriveCozyBackgroundColor,
-  deriveCozyTextColor,
-} from '../../lib/cozyPalette'
+  suggestBackgroundColors,
+  suggestTextColors,
+  type LightnessSide,
+} from '../../lib/pageColorSuggestions'
+import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
   DEFAULT_TEXT_STYLES,
   type TextStyleName,
   type TextStyleSettings,
 } from '../../text-styles'
-import type { Appearance } from './appearanceOptions'
+import {
+  SUGGESTED_PAGE_COLOR_COUNT,
+  type Appearance,
+} from './appearanceOptions'
 import {
   EMPTY_PAGE_THEME_HISTORY,
   beginEdit,
@@ -21,6 +28,15 @@ import {
   loadPageThemeHistory,
   savePageThemeHistory,
 } from './pageThemeHistoryStorage'
+
+/* Which side of the other color suggestions start on: what suits the system's light or dark mode. */
+const PREFERRED_SIDES: Record<
+  ColorScheme,
+  { text: LightnessSide; background: LightnessSide }
+> = {
+  light: { text: 'darker', background: 'lighter' },
+  dark: { text: 'lighter', background: 'darker' },
+}
 
 /**
  * The fonts, page colors, text styles, tab title and background blur and
@@ -50,6 +66,7 @@ export function usePageTheme(
     backgroundOpacity,
   }
   const [history, setHistory] = useState(() => loadPageThemeHistory(current))
+  const systemColorScheme = getSystemColorScheme()
 
   useEffect(() => savePageThemeHistory(history), [history])
 
@@ -96,21 +113,31 @@ export function usePageTheme(
     changeFonts(fonts: Partial<Pick<PageTheme, 'appFont' | 'editorFont'>>) {
       change(fonts, true)
     },
-    /** Only the background: the text color changes only when asked (see matchText). */
-    changeBackground(nextBackgroundColor: string) {
-      change({ backgroundColor: nextBackgroundColor }, false)
+    /**
+     * Only the background: the text color changes only when you change it.
+     * A picker drag (isFinal false) becomes one undo step when committed; a
+     * suggested or custom color is one step on its own.
+     */
+    changeBackground(nextBackgroundColor: string, isFinal = false) {
+      change({ backgroundColor: nextBackgroundColor }, isFinal)
     },
-    changeText(nextTextColor: string) {
-      change({ textColor: nextTextColor }, false)
+    changeText(nextTextColor: string, isFinal = false) {
+      change({ textColor: nextTextColor }, isFinal)
     },
-    /** Picks a text color matching the background, as one undo step. */
-    matchText() {
-      change({ textColor: deriveCozyTextColor(backgroundColor) }, true)
-    },
-    /** Picks a background matching the text color, as one undo step. */
-    matchBackground() {
-      change({ backgroundColor: deriveCozyBackgroundColor(textColor) }, true)
-    },
+    /** Text colors readable on the background, the system mode's side first. */
+    textColorSuggestions: suggestTextColors(
+      backgroundColor,
+      PREFERRED_SIDES[systemColorScheme].text,
+      SUGGESTED_PAGE_COLOR_COUNT,
+    ),
+    /** Backgrounds for how the text color looks, the system mode's side first. */
+    backgroundColorSuggestions: suggestBackgroundColors(
+      flattenColor(textColor, backgroundColor),
+      PREFERRED_SIDES[systemColorScheme].background,
+      SUGGESTED_PAGE_COLOR_COUNT,
+    ),
+    /** The theme's shades as #rrggbb(aa), the page text color first. */
+    themeColors: deriveCozyThemeColors(backgroundColor, textColor),
     /**
      * Typing shows in the tab at once (isFinal false); the final title (e.g.
      * on leaving the field) makes the whole edit one undo step.

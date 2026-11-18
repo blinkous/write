@@ -10,8 +10,9 @@ margins, spacing and colors, per-text color, glow and case, and export as markdo
 - **No network at runtime.** Fonts are bundled, so the app works offline.
 - **Locked-down origin.** Builds ship a Content Security Policy allowing only the app's own
   scripts, styles and fonts and no network connections, so injected content can't read the
-  journal or send it anywhere. Nothing may need inline scripts or styles or `data:` fonts;
-  `blob:` media is allowed for the background. The app refuses to run inside another page's
+  journal or send it anywhere. Nothing may need inline scripts or styles or `data:` fonts,
+  except the color picker library's one fixed stylesheet, allowed by its exact contents (a
+  hash); `blob:` media is allowed for the background. The app refuses to run inside another page's
   frame (see privacy).
 - **Dedicated origin.** Browser storage is per origin, so a shared or shifting one would
   share or "lose" entries: locally always `localhost:4791`, hosted on its own subdomain

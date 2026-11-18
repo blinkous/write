@@ -5,20 +5,23 @@ import {
   resolveTextColor,
   THEME_TEXT_COLORS,
 } from '../../journal-document'
-import { getThemeColorSuggestions } from './themeColorSuggestions'
+import {
+  getPickerColor,
+  getThemeColorSuggestions,
+} from './themeColorSuggestions'
 
 export type TextColorMenuProps = {
   /** Names the menu, e.g. "Text color" or "Title color". */
   label: string
-  /** The chosen color (theme name or #rrggbb), or null for the page text color. */
+  /** The chosen color (theme name or #rrggbb(aa)), or null for the page text color. */
   value: string | null
-  /** Shown as the starting color when filling an empty custom slot. */
-  pageTextColor: string
+  /** The theme's shades as #rrggbb(aa), the page text color first, for the picker. */
+  themeColors: readonly string[]
   customColors: readonly (string | null)[]
   onCustomColorsChange: (customColors: (string | null)[]) => void
-  /** A tile was clicked (closes the menu); null is the page text color. */
+  /** A tile was clicked; null is the page text color. */
   onSelect: (color: string | null) => void
-  /** A custom slot is being filled (every step of a drag in the system picker). */
+  /** The picker changed the color (every step of a drag). */
   onPick: (color: string) => void
   onPickEnd?: () => void
   onClose?: () => void
@@ -35,7 +38,7 @@ const [PAGE_TEXT_THEME_COLOR, ...OTHER_THEME_COLORS] = THEME_TEXT_COLORS
 export function TextColorMenu({
   label,
   value,
-  pageTextColor,
+  themeColors,
   onSelect,
   ...menuProps
 }: TextColorMenuProps) {
@@ -59,7 +62,8 @@ export function TextColorMenu({
         ...getThemeColorSuggestions(OTHER_THEME_COLORS, value, onSelect),
       ]}
       value={value}
-      emptyPickerColor={pageTextColor}
+      pickerColor={getPickerColor(value, themeColors)}
+      allowsTransparency
       onSelectCustom={onSelect}
       {...menuProps}
     />

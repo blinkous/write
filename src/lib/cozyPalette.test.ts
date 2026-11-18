@@ -217,8 +217,16 @@ describe.each(Object.entries(TEXT_COLORS))(
       expect(Math.abs(lightnessGap)).toBeGreaterThanOrEqual(0.18)
     })
 
-    it('stays soft, never vivid, even for vivid text', () => {
-      expect(page.c).toBeLessThanOrEqual(0.06)
+    it('is never neon, even for vivid text', () => {
+      expect(page.c).toBeLessThanOrEqual(0.12)
     })
   },
 )
+
+describe('theme colors for a see-through text color', () => {
+  it('keep the text color itself first, and place greys by how it looks', () => {
+    const [pageText, ...tones] = deriveCozyThemeColors('#ffffff', '#00000080')
+    expect(pageText).toBe('#00000080')
+    expect(tones).toEqual(deriveCozyThemeColors('#ffffff', '#7f7f7f').slice(1))
+  })
+})

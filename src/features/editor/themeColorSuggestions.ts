@@ -22,3 +22,20 @@ export function getThemeColorSuggestions(
     onSelect: () => onSelect(themeColor),
   }))
 }
+
+/**
+ * A stored text color or glow as #rrggbb(aa), for the color picker to start
+ * from: a theme name as its current shade, and none (null) as the page text
+ * color. `themeColors` are the theme's shades, in order.
+ */
+export function getPickerColor(
+  value: string | null,
+  themeColors: readonly string[],
+): string {
+  const [pageTextColor] = themeColors
+  if (value === null) return pageTextColor
+  const themeIndex = THEME_TEXT_COLORS.findIndex(
+    (themeColor) => themeColor === value,
+  )
+  return themeIndex === -1 ? value : (themeColors[themeIndex] ?? pageTextColor)
+}

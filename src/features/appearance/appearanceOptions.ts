@@ -57,7 +57,10 @@ export const BACKGROUND_OPACITY_RANGE = {
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 
-/** Each slot holds a #rrggbb color, or null while empty. */
+/** Suggested page colors: one full swatch row, like the custom slots. */
+export const SUGGESTED_PAGE_COLOR_COUNT = CUSTOM_TEXT_COLOR_SLOT_COUNT
+
+/** Each slot holds a #rrggbb(aa) color, or null while empty. */
 export type CustomTextColors = readonly (string | null)[]
 
 export type Appearance = {

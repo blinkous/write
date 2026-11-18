@@ -6,7 +6,7 @@ import {
   writeStoredValue,
 } from '../../lib/localStore'
 import { textStylesSchema } from '../../text-styles'
-import { isHexColor } from '../../utils/color'
+import { isHexColor, isOpaqueHexColor } from '../../utils/color'
 import {
   BACKGROUND_BLUR_RANGE,
   BACKGROUND_OPACITY_RANGE,
@@ -70,7 +70,7 @@ function createHistorySchema(current: CurrentSettings) {
         ? current.textStyles
         : textStylesSchema.parse(textStyles),
     ),
-    backgroundColor: z.string().refine(isHexColor),
+    backgroundColor: z.string().refine(isOpaqueHexColor),
     textColor: z.string().refine(isHexColor),
     tabTitle: valueOrCurrent(tabTitleSchema, current.tabTitle),
     backgroundBlur: valueOrCurrent(

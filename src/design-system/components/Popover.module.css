@@ -72,6 +72,25 @@
   position-area: inline-end span-block-end;
 }
 
+/*
+ * Shown whole: below, else above, else beside the trigger (either side) over
+ * the window's full height, tried in that order. Not capped at the usual
+ * menu height, so it only scrolls if even the window is too short.
+ */
+@position-try --popover-beside-full-height {
+  position-area: span-all inline-end;
+  margin: var(--space-2);
+}
+
+.shownWhole:popover-open {
+  max-height: 100%;
+  position-try-order: normal;
+  position-try-fallbacks:
+    flip-block,
+    --popover-beside-full-height,
+    --popover-beside-full-height flip-inline;
+}
+
 /* Narrow screens: panels often reach the screen's edge, so they keep a gap from it. */
 @media (width < 48rem) {
   .panel {
