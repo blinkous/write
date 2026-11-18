@@ -141,27 +141,6 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
     },
   },
   {
-    // Sunlit leaves on a bright, rich green floor, under a mossy, shaggy title.
-    id: 'forest',
-    label: 'Forest',
-    isReadingBaseline: false,
-    look: {
-      appFont: 'nunito',
-      editorFont: 'literata',
-      backgroundColor: '#175900',
-      textColor: '#e2f7d4',
-      textStyles: textStylesWith({
-        // Rubik Beastly has one weight; bold would be faked.
-        title: {
-          font: 'rubik-beastly',
-          bold: false,
-          color: '#75a368',
-        },
-        ...allHeadings({ font: 'eb-garamond', color: '#91c522' }),
-      }),
-    },
-  },
-  {
     // Named for the cochineal insect, source of carmine, the red dye first
     // made by Indigenous peoples of Mexico and Peru.
     id: 'cochineal',
