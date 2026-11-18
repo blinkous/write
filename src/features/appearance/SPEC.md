@@ -33,8 +33,9 @@ background picture or video, with one shared undo/redo.
   row of matches for the other color, on both sides of it: the system mode's side first
   (light text and dark pages in dark mode, the reverse in light), then the other, as one
   gradient with no repeats. Text suggestions follow the background's ramp; backgrounds
-  keep the text color's hue, about as colorful as it (never neon). A suggestion or custom
-  color is one undo step.
+  keep the text color's hue, about as colorful as it (never neon). Each tile leans in
+  richness and hue the way the theme colors do, so the row varies like they do. A
+  suggestion or custom color is one undo step.
 - **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur
   and opacity (not the background file): the last 50 steps, surviving a refresh. A pick, a
   stepper press, a typed value, a tab title once the field is left, or a whole color-picker

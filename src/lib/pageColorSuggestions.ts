@@ -5,6 +5,8 @@ import {
   GENTLEST_LIGHTNESS_GAP,
   PAGE_LIGHTNESS_RANGE,
   TEXT_LIGHTNESS_RANGE,
+  TONE_VARIATIONS,
+  type ToneVariation,
 } from './cozyPalette'
 
 /** Lighter or darker than the color suggestions are for. */
@@ -98,6 +100,11 @@ function suggestLightnesses(
   )
 }
 
+/** The tile's lean, taken in turn from the theme tones', so the row varies like the theme colors. */
+function getToneVariation(index: number): ToneVariation {
+  return TONE_VARIATIONS[index % TONE_VARIATIONS.length]
+}
+
 /** Drops repeats (shades can round to the same hex), keeping the order. */
 function unique(colors: string[]): string[] {
   return [...new Set(colors)]
@@ -105,7 +112,8 @@ function unique(colors: string[]): string[] {
 
 /**
  * Text colors to suggest for a page: up to `count`, readable, on both sides
- * of it, starting with the preferred side (e.g. lighter text in dark mode).
+ * of it, starting with the preferred side (e.g. lighter text in dark mode),
+ * each leaning in richness and hue like the theme colors.
  */
 export function suggestTextColors(
   backgroundHex: string,
@@ -115,15 +123,17 @@ export function suggestTextColors(
   const from = oklch(backgroundHex)?.l ?? 0
   return unique(
     suggestLightnesses(from, preferredSide, TEXT_LIGHTNESS_RANGE, count).map(
-      (lightness) => deriveTextShadeAt(backgroundHex, lightness),
+      (lightness, index) =>
+        deriveTextShadeAt(backgroundHex, lightness, getToneVariation(index)),
     ),
   )
 }
 
 /**
  * Page colors to suggest for a (solid) text color: up to `count`, readable,
- * in its hue, on both sides of it, starting with the preferred side (e.g.
- * darker pages in dark mode).
+ * around its hue, on both sides of it, starting with the preferred side (e.g.
+ * darker pages in dark mode), each leaning in richness and hue like the
+ * theme colors.
  */
 export function suggestBackgroundColors(
   textHex: string,
@@ -133,7 +143,8 @@ export function suggestBackgroundColors(
   const from = oklch(textHex)?.l ?? 0
   return unique(
     suggestLightnesses(from, preferredSide, PAGE_LIGHTNESS_RANGE, count).map(
-      (lightness) => deriveBackgroundShadeAt(textHex, lightness),
+      (lightness, index) =>
+        deriveBackgroundShadeAt(textHex, lightness, getToneVariation(index)),
     ),
   )
 }

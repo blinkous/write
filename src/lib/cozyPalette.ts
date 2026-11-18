@@ -70,6 +70,20 @@ function chromaShareAt(lightness: number): number {
   )
 }
 
+/** How a suggested shade leans from the plain ramp: richer or softer, and toward a neighbouring hue. */
+export type ToneVariation = {
+  /** Multiplier on the shade's chroma. */
+  chromaScale: number
+  /** Degrees around the color wheel from the hue it's derived from. */
+  hueShift: number
+}
+
+const NO_VARIATION: ToneVariation = { chromaScale: 1, hueShift: 0 }
+
+function shiftHue(hue: number, hueShift: number): number {
+  return (hue + hueShift + 360) % 360
+}
+
 /**
  * A text color for a page at this lightness: the page's hue (warm if the page
  * is neutral) with chroma along the ramp, peaking in the mid-tones.
@@ -77,6 +91,7 @@ function chromaShareAt(lightness: number): number {
 export function deriveTextShadeAt(
   backgroundHex: string,
   lightness: number,
+  { chromaScale, hueShift }: ToneVariation = NO_VARIATION,
 ): string {
   const background = oklch(backgroundHex)
   if (!background) return backgroundHex
@@ -90,8 +105,11 @@ export function deriveTextShadeAt(
   const shade = {
     mode: 'oklch' as const,
     l: lightness,
-    c: peakChroma * chromaShareAt(lightness),
-    h: hue,
+    c: Math.min(
+      peakChroma * chromaShareAt(lightness) * chromaScale,
+      MAX_THEME_CHROMA,
+    ),
+    h: shiftHue(hue, hueShift),
   }
   // Pull chroma in (keeping hue and lightness) if the shade can't be shown on screen.
   return formatHex(clampChroma(shade, 'oklch'))
@@ -128,13 +146,23 @@ export const PAGE_LIGHTNESS_RANGE = { min: 0.18, max: 0.97 } as const
 export function deriveBackgroundShadeAt(
   textHex: string,
   lightness: number,
+  { chromaScale, hueShift }: ToneVariation = NO_VARIATION,
 ): string {
   const text = oklch(textHex)
   if (!text) return textHex
   const isNeutral = text.c < NEUTRAL_CHROMA
   const hue = isNeutral ? WARM_NEUTRAL_HUE : (text.h ?? WARM_NEUTRAL_HUE)
-  const chroma = clamp(text.c / chromaShareAt(text.l), 0, MAX_PEAK_CHROMA)
-  const page = { mode: 'oklch' as const, l: lightness, c: chroma, h: hue }
+  const chroma = clamp(
+    (text.c / chromaShareAt(text.l)) * chromaScale,
+    0,
+    MAX_PEAK_CHROMA,
+  )
+  const page = {
+    mode: 'oklch' as const,
+    l: lightness,
+    c: chroma,
+    h: shiftHue(hue, hueShift),
+  }
   return formatHex(clampChroma(page, 'oklch'))
 }
 
@@ -180,6 +208,14 @@ const THEME_RECIPES: readonly ThemeRecipe[] = [
   { lightnessOffset: -0.06, chromaScale: 0.8, hueShift: 4 },
 ]
 
+/**
+ * The theme tones' leans (richness and hue), in order: suggestions take them
+ * in turn, so a row of suggestions varies the way the theme colors do.
+ */
+export const TONE_VARIATIONS: readonly ToneVariation[] = THEME_RECIPES.map(
+  ({ chromaScale, hueShift }) => ({ chromaScale, hueShift }),
+)
+
 /** Pale pages carry little color, so their tones start from at least this chroma. */
 const MIN_THEME_BASE_CHROMA = 0.075
 const NEUTRAL_THEME_BASE_CHROMA = 0.05
@@ -207,7 +243,7 @@ function deriveThemeColor(
     mode: 'oklch' as const,
     l: clamp(lightness, MIN_LIGHTNESS, MAX_LIGHTNESS),
     c: Math.min(baseChroma * chromaScale, MAX_THEME_CHROMA),
-    h: (hue + hueShift + 360) % 360,
+    h: shiftHue(hue, hueShift),
   }
   // Pull chroma in (keeping hue and lightness) if the shade can't be shown on screen.
   return formatHex(clampChroma(shade, 'oklch'))
