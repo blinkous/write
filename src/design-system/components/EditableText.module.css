@@ -11,7 +11,7 @@
   align-items: center;
   min-width: 0;
   max-width: 100%;
-  min-height: var(--size-control);
+  height: var(--size-control);
   padding: 0 var(--space-control-inline);
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-small);

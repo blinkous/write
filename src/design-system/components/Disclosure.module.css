@@ -39,7 +39,7 @@
 
 /* Nested inside another, the title reads like the rows around it. */
 .disclosure .disclosure > .summary {
-  min-height: var(--size-control);
+  height: var(--size-control);
   color: var(--color-text);
   font-size: inherit;
 }
