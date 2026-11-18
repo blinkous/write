@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import { getLicenseFileText } from 'generate-license-file'
 import type { Plugin } from 'vite'
 import { defineConfig } from 'vitest/config'
+import { CONTENT_SECURITY_POLICY } from './src/app/contentSecurityPolicy.ts'
 
 /*
  * localStorage is scoped to the origin (protocol + host + port). A dedicated,
@@ -11,24 +12,6 @@ import { defineConfig } from 'vitest/config'
 const APP_PORT = 4791
 
 const FONT_FILE_PATTERN = /\.woff2?$/
-
-/*
- * Only scripts bundled with the app may run, and no network requests are
- * allowed, so injected content can't read or send the journal anywhere.
- */
-const CONTENT_SECURITY_POLICY = [
-  "default-src 'none'",
-  "script-src 'self'",
-  "style-src 'self'",
-  "font-src 'self'",
-  // blob: is the background picture or video, read from this browser's own storage.
-  "img-src 'self' data: blob:",
-  'media-src blob:',
-  "connect-src 'none'",
-  "base-uri 'none'",
-  "form-action 'none'",
-  "object-src 'none'",
-].join('; ')
 
 /* Build-only: the dev server needs inline scripts and a websocket for hot reload. */
 function contentSecurityPolicy(): Plugin {

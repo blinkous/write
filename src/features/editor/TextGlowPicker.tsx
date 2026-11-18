@@ -10,8 +10,8 @@ import { readOwnGlow } from './ownFormatting'
 
 type TextGlowPickerProps = TextStyleContext & {
   editor: Editor
-  /** Shown as the starting color when filling an empty custom slot. */
-  pageTextColor: string
+  /** The theme's shades as #rrggbb(aa), the page text color first, for the picker. */
+  themeColors: readonly string[]
   customTextColors: readonly (string | null)[]
   onCustomTextColorsChange: (customTextColors: (string | null)[]) => void
 }
@@ -23,7 +23,7 @@ type TextGlowPickerProps = TextStyleContext & {
  */
 export function TextGlowPicker({
   editor,
-  pageTextColor,
+  themeColors,
   customTextColors,
   onCustomTextColorsChange,
   ...textStyleContext
@@ -51,11 +51,11 @@ export function TextGlowPicker({
     <GlowColorMenu
       label="Text glow"
       value={own === NO_GLOW ? null : (own ?? style)}
-      pageTextColor={pageTextColor}
+      themeColors={themeColors}
       customColors={customTextColors}
       onCustomColorsChange={onCustomTextColorsChange}
       onSelect={applyGlow}
-      // Live while dragging in the system picker, so the text previews the glow.
+      // Live while dragging in the picker, so the text previews the glow.
       onPick={applyGlow}
       // Return to the text with its selection, so typing continues with the chosen glow.
       onClose={() => editor.commands.focus()}

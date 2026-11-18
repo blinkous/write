@@ -29,3 +29,11 @@ describe('deriveReadableMutedColor', () => {
     expect(deriveReadableMutedColor('#777777', '#888888')).toBe('#888888')
   })
 })
+
+describe('a see-through text color', () => {
+  it('is judged by how it looks on the page', () => {
+    expect(deriveReadableMutedColor('#ffffff', '#00000080')).toBe(
+      deriveReadableMutedColor('#ffffff', '#7f7f7f'),
+    )
+  })
+})

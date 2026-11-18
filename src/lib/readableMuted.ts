@@ -1,4 +1,5 @@
 import { formatHex, interpolate, wcagContrast } from 'culori'
+import { flattenColor } from './flattenColor'
 
 /** WCAG AA for normal text. */
 const MIN_TEXT_CONTRAST = 4.5
@@ -29,8 +30,10 @@ function mixTowardText(
  */
 export function deriveReadableMutedColor(
   backgroundHex: string,
-  textHex: string,
+  pageTextHex: string,
 ): string {
+  // Contrast is judged on how a see-through text color looks on the page.
+  const textHex = flattenColor(pageTextHex, backgroundHex)
   const surfaces = SURFACE_TEXT_SHARES.map((share) =>
     mixTowardText(backgroundHex, textHex, share),
   )

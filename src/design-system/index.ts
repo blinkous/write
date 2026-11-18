@@ -7,6 +7,7 @@ export { Button } from './components/Button'
 export { Checkbox } from './components/Checkbox'
 export { Chevron } from './components/Chevron'
 export { ColorMenu, type ColorSuggestion } from './components/ColorMenu'
+export { ColorPicker } from './components/ColorPicker'
 export { ChoiceFieldset } from './components/ChoiceFieldset'
 export { ChoiceGroup } from './components/ChoiceGroup'
 export { ConfirmDialog } from './components/ConfirmDialog'
@@ -35,7 +36,12 @@ export { ScrollRow } from './components/ScrollRow'
 export { SearchField } from './components/SearchField'
 export { SelectMenu } from './components/SelectMenu'
 export { StepperMenu } from './components/StepperMenu'
-export { SwatchButton, SwatchColorInput, SwatchRow } from './components/Swatch'
+export {
+  SwatchButton,
+  SwatchFace,
+  SwatchRow,
+  SwatchSlot,
+} from './components/Swatch'
 export { Text } from './components/Text'
 export { TextInput } from './components/TextInput'
 export { Toast, type ToastMessage } from './components/Toast'

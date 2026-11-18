@@ -1,41 +1,30 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { SwatchColorInput } from './Swatch'
+import { SwatchSlot } from './Swatch'
 
 function renderSlot(value: string | null = '#aa3366') {
   const onClick = vi.fn()
   const onClear = vi.fn()
-  const openedPickers: HTMLInputElement[] = []
-  const { container } = render(
-    <SwatchColorInput
+  render(
+    <SwatchSlot
       value={value}
       label="Custom color 1"
+      isSelected={false}
       onClick={onClick}
-      onChange={vi.fn()}
       onClear={onClear}
     />,
   )
-  const colorInput = container.querySelector('input[type=color]')
-  if (!(colorInput instanceof HTMLInputElement)) throw new Error('no input')
-  // jsdom has no picker; opening one falls back to a click on the input.
-  colorInput.addEventListener('click', () => openedPickers.push(colorInput))
-  return { onClick, onClear, colorInput, openedPickers }
+  return { onClick, onClear }
 }
 
-describe('SwatchColorInput', () => {
-  it('is a button the keyboard reaches, not the hidden color input', async () => {
-    const { colorInput } = renderSlot()
-    await userEvent.setup().tab()
+describe('SwatchSlot', () => {
+  it('is pressed from the keyboard', async () => {
+    const { onClick } = renderSlot()
+    const user = userEvent.setup()
+    await user.tab()
     expect(screen.getByRole('button', { name: 'Custom color 1' })).toHaveFocus()
-    expect(colorInput).toHaveAttribute('tabindex', '-1')
-  })
-
-  it('opens the color picker when pressed, after its own click handler', async () => {
-    const { onClick, openedPickers } = renderSlot()
-    screen.getByRole('button', { name: 'Custom color 1' }).focus()
-    await userEvent.setup().keyboard('{Enter}')
+    await user.keyboard('{Enter}')
     expect(onClick).toHaveBeenCalledOnce()
-    expect(openedPickers).toHaveLength(1)
   })
 
   it('keeps focus on the tile after clearing it', async () => {

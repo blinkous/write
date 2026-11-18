@@ -1,4 +1,5 @@
 import { clampChroma, formatHex, oklch } from 'culori'
+import { flattenColor } from './flattenColor'
 
 /*
  * Cozy colors derived from the page background, in OKLCH (where lightness and
@@ -95,6 +96,13 @@ export function deriveCozyTextColor(backgroundHex: string): string {
   return deriveShade(backgroundHex, TEXT_LIGHTNESS_DISTANCE)
 }
 
+/** Text colors to suggest for a page: steps along its ramp, gentlest first. */
+export function deriveCozyTextColors(backgroundHex: string): string[] {
+  return TEXT_RAMP_DISTANCES.map((distance) =>
+    deriveShade(backgroundHex, distance),
+  )
+}
+
 /** Pages may sit closer to black or white than text does. */
 const MIN_PAGE_LIGHTNESS = 0.18
 const MAX_PAGE_LIGHTNESS = 0.97
@@ -105,14 +113,17 @@ const MAX_PAGE_LIGHTNESS = 0.97
  * back. Same hue, the text's distance away on the other side, and its chroma
  * undone from the ramp's mid-tone peak, so pages stay soft.
  */
-export function deriveCozyBackgroundColor(textHex: string): string {
+function deriveBackgroundShade(
+  textHex: string,
+  lightnessDistance: number,
+): string {
   const text = oklch(textHex)
   if (!text) return textHex
   const isNeutral = text.c < NEUTRAL_CHROMA
   const hue = isNeutral ? WARM_NEUTRAL_HUE : (text.h ?? WARM_NEUTRAL_HUE)
   const direction = text.l > LIGHT_PAGE_LIGHTNESS ? -1 : 1
   const lightness = clamp(
-    text.l + direction * TEXT_LIGHTNESS_DISTANCE,
+    text.l + direction * lightnessDistance,
     MIN_PAGE_LIGHTNESS,
     MAX_PAGE_LIGHTNESS,
   )
@@ -123,6 +134,17 @@ export function deriveCozyBackgroundColor(textHex: string): string {
   )
   const page = { mode: 'oklch' as const, l: lightness, c: chroma, h: hue }
   return formatHex(clampChroma(page, 'oklch'))
+}
+
+export function deriveCozyBackgroundColor(textHex: string): string {
+  return deriveBackgroundShade(textHex, TEXT_LIGHTNESS_DISTANCE)
+}
+
+/** Page colors to suggest for a text color: steps back along its ramp, closest first. */
+export function deriveCozyBackgroundColors(textHex: string): string[] {
+  return TEXT_RAMP_DISTANCES.map((distance) =>
+    deriveBackgroundShade(textHex, distance),
+  )
 }
 
 type ThemeRecipe = {
@@ -246,7 +268,9 @@ export function deriveCozyThemeColors(
   pageTextColor: string,
 ): string[] {
   if (isNeutralColor(backgroundHex)) {
-    return [pageTextColor, ...deriveNeutralTones(backgroundHex, pageTextColor)]
+    // Greys sit between the page and how a see-through text color looks on it.
+    const solidTextColor = flattenColor(pageTextColor, backgroundHex)
+    return [pageTextColor, ...deriveNeutralTones(backgroundHex, solidTextColor)]
   }
   const tones = THEME_RECIPES.map((recipe) =>
     deriveThemeColor(backgroundHex, recipe),

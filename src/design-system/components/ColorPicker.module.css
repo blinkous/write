@@ -1,0 +1,73 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/*
+ * react-colorful's own look (sizes, radii) is restyled to the design system.
+ * Scoped under .picker, so these win over its built-in stylesheet.
+ */
+.picker :global(.react-colorful) {
+  width: 100%;
+  height: auto;
+  gap: var(--space-2);
+}
+
+.picker :global(.react-colorful__saturation) {
+  flex-grow: 0;
+  aspect-ratio: 4 / 3;
+  border-bottom: 0;
+  border-radius: var(--radius-small);
+}
+
+.picker :global(.react-colorful__hue),
+.picker :global(.react-colorful__alpha),
+.picker :global(.react-colorful__last-control) {
+  height: var(--size-control-small);
+  border-radius: var(--radius-small);
+}
+
+.picker :global(.react-colorful__pointer) {
+  width: var(--size-control-small);
+  height: var(--size-control-small);
+}
+
+/* Its focus is only a slight grow; keyboard focus gets the usual ring too. */
+.picker
+  :global(.react-colorful__interactive:focus-visible .react-colorful__pointer) {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
+/* The typed color and the dropper, under the sliders. */
+.fields {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Under .fields, so it wins over TextInput's own font whatever order the stylesheets load in. */
+.fields .typedColor {
+  flex: 1 1 auto;
+  min-height: var(--size-control);
+  font-family: var(--font-mono);
+}
+
+/* Positions the system color input under its button. */
+.systemPicker {
+  position: relative;
+}
+
+/* Invisible, under the dropper button, so the system picker opens beside it. */
+.colorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}

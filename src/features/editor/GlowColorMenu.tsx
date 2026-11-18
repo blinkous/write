@@ -6,12 +6,15 @@ import {
 } from '../../journal-document'
 import styles from './GlowColorMenu.module.css'
 import type { TextColorMenuProps } from './TextColorMenu'
-import { getThemeColorSuggestions } from './themeColorSuggestions'
+import {
+  getPickerColor,
+  getThemeColorSuggestions,
+} from './themeColorSuggestions'
 
 type GlowColorMenuProps = TextColorMenuProps & {
   /** The chosen glow (theme name or #rrggbb(aa)), or null for no glow. */
   value: string | null
-  /** A tile was clicked (closes the menu); null is no glow. */
+  /** A tile was clicked; null is no glow. */
   onSelect: (glow: string | null) => void
 }
 
@@ -30,7 +33,7 @@ const NO_GLOW_TRIGGER_COLOR: ThemeTextColor = 'theme-4'
 export function GlowColorMenu({
   label,
   value,
-  pageTextColor,
+  themeColors,
   onSelect,
   ...menuProps
 }: GlowColorMenuProps) {
@@ -60,7 +63,8 @@ export function GlowColorMenu({
         ...getThemeColorSuggestions(GLOW_THEME_COLORS, value, onSelect),
       ]}
       value={value}
-      emptyPickerColor={pageTextColor}
+      pickerColor={getPickerColor(value, themeColors)}
+      allowsTransparency
       onSelectCustom={onSelect}
       {...menuProps}
     />

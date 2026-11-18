@@ -13,8 +13,8 @@ const [PAGE_TEXT_THEME_COLOR] = THEME_TEXT_COLORS
 
 type TextColorPickerProps = TextStyleContext & {
   editor: Editor
-  /** Shown as the starting color when filling an empty custom slot. */
-  pageTextColor: string
+  /** The theme's shades as #rrggbb(aa), the page text color first, for the picker. */
+  themeColors: readonly string[]
   customTextColors: readonly (string | null)[]
   onCustomTextColorsChange: (customTextColors: (string | null)[]) => void
 }
@@ -27,7 +27,7 @@ type TextColorPickerProps = TextStyleContext & {
  */
 export function TextColorPicker({
   editor,
-  pageTextColor,
+  themeColors,
   customTextColors,
   onCustomTextColorsChange,
   ...textStyleContext
@@ -55,11 +55,11 @@ export function TextColorPicker({
     <TextColorMenu
       label="Text color"
       value={own ?? style}
-      pageTextColor={pageTextColor}
+      themeColors={themeColors}
       customColors={customTextColors}
       onCustomColorsChange={onCustomTextColorsChange}
       onSelect={applyColor}
-      // Live while dragging in the system picker, so the text previews the color.
+      // Live while dragging in the picker, so the text previews the color.
       onPick={applyColor}
       // Return to the text with its selection, so typing continues in the chosen color.
       onClose={() => editor.commands.focus()}

@@ -7,10 +7,17 @@ import type { usePageTheme } from './usePageTheme'
 type AppSettingsProps = {
   pageTheme: ReturnType<typeof usePageTheme>
   backgroundMedia: ReturnType<typeof useBackgroundMedia>
+  /** The custom color slots shared by every color menu. */
+  customColors: readonly (string | null)[]
+  onCustomColorsChange: (customColors: (string | null)[]) => void
 }
 
 /** Everything around the page: its font, and the page's foreground and background. */
-export function AppSettings({ pageTheme, backgroundMedia }: AppSettingsProps) {
+export function AppSettings({
+  pageTheme,
+  backgroundMedia,
+  ...customColorProps
+}: AppSettingsProps) {
   const { appFont, changeFonts } = pageTheme
   return (
     <>
@@ -26,6 +33,7 @@ export function AppSettings({ pageTheme, backgroundMedia }: AppSettingsProps) {
       <PageColorSettings
         pageTheme={pageTheme}
         backgroundMedia={backgroundMedia}
+        {...customColorProps}
       />
     </>
   )

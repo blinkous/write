@@ -16,8 +16,8 @@ background picture or video, with one shared undo/redo.
   multipliers (1.4 default, 1.7, 2.0, 2.4), then Add/Remove paragraph gap (a half line, off
   by default) and Add/Remove paragraph indent (book-style, on paragraphs that follow a
   paragraph).
-- **Custom text colors:** seven slots shared by the toolbar and text styles, kept here so
-  they persist.
+- **Custom colors:** seven slots shared by every color menu (the toolbar's and the page
+  colors), kept here so they persist.
 
 ## Rules
 
@@ -29,8 +29,9 @@ background picture or video, with one shared undo/redo.
   nothing behind it. Shades derived from a see-through text color use how it looks on the page.
 - **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
   win and don't follow later system changes.
-- **Each page color changes only when you change it.** A match button beside each picks a
-  match for the other color, once, as one undo step.
+- **Each page color changes only when you change it.** Each one's menu suggests matches
+  for the other color: text colors along the background's ramp, and backgrounds for how
+  the text color looks. A suggestion or custom color is one undo step.
 - **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur
   and opacity (not the background file): the last 50 steps, surviving a refresh. A pick, a
   stepper press, a typed value, a tab title once the field is left, or a whole color-picker
@@ -39,6 +40,24 @@ background picture or video, with one shared undo/redo.
   settings added later fall back to defaults. Old forms (one stored font, paragraph spacing
   sizes, a background fade) load as their current equivalents.
 - Stored values are names (e.g. `relaxed`), not labels, so labels can change freely.
+
+## Color menus
+
+Every color (text, glow, Foreground, Background) is chosen from the same menu, so it looks
+and works the same on every platform:
+
+- **Suggested colors** for that use, then the **custom slots**, then the **picker**, always
+  shown: a color square, hue and opacity sliders (all keyboard-operable), the color as text
+  to read or type (hex, rgb(), hsl(), names) and a **dropper**.
+- Choosing a tile keeps the menu open, so a choice can be fine-tuned in the picker.
+- An empty custom slot saves the current color; a filled one is chosen, and its × (shown on
+  hover or focus) empties it.
+- A typed color applies on Enter or on leaving the field; text that isn't a color goes back
+  to the current color.
+- The **dropper** picks from anywhere on the screen where the browser can (Chromium);
+  elsewhere it opens the system color picker, which has its own dropper on macOS and iOS.
+  A dropped color keeps the current transparency.
+- **Background** has no opacity slider; a see-through custom color is used opaque there.
 
 ## Cozy palette
 
@@ -74,5 +93,7 @@ Derived from the background, never harsh:
 
 - No theme presets and no contrast warnings: people can see whether their colors read.
 - Page colors live apart from the toolbar's text color so the two aren't confused.
+- An in-app picker instead of the system one: the system picker can't be themed, differs
+  per platform and has no opacity.
 - The blur keeps solid edges: CSS `blur()` fades edges to transparent, and WebKit clipped
   media to the window before blurring, showing the page color at the edges.

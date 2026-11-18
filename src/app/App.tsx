@@ -79,10 +79,9 @@ export function App({ journal }: AppProps) {
     lineSpacing,
     hasParagraphSpacing,
     hasParagraphIndent,
-    textColor,
     customTextColors,
   } = appearance
-  // Custom colors are shared by the text color menus (toolbar and text styles).
+  // Custom colors are shared by every color menu (the toolbar's and the page colors).
   const changeCustomTextColors = (colors: (string | null)[]) =>
     updateAppearance({ customTextColors: colors })
   // The app follows only which entry is open and the sort, never the writing (see Journal).
@@ -216,6 +215,8 @@ export function App({ journal }: AppProps) {
                   <AppSettings
                     pageTheme={pageTheme}
                     backgroundMedia={backgroundMedia}
+                    customColors={customTextColors}
+                    onCustomColorsChange={changeCustomTextColors}
                   />
                 ),
               },
@@ -287,7 +288,7 @@ export function App({ journal }: AppProps) {
               />
               <TextColorPicker
                 editor={activeEditor}
-                pageTextColor={textColor}
+                themeColors={pageTheme.themeColors}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
                 {...textStyleContext}
@@ -298,7 +299,7 @@ export function App({ journal }: AppProps) {
               />
               <TextGlowPicker
                 editor={activeEditor}
-                pageTextColor={textColor}
+                themeColors={pageTheme.themeColors}
                 customTextColors={customTextColors}
                 onCustomTextColorsChange={changeCustomTextColors}
                 {...textStyleContext}
