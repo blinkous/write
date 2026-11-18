@@ -29,10 +29,12 @@ background picture or video, with one shared undo/redo.
   nothing behind it. Shades derived from a see-through text color use how it looks on the page.
 - **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
   win and don't follow later system changes.
-- **Each page color changes only when you change it.** Each one's menu suggests matches
-  for the other color: text colors along the background's ramp, and backgrounds in the
-  text color's hue, about as colorful as it (never neon). A suggestion or custom color is
-  one undo step.
+- **Each page color changes only when you change it.** Each one's menu suggests a full
+  row of matches for the other color, on both sides of it: the system mode's side first
+  (light text and dark pages in dark mode, the reverse in light), then the other, as one
+  gradient with no repeats. Text suggestions follow the background's ramp; backgrounds
+  keep the text color's hue, about as colorful as it (never neon). A suggestion or custom
+  color is one undo step.
 - **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur
   and opacity (not the background file): the last 50 steps, surviving a refresh. A pick, a
   stepper press, a typed value, a tab title once the field is left, or a whole color-picker

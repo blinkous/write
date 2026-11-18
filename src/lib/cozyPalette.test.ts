@@ -1,9 +1,7 @@
 import { differenceEuclidean, oklch } from 'culori'
 import {
   deriveCozyBackgroundColor,
-  deriveCozyBackgroundColors,
   deriveCozyTextColor,
-  deriveCozyTextColors,
   deriveCozyThemeColors,
 } from './cozyPalette'
 
@@ -224,36 +222,6 @@ describe.each(Object.entries(TEXT_COLORS))(
     })
   },
 )
-
-describe('suggested page colors', () => {
-  it.each(Object.entries(ALL_BACKGROUNDS))(
-    'offers distinct text colors for %s, stepping away from the page',
-    (_name, background) => {
-      const suggestions = deriveCozyTextColors(background)
-      expect(new Set(suggestions).size).toBe(suggestions.length)
-      const distances = suggestions.map((color) =>
-        Math.abs(toOklch(color).l - toOklch(background).l),
-      )
-      expect(distances).toEqual([...distances].sort((a, b) => a - b))
-    },
-  )
-
-  // Well above the old cap (~0.055) that greyed them out; the darkest give up some to fit the screen's gamut.
-  it('offers page colors as rich as a rich text color, not greyed out', () => {
-    deriveCozyBackgroundColors('#de7aa0').forEach((color) =>
-      expect(toOklch(color).c).toBeGreaterThan(0.07),
-    )
-  })
-
-  it.each(Object.entries(TEXT_COLORS))(
-    'offers distinct page colors for the text color %s',
-    (_name, textColor) => {
-      const suggestions = deriveCozyBackgroundColors(textColor)
-      expect(new Set(suggestions).size).toBeGreaterThan(1)
-      suggestions.forEach((color) => expect(color).toMatch(/^#[0-9a-f]{6}$/))
-    },
-  )
-})
 
 describe('theme colors for a see-through text color', () => {
   it('keep the text color itself first, and place greys by how it looks', () => {

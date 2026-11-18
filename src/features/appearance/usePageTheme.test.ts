@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react'
 import {
-  deriveCozyBackgroundColors,
-  deriveCozyTextColors,
-} from '../../lib/cozyPalette'
+  suggestBackgroundColors,
+  suggestTextColors,
+} from '../../lib/pageColorSuggestions'
 import { DEFAULT_APPEARANCE } from './appearanceOptions'
 import { usePageTheme } from './usePageTheme'
 
@@ -41,11 +41,12 @@ describe('usePageTheme colors', () => {
 
   it('suggests text colors for the background, and backgrounds for the text color', () => {
     const { result } = renderPageTheme()
+    // Tests read as light mode: darker text and lighter pages first.
     expect(result.current.textColorSuggestions).toEqual(
-      deriveCozyTextColors('#ede3d6'),
+      suggestTextColors('#ede3d6', 'darker', 7),
     )
     expect(result.current.backgroundColorSuggestions).toEqual(
-      deriveCozyBackgroundColors('#123456'),
+      suggestBackgroundColors('#123456', 'lighter', 7),
     )
   })
 })
