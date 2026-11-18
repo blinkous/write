@@ -132,8 +132,8 @@
     var(--color-background)
   );
   /*
-   * Muted text (captions, placeholders, section titles) is soft by default, a
-   * cozy choice. When the system asks for more contrast it switches to the
+   * Muted text (captions, field placeholders, section titles) is soft by
+   * default, a cozy choice. When the system asks for more contrast it switches to the
    * softest color that reads at 4.5:1, which the app sets for the page colors
    * (lib/readableMuted.ts); until then, a safe mix.
    */
@@ -148,6 +148,8 @@
     var(--color-background)
   );
   --color-muted: var(--color-muted-soft);
+  /* Placeholders in the writing and title: their text's own look, dimmed. */
+  --opacity-placeholder: 0.45;
   /* A step quieter than muted, for a caption under text that's already quiet (e.g. a menu trigger's). */
   --color-faint: color-mix(
     in srgb,
@@ -295,6 +297,7 @@
   :root {
     --color-muted: var(--color-muted-readable);
     --color-faint: var(--color-muted-readable);
+    --opacity-placeholder: 0.9;
   }
 }
 

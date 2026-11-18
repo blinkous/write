@@ -32,6 +32,10 @@ stores, imports and exports it).
   followed by whitespace (`3.50` doesn't end one). Text's own case wins over its style's;
   code keeps its letters.
 
+- **Placeholders** ("Untitled", "Start writing…") are their text's own look dimmed (font,
+  color, glow), so they preview what's typed there; with "increase contrast" on they're
+  barely dimmed.
+
 ## Decisions
 
 - Colors, fonts and glows are applied through the DOM rather than inline `style`

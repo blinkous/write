@@ -78,8 +78,8 @@ Derived from the background, never harsh:
   greys between page and text. Near-black pages skip the accent (it reads muddy).
 - Chroma is capped (no neon), colorful pages get no near-black or near-white tones, and
   pale pages get a chroma floor so tones don't grey out.
-- **Muted text** (captions, placeholders) is soft by default; with "increase contrast" on,
-  it becomes the softest mix that reads at 4.5:1.
+- **Muted text** (captions, field placeholders) is soft by default; with "increase
+  contrast" on, it becomes the softest mix that reads at 4.5:1.
 
 ## Background picture or video
 
