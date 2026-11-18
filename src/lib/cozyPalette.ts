@@ -110,8 +110,9 @@ const MAX_PAGE_LIGHTNESS = 0.97
 /**
  * A page color for a text color: the text color's ramp walked back (see
  * deriveShade), so a text color derived from a page gives about that page
- * back. Same hue, the text's distance away on the other side, and its chroma
- * undone from the ramp's mid-tone peak, so pages stay soft.
+ * back. Same hue, the text's distance away on the other side, and about the
+ * text's colorfulness (undone from where it sits on the ramp), so a rich text
+ * color suggests rich pages; capped like the ramp, so never neon.
  */
 function deriveBackgroundShade(
   textHex: string,
@@ -127,11 +128,7 @@ function deriveBackgroundShade(
     MIN_PAGE_LIGHTNESS,
     MAX_PAGE_LIGHTNESS,
   )
-  const chroma = clamp(
-    text.c / chromaShareAt(text.l) / PEAK_CHROMA_SCALE,
-    0,
-    MAX_PEAK_CHROMA / PEAK_CHROMA_SCALE,
-  )
+  const chroma = clamp(text.c / chromaShareAt(text.l), 0, MAX_PEAK_CHROMA)
   const page = { mode: 'oklch' as const, l: lightness, c: chroma, h: hue }
   return formatHex(clampChroma(page, 'oklch'))
 }

@@ -219,8 +219,8 @@ describe.each(Object.entries(TEXT_COLORS))(
       expect(Math.abs(lightnessGap)).toBeGreaterThanOrEqual(0.18)
     })
 
-    it('stays soft, never vivid, even for vivid text', () => {
-      expect(page.c).toBeLessThanOrEqual(0.06)
+    it('is never neon, even for vivid text', () => {
+      expect(page.c).toBeLessThanOrEqual(0.12)
     })
   },
 )
@@ -237,6 +237,13 @@ describe('suggested page colors', () => {
       expect(distances).toEqual([...distances].sort((a, b) => a - b))
     },
   )
+
+  // Well above the old cap (~0.055) that greyed them out; the darkest give up some to fit the screen's gamut.
+  it('offers page colors as rich as a rich text color, not greyed out', () => {
+    deriveCozyBackgroundColors('#de7aa0').forEach((color) =>
+      expect(toOklch(color).c).toBeGreaterThan(0.07),
+    )
+  })
 
   it.each(Object.entries(TEXT_COLORS))(
     'offers distinct page colors for the text color %s',

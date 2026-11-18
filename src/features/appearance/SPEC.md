@@ -30,8 +30,9 @@ background picture or video, with one shared undo/redo.
 - **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
   win and don't follow later system changes.
 - **Each page color changes only when you change it.** Each one's menu suggests matches
-  for the other color: text colors along the background's ramp, and backgrounds for how
-  the text color looks. A suggestion or custom color is one undo step.
+  for the other color: text colors along the background's ramp, and backgrounds in the
+  text color's hue, about as colorful as it (never neon). A suggestion or custom color is
+  one undo step.
 - **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur
   and opacity (not the background file): the last 50 steps, surviving a refresh. A pick, a
   stepper press, a typed value, a tab title once the field is left, or a whole color-picker
