@@ -33,6 +33,7 @@ import '@fontsource/bungee-outline'
 import '@fontsource/bungee-shade'
 import '@fontsource-variable/tilt-neon'
 import '@fontsource/cherry-bomb-one'
+import '@fontsource/henny-penny'
 import '@fontsource/unifrakturmaguntia'
 // Handwriting
 import '@fontsource/comforter'
@@ -84,6 +85,11 @@ export const FONT_OPTIONS = [
     value: 'fredoka',
     label: 'Fredoka',
     family: "'Fredoka Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'henny-penny',
+    label: 'Henny Penny',
+    family: "'Henny Penny', cursive",
   },
   {
     value: 'inter',
