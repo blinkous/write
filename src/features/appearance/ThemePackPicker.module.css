@@ -1,6 +1,8 @@
 /* Starts at its start edge, so the first packs are always where the eye lands. */
 .row {
   --scroll-row-start: 0;
+  /* The chosen tile always shows its ring: real room for it, so it never covers the section's title. */
+  --scroll-row-block-pull: 0rem;
   gap: var(--space-2);
 }
 
