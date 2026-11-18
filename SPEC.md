@@ -26,8 +26,9 @@ margins, spacing and colors, per-text color, glow and case, and export as markdo
   then publish to GitHub Pages.
 - **Accessible:** everything works by keyboard, controls are native elements with visible
   labels in their accessible names, shortcuts are announced, and text meets WCAG AA
-  (4.5:1). Muted text is soft by default (a cozy choice) and reaches 4.5:1 when the system
-  asks for more contrast. Checked with axe in light and dark mode, with panels open.
+  (4.5:1) in the default and high contrast looks. Colors people choose, vibe theme packs
+  included, are theirs (see appearance). Muted text is soft by default (a cozy choice) and
+  reaches 4.5:1 when the system asks for more contrast. Checked with axe in light and dark mode, with panels open.
 
 ## Formatting is set in one place
 

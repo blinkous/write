@@ -35,9 +35,10 @@ background picture or video, with one shared undo/redo.
   title and the background picture stay.
 - A tile shows as chosen only while the settings are exactly its look; after any edit,
   none does. Packs aren't stored: choosing one just sets those settings.
-- The writing (page text, Body and Small) reads at 4.5:1 in every pack (tested); titles
-  and headings may be softer for the look, like Unicorn's pastels. Colors are fixed
-  values, so a tile previews exactly what it applies.
+- **Readable baselines:** the default and high contrast packs keep every text color at
+  4.5:1 (tested), since people rely on them to read comfortably. The others are vibes,
+  chosen on sight like any color someone picks, and may be as soft as their look asks.
+- Colors are fixed values, so a tile previews exactly what it applies.
 
 ## Rules
 

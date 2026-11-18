@@ -21,6 +21,12 @@ export type ThemePack = {
   id: string
   /** Shown only as the tile's tooltip and accessible name. */
   label: string
+  /**
+   * A look people rely on to read comfortably (the defaults, high contrast):
+   * its writing must read at 4.5:1 (tested). Other packs are vibes, chosen on
+   * sight, and may be as soft as their look asks.
+   */
+  isReadingBaseline: boolean
   look: ThemeLook
 }
 
@@ -57,14 +63,15 @@ const DEFAULT_FONTS = {
 }
 
 /**
- * Curated looks, shown as a row of tiles (in THEME_PACKS' order, light to dark). Colors are fixed hex values (not
- * theme color names), so each tile previews exactly what it applies. The page
- * text color always reads at 4.5:1 (tested); styles may be softer for the look.
+ * Curated looks, shown as a row of tiles (in THEME_PACKS' order, light to
+ * dark). Colors are fixed hex values (not theme color names), so each tile
+ * previews exactly what it applies.
  */
 const CURATED_THEME_PACKS: readonly ThemePack[] = [
   {
     id: 'default-light',
     label: 'Default light',
+    isReadingBaseline: true,
     look: {
       ...DEFAULT_FONTS,
       ...DEFAULT_PAGE_COLORS.light,
@@ -74,6 +81,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
   {
     id: 'default-dark',
     label: 'Default dark',
+    isReadingBaseline: true,
     look: {
       ...DEFAULT_FONTS,
       ...DEFAULT_PAGE_COLORS.dark,
@@ -84,6 +92,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
     // White-hot neon tubes glowing red on a moody, grungy teal sign board.
     id: 'blinkous',
     label: 'Blinkous',
+    isReadingBaseline: false,
     look: {
       appFont: 'space-mono',
       editorFont: 'jetbrains-mono',
@@ -115,6 +124,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
     // Soft pastel rainbow: a bubbly title and headings in pink, yellow, green, blue and purple.
     id: 'unicorn',
     label: 'Unicorn',
+    isReadingBaseline: false,
     look: {
       appFont: 'quicksand',
       editorFont: 'nunito',
@@ -134,6 +144,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
     // Sunlit leaves on a bright, rich green floor, under a mossy, shaggy title.
     id: 'forest',
     label: 'Forest',
+    isReadingBaseline: false,
     look: {
       appFont: 'nunito',
       editorFont: 'literata',
@@ -153,6 +164,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
   {
     id: 'high-contrast-light',
     label: 'High contrast light',
+    isReadingBaseline: true,
     look: {
       appFont: 'inter',
       editorFont: 'inter',
@@ -164,6 +176,7 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
   {
     id: 'high-contrast-dark',
     label: 'High contrast dark',
+    isReadingBaseline: true,
     look: {
       appFont: 'inter',
       editorFont: 'inter',

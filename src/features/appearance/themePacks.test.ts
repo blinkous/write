@@ -8,16 +8,14 @@ import { getThemePackColors, hasThemeLook, THEME_PACKS } from './themePacks'
 const MIN_TEXT_CONTRAST = 4.5
 
 describe('THEME_PACKS', () => {
-  it.each(THEME_PACKS)(
-    '$label: the writing (page text, Body and Small) reads on its page',
+  // Looks people rely on to read; the others are vibes, chosen on sight.
+  it.each(THEME_PACKS.filter(({ isReadingBaseline }) => isReadingBaseline))(
+    '$label: every text color reads on its page',
     ({ look }) => {
       const { backgroundColor, textColor, textStyles } = look
-      const { body, small } = textStyles
-      // Titles and headings may be softer for the look (e.g. pastels).
       const textColors = [
         textColor,
-        body.color ?? textColor,
-        small.color ?? textColor,
+        ...Object.values(textStyles).map(({ color }) => color ?? textColor),
       ]
       for (const color of textColors)
         expect(
@@ -33,21 +31,21 @@ describe('THEME_PACKS', () => {
     },
   )
 
-  it('includes the first-visit looks for light and dark mode', () => {
-    for (const colors of Object.values(DEFAULT_PAGE_COLORS))
-      expect(
-        THEME_PACKS.some((pack) =>
-          hasThemeLook(
-            {
-              appFont: DEFAULT_APPEARANCE.appFont,
-              editorFont: DEFAULT_APPEARANCE.editorFont,
-              textStyles: DEFAULT_TEXT_STYLES,
-              ...colors,
-            },
-            pack,
-          ),
+  it('includes the first-visit looks for light and dark mode, held to readable contrast', () => {
+    for (const colors of Object.values(DEFAULT_PAGE_COLORS)) {
+      const firstVisitPack = THEME_PACKS.find((pack) =>
+        hasThemeLook(
+          {
+            appFont: DEFAULT_APPEARANCE.appFont,
+            editorFont: DEFAULT_APPEARANCE.editorFont,
+            textStyles: DEFAULT_TEXT_STYLES,
+            ...colors,
+          },
+          pack,
         ),
-      ).toBe(true)
+      )
+      expect(firstVisitPack?.isReadingBaseline).toBe(true)
+    }
   })
 
   it('runs from the lightest page to the darkest', () => {
