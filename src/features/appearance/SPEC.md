@@ -128,3 +128,5 @@ Derived from the background, never harsh:
   per platform and has no opacity.
 - The blur keeps solid edges: CSS `blur()` fades edges to transparent, and WebKit clipped
   media to the window before blurring, showing the page color at the edges.
+- Videos blur through a layer over them: WebKit doesn't apply the picture's blur to
+  playing video.

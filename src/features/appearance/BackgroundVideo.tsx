@@ -1,9 +1,8 @@
-import { useEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef } from 'react'
 
 type BackgroundVideoProps = {
   url: string
   className: string
-  style: CSSProperties
   isPaused: boolean
   /** × normal speed. */
   speed: number
@@ -17,7 +16,6 @@ type BackgroundVideoProps = {
 export function BackgroundVideo({
   url,
   className,
-  style,
   isPaused,
   speed,
 }: BackgroundVideoProps) {
@@ -44,7 +42,6 @@ export function BackgroundVideo({
     <video
       ref={videoRef}
       className={className}
-      style={style}
       src={url}
       muted
       loop
