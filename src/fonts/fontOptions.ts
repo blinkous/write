@@ -34,6 +34,10 @@ import '@fontsource/bungee-shade'
 import '@fontsource-variable/tilt-neon'
 import '@fontsource/cherry-bomb-one'
 import '@fontsource/henny-penny'
+import '@fontsource/eater'
+import '@fontsource/rubik-beastly'
+import '@fontsource/rubik-glitch'
+import '@fontsource/rubik-puddles'
 import '@fontsource/unifrakturmaguntia'
 // Handwriting
 import '@fontsource/comforter'
@@ -75,6 +79,11 @@ export const FONT_OPTIONS = [
     value: 'dongle',
     label: 'Dongle',
     family: "'Dongle', system-ui, sans-serif",
+  },
+  {
+    value: 'eater',
+    label: 'Eater',
+    family: "'Eater', system-ui, sans-serif",
   },
   {
     value: 'eb-garamond',
@@ -131,6 +140,21 @@ export const FONT_OPTIONS = [
     value: 'roboto-mono',
     label: 'Roboto Mono',
     family: "'Roboto Mono Variable', ui-monospace, monospace",
+  },
+  {
+    value: 'rubik-beastly',
+    label: 'Rubik Beastly',
+    family: "'Rubik Beastly', system-ui, sans-serif",
+  },
+  {
+    value: 'rubik-glitch',
+    label: 'Rubik Glitch',
+    family: "'Rubik Glitch', system-ui, sans-serif",
+  },
+  {
+    value: 'rubik-puddles',
+    label: 'Rubik Puddles',
+    family: "'Rubik Puddles', system-ui, sans-serif",
   },
   {
     value: 'space-mono',
