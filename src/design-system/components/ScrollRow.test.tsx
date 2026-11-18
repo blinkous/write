@@ -1,15 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { ScrollRow } from './ScrollRow'
 
-// jsdom has no layout: give the row sizes, and a ResizeObserver that never fires.
+// jsdom has no layout: give the row sizes (its ResizeObserver never fires, see setup).
 function renderRow(sizes: { clientWidth: number; scrollWidth: number }) {
-  vi.stubGlobal(
-    'ResizeObserver',
-    class {
-      observe() {}
-      disconnect() {}
-    },
-  )
   for (const [name, value] of Object.entries(sizes))
     Object.defineProperty(HTMLElement.prototype, name, {
       configurable: true,

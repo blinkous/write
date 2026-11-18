@@ -64,5 +64,14 @@ if (!('showModal' in HTMLDialogElement.prototype)) {
   })
 }
 
+// jsdom has no layout, so nothing ever resizes: a ResizeObserver that never fires.
+if (!('ResizeObserver' in globalThis)) {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}
+
 // jsdom lacks IndexedDB; tests that use it start from a fresh, empty one (see resetIndexedDb).
 import 'fake-indexeddb/auto'
