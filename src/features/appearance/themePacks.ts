@@ -130,17 +130,17 @@ export const THEME_PACKS: readonly ThemePack[] = [
     },
   },
   {
-    // A pine floor at dusk, with a firefly glow on the title.
+    // Sunlit leaves on a bright, rich green floor.
     id: 'forest',
     label: 'Forest',
     look: {
       appFont: 'nunito',
       editorFont: 'literata',
-      backgroundColor: '#1d2a21',
-      textColor: '#c6d0ba',
+      backgroundColor: '#175900',
+      textColor: '#e2f7d4',
       textStyles: textStylesWith({
-        title: { font: 'eb-garamond', color: '#e2cd8c', glow: '#e8c95a40' },
-        ...allHeadings({ font: 'eb-garamond', color: '#a9c78e' }),
+        title: { font: 'eb-garamond', color: '#d4ff6b', glow: '#a8f03a40' },
+        ...allHeadings({ font: 'eb-garamond', color: '#9ff0a8' }),
       }),
     },
   },
