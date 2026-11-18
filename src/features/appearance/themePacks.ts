@@ -162,6 +162,19 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
     },
   },
   {
+    // Named for the cochineal insect, source of carmine, the red dye first
+    // made by Indigenous peoples of Mexico and Peru.
+    id: 'cochineal',
+    label: 'Cochineal',
+    isReadingBaseline: false,
+    look: {
+      ...DEFAULT_FONTS,
+      backgroundColor: '#7c0928',
+      textColor: '#ca6983',
+      textStyles: DEFAULT_TEXT_STYLES,
+    },
+  },
+  {
     id: 'high-contrast-light',
     label: 'High contrast light',
     isReadingBaseline: true,
