@@ -24,8 +24,7 @@ background picture or video, with one shared undo/redo.
 - Curated looks in a sideways-scrolling row of tiles at the top of Theme: the default
   light and dark looks (the first-visit colors with default fonts and styles), Blinkous
   (white neon glowing red on a moody teal sign), Unicorn (soft pastel rainbow), Cochineal
-  (carmine red, named for the insect the dye comes from), and high contrast light and
-  dark. Ordered by page color, lightest first, so the row reads as one gradient.
+  (carmine red, named for the insect the dye comes from). Ordered by page color, lightest first, so the row reads as one gradient.
 - **Only Blinkous glows:** glow is its neon-sign look; the other packs stay flat.
 - **Named only in tooltips** and for screen readers; the tiles are the vibe. Each is a
   little page in the pack's background color showing "Aa" in its title style (font,
@@ -35,7 +34,7 @@ background picture or video, with one shared undo/redo.
   title and the background picture stay.
 - A tile shows as chosen only while the settings are exactly its look; after any edit,
   none does. Packs aren't stored: choosing one just sets those settings.
-- **Readable baselines:** the default and high contrast packs keep every text color at
+- **Readable baselines:** the default packs keep every text color at
   4.5:1 (tested), since people rely on them to read comfortably. The others are vibes,
   chosen on sight like any color someone picks, and may be as soft as their look asks.
 - Colors are fixed values, so a tile previews exactly what it applies.

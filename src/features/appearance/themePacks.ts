@@ -22,7 +22,7 @@ export type ThemePack = {
   /** Shown only as the tile's tooltip and accessible name. */
   label: string
   /**
-   * A look people rely on to read comfortably (the defaults, high contrast):
+   * A look people rely on to read comfortably (the defaults):
    * its writing must read at 4.5:1 (tested). Other packs are vibes, chosen on
    * sight, and may be as soft as their look asks.
    */
@@ -150,30 +150,6 @@ const CURATED_THEME_PACKS: readonly ThemePack[] = [
       ...DEFAULT_FONTS,
       backgroundColor: '#7c0928',
       textColor: '#ca6983',
-      textStyles: DEFAULT_TEXT_STYLES,
-    },
-  },
-  {
-    id: 'high-contrast-light',
-    label: 'High contrast light',
-    isReadingBaseline: true,
-    look: {
-      appFont: 'inter',
-      editorFont: 'inter',
-      backgroundColor: '#ffffff',
-      textColor: '#000000',
-      textStyles: DEFAULT_TEXT_STYLES,
-    },
-  },
-  {
-    id: 'high-contrast-dark',
-    label: 'High contrast dark',
-    isReadingBaseline: true,
-    look: {
-      appFont: 'inter',
-      editorFont: 'inter',
-      backgroundColor: '#000000',
-      textColor: '#ffffff',
       textStyles: DEFAULT_TEXT_STYLES,
     },
   },
