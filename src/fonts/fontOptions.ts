@@ -3,7 +3,7 @@
  * Fontsource so no network request is ever made to load them. To add one:
  * `npm i @fontsource-variable/<name>` (or `@fontsource/<name>` if there's no
  * variable version, importing the weights you need), import it below, and add
- * an entry to FONT_OPTIONS. `family` must match the package's font-family name.
+ * an entry to FONT_OPTIONS in alphabetical order. `family` must match the package's font-family name.
  */
 
 import { createOptionGuard } from '../utils/options'
@@ -39,63 +39,15 @@ import '@fontsource/comforter'
 import '@fontsource/permanent-marker'
 import '@fontsource/windsong'
 
+/** Used where a font can't be found; also the writing's default (see appearance). */
+export const FALLBACK_FONT = {
+  value: 'lora',
+  label: 'Lora',
+  family: "'Lora Variable', Georgia, serif",
+} as const
+
+/** Alphabetical by name, as the font menus list them (tested). */
 export const FONT_OPTIONS = [
-  { value: 'lora', label: 'Lora', family: "'Lora Variable', Georgia, serif" },
-  {
-    value: 'literata',
-    label: 'Literata',
-    family: "'Literata Variable', Georgia, serif",
-  },
-  {
-    value: 'eb-garamond',
-    label: 'EB Garamond',
-    family: "'EB Garamond Variable', Garamond, serif",
-  },
-  {
-    value: 'inter',
-    label: 'Inter',
-    family: "'Inter Variable', system-ui, sans-serif",
-  },
-  {
-    value: 'nunito',
-    label: 'Nunito',
-    family: "'Nunito Variable', system-ui, sans-serif",
-  },
-  {
-    value: 'quicksand',
-    label: 'Quicksand',
-    family: "'Quicksand Variable', system-ui, sans-serif",
-  },
-  {
-    value: 'fredoka',
-    label: 'Fredoka',
-    family: "'Fredoka Variable', system-ui, sans-serif",
-  },
-  {
-    value: 'dongle',
-    label: 'Dongle',
-    family: "'Dongle', system-ui, sans-serif",
-  },
-  {
-    value: 'jetbrains-mono',
-    label: 'JetBrains Mono',
-    family: "'JetBrains Mono Variable', ui-monospace, monospace",
-  },
-  {
-    value: 'roboto-mono',
-    label: 'Roboto Mono',
-    family: "'Roboto Mono Variable', ui-monospace, monospace",
-  },
-  {
-    value: 'space-mono',
-    label: 'Space Mono',
-    family: "'Space Mono', ui-monospace, monospace",
-  },
-  {
-    value: 'major-mono-display',
-    label: 'Major Mono Display',
-    family: "'Major Mono Display', ui-monospace, monospace",
-  },
   { value: 'amatic-sc', label: 'Amatic SC', family: "'Amatic SC', cursive" },
   {
     value: 'bungee-hairline',
@@ -117,6 +69,68 @@ export const FONT_OPTIONS = [
     label: 'Cherry Bomb One',
     family: "'Cherry Bomb One', system-ui, sans-serif",
   },
+  { value: 'comforter', label: 'Comforter', family: "'Comforter', cursive" },
+  {
+    value: 'dongle',
+    label: 'Dongle',
+    family: "'Dongle', system-ui, sans-serif",
+  },
+  {
+    value: 'eb-garamond',
+    label: 'EB Garamond',
+    family: "'EB Garamond Variable', Garamond, serif",
+  },
+  {
+    value: 'fredoka',
+    label: 'Fredoka',
+    family: "'Fredoka Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'inter',
+    label: 'Inter',
+    family: "'Inter Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'jetbrains-mono',
+    label: 'JetBrains Mono',
+    family: "'JetBrains Mono Variable', ui-monospace, monospace",
+  },
+  {
+    value: 'literata',
+    label: 'Literata',
+    family: "'Literata Variable', Georgia, serif",
+  },
+  FALLBACK_FONT,
+  {
+    value: 'major-mono-display',
+    label: 'Major Mono Display',
+    family: "'Major Mono Display', ui-monospace, monospace",
+  },
+  {
+    value: 'nunito',
+    label: 'Nunito',
+    family: "'Nunito Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'permanent-marker',
+    label: 'Permanent Marker',
+    family: "'Permanent Marker', cursive",
+  },
+  {
+    value: 'quicksand',
+    label: 'Quicksand',
+    family: "'Quicksand Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'roboto-mono',
+    label: 'Roboto Mono',
+    family: "'Roboto Mono Variable', ui-monospace, monospace",
+  },
+  {
+    value: 'space-mono',
+    label: 'Space Mono',
+    family: "'Space Mono', ui-monospace, monospace",
+  },
   {
     value: 'tilt-neon',
     label: 'Tilt Neon',
@@ -127,12 +141,6 @@ export const FONT_OPTIONS = [
     label: 'UnifrakturMaguntia',
     family: "'UnifrakturMaguntia', serif",
   },
-  {
-    value: 'permanent-marker',
-    label: 'Permanent Marker',
-    family: "'Permanent Marker', cursive",
-  },
-  { value: 'comforter', label: 'Comforter', family: "'Comforter', cursive" },
   { value: 'windsong', label: 'WindSong', family: "'WindSong', cursive" },
 ] as const
 
@@ -141,7 +149,7 @@ export type FontValue = FontOption['value']
 
 export const isFontValue = createOptionGuard(FONT_OPTIONS)
 
-/** The option for a stored font value, falling back to the first font. */
+/** The option for a stored font value, falling back to FALLBACK_FONT. */
 export function getFontOption(font: FontValue) {
-  return FONT_OPTIONS.find(({ value }) => value === font) ?? FONT_OPTIONS[0]
+  return FONT_OPTIONS.find(({ value }) => value === font) ?? FALLBACK_FONT
 }

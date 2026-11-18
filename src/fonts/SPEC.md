@@ -7,6 +7,7 @@ The bundled fonts and the menu for choosing one: for the app and editor fonts
 
 - Open-licensed Google Fonts, bundled so nothing is fetched at runtime. To add one, see the
   comment at the top of `fontOptions.ts`.
+- Fonts are listed alphabetically by name.
 - The menu previews each name in its own font, with x-heights evened out. Where a
   **Default** option exists ("no font of its own; follow the default"), it's captioned with
   the font it stands for, on the trigger too, never "Default" alone.
