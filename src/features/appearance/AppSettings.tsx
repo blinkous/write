@@ -1,6 +1,7 @@
 import { LabeledRow } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import { PageColorSettings } from './ThemeSettings'
+import { ThemePackPicker } from './ThemePackPicker'
 import type { useBackgroundMedia } from './useBackgroundMedia'
 import type { usePageTheme } from './usePageTheme'
 
@@ -12,15 +13,33 @@ type AppSettingsProps = {
   onCustomColorsChange: (customColors: (string | null)[]) => void
 }
 
-/** Everything around the page: its font, and the page's foreground and background. */
+/** The theme packs, then everything around the page: its font, and the page's foreground and background. */
 export function AppSettings({
   pageTheme,
   backgroundMedia,
   ...customColorProps
 }: AppSettingsProps) {
-  const { appFont, changeFonts } = pageTheme
+  const {
+    appFont,
+    editorFont,
+    backgroundColor,
+    textColor,
+    textStyles,
+    changeFonts,
+    applyThemeLook,
+  } = pageTheme
   return (
     <>
+      <ThemePackPicker
+        current={{
+          appFont,
+          editorFont,
+          backgroundColor,
+          textColor,
+          textStyles,
+        }}
+        onSelect={applyThemeLook}
+      />
       <LabeledRow label="Font" control="button">
         <FontMenu
           label="App font"

@@ -5,9 +5,9 @@ background picture or video, with one shared undo/redo.
 
 ## Settings
 
-- **Theme:** the interface font (default Inter), then the page colors, **Foreground** (the
-  default text color, named so it isn't mistaken for a text setting) and **Background**,
-  with the background picture or video.
+- **Theme:** the theme packs, the interface font (default Inter), then the page colors,
+  **Foreground** (the default text color, named so it isn't mistaken for a text setting)
+  and **Background**, with the background picture or video.
 - **Editor:** the **Default font** (default Lora), the base for every text style, then
   **Reset text styles**. Text styles themselves are edited from the toolbar's style menu
   (see editor).
@@ -18,6 +18,24 @@ background picture or video, with one shared undo/redo.
   paragraph).
 - **Custom colors:** seven slots shared by every color menu (the toolbar's and the page
   colors), kept here so they persist.
+
+## Theme packs
+
+- Curated looks in a sideways-scrolling row of tiles at the top of Theme: the default
+  light and dark looks (the first-visit colors with default fonts and styles), Blinkous
+  (white neon glowing red on a moody teal sign), Unicorn (soft pastel rainbow), Forest,
+  and high contrast light and dark.
+- **Named only in tooltips** and for screen readers; the tiles are the vibe. Each is a
+  little page in the pack's background color showing "Aa" in its title style (font,
+  color, glow, case) and dots of its text color, then its glows, then its style colors.
+- **Choosing one replaces the whole look:** page colors, the interface and default fonts,
+  and every text style, as one undo step. Custom color slots, margins, spacing, the tab
+  title and the background picture stay.
+- A tile shows as chosen only while the settings are exactly its look; after any edit,
+  none does. Packs aren't stored: choosing one just sets those settings.
+- The writing (page text, Body and Small) reads at 4.5:1 in every pack (tested); titles
+  and headings may be softer for the look, like Unicorn's pastels. Colors are fixed
+  values, so a tile previews exactly what it applies.
 
 ## Rules
 
@@ -97,7 +115,8 @@ Derived from the background, never harsh:
 
 ## Decisions
 
-- No theme presets and no contrast warnings: people can see whether their colors read.
+- No contrast warnings: people can see whether their colors read. Theme packs are
+  starting points, not modes: everything they set stays editable.
 - Page colors live apart from the toolbar's text color so the two aren't confused.
 - An in-app picker instead of the system one: the system picker can't be themed, differs
   per platform and has no opacity.

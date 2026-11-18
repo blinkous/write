@@ -277,6 +277,11 @@
   --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
+  /* Theme pack tiles: a little page with its title's look ("Aa") and color dots. */
+  --size-theme-tile-width: 3.5rem;
+  --size-theme-tile-height: 3rem;
+  --font-size-theme-tile: 0.75rem;
+  --size-theme-tile-dot: 0.375rem;
 }
 
 /*
