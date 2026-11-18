@@ -1,5 +1,5 @@
 import { HexAlphaColorPicker, HexColorPicker } from 'react-colorful'
-import { ColorDropper } from './ColorDropper'
+import { DropperOrSystemPicker } from './DropperOrSystemPicker'
 import styles from './ColorPicker.module.css'
 import { TypedColorField } from './TypedColorField'
 
@@ -19,7 +19,8 @@ type ColorPickerProps = {
 /**
  * The in-app color picker, the same on every platform: a color square, hue
  * and opacity sliders (all keyboard-operable), the color as text to read or
- * type (hex, rgb(), hsl() …) and a dropper.
+ * type (hex, rgb(), hsl() …) and a dropper (or, where the browser has
+ * none, the system color picker).
  */
 export function ColorPicker({
   label,
@@ -46,7 +47,7 @@ export function ColorPicker({
             onChangeEnd?.()
           }}
         />
-        <ColorDropper
+        <DropperOrSystemPicker
           color={color}
           allowsTransparency={allowsTransparency}
           onChange={onChange}

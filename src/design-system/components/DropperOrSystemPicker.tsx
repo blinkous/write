@@ -1,4 +1,4 @@
-import { Pipette } from 'lucide-react'
+import { Palette, Pipette } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import {
   canPickScreenColor,
@@ -8,24 +8,25 @@ import { removeTransparency } from '../../utils/color'
 import { Button } from './Button'
 import styles from './ColorPicker.module.css'
 
-type ColorDropperProps = {
+type DropperOrSystemPickerProps = {
   color: string
   allowsTransparency: boolean
   onChange: (color: string) => void
   onChangeEnd?: () => void
 }
 
-/** #rrggbbaa's "aa" (or nothing), so a dropped color keeps the current transparency. */
+/** #rrggbbaa's "aa" (or nothing), so a picked color keeps the current transparency. */
 function getAlphaSuffix(color: string, allowsTransparency: boolean): string {
   return allowsTransparency ? color.slice(removeTransparency(color).length) : ''
 }
 
 /**
- * A dropper: picks a color from anywhere on the screen where the browser can
- * (Chromium), otherwise opens the system color picker, which has its own
- * dropper on macOS and iOS. Either way the current transparency is kept.
+ * A dropper that picks a color from anywhere on the screen where the browser
+ * can (Chromium). Elsewhere nothing can start one directly, so it's a palette
+ * opening the system color picker instead, whose own dropper is a click away
+ * (macOS, iOS). Either way the current transparency is kept.
  */
-export function ColorDropper(props: ColorDropperProps) {
+export function DropperOrSystemPicker(props: DropperOrSystemPickerProps) {
   return canPickScreenColor() ? (
     <ScreenDropper {...props} />
   ) : (
@@ -38,7 +39,7 @@ function ScreenDropper({
   allowsTransparency,
   onChange,
   onChangeEnd,
-}: ColorDropperProps) {
+}: DropperOrSystemPickerProps) {
   const label = 'Pick a color from the screen'
   return (
     <Button
@@ -71,7 +72,7 @@ function SystemPickerDropper({
   allowsTransparency,
   onChange,
   onChangeEnd,
-}: ColorDropperProps) {
+}: DropperOrSystemPickerProps) {
   const label = 'Open the system color picker'
   const inputRef = useRef<HTMLInputElement>(null)
   const onChangeEndRef = useRef(onChangeEnd)
@@ -97,7 +98,7 @@ function SystemPickerDropper({
         title={label}
         onClick={() => inputRef.current && openSystemPicker(inputRef.current)}
       >
-        <Pipette aria-hidden="true" />
+        <Palette aria-hidden="true" />
       </Button>
       {/*
        * Invisible, under the button, so the system picker opens beside it.

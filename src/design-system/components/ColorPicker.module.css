@@ -55,7 +55,7 @@
   outline-offset: var(--focus-ring-width);
 }
 
-/* The typed color and the dropper, under the sliders. */
+/* The typed color and the dropper (or system picker), under the sliders. */
 .fields {
   display: flex;
   align-items: center;
@@ -74,7 +74,7 @@
   position: relative;
 }
 
-/* Invisible, under the dropper button, so the system picker opens beside it. */
+/* Invisible, under the system picker button, so the system picker opens beside it. */
 .colorInput {
   position: absolute;
   inset: 0;

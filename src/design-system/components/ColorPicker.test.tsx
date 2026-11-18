@@ -44,4 +44,30 @@ describe('ColorPicker', () => {
       screen.getByRole('button', { name: 'Open the system color picker' }),
     ).toBeInTheDocument()
   })
+
+  it('picks straight from the screen where the browser has a dropper, keeping transparency', async () => {
+    class FakeEyeDropper {
+      open = async () => ({ sRGBHex: '#abcdef' })
+    }
+    window.EyeDropper = FakeEyeDropper
+    try {
+      const onChange = vi.fn()
+      render(
+        <ColorPicker
+          label="Text color"
+          color="#12345680"
+          allowsTransparency
+          onChange={onChange}
+        />,
+      )
+      await userEvent
+        .setup()
+        .click(
+          screen.getByRole('button', { name: 'Pick a color from the screen' }),
+        )
+      expect(onChange).toHaveBeenCalledWith('#abcdef80')
+    } finally {
+      delete window.EyeDropper
+    }
+  })
 })
