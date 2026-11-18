@@ -19,7 +19,7 @@ stores, imports and exports it).
   duplicate imports).
 - **Markdown stays text:** paragraph text that looks like markdown at a line start (`# `,
   `- `, `1. `, `---`, fences, 4-space indents) is escaped on export.
-- **Colors and glows** are a hex color or a theme name (`theme-1`…`theme-7`). Theme names
+- **Colors and glows** are a hex color (which may be see-through) or a theme name (`theme-1`…`theme-7`). Theme names
   follow the page background, so theme-colored text changes with it. Text without a color
   follows the page text color. A glow can also be "none", to turn off its style's glow.
   Glow and color are independent.

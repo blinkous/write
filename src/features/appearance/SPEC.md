@@ -25,6 +25,8 @@ background picture or video, with one shared undo/redo.
   (decides on phones), whichever is smaller, so each margin looks different at any size.
 - **Colors apply instantly**, without transitions, so the page doesn't lag behind the
   sidebar while dragging a picker.
+- **Transparency:** every color can be see-through except the page background, which has
+  nothing behind it. Shades derived from a see-through text color use how it looks on the page.
 - **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
   win and don't follow later system changes.
 - **Each page color changes only when you change it.** A match button beside each picks a

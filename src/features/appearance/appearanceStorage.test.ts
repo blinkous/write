@@ -190,6 +190,19 @@ describe('loadAppearance', () => {
     })
   })
 
+  it('keeps a see-through text color, but never a see-through background', () => {
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ backgroundColor: '#11223380', textColor: '#eeddcc80' }),
+    )
+    expect(loadAppearance('dark')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ backgroundColor: '#112233', textColor: '#eeddcc80' }),
+    )
+    expect(loadAppearance('dark').textColor).toBe('#eeddcc80')
+  })
+
   it('matches a text color to a saved background that lost its own', () => {
     window.localStorage.setItem(
       'write.appearance.v1',

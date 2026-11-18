@@ -57,7 +57,7 @@ export const BACKGROUND_OPACITY_RANGE = {
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 
-/** Each slot holds a #rrggbb color, or null while empty. */
+/** Each slot holds a #rrggbb(aa) color, or null while empty. */
 export type CustomTextColors = readonly (string | null)[]
 
 export type Appearance = {

@@ -1,4 +1,5 @@
 import { deriveCozyThemeColors } from '../../lib/cozyPalette'
+import { flattenColor } from '../../lib/flattenColor'
 import { deriveReadableMutedColor } from '../../lib/readableMuted'
 import { getTextStyleVariables } from '../../text-styles'
 import { APP_NAME, type Appearance } from './appearanceOptions'
@@ -39,13 +40,15 @@ export function applyAppearance({
   style.setProperty('--background-media-opacity', `${backgroundOpacity}%`)
   style.setProperty('--color-background', backgroundColor)
   style.setProperty('--color-text', textColor)
+  // Shades derive from how a see-through text color looks on the page.
+  const solidTextColor = flattenColor(textColor, backgroundColor)
   // Muted text when the system asks for more contrast; soft otherwise (see tokens.css).
   style.setProperty(
     '--color-muted-readable',
-    deriveReadableMutedColor(backgroundColor, textColor),
+    deriveReadableMutedColor(backgroundColor, solidTextColor),
   )
   // Live theme text colors: text colored with one follows the page background.
-  deriveCozyThemeColors(backgroundColor, textColor).forEach(
+  deriveCozyThemeColors(backgroundColor, solidTextColor).forEach(
     (themeColor, index) => {
       style.setProperty(`--color-theme-${index + 1}`, themeColor)
     },

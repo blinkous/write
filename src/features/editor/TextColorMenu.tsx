@@ -10,7 +10,7 @@ import { getThemeColorSuggestions } from './themeColorSuggestions'
 export type TextColorMenuProps = {
   /** Names the menu, e.g. "Text color" or "Title color". */
   label: string
-  /** The chosen color (theme name or #rrggbb), or null for the page text color. */
+  /** The chosen color (theme name or #rrggbb(aa)), or null for the page text color. */
   value: string | null
   /** Shown as the starting color when filling an empty custom slot. */
   pageTextColor: string

@@ -3,7 +3,7 @@ import { readStoredValue, writeStoredValue } from '../../lib/localStore'
 import { reportSaveResult } from '../../lib/saveStatus'
 import { deriveCozyTextColor } from '../../lib/cozyPalette'
 import { textStylesSchema } from '../../text-styles'
-import { isHexColor } from '../../utils/color'
+import { isHexColor, isOpaqueHexColor } from '../../utils/color'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
   BACKGROUND_BLUR_RANGE,
@@ -21,8 +21,6 @@ import {
 import { isFontValue, type FontValue } from '../../fonts'
 
 const APPEARANCE_STORAGE_KEY = 'write.appearance.v1'
-
-const hexColorSchema = z.string().refine(isHexColor)
 
 /* Always exactly one value per slot; anything that isn't a hex color is an empty slot. */
 const customTextColorsSchema = z
@@ -62,8 +60,13 @@ const appearanceSchema = z.object({
   /** Legacy (before paragraph spacing became on/off): none | small | normal | large. */
   paragraphSpacing: z.unknown().optional(),
   // Resolved together below, so the text always suits the background.
-  backgroundColor: hexColorSchema.optional().catch(undefined),
-  textColor: hexColorSchema.optional().catch(undefined),
+  // The page background has nothing behind it, so it never has transparency.
+  backgroundColor: z
+    .string()
+    .refine(isOpaqueHexColor)
+    .optional()
+    .catch(undefined),
+  textColor: z.string().refine(isHexColor).optional().catch(undefined),
   customTextColors: customTextColorsSchema,
   textStyles: textStylesSchema,
   tabTitle: z

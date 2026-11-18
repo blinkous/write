@@ -3,6 +3,7 @@ import {
   deriveCozyBackgroundColor,
   deriveCozyTextColor,
 } from '../../lib/cozyPalette'
+import { flattenColor } from '../../lib/flattenColor'
 import {
   DEFAULT_TEXT_STYLES,
   type TextStyleName,
@@ -109,7 +110,14 @@ export function usePageTheme(
     },
     /** Picks a background matching the text color, as one undo step. */
     matchBackground() {
-      change({ backgroundColor: deriveCozyBackgroundColor(textColor) }, true)
+      change(
+        {
+          backgroundColor: deriveCozyBackgroundColor(
+            flattenColor(textColor, backgroundColor),
+          ),
+        },
+        true,
+      )
     },
     /**
      * Typing shows in the tab at once (isFinal false); the final title (e.g.

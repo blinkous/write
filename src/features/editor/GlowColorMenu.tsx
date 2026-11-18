@@ -9,7 +9,7 @@ import type { TextColorMenuProps } from './TextColorMenu'
 import { getThemeColorSuggestions } from './themeColorSuggestions'
 
 type GlowColorMenuProps = TextColorMenuProps & {
-  /** The chosen glow (theme name or #rrggbb), or null for no glow. */
+  /** The chosen glow (theme name or #rrggbb(aa)), or null for no glow. */
   value: string | null
   /** A tile was clicked (closes the menu); null is no glow. */
   onSelect: (glow: string | null) => void

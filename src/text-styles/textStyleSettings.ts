@@ -59,9 +59,9 @@ export type TextStyleSettings = {
   textCase: TextCase | null
   /** Its own font, or null for the editor font. */
   font: FontValue | null
-  /** Its own color (a theme color name or #rrggbb), or null for the page text color. */
+  /** Its own color (a theme color name or #rrggbb(aa)), or null for the page text color. */
   color: string | null
-  /** A glow behind the letters in this color (a theme color name or #rrggbb), or null for none. */
+  /** A glow behind the letters in this color (a theme color name or #rrggbb(aa)), or null for none. */
   glow: string | null
 }
 
@@ -94,7 +94,7 @@ export const DEFAULT_TEXT_STYLES: TextStyles = {
   small: style(14, false),
 }
 
-/** A text color or glow: a theme color name or #rrggbb, or null; anything else reads as null. */
+/** A text color or glow: a theme color name or #rrggbb(aa), or null; anything else reads as null. */
 const optionalTextColorSchema = z
   .string()
   .refine((color) => resolveTextColor(color) !== null)
