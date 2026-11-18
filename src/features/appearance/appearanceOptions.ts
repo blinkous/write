@@ -89,8 +89,7 @@ export type Appearance = {
 
 /**
  * Page colors for a first visit, following the system's light or dark mode:
- * warm browns rather than the greys most editors use. Each text color is the
- * cozy match for its background (`deriveCozyTextColor`). Saved colors win.
+ * warm oat when light, a soft charcoal when dark. Saved colors win.
  */
 export const DEFAULT_PAGE_COLORS: Record<
   ColorScheme,
@@ -98,8 +97,8 @@ export const DEFAULT_PAGE_COLORS: Record<
 > = {
   // Oat
   light: { backgroundColor: '#ede3d6', textColor: '#594a36' },
-  // Cocoa
-  dark: { backgroundColor: '#2b211c', textColor: '#c1aba1' },
+  // Charcoal
+  dark: { backgroundColor: '#222121', textColor: '#acacac' },
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {

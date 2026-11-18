@@ -309,7 +309,7 @@
 /* Dark mode's first-visit colors, so the page doesn't flash light before the app loads. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #2b211c;
-    --color-text: #c1aba1;
+    --color-background: #222121;
+    --color-text: #acacac;
   }
 }

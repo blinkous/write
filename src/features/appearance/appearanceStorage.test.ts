@@ -174,7 +174,7 @@ describe('loadAppearance', () => {
     })
   })
 
-  it('starts a first visit in the system mode: oat when light, cocoa when dark', () => {
+  it('starts a first visit in the system mode: oat when light, charcoal when dark', () => {
     expect(loadAppearance('light')).toMatchObject(DEFAULT_PAGE_COLORS.light)
     expect(loadAppearance('dark')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
   })
@@ -208,7 +208,11 @@ describe('loadAppearance', () => {
       'write.appearance.v1',
       JSON.stringify({ backgroundColor: '#2b211c', textColor: 'nope' }),
     )
-    expect(loadAppearance('light')).toMatchObject(DEFAULT_PAGE_COLORS.dark)
+    // Cocoa's cozy match.
+    expect(loadAppearance('light')).toMatchObject({
+      backgroundColor: '#2b211c',
+      textColor: '#c1aba1',
+    })
   })
 })
 

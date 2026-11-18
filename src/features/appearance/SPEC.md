@@ -46,7 +46,7 @@ background picture or video, with one shared undo/redo.
   sidebar while dragging a picker.
 - **Transparency:** every color can be see-through except the page background, which has
   nothing behind it. Shades derived from a see-through text color use how it looks on the page.
-- **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
+- **First visit:** oat `#ede3d6` in light mode, charcoal `#222121` in dark. Saved colors always
   win and don't follow later system changes.
 - **Each page color changes only when you change it.** Each one's menu suggests a full
   row of matches for the other color, on both sides of it: the system mode's side first
