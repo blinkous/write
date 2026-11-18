@@ -16,6 +16,7 @@ import '@fontsource-variable/lora'
 import '@fontsource-variable/inter'
 import '@fontsource-variable/nunito'
 import '@fontsource-variable/quicksand'
+import '@fontsource-variable/fredoka'
 import '@fontsource/dongle/400.css'
 import '@fontsource/dongle/700.css'
 // Mono
@@ -30,6 +31,8 @@ import '@fontsource/amatic-sc/700.css'
 import '@fontsource/bungee-hairline'
 import '@fontsource/bungee-outline'
 import '@fontsource/bungee-shade'
+import '@fontsource-variable/tilt-neon'
+import '@fontsource/cherry-bomb-one'
 import '@fontsource/unifrakturmaguntia'
 // Handwriting
 import '@fontsource/comforter'
@@ -62,6 +65,11 @@ export const FONT_OPTIONS = [
     value: 'quicksand',
     label: 'Quicksand',
     family: "'Quicksand Variable', system-ui, sans-serif",
+  },
+  {
+    value: 'fredoka',
+    label: 'Fredoka',
+    family: "'Fredoka Variable', system-ui, sans-serif",
   },
   {
     value: 'dongle',
@@ -103,6 +111,16 @@ export const FONT_OPTIONS = [
     value: 'bungee-shade',
     label: 'Bungee Shade',
     family: "'Bungee Shade', system-ui, sans-serif",
+  },
+  {
+    value: 'cherry-bomb-one',
+    label: 'Cherry Bomb One',
+    family: "'Cherry Bomb One', system-ui, sans-serif",
+  },
+  {
+    value: 'tilt-neon',
+    label: 'Tilt Neon',
+    family: "'Tilt Neon Variable', system-ui, sans-serif",
   },
   {
     value: 'unifrakturmaguntia',
