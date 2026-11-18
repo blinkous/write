@@ -12,6 +12,8 @@ const CURRENT_SETTINGS = {
   tabTitle: 'Notes',
   backgroundBlur: 2,
   backgroundOpacity: 60,
+  isBackgroundVideoPaused: true,
+  backgroundVideoSpeed: 0.5,
 } as const
 const STORAGE_KEY = 'write.pageThemeHistory.v1'
 const colors = (backgroundColor: string) => ({
@@ -23,6 +25,8 @@ const colors = (backgroundColor: string) => ({
   tabTitle: '',
   backgroundBlur: 0,
   backgroundOpacity: 50,
+  isBackgroundVideoPaused: false,
+  backgroundVideoSpeed: 1,
 })
 
 describe('page theme history storage', () => {
@@ -116,7 +120,13 @@ describe('page theme history storage', () => {
       STORAGE_KEY,
       JSON.stringify({
         past: [
-          { ...colors('#aaaaaa'), tabTitle: undefined, backgroundBlur: 99 },
+          {
+            ...colors('#aaaaaa'),
+            tabTitle: undefined,
+            backgroundBlur: 99,
+            isBackgroundVideoPaused: undefined,
+            backgroundVideoSpeed: 9,
+          },
         ],
         future: [],
       }),
@@ -125,6 +135,8 @@ describe('page theme history storage', () => {
       tabTitle: 'Notes',
       backgroundBlur: 2,
       backgroundOpacity: 50,
+      isBackgroundVideoPaused: true,
+      backgroundVideoSpeed: 0.5,
     })
   })
 })

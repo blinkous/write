@@ -19,6 +19,8 @@ const colors = (backgroundColor: string): PageTheme => ({
   tabTitle: '',
   backgroundBlur: 0,
   backgroundOpacity: 50,
+  isBackgroundVideoPaused: false,
+  backgroundVideoSpeed: 1,
 })
 
 /** One committed edit from `from` to `to`, like a finished drag in the picker. */
@@ -105,6 +107,8 @@ describe('page theme history', () => {
     ['tab title', { tabTitle: 'Notes' }],
     ['background blur', { backgroundBlur: 0.2 }],
     ['background opacity', { backgroundOpacity: 70 }],
+    ['background video pause', { isBackgroundVideoPaused: true }],
+    ['background video speed', { backgroundVideoSpeed: 1.5 }],
   ])('undoes a %s change', (_name, changes) => {
     const before = colors('#aaaaaa')
     const after = { ...before, ...changes }

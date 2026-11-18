@@ -69,8 +69,8 @@ type PageColorSettingsProps = PageThemeProps &
  * The page's foreground (default text) and background colors, each a label
  * with its tile at the end (part of the App section); a tile opens its color
  * menu, suggesting matches for the other color. The background row also holds
- * the background picture or video, followed by its blur and opacity while
- * there's one. Each color changes only when you change it.
+ * the background picture or video, followed by its blur and opacity (and a
+ * video's playback) while there's one. Each color changes only when you change it.
  */
 export function PageColorSettings({
   pageTheme,
@@ -112,7 +112,10 @@ export function PageColorSettings({
         />
       </LabeledRow>
       {backgroundMedia.media && (
-        <BackgroundMediaEffects pageTheme={pageTheme} />
+        <BackgroundMediaEffects
+          pageTheme={pageTheme}
+          mediaKind={backgroundMedia.media.kind}
+        />
       )}
     </>
   )

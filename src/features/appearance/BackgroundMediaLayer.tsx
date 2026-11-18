@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from '../../utils/motion'
+import { BackgroundVideo } from './BackgroundVideo'
 import type { BackgroundMedia } from './useBackgroundMedia'
 import styles from './BackgroundMediaLayer.module.css'
 
@@ -12,38 +12,22 @@ function getBlurFilterId(blur: number): string {
   return `background-media-blur-${String(blur).replace('.', '_')}`
 }
 
-type BackgroundMediaLayerProps = BackgroundMedia & {
-  /** px; 0 for none. */
-  blur: number
-}
+/** px; 0 for none. */
+type BlurProps = { blur: number }
 
 /**
- * The picture or video behind the whole window, blurred and see-through to the
- * page color (both from settings). Decorative, so hidden from screen readers.
- * Marked with `data-background-media` so the layout can make its panels
- * translucent over it.
+ * A picture blurred by an SVG filter that stays opaque to the edges. CSS
+ * blur() fades the edges into transparency, and WebKit's GPU path clips the
+ * media to the window before blurring, so the page color showed at the
+ * window's edges; making the result opaque again keeps each edge pixel's
+ * blurred color instead. Limited to the picture's own box (x/y/width/height),
+ * so nothing outside it turns opaque.
  */
-export function BackgroundMediaLayer({
-  url,
-  kind,
-  blur,
-}: BackgroundMediaLayerProps) {
+function BackgroundImage({ url, blur }: { url: string } & BlurProps) {
   const filterId = getBlurFilterId(blur)
   const filter = blur > 0 ? `url(#${filterId})` : undefined
   return (
-    <div
-      className={styles.layer}
-      data-background-media={kind}
-      aria-hidden="true"
-    >
-      {/*
-       * A blur that stays opaque to the edges. CSS blur() fades the edges into
-       * transparency, and WebKit's GPU path clips the media to the window
-       * before blurring, so the page color showed at the window's edges; making
-       * the result opaque again keeps each edge pixel's blurred color instead.
-       * Limited to the media's own box (x/y/width/height), so nothing outside
-       * it turns opaque.
-       */}
+    <>
       <svg className={styles.filterDefinitions} aria-hidden="true">
         <filter
           id={filterId}
@@ -59,19 +43,64 @@ export function BackgroundMediaLayer({
           </feComponentTransfer>
         </filter>
       </svg>
+      <img className={styles.media} style={{ filter }} src={url} alt="" />
+    </>
+  )
+}
+
+/**
+ * A video blurred by a see-through layer over it (backdrop-filter): WebKit
+ * doesn't apply SVG filters to playing video, so the picture's blur left
+ * videos sharp.
+ */
+function VideoBlur({ blur }: BlurProps) {
+  if (blur <= 0) return null
+  return (
+    <div
+      className={styles.videoBlur}
+      style={{ backdropFilter: `blur(${blur}px)` }}
+    />
+  )
+}
+
+type BackgroundMediaLayerProps = BackgroundMedia &
+  BlurProps & {
+    isVideoPaused: boolean
+    /** × normal speed. */
+    videoSpeed: number
+  }
+
+/**
+ * The picture or video behind the whole window, blurred and see-through to the
+ * page color (both from settings). Decorative, so hidden from screen readers.
+ * Marked with `data-background-media` so the layout can make its panels
+ * translucent over it.
+ */
+export function BackgroundMediaLayer({
+  url,
+  kind,
+  blur,
+  isVideoPaused,
+  videoSpeed,
+}: BackgroundMediaLayerProps) {
+  return (
+    <div
+      className={styles.layer}
+      data-background-media={kind}
+      aria-hidden="true"
+    >
       {kind === 'image' ? (
-        <img className={styles.media} style={{ filter }} src={url} alt="" />
+        <BackgroundImage url={url} blur={blur} />
       ) : (
-        // Loops silently; held on its first frame when the system asks for less motion.
-        <video
-          className={styles.media}
-          style={{ filter }}
-          src={url}
-          autoPlay={!prefersReducedMotion()}
-          muted
-          loop
-          playsInline
-        />
+        <>
+          <BackgroundVideo
+            url={url}
+            className={styles.media}
+            isPaused={isVideoPaused}
+            speed={videoSpeed}
+          />
+          <VideoBlur blur={blur} />
+        </>
       )}
     </div>
   )

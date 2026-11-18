@@ -1,6 +1,6 @@
 /*
  * The picture, GIF or video behind the whole window. The file lives in
- * IndexedDB (too big for localStorage); its blur and opacity are appearance
+ * IndexedDB (too big for localStorage); its blur, opacity and video playback are appearance
  * settings, so they're saved and exported with the rest of the look.
  */
 
@@ -13,7 +13,7 @@ export const BACKGROUND_MEDIA_STORAGE_KEY = 'background-media.v1'
 export const BACKGROUND_MEDIA_ACCEPT = 'image/*,video/*'
 
 /** Generous for a looping video, small enough not to strain the browser's storage. */
-export const BACKGROUND_MEDIA_MAX_MEGABYTES = 100
+export const BACKGROUND_MEDIA_MAX_MEGABYTES = 150
 const BACKGROUND_MEDIA_MAX_BYTES = BACKGROUND_MEDIA_MAX_MEGABYTES * 1024 * 1024
 
 /** Pictures (including GIFs) and videos; null for anything else. */

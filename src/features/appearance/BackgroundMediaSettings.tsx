@@ -1,4 +1,6 @@
+import { Pause, Play } from 'lucide-react'
 import {
+  Button,
   FileSwatch,
   LabeledRow,
   NestedRows,
@@ -7,8 +9,12 @@ import {
 import {
   BACKGROUND_BLUR_RANGE,
   BACKGROUND_OPACITY_RANGE,
+  BACKGROUND_VIDEO_SPEED_RANGE,
 } from './appearanceOptions'
-import { BACKGROUND_MEDIA_ACCEPT } from './backgroundMedia'
+import {
+  BACKGROUND_MEDIA_ACCEPT,
+  type BackgroundMediaKind,
+} from './backgroundMedia'
 import type { useBackgroundMedia } from './useBackgroundMedia'
 import type { usePageTheme } from './usePageTheme'
 
@@ -45,12 +51,67 @@ export function BackgroundMediaTile({
   )
 }
 
-/** The background media's blur and opacity (shown while there's one), indented under the Background row; each step is one undo step. */
-export function BackgroundMediaEffects({
-  pageTheme: { backgroundBlur, backgroundOpacity, changeBackgroundEffects },
-}: {
+type BackgroundMediaEffectsProps = {
   pageTheme: ReturnType<typeof usePageTheme>
-}) {
+  mediaKind: BackgroundMediaKind
+}
+
+/** A background video's play/pause and speed; each change is one undo step. */
+function BackgroundVideoPlayback({
+  pageTheme: {
+    isBackgroundVideoPaused,
+    backgroundVideoSpeed,
+    changeBackgroundEffects,
+  },
+}: Pick<BackgroundMediaEffectsProps, 'pageTheme'>) {
+  const playbackAction = isBackgroundVideoPaused ? 'Play' : 'Pause'
+  return (
+    <>
+      <LabeledRow label="Playback" control="icon">
+        <Button
+          iconOnly
+          variant="ghost"
+          aria-label={`${playbackAction} background video`}
+          title={playbackAction}
+          onClick={() =>
+            changeBackgroundEffects({
+              isBackgroundVideoPaused: !isBackgroundVideoPaused,
+            })
+          }
+        >
+          {isBackgroundVideoPaused ? (
+            <Play aria-hidden="true" />
+          ) : (
+            <Pause aria-hidden="true" />
+          )}
+        </Button>
+      </LabeledRow>
+      <LabeledRow label="Speed" control="icon">
+        <NumberStepper
+          label="Background video speed"
+          value={backgroundVideoSpeed}
+          {...BACKGROUND_VIDEO_SPEED_RANGE}
+          unit="×"
+          onChange={(speed) =>
+            changeBackgroundEffects({ backgroundVideoSpeed: speed })
+          }
+        />
+      </LabeledRow>
+    </>
+  )
+}
+
+/**
+ * The background media's blur and opacity, plus a video's playback (shown
+ * while there's one), indented under the Background row; each step is one
+ * undo step.
+ */
+export function BackgroundMediaEffects({
+  pageTheme,
+  mediaKind,
+}: BackgroundMediaEffectsProps) {
+  const { backgroundBlur, backgroundOpacity, changeBackgroundEffects } =
+    pageTheme
   return (
     <NestedRows label="Background picture or video">
       <LabeledRow label="Blur" control="icon">
@@ -73,6 +134,9 @@ export function BackgroundMediaEffects({
           }
         />
       </LabeledRow>
+      {mediaKind === 'video' && (
+        <BackgroundVideoPlayback pageTheme={pageTheme} />
+      )}
     </NestedRows>
   )
 }

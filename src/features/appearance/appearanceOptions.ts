@@ -54,6 +54,14 @@ export const BACKGROUND_OPACITY_RANGE = {
   precision: 1,
 } as const
 
+/** How fast a background video plays, as a multiple of its normal speed. */
+export const BACKGROUND_VIDEO_SPEED_RANGE = {
+  min: 0.25,
+  max: 2,
+  step: 0.25,
+  precision: 0.05,
+} as const
+
 /** Number of user-filled color boxes in the text color menu. */
 export const CUSTOM_TEXT_COLOR_SLOT_COUNT = 7
 
@@ -85,6 +93,10 @@ export type Appearance = {
   backgroundBlur: number
   /** How opaque the background media is over the page color (%, BACKGROUND_OPACITY_RANGE). */
   backgroundOpacity: number
+  /** Whether a background video holds still; a first visit follows the system's reduced-motion setting. */
+  isBackgroundVideoPaused: boolean
+  /** A background video's speed (× normal, BACKGROUND_VIDEO_SPEED_RANGE). */
+  backgroundVideoSpeed: number
 }
 
 /**
@@ -117,4 +129,6 @@ export const DEFAULT_APPEARANCE: Appearance = {
   backgroundBlur: 0,
   // Half the page color showing through a busy picture, so writing stays readable.
   backgroundOpacity: 50,
+  isBackgroundVideoPaused: false,
+  backgroundVideoSpeed: 1,
 }

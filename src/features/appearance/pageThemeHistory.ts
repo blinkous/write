@@ -3,7 +3,7 @@ import type { TextStyles } from '../../text-styles'
 
 /**
  * The settings that share one undo/redo: fonts, colors, text styles, the tab
- * title and the background's blur and opacity. The background file itself
+ * title and the background's blur, opacity and video playback. The background file itself
  * isn't kept, so choosing or removing one isn't undoable.
  */
 export type PageTheme = {
@@ -15,6 +15,8 @@ export type PageTheme = {
   tabTitle: string
   backgroundBlur: number
   backgroundOpacity: number
+  isBackgroundVideoPaused: boolean
+  backgroundVideoSpeed: number
 }
 
 /** Undo steps kept; older ones are dropped. */
@@ -47,6 +49,8 @@ function isSameTheme(first: PageTheme, second: PageTheme): boolean {
     first.tabTitle === second.tabTitle &&
     first.backgroundBlur === second.backgroundBlur &&
     first.backgroundOpacity === second.backgroundOpacity &&
+    first.isBackgroundVideoPaused === second.isBackgroundVideoPaused &&
+    first.backgroundVideoSpeed === second.backgroundVideoSpeed &&
     JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles)
   )
 }

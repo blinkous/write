@@ -17,6 +17,12 @@
   opacity: var(--background-media-opacity);
 }
 
+/* Over the video, blurring it (and the page color under it) as one; its blur is set by the component. */
+.videoBlur {
+  position: absolute;
+  inset: 0;
+}
+
 /* Holds the filter without taking room (display: none would switch the filter off in some browsers). */
 .filterDefinitions {
   position: absolute;

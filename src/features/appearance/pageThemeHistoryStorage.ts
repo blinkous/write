@@ -10,6 +10,7 @@ import { isHexColor, isOpaqueHexColor } from '../../utils/color'
 import {
   BACKGROUND_BLUR_RANGE,
   BACKGROUND_OPACITY_RANGE,
+  BACKGROUND_VIDEO_SPEED_RANGE,
   TAB_TITLE_MAX_LENGTH,
 } from './appearanceOptions'
 import {
@@ -49,6 +50,10 @@ const backgroundOpacitySchema = z
   .number()
   .min(BACKGROUND_OPACITY_RANGE.min)
   .max(BACKGROUND_OPACITY_RANGE.max)
+const backgroundVideoSpeedSchema = z
+  .number()
+  .min(BACKGROUND_VIDEO_SPEED_RANGE.min)
+  .max(BACKGROUND_VIDEO_SPEED_RANGE.max)
 
 /**
  * Steps that predate a setting (or have an unknown value for it) get its
@@ -80,6 +85,14 @@ function createHistorySchema(current: CurrentSettings) {
     backgroundOpacity: valueOrCurrent(
       backgroundOpacitySchema,
       current.backgroundOpacity,
+    ),
+    isBackgroundVideoPaused: valueOrCurrent(
+      z.boolean(),
+      current.isBackgroundVideoPaused,
+    ),
+    backgroundVideoSpeed: valueOrCurrent(
+      backgroundVideoSpeedSchema,
+      current.backgroundVideoSpeed,
     ),
   })
 

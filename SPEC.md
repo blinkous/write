@@ -66,7 +66,7 @@ scrolls endlessly).
 
 IndexedDB `write-journal`: `entry` (one record per entry, format 2), `meta` (when entries
 moved from localStorage) and `backup` (unreadable records, with when and where).
-IndexedDB `write-files`: the background picture or video (max 100 MB).
+IndexedDB `write-files`: the background picture or video (size-limited).
 
 Bump a key's `vN` when its format changes incompatibly and migrate from the old key once.
 Fields added later must load from older data without them.
