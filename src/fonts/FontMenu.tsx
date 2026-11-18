@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { SelectMenu, Text } from '../design-system'
 import {
+  FALLBACK_FONT,
   FONT_OPTIONS,
   getFontOption,
   isFontValue,
@@ -68,7 +69,7 @@ export function FontMenu({
   onClose,
   hasFixedWidth,
 }: FontMenuProps) {
-  const shownFont = getFontOption(value ?? defaultFont ?? FONT_OPTIONS[0].value)
+  const shownFont = getFontOption(value ?? defaultFont ?? FALLBACK_FONT.value)
   const isDefault = value === null && defaultFont !== undefined
   const choices = [
     ...(defaultFont ? [getDefaultChoice(getFontOption(defaultFont))] : []),
@@ -83,11 +84,21 @@ export function FontMenu({
   function getTriggerContent() {
     if (!isDefault) {
       return (
-        <span style={{ fontFamily: shownFont.family }}>{shownFont.label}</span>
+        <span
+          className={styles.triggerLine}
+          style={{ fontFamily: shownFont.family }}
+        >
+          {shownFont.label}
+        </span>
       )
     }
     return captionDefault(
-      <span style={{ fontFamily: shownFont.family }}>Default</span>,
+      <span
+        className={styles.triggerLine}
+        style={{ fontFamily: shownFont.family }}
+      >
+        Default
+      </span>,
       shownFont.label,
       `${styles.captionedDefault} ${styles.captionedDefaultOnTrigger}`,
     )

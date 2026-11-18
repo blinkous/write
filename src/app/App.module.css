@@ -69,7 +69,7 @@
   gap: var(--space-1);
   /* Starts with the text: the first control's label, not its padded edge, in line with it. */
   --scroll-row-start: 0;
-  margin-inline-start: calc(var(--inset-icon-button) * -1);
+  --scroll-row-outdent-start: var(--inset-icon-button);
 }
 
 /*
@@ -82,7 +82,7 @@
 @container header (width < 51rem) {
   .toolbar {
     --scroll-row-start: auto;
-    margin-inline-start: 0;
+    --scroll-row-outdent-start: 0rem;
   }
 }
 

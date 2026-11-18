@@ -3,7 +3,18 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: var(--size-control);
+  /*
+   * A fixed height, never sized by its content: what a button shows changes
+   * (an icon, a font's name drawn in that font) and must never move what's
+   * around it. Content fits inside (white-space: nowrap).
+   */
+  height: var(--size-control);
+  /*
+   * Inside a line of text (e.g. a menu's wrapper) it lines up by its top, not
+   * its text's baseline: a baseline moves with the font shown (a font menu's
+   * name), which grew the line and moved the page below.
+   */
+  vertical-align: top;
   padding: 0 var(--space-control-inline);
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-small);

@@ -1,10 +1,14 @@
 /* How any journal editor (the writing and the title) displays its content. */
 
+/*
+ * A placeholder is its text's own look, dimmed (font, color and glow), so it
+ * previews what's typed there instead of looking like another style.
+ */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
   height: 0;
-  color: var(--color-muted);
+  opacity: var(--opacity-placeholder);
   pointer-events: none;
 }
 

@@ -26,8 +26,9 @@ margins, spacing and colors, per-text color, glow and case, and export as markdo
   then publish to GitHub Pages.
 - **Accessible:** everything works by keyboard, controls are native elements with visible
   labels in their accessible names, shortcuts are announced, and text meets WCAG AA
-  (4.5:1). Muted text is soft by default (a cozy choice) and reaches 4.5:1 when the system
-  asks for more contrast. Checked with axe in light and dark mode, with panels open.
+  (4.5:1) in the default and high contrast looks. Colors people choose, vibe theme packs
+  included, are theirs (see appearance). Muted text is soft by default (a cozy choice) and
+  reaches 4.5:1 when the system asks for more contrast. Checked with axe in light and dark mode, with panels open.
 
 ## Formatting is set in one place
 
@@ -93,6 +94,8 @@ Fields added later must load from older data without them.
 - **Color tiles are buttons** that open the system color picker, because WebKit never lets
   the keyboard reach color inputs. Text colors (toolbar and text styles) share one menu:
   theme tones, then seven custom slots; a filled slot's × (hover or focus) empties it.
+- **Buttons have a fixed height**, never sized by what they show, so a changing icon or a
+  font name drawn in its font never moves the toolbar or the page below it.
 - **Number steppers** can be typed in (applied on Enter or leaving) or stepped with the
   arrows, within their range; steps land on the next multiple (55 by tens → 60 or 50).
 - **Real units** where people expect them (line spacing as a multiplier, sizes in px);

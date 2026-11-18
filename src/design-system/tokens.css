@@ -132,8 +132,8 @@
     var(--color-background)
   );
   /*
-   * Muted text (captions, placeholders, section titles) is soft by default, a
-   * cozy choice. When the system asks for more contrast it switches to the
+   * Muted text (captions, field placeholders, section titles) is soft by
+   * default, a cozy choice. When the system asks for more contrast it switches to the
    * softest color that reads at 4.5:1, which the app sets for the page colors
    * (lib/readableMuted.ts); until then, a safe mix.
    */
@@ -148,6 +148,8 @@
     var(--color-background)
   );
   --color-muted: var(--color-muted-soft);
+  /* Placeholders in the writing and title: their text's own look, dimmed. */
+  --opacity-placeholder: 0.45;
   /* A step quieter than muted, for a caption under text that's already quiet (e.g. a menu trigger's). */
   --color-faint: color-mix(
     in srgb,
@@ -275,6 +277,11 @@
   --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
+  /* Theme pack tiles: a little page with its title's look ("Aa") and color dots. */
+  --size-theme-tile-width: 3.5rem;
+  --size-theme-tile-height: 3rem;
+  --font-size-theme-tile: 0.75rem;
+  --size-theme-tile-dot: 0.375rem;
 }
 
 /*
@@ -295,13 +302,14 @@
   :root {
     --color-muted: var(--color-muted-readable);
     --color-faint: var(--color-muted-readable);
+    --opacity-placeholder: 0.9;
   }
 }
 
 /* Dark mode's first-visit colors, so the page doesn't flash light before the app loads. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #2b211c;
-    --color-text: #c1aba1;
+    --color-background: #222121;
+    --color-text: #acacac;
   }
 }

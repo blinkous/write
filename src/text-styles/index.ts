@@ -1,4 +1,5 @@
 export {
+  areTextStylesEqual,
   DEFAULT_TEXT_STYLES,
   getTextStyleVariables,
   TEXT_STYLE_LABELS,

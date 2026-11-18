@@ -5,9 +5,9 @@ background picture or video, with one shared undo/redo.
 
 ## Settings
 
-- **Theme:** the interface font (default Inter), then the page colors, **Foreground** (the
-  default text color, named so it isn't mistaken for a text setting) and **Background**,
-  with the background picture or video.
+- **Theme:** the theme packs, the interface font (default Inter), then the page colors,
+  **Foreground** (the default text color, named so it isn't mistaken for a text setting)
+  and **Background**, with the background picture or video.
 - **Editor:** the **Default font** (default Lora), the base for every text style, then
   **Reset text styles**. Text styles themselves are edited from the toolbar's style menu
   (see editor).
@@ -19,6 +19,27 @@ background picture or video, with one shared undo/redo.
 - **Custom colors:** seven slots shared by every color menu (the toolbar's and the page
   colors), kept here so they persist.
 
+## Theme packs
+
+- Curated looks in a sideways-scrolling row of tiles at the top of Theme: the default
+  light and dark looks (the first-visit colors with default fonts and styles), Blinkous
+  (white neon glowing red on a moody teal sign), Unicorn (soft pastel rainbow), Cochineal
+  (carmine red, named for the insect the dye comes from), and high contrast light and
+  dark. Ordered by page color, lightest first, so the row reads as one gradient.
+- **Only Blinkous glows:** glow is its neon-sign look; the other packs stay flat.
+- **Named only in tooltips** and for screen readers; the tiles are the vibe. Each is a
+  little page in the pack's background color showing "Aa" in its title style (font,
+  color, glow, case) and dots of its text color, then its glows, then its style colors.
+- **Choosing one replaces the whole look:** page colors, the interface and default fonts,
+  and every text style, as one undo step. Custom color slots, margins, spacing, the tab
+  title and the background picture stay.
+- A tile shows as chosen only while the settings are exactly its look; after any edit,
+  none does. Packs aren't stored: choosing one just sets those settings.
+- **Readable baselines:** the default and high contrast packs keep every text color at
+  4.5:1 (tested), since people rely on them to read comfortably. The others are vibes,
+  chosen on sight like any color someone picks, and may be as soft as their look asks.
+- Colors are fixed values, so a tile previews exactly what it applies.
+
 ## Rules
 
 - **Margins** set both a page width (decides on wide windows) and a share of the room
@@ -27,7 +48,7 @@ background picture or video, with one shared undo/redo.
   sidebar while dragging a picker.
 - **Transparency:** every color can be see-through except the page background, which has
   nothing behind it. Shades derived from a see-through text color use how it looks on the page.
-- **First visit:** oat `#ede3d6` in light mode, cocoa `#2b211c` in dark. Saved colors always
+- **First visit:** oat `#ede3d6` in light mode, charcoal `#222121` in dark. Saved colors always
   win and don't follow later system changes.
 - **Each page color changes only when you change it.** Each one's menu suggests a full
   row of matches for the other color, on both sides of it: the system mode's side first
@@ -78,8 +99,8 @@ Derived from the background, never harsh:
   greys between page and text. Near-black pages skip the accent (it reads muddy).
 - Chroma is capped (no neon), colorful pages get no near-black or near-white tones, and
   pale pages get a chroma floor so tones don't grey out.
-- **Muted text** (captions, placeholders) is soft by default; with "increase contrast" on,
-  it becomes the softest mix that reads at 4.5:1.
+- **Muted text** (captions, field placeholders) is soft by default; with "increase
+  contrast" on, it becomes the softest mix that reads at 4.5:1.
 
 ## Background picture or video
 
@@ -97,7 +118,8 @@ Derived from the background, never harsh:
 
 ## Decisions
 
-- No theme presets and no contrast warnings: people can see whether their colors read.
+- No contrast warnings: people can see whether their colors read. Theme packs are
+  starting points, not modes: everything they set stays editable.
 - Page colors live apart from the toolbar's text color so the two aren't confused.
 - An in-app picker instead of the system one: the system picker can't be themed, differs
   per platform and has no opacity.

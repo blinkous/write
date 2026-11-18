@@ -1,0 +1,53 @@
+/* Starts at its start edge, so the first packs are always where the eye lands. */
+.row {
+  --scroll-row-start: 0;
+  /* The chosen tile always shows its ring: real room for it, so it never covers the section's title. */
+  --scroll-row-block-pull: 0rem;
+  gap: var(--space-2);
+}
+
+/* A little page: its color, its title's "Aa", and a row of its colors. */
+.tile {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--size-theme-tile-width);
+  height: var(--size-theme-tile-height);
+  margin: 0;
+  padding: var(--space-1);
+  overflow: hidden;
+  /* As strong as swatch edges, so a tile near the page color still shows its edge. */
+  border: var(--border-width) solid var(--color-muted);
+  border-radius: var(--radius-small);
+  font-size: var(--font-size-theme-tile);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Chosen: a ring outside the tile, like a chosen swatch. */
+.tile[aria-pressed='true'] {
+  outline: var(--focus-ring-width) solid var(--color-text);
+  outline-offset: var(--focus-ring-width);
+}
+
+.tile:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
+.sample {
+  white-space: nowrap;
+}
+
+.colors {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.color {
+  width: var(--size-theme-tile-dot);
+  height: var(--size-theme-tile-dot);
+  border-radius: 50%;
+}

@@ -24,6 +24,7 @@ import {
   undoPageTheme,
   type PageTheme,
 } from './pageThemeHistory'
+import type { ThemeLook } from './themePacks'
 import {
   loadPageThemeHistory,
   savePageThemeHistory,
@@ -161,6 +162,10 @@ export function usePageTheme(
     /** Every text style back to its default (the editor's default font stays). */
     resetTextStyles() {
       change({ textStyles: DEFAULT_TEXT_STYLES }, true)
+    },
+    /** A theme pack's whole look (colors, fonts, text styles) as one undo step. */
+    applyThemeLook(look: ThemeLook) {
+      change(look, true)
     },
     /** Ends the current edit (e.g. a finished drag) as one undo step. */
     commit() {
