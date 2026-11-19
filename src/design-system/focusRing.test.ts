@@ -4,9 +4,9 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 /*
- * Every focused control shows the focus ring (see the app spec). Browsers'
- * keyboard-only :focus-visible misses focus the app moves (dialogs' Tab in
- * WebKit), so no stylesheet may rely on it.
+ * Focus rings follow the app's own keyboard tracking (inputModality.ts, see
+ * the app spec): browsers' :focus-visible misses focus the app moves
+ * (dialogs' Tab in WebKit), so no stylesheet may rely on it.
  */
 const SOURCE_DIRECTORY = join(import.meta.dirname, '..')
 

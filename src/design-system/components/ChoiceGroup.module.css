@@ -7,7 +7,7 @@
   position: relative;
 }
 
-.choice:has(:focus) {
+:global(:root[data-input='keyboard']) .choice:has(:focus) {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: calc(var(--focus-ring-width) * -1);
 }

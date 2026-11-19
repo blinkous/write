@@ -55,10 +55,17 @@
   transform: rotate(180deg);
 }
 
-/* While open, the chevron shows only on hover or focus; folded ones and touch screens always show it. */
+/* While open, the chevron shows only on hover or keyboard focus; folded ones and touch screens always show it. */
 @media (hover: hover) {
-  .disclosure[open] > .summary:not(:hover, :focus) .chevron {
+  .disclosure[open] > .summary:not(:hover) .chevron {
     opacity: 0;
+  }
+
+  :global(:root[data-input='keyboard'])
+    .disclosure[open]
+    > .summary:focus
+    .chevron {
+    opacity: 1;
   }
 }
 

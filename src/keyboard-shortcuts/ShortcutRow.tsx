@@ -88,13 +88,14 @@ export function ShortcutRow({ command }: ShortcutRowProps) {
                 : `${label} shortcut: ${describeShortcut(shortcut)}`
             }
             aria-pressed={isRecording}
+            className={isRecording ? styles.listening : undefined}
             title={
               isRecording
                 ? 'Escape cancels, Backspace removes'
                 : 'Change shortcut'
             }
             onClick={({ currentTarget }) => {
-              // WebKit doesn't focus a clicked button, so the keys (and its focus ring) would go elsewhere.
+              // WebKit doesn't focus a clicked button, so the keys would go elsewhere.
               currentTarget.focus()
               setMessage(null)
               setIsRecording((wasRecording) => !wasRecording)

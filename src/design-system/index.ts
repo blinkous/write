@@ -1,6 +1,8 @@
 import './tokens.css'
 import './base.css'
 
+export { trackInputModality } from './inputModality'
+
 export { ActionList } from './components/ActionList'
 export { BrandIcon } from './components/BrandIcon'
 export { Button } from './components/Button'

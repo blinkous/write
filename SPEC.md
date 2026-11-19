@@ -28,12 +28,13 @@ margins, spacing and colors, per-text color, glow and case, and export as markdo
   used by keyboard alone: Tab and Shift+Tab (Option+Tab in Safari, which skips buttons on
   plain Tab) reach it, Enter or Space works it, and Escape backs out of what it opened.
   Nothing traps focus: whatever listens for keys (like a shortcut being recorded) still
-  lets Tab move on. **Every focused control shows the focus ring, no exceptions,** however it
-  got focus: keyboard, click, or the app moving it. Browsers' keyboard-only guess
-  (`:focus-visible`) misses focus the app moves (e.g. Tab in dialogs on WebKit), so it
-  isn't used. Only places with their own focus look (the writing, the title, text fields)
-  skip it. A control that listens for keys after a click focuses itself, since WebKit
-  doesn't focus clicked buttons.
+  lets Tab move on. **While you use the keyboard, whatever has focus shows the focus ring,**
+  however it got there (Tab, arrows, or the app moving it); a click or tap leaves none.
+  The app tracks the last input itself: browsers' own guess (`:focus-visible`) misses
+  focus the app moves (e.g. Tab in dialogs on WebKit). Places with their own focus look
+  (the writing, the title, text fields) skip the ring. A control that listens for keys
+  after a click focuses itself and shows it's listening, since WebKit doesn't focus
+  clicked buttons.
 - **Accessible:** everything works by keyboard (above), controls are native elements with visible
   labels in their accessible names, shortcuts are announced and can be changed, and text meets WCAG AA
   (4.5:1) in the default looks. Colors people choose, vibe theme packs

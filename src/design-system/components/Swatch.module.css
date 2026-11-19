@@ -32,8 +32,8 @@
   outline-offset: var(--focus-ring-width);
 }
 
-/* Focus shows over the selected ring, so a focused, selected tile still shows focus. */
-.swatch:focus {
+/* Keyboard focus shows over the selected ring, so a focused, selected tile still shows focus. */
+:global(:root[data-input='keyboard']) .swatch:focus {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }

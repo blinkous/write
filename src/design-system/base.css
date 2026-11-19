@@ -27,12 +27,13 @@ body {
 }
 
 /*
- * Every focused control shows the ring, however it got focus (keyboard,
- * click or the app moving it): browsers' keyboard-only guess (:focus-visible)
- * misses focus moved by script, e.g. dialogs' Tab in WebKit. Places with their
- * own focus look (the writing, text fields, dialogs) turn it off themselves.
+ * While someone uses the keyboard, whatever has focus shows the ring, however
+ * it got there (see inputModality.ts); a click or tap leaves none. :where()
+ * keeps it as weak as a plain :focus, so places with their own focus look
+ * (the writing, text fields, dialogs) still turn it off themselves. Other
+ * rings follow the same pattern.
  */
-:focus {
+:where(:root[data-input='keyboard']) :focus {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }

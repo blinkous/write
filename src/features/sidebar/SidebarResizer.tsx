@@ -41,7 +41,7 @@ export function SidebarResizer({ sidebarId, onDone }: SidebarResizerProps) {
   function startDrag(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0) return
     const { currentTarget, clientX, pointerId } = event
-    // Focused, so the ring shows what's being moved (WebKit doesn't focus on click).
+    // Focused, so arrow keys carry on from here (WebKit doesn't focus on click).
     currentTarget.focus()
     currentTarget.setPointerCapture?.(pointerId)
     dragRef.current = { startX: clientX, startWidth: getSidebarWidth() }

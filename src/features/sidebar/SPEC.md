@@ -4,8 +4,8 @@ The sidebar's width: the divider on its edge resizes it.
 
 ## How it works
 
-- **Drag the divider** on the sidebar's edge; its line shows on hover, while dragging and
-  on focus. Double-click puts the default width back.
+- **Drag the divider** on the sidebar's edge; its line shows on hover and while dragging,
+  and it gets the focus ring with the keyboard. Double-click puts the default width back.
 - **By keyboard** it's a focusable divider (a WAI-ARIA window splitter): ←/→ make it a step
   narrower or wider, Home/End the narrowest or widest, then Enter or Escape when done, which returns
   focus to the writing (not nowhere, so the next Tab doesn't start over). Screen readers

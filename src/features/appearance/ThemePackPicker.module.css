@@ -32,7 +32,7 @@
   outline-offset: var(--focus-ring-width);
 }
 
-.tile:focus {
+:global(:root[data-input='keyboard']) .tile:focus {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }

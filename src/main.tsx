@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ErrorBoundary } from 'react-error-boundary'
-import './design-system'
+import { trackInputModality } from './design-system'
 import { App } from './app/App'
 import { AppCrashed } from './app/AppCrashed'
 import {
@@ -10,6 +10,9 @@ import {
   openJournal,
 } from './features/entries'
 import { FramedNotice, isFramed } from './features/privacy'
+
+// Focus rings show while someone uses the keyboard (see design-system).
+trackInputModality()
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Missing #root element')

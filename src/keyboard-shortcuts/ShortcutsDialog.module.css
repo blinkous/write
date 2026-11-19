@@ -16,6 +16,12 @@
   gap: var(--space-1);
 }
 
+/* While listening for keys, it shows the ring even after a click, so it's clear where keys go. */
+.listening {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
+}
+
 .keys {
   font: inherit;
 }
