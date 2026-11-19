@@ -15,6 +15,10 @@ import {
   type TextStyleName,
   type TextStyleSettings,
 } from '../../text-styles'
+import {
+  useShownShortcuts,
+  type ShortcutCommandId,
+} from '../../keyboard-shortcuts'
 import { formatShortcut } from '../../utils/shortcuts'
 import {
   applyTextStyle,
@@ -53,7 +57,7 @@ type StyleRowProps = {
   name: TextStyleName
   label: string
   icon: LucideIcon
-  shortcut?: string
+  shortcutId?: ShortcutCommandId
   isSelected: boolean
   onSelect: () => void
   editControl: ReactNode
@@ -64,15 +68,20 @@ function StyleRow({
   name,
   label,
   icon: Icon,
-  shortcut,
+  shortcutId,
   isSelected,
   onSelect,
   editControl,
 }: StyleRowProps) {
+  const getShortcut = useShownShortcuts()
   return (
     <MenuActionRow action={editControl}>
-      <MenuItem isSelected={isSelected} shortcut={shortcut} onClick={onSelect}>
-        <Icon aria-hidden="true" />
+      <MenuItem
+        icon={Icon}
+        isSelected={isSelected}
+        shortcut={shortcutId && getShortcut(shortcutId)}
+        onClick={onSelect}
+      >
         <TextStylePreview name={name}>{label}</TextStylePreview>
       </MenuItem>
     </MenuActionRow>
@@ -100,9 +109,13 @@ export function TextStyleMenu({
       isTitle ? TITLE_STYLE : getActiveTextStyle(currentEditor),
   })
   const { icon: ActiveIcon, label: activeLabel } = activeStyle
-  const stepHint = isTitle
-    ? ''
-    : ` (${formatShortcut('Mod-Shift->')} / ${formatShortcut('Mod-Shift-<')} to change)`
+  const getShortcut = useShownShortcuts()
+  const largerShortcut = getShortcut('larger-text-style')
+  const smallerShortcut = getShortcut('smaller-text-style')
+  const stepHint =
+    isTitle || !largerShortcut || !smallerShortcut
+      ? ''
+      : ` (${formatShortcut(largerShortcut)} / ${formatShortcut(smallerShortcut)} to change)`
 
   return (
     <Popover

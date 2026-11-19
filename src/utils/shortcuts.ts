@@ -4,7 +4,7 @@
  * Mac, "Ctrl+Shift+X" elsewhere) and as names for screen readers.
  */
 
-function isApplePlatform(): boolean {
+export function isApplePlatform(): boolean {
   return /Mac|iPhone|iPad/.test(navigator.platform)
 }
 
@@ -17,8 +17,17 @@ const MAC_SYMBOLS: Record<string, string> = {
 /* Apple's order for modifier symbols. */
 const MAC_ORDER = ['Ctrl', 'Alt', 'Shift', 'Mod']
 
+/* Keys shown as symbols, as menus and keyboards label them. */
+const KEY_SYMBOLS: Record<string, string> = {
+  ArrowUp: '↑',
+  ArrowDown: '↓',
+  ArrowLeft: '←',
+  ArrowRight: '→',
+}
+
+/* The last part is the key, so "Mod--" is ⌘ and minus. */
 function splitShortcut(shortcut: string): { modifiers: string[]; key: string } {
-  const parts = shortcut.split('-')
+  const parts = shortcut.split(/-(?!$)/)
   const key = parts.at(-1) ?? ''
   return {
     modifiers: parts.slice(0, -1),
@@ -31,7 +40,8 @@ export function formatShortcut(
   shortcut: string,
   isApple = isApplePlatform(),
 ): string {
-  const { modifiers, key } = splitShortcut(shortcut)
+  const { modifiers, key: keyName } = splitShortcut(shortcut)
+  const key = KEY_SYMBOLS[keyName] ?? keyName
   if (!isApple)
     return [
       ...modifiers.map((modifier) => (modifier === 'Mod' ? 'Ctrl' : modifier)),
@@ -52,9 +62,12 @@ export function toAriaKeyShortcut(
   isApple = isApplePlatform(),
 ): string {
   const { modifiers, key } = splitShortcut(shortcut)
-  const modKey = isApple ? 'Meta' : 'Control'
+  const ariaModifiers: Record<string, string> = {
+    Mod: isApple ? 'Meta' : 'Control',
+    Ctrl: 'Control',
+  }
   return [
-    ...modifiers.map((modifier) => (modifier === 'Mod' ? modKey : modifier)),
+    ...modifiers.map((modifier) => ariaModifiers[modifier] ?? modifier),
     key,
   ].join('+')
 }

@@ -43,7 +43,16 @@
   height: var(--size-icon);
 }
 
+/* Cut short with "…" rather than scrolling the menu or pushing the shortcut out. */
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .shortcut {
+  flex-shrink: 0;
   margin-left: auto;
   padding-left: var(--space-4);
   color: var(--color-muted);

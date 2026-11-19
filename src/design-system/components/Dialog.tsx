@@ -7,7 +7,9 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
+import { X } from 'lucide-react'
 import { tabbable } from 'tabbable'
+import { Button } from './Button'
 import styles from './Dialog.module.css'
 import { nextInFocusCycle } from './focusCycle'
 import { MessageTitle, type MessageTone } from './MessageTitle'
@@ -24,8 +26,9 @@ type DialogProps = {
   onClose: () => void
   /**
    * For a dialog that opens by itself (not from a click): it stays open on a
-   * click outside, since it wasn't asked for and a stray click shouldn't
-   * dismiss it unread. Dialogs you opened close on one, like Escape.
+   * click outside and has no ×, since it wasn't asked for and shouldn't be
+   * dismissed unread. Dialogs you opened close on a click outside, Escape or
+   * their × (top right).
    */
   opensUnprompted?: boolean
   /**
@@ -124,9 +127,22 @@ export function Dialog({
       {/* Like closed menus, a closed dialog renders nothing (see Popover). */}
       {isOpen && (
         <>
-          <MessageTitle id={titleId} tone={tone}>
-            {title}
-          </MessageTitle>
+          <div className={styles.header}>
+            <MessageTitle id={titleId} tone={tone}>
+              {title}
+            </MessageTitle>
+            {!opensUnprompted && (
+              <Button
+                iconOnly
+                aria-label="Close"
+                title="Close"
+                className={styles.close}
+                onClick={() => dialogRef.current?.close()}
+              >
+                <X aria-hidden="true" />
+              </Button>
+            )}
+          </div>
           <div className={styles.body}>{children}</div>
           <div className={styles.actions}>{actions}</div>
         </>

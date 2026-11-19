@@ -65,3 +65,18 @@ describe('Dialog', () => {
     expect(onClose).not.toHaveBeenCalled()
   })
 })
+
+describe('Dialog ×', () => {
+  it('closes a dialog you opened', () => {
+    const { onClose } = renderDialog()
+    fireEvent.click(screen.getByRole('button', { name: 'Close', hidden: true }))
+    expect(onClose).toHaveBeenCalledOnce()
+  })
+
+  it('isn’t on a dialog that opened by itself', () => {
+    renderDialog({ opensUnprompted: true })
+    expect(
+      screen.queryByRole('button', { name: 'Close', hidden: true }),
+    ).not.toBeInTheDocument()
+  })
+})

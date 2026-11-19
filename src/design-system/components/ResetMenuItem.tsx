@@ -22,13 +22,13 @@ export function ResetMenuItem({
   return (
     <ActionList>
       <MenuItem
+        icon={RotateCcw}
         disabled={!canReset}
         onClick={() => {
           refocus()
           onReset()
         }}
       >
-        <RotateCcw aria-hidden="true" />
         {label}
       </MenuItem>
     </ActionList>

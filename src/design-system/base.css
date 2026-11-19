@@ -26,7 +26,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-:focus-visible {
+/*
+ * Every focused control shows the ring, however it got focus (keyboard,
+ * click or the app moving it): browsers' keyboard-only guess (:focus-visible)
+ * misses focus moved by script, e.g. dialogs' Tab in WebKit. Places with their
+ * own focus look (the writing, text fields, dialogs) turn it off themselves.
+ */
+:focus {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }

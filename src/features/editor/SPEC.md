@@ -44,16 +44,28 @@ The rich-text writing surface for one entry, and its toolbar.
 
 ## Keyboard
 
-- **Every shortcut has a visible control,** shown in its tooltip or menu: ⌘B, ⌘I, ⌘U, ⇧⌘X
-  (strikethrough, moved off ⇧⌘S, which exports), ⌘E code, ⇧⌘8 / ⇧⌘7 lists, ⇧⌘B quote, ⌥⌘C
-  code block, ⌥⌘0 Body, ⌥⌘2–6 headings. Shown as Mac symbols or Ctrl+… per platform.
-- ⇧⌘> / ⇧⌘< step Small → Body → H6 … H2 and back. ⇧⌘+ stays the browser's zoom.
+- **Shortcuts show in their control's tooltip or menu,** and all of them, shortcut-only ones
+  too, are listed and changeable in the Keyboard shortcuts dialog (see keyboard-shortcuts). Defaults: ⌘B, ⌘I, ⌘U, ⇧⌘X strikethrough,
+  ⌘E code, ⇧⌘8 / ⇧⌘7 lists, ⇧⌘B quote, ⌥⌘C code block, ⌥⌘0 Body, ⌥⌘2–6 headings.
+- ⇧⌘. / ⇧⌘, (⇧⌘> / ⇧⌘<) step Small → Body → H6 … H2 and back. ⇧⌘+ stays the browser's zoom.
 - ⌥↑ / ⌥↓ move blocks, like VS Code; list items move whole, and a container moves when the
   selection fills it.
 - Markdown shortcuts work while typing (`## `, `- `, `> `, `**bold**`).
 - **Tab** inserts a tab (4 spaces wide); Shift+Tab removes one. In lists they indent and
   outdent. **Escape then Tab** leaves the editor (no keyboard trap), as a hidden hint says.
 - Undo history is per entry.
+
+## Copying
+
+- ⌘C copies as any app does: formatted text, and plain text for plain-text apps.
+- **Two markdown copies:** **Copy selection as markdown** (⌥⇧⌘C, shortcut only; with
+  nothing selected in the writing it says so) and **Copy entry as markdown** (in each entry's
+  ⋯, the whole entry under its title; no shortcut until someone sets one).
+- They copy like ⌘C, with markdown as the plain text: plain-text apps get markdown, while
+  the journal and apps that take formatting paste it formatted. Paste and Match Style
+  (⇧⌘V) gives the markdown anywhere.
+- Part of one block copies inline: a few words of a heading aren't a heading, and code
+  copies as typed. A whole block or more keeps its block markdown (`##`, `- `, `> `).
 
 ## Decisions
 

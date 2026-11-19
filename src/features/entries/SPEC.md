@@ -18,7 +18,7 @@ import.
   shifts). Enter or clicking away saves, Escape cancels. Blank clears the custom title;
   saving the first line unchanged keeps following the first line. Trimmed, max 200
   characters.
-- **Each row has the open entry's ⋯ menu** (copy as markdown, export, import, delete),
+- **Each row has the open entry's ⋯ menu** (copy entry as markdown, export, import, delete),
   shown on hover, focus or while open (always on touch). Delete always confirms; deleting
   another entry keeps the open one open; deleting the open one opens the one that took its
   place.

@@ -12,17 +12,18 @@ The settings drawer at the bottom of the sidebar.
   setting but the background file, beside the ⚙. No header (it saves a row); it's still
   named "Settings" for screen readers.
 - **Sections fold** under their titles: Theme and Editor (appearance), then Data (tab title,
-  export, import, reset, About). Open ones are remembered. An open section's chevron shows
+  export, import, keyboard shortcuts, reset, About). Open ones are remembered. An open section's chevron shows
   only on hover or focus (as in macOS sidebars), so it isn't mistaken for a dropdown's.
 - Features hand their sections to the app, so features don't import each other.
 - **Settings backups:** exported from Data's Export dialog, alone or inside a journal file
-  (see entries): fonts, text styles, colors, custom color slots, margins, spacing and sort,
-  not UI state or the background file. One Import takes both: a settings file applies its
+  (see entries): fonts, text styles, colors, custom color slots, margins, spacing, sort and
+  changed shortcuts, not UI state or the background file. Files without shortcuts leave
+  them as they are. One Import takes both: a settings file applies its
   settings (bad values fall back on their own; newer versions are refused); anything else
   goes to the journal import.
 - **Reset all settings and styles** asks first, suggesting an export, then restores a first
-  visit's look: every appearance setting, colors for the system's light or dark mode, no
-  background file, and an empty undo history. Entries, sort and UI state stay. It can't be
+  visit's look: every appearance setting, colors for the system's light or dark mode, the
+  default shortcuts (shown or hidden by device again), no background file, and an empty undo history. Entries, sort and UI state stay. It can't be
   undone.
 
 ## Decisions

@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import { isEmphasisShown } from '../../journal-document'
+import type { ShortcutCommandId } from '../../keyboard-shortcuts'
 import {
   Bold,
   Code,
@@ -16,8 +17,8 @@ import {
 export type FormattingAction = {
   name: string
   label: string
-  /** Tiptap's keyboard shortcut for it (e.g. "Mod-b"), shown with the label. */
-  shortcut: string
+  /** Its keyboard shortcut (changeable in settings), shown with the label. */
+  shortcutId: ShortcutCommandId
   /** Visible icon; `label` is the accessible name. */
   icon: LucideIcon
   /** The node or mark this needs; the button is off in editors without it (e.g. the title). */
@@ -41,7 +42,7 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bold',
     label: 'Bold',
-    shortcut: 'Mod-b',
+    shortcutId: 'bold',
     icon: Bold,
     requires: 'bold',
     isActive: (editor) => isEmphasisShown(editor, 'bold'),
@@ -50,7 +51,7 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'italic',
     label: 'Italic',
-    shortcut: 'Mod-i',
+    shortcutId: 'italic',
     icon: Italic,
     requires: 'italic',
     isActive: (editor) => isEmphasisShown(editor, 'italic'),
@@ -59,7 +60,7 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'underline',
     label: 'Underline',
-    shortcut: 'Mod-u',
+    shortcutId: 'underline',
     icon: Underline,
     requires: 'underline',
     isActive: (editor) => isEmphasisShown(editor, 'underline'),
@@ -68,7 +69,7 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'strike',
     label: 'Strikethrough',
-    shortcut: 'Mod-Shift-x',
+    shortcutId: 'strike',
     icon: Strikethrough,
     requires: 'strike',
     isActive: (editor) => isEmphasisShown(editor, 'strike'),
@@ -81,7 +82,7 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bullet-list',
     label: 'Bulleted list',
-    shortcut: 'Mod-Shift-8',
+    shortcutId: 'bullet-list',
     icon: List,
     requires: 'bulletList',
     isActive: (editor) => editor.isActive('bulletList'),
@@ -90,7 +91,7 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'ordered-list',
     label: 'Numbered list',
-    shortcut: 'Mod-Shift-7',
+    shortcutId: 'ordered-list',
     icon: ListOrdered,
     requires: 'orderedList',
     isActive: (editor) => editor.isActive('orderedList'),
@@ -99,7 +100,7 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'blockquote',
     label: 'Quote',
-    shortcut: 'Mod-Shift-b',
+    shortcutId: 'blockquote',
     icon: Quote,
     requires: 'blockquote',
     isActive: (editor) => editor.isActive('blockquote'),
@@ -108,7 +109,7 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'code',
     label: 'Code',
-    shortcut: 'Mod-e',
+    shortcutId: 'code',
     icon: Code,
     requires: 'code',
     isActive: (editor) => editor.isActive('code'),
@@ -117,7 +118,7 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'code-block',
     label: 'Code block',
-    shortcut: 'Mod-Alt-c',
+    shortcutId: 'code-block',
     icon: SquareCode,
     requires: 'codeBlock',
     isActive: (editor) => editor.isActive('codeBlock'),

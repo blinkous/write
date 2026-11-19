@@ -1,6 +1,5 @@
 import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
-import { JournalStrike } from './journalStrike'
 import { TextCaseMark } from './textCase'
 import { textStyleExtensions } from './textStyleMark'
 
@@ -15,7 +14,6 @@ const TitleDocument = Document.extend({ content: 'paragraph' })
 export const titleExtensions = [
   StarterKit.configure({
     document: false,
-    strike: false,
     heading: false,
     blockquote: false,
     bulletList: false,
@@ -30,7 +28,6 @@ export const titleExtensions = [
     trailingNode: false,
   }),
   TitleDocument,
-  JournalStrike,
   ...textStyleExtensions,
   TextCaseMark,
 ]

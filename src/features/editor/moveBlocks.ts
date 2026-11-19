@@ -113,11 +113,4 @@ export const MoveBlocks = Extension.create({
   addCommands() {
     return { moveBlocks: moveBlocksCommand }
   },
-
-  addKeyboardShortcuts() {
-    return {
-      'Alt-ArrowUp': () => this.editor.commands.moveBlocks('up'),
-      'Alt-ArrowDown': () => this.editor.commands.moveBlocks('down'),
-    }
-  },
 })

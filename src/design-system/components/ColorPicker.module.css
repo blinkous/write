@@ -48,9 +48,8 @@
   inset: 0 calc(var(--color-picker-pointer-size) / 2);
 }
 
-/* Its focus is only a slight grow; keyboard focus gets the usual ring too. */
-.picker
-  :global(.react-colorful__interactive:focus-visible .react-colorful__pointer) {
+/* Its focus is only a slight grow; it gets the usual ring too. */
+.picker :global(.react-colorful__interactive:focus .react-colorful__pointer) {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }

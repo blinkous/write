@@ -1,5 +1,6 @@
 import { useEditorState, type Editor } from '@tiptap/react'
 import { Button } from '../../design-system'
+import { useShownShortcuts } from '../../keyboard-shortcuts'
 import { formatShortcut, toAriaKeyShortcut } from '../../utils/shortcuts'
 import { editorSupports, type FormattingAction } from './formattingActions'
 
@@ -11,6 +12,7 @@ type FormattingButtonsProps = {
 
 /** A button per action (pressed while a toggle is on), off in editors that lack it (e.g. lists in the title). */
 export function FormattingButtons({ editor, actions }: FormattingButtonsProps) {
+  const getShortcut = useShownShortcuts()
   const activeActionNames = useEditorState({
     editor,
     selector: ({ editor: currentEditor }) =>
@@ -25,20 +27,23 @@ export function FormattingButtons({ editor, actions }: FormattingButtonsProps) {
   }).split(' ')
 
   return actions.map(
-    ({ name, label, shortcut, icon: Icon, requires, isActive, run }) => (
-      <Button
-        key={name}
-        iconOnly
-        aria-label={label}
-        aria-keyshortcuts={toAriaKeyShortcut(shortcut)}
-        title={`${label} (${formatShortcut(shortcut)})`}
-        // Only toggles have a pressed state; a one-off action (reset) has none.
-        aria-pressed={isActive ? activeActionNames.includes(name) : undefined}
-        disabled={!editorSupports(editor, requires)}
-        onClick={() => run(editor)}
-      >
-        <Icon aria-hidden="true" />
-      </Button>
-    ),
+    ({ name, label, shortcutId, icon: Icon, requires, isActive, run }) => {
+      const shortcut = getShortcut(shortcutId)
+      return (
+        <Button
+          key={name}
+          iconOnly
+          aria-label={label}
+          aria-keyshortcuts={shortcut ? toAriaKeyShortcut(shortcut) : undefined}
+          title={shortcut ? `${label} (${formatShortcut(shortcut)})` : label}
+          // Only toggles have a pressed state; a one-off action (reset) has none.
+          aria-pressed={isActive ? activeActionNames.includes(name) : undefined}
+          disabled={!editorSupports(editor, requires)}
+          onClick={() => run(editor)}
+        >
+          <Icon aria-hidden="true" />
+        </Button>
+      )
+    },
   )
 }
