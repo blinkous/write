@@ -134,7 +134,7 @@ describe('ShortcutsDialog', () => {
 
   it('hides shortcuts in menus and tooltips when switched off', async () => {
     renderDialog()
-    const showShortcuts = screen.getByRole('checkbox', {
+    const showShortcuts = screen.getByRole('switch', {
       name: 'Show shortcuts in menus and tooltips',
     })
     // jsdom can't tell what the device has, so shortcuts show by default.

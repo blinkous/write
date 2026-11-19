@@ -103,8 +103,10 @@ Fields added later must load from older data without them.
   Tab wraps through every control in every browser. No browser popups.
 - **No warning colors.** People pick their own palette, and red or orange can clash or be
   unreadable on it. Destructive actions look like any other and ask first; problems are
-  marked by a warning icon in the text color. Dialog checkboxes and radios are drawn in the
-  text color too, since browsers fill them white.
+  marked by a warning icon in the text color. Checkboxes, radios and switches are drawn in
+  the text color too, since browsers fill them white.
+- **Switches for settings that apply at once** (Show shortcuts);
+  **checkboxes for choices a form applies later** (what an export includes).
 - **Color tiles are buttons** that open the system color picker, because WebKit never lets
   the keyboard reach color inputs. Text colors (toolbar and text styles) share one menu:
   theme tones, then seven custom slots; a filled slot's × (hover or focus) empties it.

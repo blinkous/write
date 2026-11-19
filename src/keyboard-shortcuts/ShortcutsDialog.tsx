@@ -1,7 +1,7 @@
 import { useId, useRef, useState } from 'react'
 import {
   Button,
-  Checkbox,
+  Switch,
   ConfirmDialog,
   Dialog,
   ResetMenuItem,
@@ -85,7 +85,7 @@ export function ShortcutsDialog({ isOpen, onClose }: ShortcutsDialogProps) {
         }
       >
         {/* Off by default without a mouse or trackpad (e.g. phones), where shortcuts only take room. */}
-        <Checkbox
+        <Switch
           label="Show shortcuts in menus and tooltips"
           checked={areShortcutsShown}
           onChange={({ target }) => setShortcutsShown(target.checked)}

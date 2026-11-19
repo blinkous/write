@@ -1,0 +1,68 @@
+/* A setting's name with its switch at the end, like a LabeledRow. */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--size-control);
+  cursor: pointer;
+}
+
+.row:has(:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.label {
+  min-width: 0;
+}
+
+/*
+ * Drawn like the checkboxes (see FormChoice): an outline in the text color
+ * over whatever's behind, filled with it when on. The knob rides on the start
+ * when off and the end when on, in the page color once filled.
+ */
+.switch {
+  --size-switch-knob: calc(var(--size-icon) - var(--border-width-strong) * 4);
+  appearance: none;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: calc(var(--size-icon) * 2);
+  height: var(--size-icon);
+  margin: 0;
+  padding: var(--border-width-strong);
+  border: var(--border-width-strong) solid currentColor;
+  border-radius: var(--size-icon);
+  background: transparent;
+  color: inherit;
+  cursor: inherit;
+}
+
+.switch::before {
+  content: '';
+  width: var(--size-switch-knob);
+  height: var(--size-switch-knob);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.switch:checked {
+  background: currentColor;
+}
+
+.switch:checked::before {
+  background: var(--color-background);
+  transform: translateX(
+    calc(
+      var(--size-icon) * 2 - var(--size-switch-knob) -
+        var(--border-width-strong) * 4
+    )
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .switch::before {
+    transition: transform var(--duration-quick) var(--easing-standard);
+  }
+}

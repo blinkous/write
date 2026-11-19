@@ -44,6 +44,7 @@ export {
   SwatchRow,
   SwatchSlot,
 } from './components/Swatch'
+export { Switch } from './components/Switch'
 export { Text } from './components/Text'
 export { TextInput } from './components/TextInput'
 export { Toast, type ToastMessage } from './components/Toast'
