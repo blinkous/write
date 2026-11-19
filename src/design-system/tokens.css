@@ -131,6 +131,8 @@
     var(--color-text) 16%,
     var(--color-background)
   );
+  /* The line between the sidebar and the page; a setting can hide it. */
+  --color-sidebar-border: var(--color-border);
   /*
    * Muted text (captions, field placeholders, section titles) is soft by
    * default, a cozy choice. When the system asks for more contrast it switches to the

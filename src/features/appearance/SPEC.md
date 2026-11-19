@@ -7,7 +7,9 @@ background picture or video, with one shared undo/redo.
 
 - **Theme:** the theme packs, the interface font (default Inter), then the page colors,
   **Foreground** (the default text color, named so it isn't mistaken for a text setting)
-  and **Background**, with the background picture or video.
+  and **Background**, with the background picture or video, then the **Sidebar border**
+  (shown by default; hidden, a background picture runs unbroken from sidebar to page,
+  and the resize line still shows on hover, drag and focus).
 - **Editor:** the **Default font** (default Lora), the base for every text style, then
   **Reset text styles**. Text styles themselves are edited from the toolbar's style menu
   (see editor).
@@ -31,7 +33,7 @@ background picture or video, with one shared undo/redo.
   color, glow, case) and dots of its text color, then its glows, then its style colors.
 - **Choosing one replaces the whole look:** page colors, the interface and default fonts,
   and every text style, as one undo step. Custom color slots, margins, spacing, the tab
-  title and the background picture stay.
+  title, the sidebar border and the background picture stay.
 - A tile shows as chosen only while the settings are exactly its look; after any edit,
   none does. Packs aren't stored: choosing one just sets those settings.
 - **Readable baselines:** the default packs keep every text color at
@@ -56,10 +58,10 @@ background picture or video, with one shared undo/redo.
   keep the text color's hue, about as colorful as it (never neon). Each tile leans in
   richness and hue the way the theme colors do, so the row varies like they do. A
   suggestion or custom color is one undo step.
-- **Undo/redo** covers fonts, colors, text styles, the tab title and the background's blur
-  and opacity (not the background file): the last 50 steps, surviving a refresh. A pick, a
-  stepper press, a typed value, a tab title once the field is left, or a whole color-picker
-  drag is one step.
+- **Undo/redo** covers fonts, colors, text styles, the tab title, the background's blur
+  and opacity, and the sidebar border (not the background file): the last 50 steps,
+  surviving a refresh. A pick, a stepper press, a typed value, a tab title once the field
+  is left, or a whole color-picker drag is one step.
 - Each stored setting loads on its own, so one stale value doesn't reset the others, and
   settings added later fall back to defaults. Old forms (one stored font, paragraph spacing
   sizes, a background fade) load as their current equivalents.

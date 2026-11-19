@@ -90,6 +90,7 @@ const appearanceSchema = z.object({
     .min(BACKGROUND_VIDEO_SPEED_RANGE.min)
     .max(BACKGROUND_VIDEO_SPEED_RANGE.max)
     .catch(DEFAULT_APPEARANCE.backgroundVideoSpeed),
+  hasSidebarBorder: z.boolean().catch(DEFAULT_APPEARANCE.hasSidebarBorder),
 })
 
 /*

@@ -94,6 +94,7 @@ function createHistorySchema(current: CurrentSettings) {
       backgroundVideoSpeedSchema,
       current.backgroundVideoSpeed,
     ),
+    hasSidebarBorder: valueOrCurrent(z.boolean(), current.hasSidebarBorder),
   })
 
   /* Drops unreadable steps rather than the whole history, and never keeps more than the limit. */

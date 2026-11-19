@@ -21,6 +21,7 @@ const colors = (backgroundColor: string): PageTheme => ({
   backgroundOpacity: 50,
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
+  hasSidebarBorder: true,
 })
 
 /** One committed edit from `from` to `to`, like a finished drag in the picker. */

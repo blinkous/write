@@ -17,6 +17,7 @@ export function applyAppearance({
   textStyles,
   tabTitle,
   backgroundOpacity,
+  hasSidebarBorder,
 }: Appearance): void {
   const { style } = document.documentElement
   style.setProperty('--font-ui', getFontOption(appFont).family)
@@ -37,6 +38,10 @@ export function applyAppearance({
   ))
     style.setProperty(variable, value)
   style.setProperty('--background-media-opacity', `${backgroundOpacity}%`)
+  style.setProperty(
+    '--color-sidebar-border',
+    hasSidebarBorder ? 'var(--color-border)' : 'transparent',
+  )
   style.setProperty('--color-background', backgroundColor)
   style.setProperty('--color-text', textColor)
   // Muted text when the system asks for more contrast; soft otherwise (see tokens.css).

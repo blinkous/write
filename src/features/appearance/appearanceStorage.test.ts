@@ -45,6 +45,7 @@ describe('loadAppearance', () => {
       backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,
       isBackgroundVideoPaused: DEFAULT_APPEARANCE.isBackgroundVideoPaused,
       backgroundVideoSpeed: DEFAULT_APPEARANCE.backgroundVideoSpeed,
+      hasSidebarBorder: DEFAULT_APPEARANCE.hasSidebarBorder,
     })
   })
 
@@ -143,6 +144,18 @@ describe('loadAppearance', () => {
     expect(loadAppearance().backgroundVideoSpeed).toBe(
       DEFAULT_APPEARANCE.backgroundVideoSpeed,
     )
+  })
+
+  it('keeps a hidden sidebar border, and shows it when the saved value is unreadable', () => {
+    const save = (hasSidebarBorder: unknown) =>
+      window.localStorage.setItem(
+        'write.appearance.v1',
+        JSON.stringify({ ...DEFAULT_APPEARANCE, hasSidebarBorder }),
+      )
+    save(false)
+    expect(loadAppearance().hasSidebarBorder).toBe(false)
+    save('nope')
+    expect(loadAppearance().hasSidebarBorder).toBe(true)
   })
 
   describe('background video pause', () => {
