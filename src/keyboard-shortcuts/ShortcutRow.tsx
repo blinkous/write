@@ -1,6 +1,6 @@
 import { RotateCcw, X } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
-import { Button, LabeledRow, Text } from '../design-system'
+import { Button, Text } from '../design-system'
 import { formatShortcut } from '../utils/shortcuts'
 import {
   getShortcutCommand,
@@ -77,64 +77,66 @@ export function ShortcutRow({ command }: ShortcutRowProps) {
     announceMove(assignShortcut(id, recorded))
   }
 
+  const resetButton = isShortcutChanged(id) ? (
+    <Button
+      iconOnly
+      aria-label={`Reset ${label} shortcut to ${describeShortcut(command.defaultShortcut)}`}
+      title={`Reset to ${describeShortcut(command.defaultShortcut)}`}
+      onClick={() => announceMove(resetShortcut(id))}
+    >
+      <RotateCcw aria-hidden="true" />
+    </Button>
+  ) : (
+    // Its place is kept when there's nothing to reset, so resets line up on every row.
+    <span className={styles.emptySlot} />
+  )
+
   return (
     <>
-      <LabeledRow label={label} control="button">
-        <span className={styles.controls}>
-          <Button
-            aria-label={
-              isRecording
-                ? `${label} shortcut: press keys…`
-                : `${label} shortcut: ${describeShortcut(shortcut)}`
-            }
-            aria-pressed={isRecording}
-            className={isRecording ? styles.listening : undefined}
-            title={
-              isRecording
-                ? 'Escape cancels, Backspace removes'
-                : 'Change shortcut'
-            }
-            onClick={({ currentTarget }) => {
-              // WebKit doesn't focus a clicked button, so the keys would go elsewhere.
-              currentTarget.focus()
-              setMessage(null)
-              setIsRecording((wasRecording) => !wasRecording)
-            }}
-            onKeyDown={handleKeyDown}
-            onBlur={() => setIsRecording(false)}
-          >
-            {isRecording ? (
-              'Press keys…'
-            ) : (
-              <kbd className={styles.keys}>{describeShortcut(shortcut)}</kbd>
-            )}
-          </Button>
-          <Button
-            iconOnly
-            aria-label={`Remove ${label} shortcut`}
-            title="Remove shortcut"
-            disabled={!shortcut}
-            onClick={() => assignShortcut(id, null)}
-          >
-            <X aria-hidden="true" />
-          </Button>
-          {/* The reset's place is kept when there's nothing to reset, so every row lines up. */}
-          {isShortcutChanged(id) ? (
-            <Button
-              iconOnly
-              aria-label={`Reset ${label} shortcut to ${describeShortcut(command.defaultShortcut)}`}
-              title={`Reset to ${describeShortcut(command.defaultShortcut)}`}
-              onClick={() => announceMove(resetShortcut(id))}
-            >
-              <RotateCcw aria-hidden="true" />
-            </Button>
+      {/* Columns shared by every row (see ShortcutsDialog.module.css): name, reset, keys, ×. */}
+      <div className={styles.row}>
+        <span className={styles.label}>{label}</span>
+        {resetButton}
+        <Button
+          aria-label={
+            isRecording
+              ? `${label} shortcut: press keys…`
+              : `${label} shortcut: ${describeShortcut(shortcut)}`
+          }
+          aria-pressed={isRecording}
+          className={`${styles.keysButton} ${isRecording ? styles.listening : ''}`}
+          title={
+            isRecording
+              ? 'Escape cancels, Backspace removes'
+              : 'Change shortcut'
+          }
+          onClick={({ currentTarget }) => {
+            // WebKit doesn't focus a clicked button, so the keys would go elsewhere.
+            currentTarget.focus()
+            setMessage(null)
+            setIsRecording((wasRecording) => !wasRecording)
+          }}
+          onKeyDown={handleKeyDown}
+          onBlur={() => setIsRecording(false)}
+        >
+          {isRecording ? (
+            'Press keys…'
           ) : (
-            <span className={styles.emptySlot} />
+            <kbd className={styles.keys}>{describeShortcut(shortcut)}</kbd>
           )}
-        </span>
-      </LabeledRow>
+        </Button>
+        <Button
+          iconOnly
+          aria-label={`Remove ${label} shortcut`}
+          title="Remove shortcut"
+          disabled={!shortcut}
+          onClick={() => assignShortcut(id, null)}
+        >
+          <X aria-hidden="true" />
+        </Button>
+      </div>
       {/* Always rendered, so screen readers hear a message as it appears. */}
-      <Text variant="caption" role="status">
+      <Text variant="caption" role="status" className={styles.message}>
         {message}
       </Text>
     </>

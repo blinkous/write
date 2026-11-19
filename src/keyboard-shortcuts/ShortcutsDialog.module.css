@@ -1,19 +1,45 @@
+/*
+ * One grid for every group, so each column lines up down the whole list:
+ * the action's name, its reset (an empty place when there's nothing to
+ * reset), its keys (as wide as the longest shortcut) and its × at the edge.
+ * Pulled out like a settings row's controls, so the × lines up with the
+ * dialog's edge.
+ */
 .groups {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  column-gap: var(--space-1);
+  row-gap: var(--space-4);
+  margin-inline-end: calc(var(--inset-icon-button) * -1);
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* The shortcut, its × and its reset (or that reset's empty place). */
-.controls {
-  display: flex;
+.group,
+.row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--space-1);
+}
+
+.group > :first-child,
+.message {
+  grid-column: 1 / -1;
+}
+
+.row {
+  min-height: var(--size-control);
+}
+
+/* A long name gives way (cut short with "…") rather than pushing the controls out. */
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Keys sit next to their ×, however wide the column. */
+.keysButton {
+  justify-self: end;
 }
 
 /* While listening for keys, it shows the ring even after a click, so it's clear where keys go. */
@@ -27,6 +53,5 @@
 }
 
 .emptySlot {
-  flex-shrink: 0;
   width: var(--size-control);
 }

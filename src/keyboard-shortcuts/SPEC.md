@@ -26,9 +26,12 @@ Every action that has a shortcut, the keys it's on, and the settings to change t
   room) with every action under its group, its keys on a button. Press the button, then
   the new keys. Escape cancels (without closing the dialog), Backspace or Delete leaves it
   with none, Tab moves on (no keyboard trap).
-- **Each row:** the shortcut, an always-visible × that removes it (off when there's none),
-  then ↺ back to the default when it differs. The ↺'s place is kept when there's nothing
-  to reset, so every row's buttons line up, as in VS Code's shortcut editor.
+- **Each row:** the action's name, ↺ back to the default when it differs, the shortcut,
+  then an always-visible × that removes it (off when there's none), at the edge like every
+  settings row. Every row shares the same columns: the ↺'s place is kept when there's
+  nothing to reset, and the shortcuts' column is as wide as the longest one, so each ↺
+  sits in the same spot down the whole list. A long name is cut short with "…" rather
+  than pushing the buttons out.
 - **A shortcut needs ⌘ or Ctrl, or ⌥ with a key that doesn't type** (arrows), so writing
   never sets one off. Keys that edit text (⌘C, ⌘V, ⌘X, ⌘A, ⌘Z) or that the
   browser keeps are refused, with the reason. Some of the browser's (⌘W, ⌘T, ⌘N, ⌘Q) never
