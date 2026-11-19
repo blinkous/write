@@ -23,8 +23,10 @@ The settings drawer at the bottom of the sidebar.
   goes to the journal import.
 - **Reset all settings and styles** asks first, suggesting an export, then restores a first
   visit's look: every appearance setting, colors for the system's light or dark mode, the
-  default shortcuts (shown or hidden by device again), no background file, and an empty undo history. Entries, sort and UI state stay. It can't be
-  undone.
+  default shortcuts (shown or hidden by device again), the default sidebar width, no
+  background file, and an empty undo history. Entries, sort and passing UI state (the open
+  drawer, folded sections) stay: you reset from inside the drawer, so closing or folding
+  it would pull it away mid-action. It can't be undone.
 
 ## Decisions
 

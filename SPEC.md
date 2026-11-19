@@ -70,6 +70,7 @@ scrolls endlessly).
 | `write.settingsOpen.v1`            | Whether the settings drawer is open                                 |
 | `write.settingsOpenSections.v1`    | Open settings sections                                              |
 | `write.settingsClosedSections.v1`  | Folded sections from before they started folded (read once, kept)   |
+| `write.sidebarWidth.v1`            | The sidebar's width, once someone resizes it                        |
 | `write.exportChoices.v1`           | The Export dialog's last choices                                    |
 | `write.pageThemeHistory.v1`        | Settings undo/redo, max 50 steps (older color-only history kept)    |
 | `write.shortcuts.v1`               | Keyboard shortcuts changed from their defaults                      |

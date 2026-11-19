@@ -10,11 +10,19 @@
 }
 
 .layout[data-sidebar-open='true'] {
-  grid-template-columns: var(--width-sidebar) 1fr;
+  /* Someone's chosen width (see features/sidebar), never more than its share of the window. */
+  grid-template-columns:
+    min(
+      var(--width-sidebar-chosen, var(--width-sidebar)),
+      calc(100vw * var(--share-sidebar-max))
+    )
+    1fr;
 }
 
 /* Entries on top, filling what's left; the settings drawer and its toggle at the bottom. */
 .sidebar {
+  /* Holds the resizer on its edge. */
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 0;

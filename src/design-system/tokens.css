@@ -247,6 +247,8 @@
   --share-page-narrow: 95%;
   --share-page-none: 100%;
   --width-sidebar: 16rem;
+  /* The most of the window a resized sidebar may take, so the page keeps room. */
+  --share-sidebar-max: 0.4;
   --width-popover: 18rem;
   /* A fixed-width menu trigger's text (e.g. the toolbar's font): fits "Default"; longer names end in "…". */
   --width-trigger-label: 4rem;

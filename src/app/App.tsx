@@ -53,6 +53,7 @@ import {
 } from '../features/entries'
 import { PrivacyNotice, usePrivacyNotice } from '../features/privacy'
 import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
+import { resetSidebarWidth, SidebarResizer } from '../features/sidebar'
 import {
   replaceShortcutOverrides,
   resetAllShortcuts,
@@ -144,6 +145,7 @@ export function App({ journal }: AppProps) {
     pageTheme.clearHistory()
     resetAllShortcuts()
     resetShortcutsShown()
+    resetSidebarWidth()
     backgroundMedia.remove()
     setIsResetSettingsOpen(false)
     setToastMessage({ text: 'Settings and styles reset.', tone: 'neutral' })
@@ -230,6 +232,11 @@ export function App({ journal }: AppProps) {
                 {...getEntryMenuActions(entryId)}
               />
             )}
+          />
+          <SidebarResizer
+            sidebarId="entries-sidebar"
+            // Done resizing: back to the writing, as closing a menu returns to the text.
+            onDone={() => editor.commands.focus()}
           />
           <SettingsDrawer
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
@@ -426,7 +433,7 @@ export function App({ journal }: AppProps) {
       <ConfirmDialog
         isOpen={isResetSettingsOpen}
         title="Reset all settings and styles?"
-        message="Fonts, colors, text styles, spacing, the tab title, keyboard shortcuts and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
+        message="Fonts, colors, text styles, spacing, the tab title, keyboard shortcuts, the background and the sidebar's width go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
         confirmLabel="Reset all"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}

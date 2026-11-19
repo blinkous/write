@@ -1,0 +1,44 @@
+/*
+ * A strip over the sidebar's border, inside the sidebar (which clips what
+ * reaches past it). The line shows on hover, while dragging and on focus.
+ */
+.resizer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 1;
+  width: var(--space-2);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resizer::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--focus-ring-width);
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .resizer:hover::after {
+    background: var(--color-focus);
+  }
+}
+
+.resizer:active::after {
+  background: var(--color-focus);
+}
+
+/* The ring sits inside the strip, so the sidebar's clipping doesn't cut it off. */
+.resizer:focus {
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+/* Narrow screens: the sidebar overlays the page, at its default width. */
+@media (width < 48rem) {
+  .resizer {
+    display: none;
+  }
+}
