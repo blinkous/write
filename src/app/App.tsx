@@ -23,6 +23,8 @@ import {
 import {
   documentToMarkdown,
   FormattingButtons,
+  documentToClipboard,
+  getSelectionClipboard,
   JournalPage,
   MARKUP_FORMATTING_ACTIONS,
   TEXT_FORMATTING_ACTIONS,
@@ -47,11 +49,18 @@ import {
   useJournalState,
   useEntryTransfer,
   useTitleEditor,
-  useFileShortcuts,
   ImportFilePicker,
 } from '../features/entries'
 import { PrivacyNotice, usePrivacyNotice } from '../features/privacy'
 import { SettingsDrawer, useSettingsTransfer } from '../features/settings'
+import {
+  replaceShortcutOverrides,
+  resetAllShortcuts,
+  resetShortcutsShown,
+  ShortcutsDialog,
+  usePageShortcuts,
+  useShortcutOverrides,
+} from '../keyboard-shortcuts'
 import styles from './App.module.css'
 
 /** The opposite of App.module.css's narrow-screen query, so exactly one of them matches at any width. */
@@ -109,6 +118,7 @@ export function App({ journal }: AppProps) {
   const dismissToast = useCallback(() => setToastMessage(null), [])
   const backgroundMedia = useBackgroundMedia(setToastMessage)
   const {
+    copySelectionAsMarkdown,
     copyEntryAsMarkdown,
     exportEntry,
     exportAllEntries,
@@ -119,32 +129,52 @@ export function App({ journal }: AppProps) {
     getAllEntries: journal.getAllEntries,
     contentToMarkdown: (content, header) =>
       documentToMarkdown(editor, content, header),
+    contentToClipboard: (content, header) =>
+      documentToClipboard(editor, content, header),
     addEntries: journal.addEntries,
     onStatus: setToastMessage,
   })
   const [isExportOpen, setIsExportOpen] = useState(false)
   const [isResetSettingsOpen, setIsResetSettingsOpen] = useState(false)
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
 
-  /** Every look back to a first visit's: settings, their undo history and the background file. */
+  /** Every look back to a first visit's: settings, their undo history, shortcuts and the background file. */
   function resetSettings() {
     resetAppearance()
     pageTheme.clearHistory()
+    resetAllShortcuts()
+    resetShortcutsShown()
     backgroundMedia.remove()
     setIsResetSettingsOpen(false)
     setToastMessage({ text: 'Settings and styles reset.', tone: 'neutral' })
   }
   const importFilePickerRef = useRef<HTMLInputElement>(null)
   const openImportPicker = () => importFilePickerRef.current?.click()
-  useFileShortcuts({
-    exportEntry: () => exportEntry(journal.getState().openEntry.id),
-    openExport: () => setIsExportOpen(true),
-    openImport: openImportPicker,
+  /** Selected writing (none while the title is being edited), by shortcut only. */
+  const copyWritingSelection = () =>
+    copySelectionAsMarkdown(
+      activeEditor === editor ? getSelectionClipboard(editor) : null,
+    )
+  const copyOpenEntry = () =>
+    copyEntryAsMarkdown(journal.getState().openEntry.id)
+  usePageShortcuts({
+    'copy-selection-markdown': copyWritingSelection,
+    'copy-entry-markdown': copyOpenEntry,
+    'export-entry': () => exportEntry(journal.getState().openEntry.id),
+    'open-export': () => setIsExportOpen(true),
+    'open-import': openImportPicker,
   })
+  const shortcuts = useShortcutOverrides()
   const settingsTransfer = useSettingsTransfer({
-    settings: { appearance, entrySort: sort },
-    onImport: ({ appearance: importedAppearance, entrySort }) => {
+    settings: { appearance, entrySort: sort, shortcuts },
+    onImport: ({
+      appearance: importedAppearance,
+      entrySort,
+      shortcuts: importedShortcuts,
+    }) => {
       if (importedAppearance) updateAppearance(importedAppearance)
       if (entrySort) journal.setSort(entrySort)
+      if (importedShortcuts) replaceShortcutOverrides(importedShortcuts)
     },
     onStatus: setToastMessage,
   })
@@ -162,17 +192,13 @@ export function App({ journal }: AppProps) {
     if (!window.matchMedia(WIDE_SCREEN_QUERY).matches) setIsSidebarOpen(false)
   }
 
-  /** The same ⋯ menu for the open entry (page header) and each entry in the list. Actions read the entry when clicked. */
-  function renderEntryMenu(entryId: string, label?: string) {
-    return (
-      <EntryMenu
-        label={label}
-        onCopyMarkdown={() => copyEntryAsMarkdown(entryId)}
-        onExport={() => exportEntry(entryId)}
-        onChooseImportFile={openImportPicker}
-        onDelete={() => setEntryIdToDelete(entryId)}
-      />
-    )
+  /** What the open entry's ⋯ (page header) and each list entry's share. Actions read the entry when clicked. */
+  function getEntryMenuActions(entryId: string) {
+    return {
+      onExport: () => exportEntry(entryId),
+      onChooseImportFile: openImportPicker,
+      onDelete: () => setEntryIdToDelete(entryId),
+    }
   }
 
   return (
@@ -197,9 +223,13 @@ export function App({ journal }: AppProps) {
             journal={journal}
             onEntryOpened={closeSidebarOnNarrowScreens}
             onStatus={setToastMessage}
-            entryActions={(entryId, title) =>
-              renderEntryMenu(entryId, `Actions for ${title ?? 'Untitled'}`)
-            }
+            entryActions={(entryId, title) => (
+              <EntryMenu
+                label={`Actions for ${title ?? 'Untitled'}`}
+                onCopyEntry={() => copyEntryAsMarkdown(entryId)}
+                {...getEntryMenuActions(entryId)}
+              />
+            )}
           />
           <SettingsDrawer
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
@@ -232,6 +262,7 @@ export function App({ journal }: AppProps) {
                     <DataSettings
                       onExport={() => setIsExportOpen(true)}
                       onChooseImportFile={openImportPicker}
+                      onShowShortcuts={() => setIsShortcutsOpen(true)}
                       onShowAbout={privacyNotice.open}
                       onResetSettings={() => setIsResetSettingsOpen(true)}
                     />
@@ -335,7 +366,10 @@ export function App({ journal }: AppProps) {
           </ScrollRow>
 
           <div className={styles.headerActions}>
-            {renderEntryMenu(openEntry.id)}
+            <EntryMenu
+              onCopyEntry={copyOpenEntry}
+              {...getEntryMenuActions(openEntry.id)}
+            />
           </div>
         </header>
 
@@ -361,6 +395,10 @@ export function App({ journal }: AppProps) {
         }
         onExportMarkdown={exportAllAsMarkdown}
         onExportSettings={settingsTransfer.exportSettings}
+      />
+      <ShortcutsDialog
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
       />
       <SaveFailedDialog
         onExportAll={() => exportAllEntries()}
@@ -388,7 +426,7 @@ export function App({ journal }: AppProps) {
       <ConfirmDialog
         isOpen={isResetSettingsOpen}
         title="Reset all settings and styles?"
-        message="Fonts, colors, text styles, spacing, the tab title and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
+        message="Fonts, colors, text styles, spacing, the tab title, keyboard shortcuts and the background go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
         confirmLabel="Reset all"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}

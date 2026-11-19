@@ -24,8 +24,18 @@ margins, spacing and colors, per-text color, glow and case, and export as markdo
 - **License notices ship with the app** for every production dependency, fonts included.
 - **Deploys:** every push and pull request runs the checks and a build; pushes to `main`
   then publish to GitHub Pages.
-- **Accessible:** everything works by keyboard, controls are native elements with visible
-  labels in their accessible names, shortcuts are announced, and text meets WCAG AA
+- **Keyboard navigable, always.** Every control, new ones included, can be reached and
+  used by keyboard alone: Tab and Shift+Tab (Option+Tab in Safari, which skips buttons on
+  plain Tab) reach it, Enter or Space works it, and Escape backs out of what it opened.
+  Nothing traps focus: whatever listens for keys (like a shortcut being recorded) still
+  lets Tab move on. **Every focused control shows the focus ring, no exceptions,** however it
+  got focus: keyboard, click, or the app moving it. Browsers' keyboard-only guess
+  (`:focus-visible`) misses focus the app moves (e.g. Tab in dialogs on WebKit), so it
+  isn't used. Only places with their own focus look (the writing, the title, text fields)
+  skip it. A control that listens for keys after a click focuses itself, since WebKit
+  doesn't focus clicked buttons.
+- **Accessible:** everything works by keyboard (above), controls are native elements with visible
+  labels in their accessible names, shortcuts are announced and can be changed, and text meets WCAG AA
   (4.5:1) in the default looks. Colors people choose, vibe theme packs
   included, are theirs (see appearance). Muted text is soft by default (a cozy choice) and
   reaches 4.5:1 when the system asks for more contrast. Checked with axe in light and dark mode, with panels open.
@@ -62,6 +72,8 @@ scrolls endlessly).
 | `write.settingsClosedSections.v1`  | Folded sections from before they started folded (read once, kept)   |
 | `write.exportChoices.v1`           | The Export dialog's last choices                                    |
 | `write.pageThemeHistory.v1`        | Settings undo/redo, max 50 steps (older color-only history kept)    |
+| `write.shortcuts.v1`               | Keyboard shortcuts changed from their defaults                      |
+| `write.showShortcuts.v1`           | Whether shortcuts show beside controls, once someone chooses        |
 
 IndexedDB `write-journal`: `entry` (one record per entry, format 2), `meta` (when entries
 moved from localStorage) and `backup` (unreadable records, with when and where).
@@ -83,8 +95,9 @@ Fields added later must load from older data without them.
   re-render made WebKit's memory climb by hundreds of MB. Panels are anchored only while
   open: WebKit hangs when a menu closes with closed, still-anchored menus inside it.
 - **Dialogs** are native `<dialog>`s and take focus themselves, so a stray Enter can't press
-  anything. One you opened closes on a click outside; one that opened by itself (Save
-  failed) needs a button, so it can't be dismissed unread. Confirmations put Cancel first.
+  anything. One you opened has a × in its top right corner and also closes on a click
+  outside or Escape; one that opened by itself (Save failed) has no × and needs a button,
+  so it can't be dismissed unread. Confirmations put Cancel first.
   Tab wraps through every control in every browser. No browser popups.
 - **No warning colors.** People pick their own palette, and red or orange can clash or be
   unreadable on it. Destructive actions look like any other and ask first; problems are
@@ -102,6 +115,15 @@ Fields added later must load from older data without them.
 - **Pressed and open toggles** show a see-through shade that reads the same on the page and
   the tinted sidebar. The sidebar toggle doesn't: the open sidebar shows it.
 - **Secondary and destructive actions** live in a ⋯ menu at the end of their bar.
+- **Keyboard shortcuts are shown beside their controls:** in the menu item, or the
+  button's tooltip, so people find them where they already look. Every shortcut, including
+  shortcut-only actions (Copy selection as markdown), is listed (and changeable) in the
+  Keyboard shortcuts dialog (Settings › Data). Without a mouse or trackpad (phones) they're
+  hidden by default, since they only take room there; a switch in that dialog overrides
+  it.
+- **Rows with something at the end** (a shortcut, a control) never scroll or push it out of
+  view: the label is cut short with "…", and the full label shows on hover and is read in
+  full.
 - **A crash or unopenable journal** shows a message page with the error and Reload, never a
   blank page.
 - **Phones and touch screens** get the same layout adapted by CSS: the toolbar scrolls
@@ -112,6 +134,6 @@ Fields added later must load from older data without them.
 ## Layout
 
 `src/app` composes features; `src/features/*` are user-facing capabilities, each with a
-`SPEC.md`; `src/journal-document`, `src/text-styles` and `src/fonts` are shared by several
-features; `src/design-system` holds tokens and base components; `src/lib` and `src/utils`
+`SPEC.md`; `src/journal-document`, `src/text-styles`, `src/fonts` and
+`src/keyboard-shortcuts` are shared by several features; `src/design-system` holds tokens and base components; `src/lib` and `src/utils`
 hold framework-free helpers.

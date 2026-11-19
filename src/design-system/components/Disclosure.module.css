@@ -57,7 +57,7 @@
 
 /* While open, the chevron shows only on hover or focus; folded ones and touch screens always show it. */
 @media (hover: hover) {
-  .disclosure[open] > .summary:not(:hover, :focus-visible) .chevron {
+  .disclosure[open] > .summary:not(:hover, :focus) .chevron {
     opacity: 0;
   }
 }

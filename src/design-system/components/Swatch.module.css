@@ -32,8 +32,8 @@
   outline-offset: var(--focus-ring-width);
 }
 
-/* Keyboard focus shows over the selected ring, so a focused, selected tile still shows focus. */
-.swatch:focus-visible {
+/* Focus shows over the selected ring, so a focused, selected tile still shows focus. */
+.swatch:focus {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }
@@ -119,7 +119,7 @@
   cursor: pointer;
 }
 
-/* Shown on hover, and whenever the slot has keyboard focus so it stays reachable. */
+/* Shown on hover, and whenever the slot has focus so it stays reachable. */
 .slot:hover .clearButton,
 .slot:focus-within .clearButton {
   display: grid;

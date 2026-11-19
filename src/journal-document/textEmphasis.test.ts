@@ -101,11 +101,11 @@ describe('TextEmphasis', () => {
     }
   })
 
-  it('runs the shortcuts on what is shown', () => {
+  it('toggles what is shown', () => {
     const editor = createEditor('<h2>rainy</h2>')
     styleHeadings(editor, { bold: true })
     editor.commands.setTextSelection({ from: 1, to: 6 })
-    editor.commands.keyboardShortcut('Mod-b')
+    editor.commands.toggleEmphasis('bold')
     expect(editor.getHTML()).toBe(
       '<h2><span data-no-bold="">rainy</span></h2><p></p>',
     )

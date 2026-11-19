@@ -1,7 +1,6 @@
 import StarterKit from '@tiptap/starter-kit'
 import './documentDisplay.css'
 import { JournalHeading } from './journalHeading'
-import { JournalStrike } from './journalStrike'
 import { MarkdownSafeParagraph } from './markdownSafeParagraph'
 import { ParagraphSize } from './paragraphSize'
 import { TextCaseMark } from './textCase'
@@ -18,11 +17,9 @@ export const documentExtensions = [
     // that leave level 1 for the entry's title.
     paragraph: false,
     heading: false,
-    strike: false,
   }),
   MarkdownSafeParagraph,
   JournalHeading,
-  JournalStrike,
   ...textStyleExtensions,
   TextCaseMark,
   ParagraphSize,

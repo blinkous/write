@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import type { ContentHeadingLevel, ParagraphSize } from '../../journal-document'
+import type { ShortcutCommandId } from '../../keyboard-shortcuts'
 
 /** What a style is in the document: a heading level, or a paragraph (body or a size). */
 type TextStyleBlock =
@@ -26,8 +27,8 @@ export type TextStyle = {
   /** Shown in the toolbar for the current style, and beside the label in the menu. */
   icon: LucideIcon
   block: TextStyleBlock
-  /** Keyboard shortcut (Tiptap form), registered by TextStyleShortcuts and shown in the menu. */
-  shortcut?: string
+  /** Its keyboard shortcut (changeable in settings), shown in the menu. */
+  shortcutId?: ShortcutCommandId
 }
 
 /**
@@ -46,42 +47,42 @@ export const TEXT_STYLES: readonly TextStyle[] = [
     label: TEXT_STYLE_LABELS['body'],
     icon: Type,
     block: { kind: 'paragraph', size: null },
-    shortcut: 'Mod-Alt-0',
+    shortcutId: 'text-style-body',
   },
   {
     name: 'heading-6',
     label: TEXT_STYLE_LABELS['heading-6'],
     icon: Heading6,
     block: { kind: 'heading', level: 6 },
-    shortcut: 'Mod-Alt-6',
+    shortcutId: 'text-style-heading-6',
   },
   {
     name: 'heading-5',
     label: TEXT_STYLE_LABELS['heading-5'],
     icon: Heading5,
     block: { kind: 'heading', level: 5 },
-    shortcut: 'Mod-Alt-5',
+    shortcutId: 'text-style-heading-5',
   },
   {
     name: 'heading-4',
     label: TEXT_STYLE_LABELS['heading-4'],
     icon: Heading4,
     block: { kind: 'heading', level: 4 },
-    shortcut: 'Mod-Alt-4',
+    shortcutId: 'text-style-heading-4',
   },
   {
     name: 'heading-3',
     label: TEXT_STYLE_LABELS['heading-3'],
     icon: Heading3,
     block: { kind: 'heading', level: 3 },
-    shortcut: 'Mod-Alt-3',
+    shortcutId: 'text-style-heading-3',
   },
   {
     name: 'heading-2',
     label: TEXT_STYLE_LABELS['heading-2'],
     icon: Heading2,
     block: { kind: 'heading', level: 2 },
-    shortcut: 'Mod-Alt-2',
+    shortcutId: 'text-style-heading-2',
   },
 ]
 

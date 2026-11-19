@@ -1,6 +1,7 @@
 import { Upload } from 'lucide-react'
 import type { Ref } from 'react'
 import { HiddenFileInput, MenuItem } from '../../design-system'
+import { useShownShortcuts } from '../../keyboard-shortcuts'
 import { JOURNAL_FILE_MIME_TYPE } from './entryTransfer'
 
 /** Journal backups (one entry or all) and settings files: both are JSON. */
@@ -15,22 +16,23 @@ type ImportActionProps = {
 
 /** The Import row of a menu. */
 export function ImportAction({ onChooseFile, closeMenu }: ImportActionProps) {
+  const getShortcut = useShownShortcuts()
   return (
     <MenuItem
-      shortcut="Mod-o"
+      icon={Upload}
+      shortcut={getShortcut('open-import')}
       onClick={() => {
         closeMenu?.()
         onChooseFile()
       }}
     >
-      <Upload aria-hidden="true" />
       Import from JSON
     </MenuItem>
   )
 }
 
 type ImportFilePickerProps = {
-  /** Call `.click()` on it to open the picker (Import rows, ⌘O). */
+  /** Call `.click()` on it to open the picker (Import rows, its shortcut). */
   ref: Ref<HTMLInputElement>
   onImport: (file: File) => void
 }

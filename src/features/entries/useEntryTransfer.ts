@@ -1,5 +1,8 @@
 import type { ToastMessage } from '../../design-system'
-import { copyTextToClipboard } from '../../lib/clipboard'
+import {
+  copyRichTextToClipboard,
+  type RichClipboardContent,
+} from '../../lib/clipboard'
 import { describeSaveResult, saveTextFile } from '../../lib/saveFile'
 import {
   describeImport,
@@ -23,6 +26,10 @@ type UseEntryTransferOptions = {
   getAllEntries: () => Promise<readonly JournalEntry[]>
   /** Turns entry content into markdown (provided by the editor, which owns the format). */
   contentToMarkdown: ContentToMarkdown
+  /** Entry content to copy: markdown, and the same as HTML (also the editor's). */
+  contentToClipboard: (
+    ...args: Parameters<ContentToMarkdown>
+  ) => RichClipboardContent
   addEntries: (newEntries: readonly JournalEntry[]) => void
   onStatus: (message: ToastMessage) => void
 }
@@ -56,6 +63,7 @@ export function useEntryTransfer({
   getEntry,
   getAllEntries,
   contentToMarkdown,
+  contentToClipboard,
   addEntries,
   onStatus,
 }: UseEntryTransferOptions) {
@@ -85,19 +93,31 @@ export function useEntryTransfer({
     }
   }
 
+  /** Copies markdown (with its HTML) and says whether it worked. */
+  async function copyMarkdown(
+    content: RichClipboardContent | Promise<RichClipboardContent>,
+  ) {
+    const didCopy = await copyRichTextToClipboard(content)
+    onStatus(
+      didCopy
+        ? { text: 'Copied as markdown.', tone: 'neutral' }
+        : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
+    )
+  }
+
   return {
-    /** Copies the entry as markdown, under its name when it has a custom one. */
-    async copyEntryAsMarkdown(entryId: string) {
-      const markdown = getEntry(entryId).then(({ content, title }) =>
-        contentToMarkdown(content, { title }),
-      )
-      const didCopy = await copyTextToClipboard(markdown)
-      onStatus(
-        didCopy
-          ? { text: 'Copied as markdown.', tone: 'neutral' }
-          : { text: 'Couldn’t copy to the clipboard.', tone: 'warning' },
-      )
+    /** Copies selected writing (null when there's none, which it says). */
+    copySelectionAsMarkdown(selection: RichClipboardContent | null) {
+      if (selection) return copyMarkdown(selection)
+      onStatus({ text: 'Select some writing to copy.', tone: 'neutral' })
     },
+    /** Copies the entry as markdown, under its name when it has a custom one. */
+    copyEntryAsMarkdown: (entryId: string) =>
+      copyMarkdown(
+        getEntry(entryId).then(({ content, title }) =>
+          contentToClipboard(content, { title }),
+        ),
+      ),
     exportEntry: (entryId: string) =>
       saveExport(async () => {
         const entry = await getEntry(entryId)

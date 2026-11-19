@@ -27,7 +27,7 @@ export type MarkdownHeader = { title: string | null; dateLine?: string }
  * With a title, the document gets it as its one `#` heading (content headings
  * start at `##`, so nothing moves). A date line goes under it, in italics.
  */
-function withHeader(
+export function withHeader(
   document: JSONContent,
   { title, dateLine }: MarkdownHeader,
 ): JSONContent {

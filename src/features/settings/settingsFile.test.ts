@@ -9,6 +9,7 @@ import {
 const settings = {
   appearance: { ...DEFAULT_APPEARANCE, appFont: 'nunito', margins: 'wide' },
   entrySort: 'name',
+  shortcuts: { bold: 'Mod-k', italic: null },
 } as const
 
 describe('settings files', () => {
@@ -51,6 +52,26 @@ describe('settings files', () => {
     file.version = 99
     expect(parseSettingsFile(JSON.stringify(file))).toMatchObject({
       kind: 'invalid',
+    })
+  })
+})
+
+describe('shortcuts in settings files', () => {
+  it('leaves shortcuts as they are when a file has none', () => {
+    const file = JSON.parse(serializeSettings(settings))
+    delete file.shortcuts
+    const result = parseSettingsFile(JSON.stringify(file))
+    expect(result.kind === 'settings' && result.settings.shortcuts).toBe(
+      undefined,
+    )
+  })
+
+  it('drops unknown actions and shortcuts that typing would set off', () => {
+    const file = JSON.parse(serializeSettings(settings))
+    file.shortcuts = { bold: 'b', 'not-an-action': 'Mod-j', italic: 'Mod-j' }
+    const result = parseSettingsFile(JSON.stringify(file))
+    expect(result.kind === 'settings' && result.settings.shortcuts).toEqual({
+      italic: 'Mod-j',
     })
   })
 })

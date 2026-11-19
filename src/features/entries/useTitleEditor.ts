@@ -2,6 +2,8 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
 import { titleExtensions } from '../../journal-document'
+import { withoutCommandShortcuts } from '../../keyboard-shortcuts'
+import { EditorShortcuts, TITLE_SHORTCUT_COMMANDS } from '../editor'
 import { WRITING_ASSISTANT_OPT_OUT } from '../../lib/writingAssistants'
 import type { Journal } from './journal'
 import {
@@ -32,7 +34,8 @@ export function useTitleEditor({
   const editor = useEditor(
     {
       extensions: [
-        ...titleExtensions,
+        ...withoutCommandShortcuts(titleExtensions),
+        EditorShortcuts.configure({ commands: TITLE_SHORTCUT_COMMANDS }),
         Placeholder.configure({ placeholder: 'Untitled' }),
         TitleBehavior.configure({ maxLength: MAX_ENTRY_TITLE_LENGTH }),
       ],

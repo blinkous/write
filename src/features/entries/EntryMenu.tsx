@@ -1,11 +1,12 @@
 import { Copy, Download, Ellipsis, Trash2 } from 'lucide-react'
 import { ActionList, MenuItem, Popover } from '../../design-system'
+import { useShownShortcuts } from '../../keyboard-shortcuts'
 import { ImportAction } from './ImportAction'
 
 type EntryMenuProps = {
   /** Names the menu, e.g. "Actions for Rainy Sunday" in the list; "Entry actions" for the open entry. */
   label?: string
-  onCopyMarkdown: () => void
+  onCopyEntry: () => void
   onExport: () => void
   /** Opens the import file picker. */
   onChooseImportFile: () => void
@@ -15,32 +16,34 @@ type EntryMenuProps = {
 /** Actions for one entry: the open one (page header) or any in the list (on hover). */
 export function EntryMenu({
   label = 'Entry actions',
-  onCopyMarkdown,
+  onCopyEntry,
   onExport,
   onChooseImportFile,
   onDelete,
 }: EntryMenuProps) {
+  const getShortcut = useShownShortcuts()
   return (
     <Popover label={label} trigger={<Ellipsis aria-hidden="true" />}>
       {(closeMenu) => (
         <ActionList>
           <MenuItem
+            icon={Copy}
+            shortcut={getShortcut('copy-entry-markdown')}
             onClick={() => {
               closeMenu()
-              onCopyMarkdown()
+              onCopyEntry()
             }}
           >
-            <Copy aria-hidden="true" />
-            Copy as markdown
+            Copy entry as markdown
           </MenuItem>
           <MenuItem
-            shortcut="Mod-s"
+            icon={Download}
+            shortcut={getShortcut('export-entry')}
             onClick={() => {
               closeMenu()
               onExport()
             }}
           >
-            <Download aria-hidden="true" />
             Export entry as JSON
           </MenuItem>
           <ImportAction
@@ -48,12 +51,12 @@ export function EntryMenu({
             closeMenu={closeMenu}
           />
           <MenuItem
+            icon={Trash2}
             onClick={() => {
               closeMenu()
               onDelete()
             }}
           >
-            <Trash2 aria-hidden="true" />
             Delete entry
           </MenuItem>
         </ActionList>

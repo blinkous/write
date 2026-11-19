@@ -228,22 +228,6 @@ export const TextEmphasis = Extension.create<object, TextEmphasisStorage>({
     }
   },
 
-  addKeyboardShortcuts() {
-    const toggle = (emphasis: Emphasis) => () =>
-      this.editor.schema.marks[emphasis]
-        ? this.editor.commands.toggleEmphasis(emphasis)
-        : false
-    return {
-      'Mod-b': toggle('bold'),
-      'Mod-B': toggle('bold'),
-      'Mod-i': toggle('italic'),
-      'Mod-I': toggle('italic'),
-      'Mod-u': toggle('underline'),
-      'Mod-U': toggle('underline'),
-      'Mod-Shift-x': toggle('strike'),
-    }
-  },
-
   addProseMirrorPlugins() {
     const { storage } = this
     // Read at use, so a later setBlockEmphasis applies.
