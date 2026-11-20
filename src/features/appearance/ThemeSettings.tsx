@@ -7,6 +7,7 @@ import {
   MISSING_BACKGROUND_MESSAGE,
 } from './BackgroundMediaSettings'
 import type { useBackgroundMedia } from './useBackgroundMedia'
+import type { useThemeHistoryKeys } from './useThemeHistoryKeys'
 import type { usePageTheme } from './usePageTheme'
 
 type PageThemeProps = {
@@ -128,8 +129,16 @@ export function PageColorSettings({
   )
 }
 
-/** One undo/redo for every setting in the drawer's look, the background included (see pageThemeHistory). */
-export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
+/**
+ * One undo/redo for every setting in the drawer's look, the background
+ * included (see pageThemeHistory). Each flashes when its key does it.
+ */
+export function ThemeHistoryButtons({
+  pageTheme,
+  flashCounts,
+}: PageThemeProps & {
+  flashCounts: ReturnType<typeof useThemeHistoryKeys>['flashCounts']
+}) {
   const { canUndo, canRedo, undo, redo } = pageTheme
   return (
     <>
@@ -138,6 +147,7 @@ export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
         aria-label="Undo settings change"
         title="Undo settings change"
         disabled={!canUndo}
+        flashCount={flashCounts.undo}
         onClick={undo}
       >
         <Undo2 aria-hidden="true" />
@@ -147,6 +157,7 @@ export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
         aria-label="Redo settings change"
         title="Redo settings change"
         disabled={!canRedo}
+        flashCount={flashCounts.redo}
         onClick={redo}
       >
         <Redo2 aria-hidden="true" />

@@ -15,7 +15,8 @@ The settings drawer at the bottom of the sidebar.
   Ctrl+Y elsewhere), like its buttons. Text fields in it keep their own undo; outside the
   drawer (the writing, anywhere else) the keys never touch settings, so a change can't be
   undone where its buttons aren't showing. A click anywhere in it counts as being in it
-  (WebKit doesn't focus clicked buttons).
+  (WebKit doesn't focus clicked buttons). The undo or redo button flashes its hover look
+  when its key does something, so it's clear what happened.
 - **Sections fold** under their titles: Theme and Editor (appearance), then Data (tab title,
   export, import, keyboard shortcuts, reset, About). Open ones are remembered. An open section's chevron shows
   only on hover or focus (as in macOS sidebars), so it isn't mistaken for a dropdown's.

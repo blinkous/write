@@ -45,6 +45,38 @@
   }
 }
 
+/*
+ * A flash (see Button's flashCount): the hover look, fading back. With less
+ * motion it holds, then goes, without fading.
+ */
+.button[data-flash='odd'] {
+  animation: flash-odd var(--duration-medium) var(--easing-standard);
+}
+
+.button[data-flash='even'] {
+  animation: flash-even var(--duration-medium) var(--easing-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button[data-flash] {
+    animation-timing-function: steps(1, end);
+  }
+}
+
+@keyframes flash-odd {
+  from {
+    background: var(--color-shade);
+    color: var(--color-text);
+  }
+}
+
+@keyframes flash-even {
+  from {
+    background: var(--color-shade);
+    color: var(--color-text);
+  }
+}
+
 /* On: a pressed toggle (e.g. bold), or a toggle whose panel is open (e.g. settings). */
 .button[aria-pressed='true'],
 .button[aria-expanded='true']:not(.plainWhenExpanded) {
