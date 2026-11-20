@@ -28,6 +28,7 @@ describe('pictures in the writing', () => {
     URL.createObjectURL = vi.fn(() => 'blob:picture')
     URL.revokeObjectURL = vi.fn()
   })
+  afterEach(() => vi.unstubAllGlobals())
 
   it('shows a stored picture, described by its alt text', async () => {
     const imageId = await storedGif()
@@ -65,6 +66,41 @@ describe('pictures in the writing', () => {
     )
     await waitFor(() =>
       expect(screen.getByRole('img', { name: 'A sleepy cat' })).toBeVisible(),
+    )
+  })
+
+  it('pauses and plays a GIF from its ⋯', async () => {
+    const user = userEvent.setup()
+    const imageId = await storedGif()
+    render(<Writing html={`<img data-image-id="${imageId}" alt="A cat">`} />)
+    const options = await screen.findByRole('button', {
+      name: 'Picture options',
+    })
+    await user.click(options)
+    await user.click(
+      screen.getByRole('button', { name: 'Pause GIF', hidden: true }),
+    )
+    const still = await screen.findByRole('img', { name: 'A cat' })
+    expect(still.tagName).toBe('CANVAS')
+    await user.click(options)
+    await user.click(
+      screen.getByRole('button', { name: 'Play GIF', hidden: true }),
+    )
+    expect((await screen.findByRole('img', { name: 'A cat' })).tagName).toBe(
+      'IMG',
+    )
+  })
+
+  it('holds a GIF still when the system asks for less motion', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        ({ matches: query.includes('reduce') }) as MediaQueryList,
+    )
+    const imageId = await storedGif()
+    render(<Writing html={`<img data-image-id="${imageId}" alt="A cat">`} />)
+    expect((await screen.findByRole('img', { name: 'A cat' })).tagName).toBe(
+      'CANVAS',
     )
   })
 })

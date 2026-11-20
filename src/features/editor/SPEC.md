@@ -45,7 +45,10 @@ The rich-text writing surface for one entry, and its toolbar.
 - **On the page:** its own line, at its own size up to the text's width. Click or arrow to
   select it (ringed); Backspace deletes, ⌥↑ / ⌥↓ move it like any block.
 - **Its ⋯** (on hover, focus, or while selected) has **Alt text** (a dialog to describe it,
-  for screen readers and markdown) and **Delete picture**.
+  for screen readers and markdown) and **Delete picture**; a GIF's also has **Pause GIF** /
+  **Play GIF**, kept with the picture.
+- **GIFs follow the system until someone chooses:** still when it asks for less motion. A
+  paused GIF shows its first frame (browsers can't pause one in place).
 - A picture not on this device (site data cleared) shows as a not-found tile, still
   described by its alt text.
 - Copying between entries keeps pictures. Other apps get the alt text, since they can't

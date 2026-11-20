@@ -1,6 +1,7 @@
 export {
   getImageMimeType,
   IMAGE_ACCEPT,
+  isAnimatedImage,
   isImageId,
   MAX_IMAGE_BYTES,
 } from './imageFormats'

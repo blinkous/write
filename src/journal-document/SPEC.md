@@ -8,7 +8,8 @@ stores, imports and exports it).
 - Paragraphs, headings 2–6, lists, quotes, code and links, with bold, italic, underline,
   strikethrough, plus per-text color, font, glow, letter spacing and case, and Small
   paragraphs (plain paragraphs in markdown).
-- **Pictures**, each on its own line, stored by content name with a description (alt text);
+- **Pictures**, each on its own line, stored by content name with a description (alt text)
+  and, for GIFs, whether it's paused or playing (unset follows the system);
   see journal-images. Only the journal's own pictures are read from pasted HTML. In
   markdown a picture is `![alt](images/<name>)`, its file in the export's images folder.
 - **Heading 1 is the entry's title**, which lives outside the document. Pasted `#` headings

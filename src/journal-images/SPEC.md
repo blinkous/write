@@ -4,7 +4,7 @@ Pictures in entries: kept in this browser's own storage, never fetched from anyw
 
 ## How it works
 
-- **Formats:** PNG, JPEG, GIF, WebP and AVIF, up to 20 MB each. GIFs play. SVG is left out.
+- **Formats:** PNG, JPEG, GIF, WebP and AVIF, up to 20 MB each. GIFs play, and can be paused (see editor). SVG is left out.
 - **Named by content:** a picture's name is its SHA-256 plus its format's extension, so the
   same picture is kept once however many entries (or copies) show it, and a name always
   means the same picture.

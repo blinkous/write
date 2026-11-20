@@ -7,7 +7,8 @@
   border-radius: var(--radius-small);
 }
 
-.image img {
+.image img,
+.image canvas {
   display: block;
   max-width: 100%;
   height: auto;

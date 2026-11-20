@@ -8,7 +8,24 @@ export const MARKDOWN_IMAGE_FOLDER = 'images'
 
 const IMAGE_ID_ATTRIBUTE = 'data-image-id'
 
-export type ImageAttributes = { imageId: string; alt: string }
+/**
+ * Whether an animated picture (a GIF) plays: chosen in its ⋯, or null to
+ * follow the system (paused when it asks for less motion).
+ */
+export const IMAGE_PLAYBACKS = ['playing', 'paused'] as const
+export type ImagePlayback = (typeof IMAGE_PLAYBACKS)[number]
+
+export function isImagePlayback(value: unknown): value is ImagePlayback {
+  return IMAGE_PLAYBACKS.some((playback) => playback === value)
+}
+
+const PLAYBACK_ATTRIBUTE = 'data-playback'
+
+export type ImageAttributes = {
+  imageId: string
+  alt: string
+  playback: ImagePlayback | null
+}
 
 /* Brackets and backslashes would end or break the description early. */
 function escapeAlt(alt: string): string {
@@ -42,6 +59,15 @@ export const JournalImage = Node.create({
         default: '',
         parseHTML: (element) => element.getAttribute('alt') ?? '',
         renderHTML: ({ alt }) => ({ alt: typeof alt === 'string' ? alt : '' }),
+      },
+      playback: {
+        default: null,
+        parseHTML: (element) => {
+          const playback = element.getAttribute(PLAYBACK_ATTRIBUTE)
+          return isImagePlayback(playback) ? playback : null
+        },
+        renderHTML: ({ playback }) =>
+          isImagePlayback(playback) ? { [PLAYBACK_ATTRIBUTE]: playback } : {},
       },
     }
   },

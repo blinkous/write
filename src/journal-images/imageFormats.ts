@@ -46,3 +46,8 @@ export function getImageMimeType(imageId: string): string | null {
   )
   return extension ? IMAGE_FORMATS[extension] : null
 }
+
+/** Whether a picture may move (GIFs; other formats' animation isn't offered a pause). */
+export function isAnimatedImage(imageId: string): boolean {
+  return imageId.endsWith('.gif')
+}
