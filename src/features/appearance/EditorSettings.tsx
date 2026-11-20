@@ -1,22 +1,22 @@
 import { useRef } from 'react'
 import { LabeledRow, ResetMenuItem } from '../../design-system'
 import { FontMenu } from '../../fonts'
-import { areTextStylesEqual, DEFAULT_TEXT_STYLES } from '../../text-styles'
 import type { usePageTheme } from './usePageTheme'
 import styles from './EditorSettings.module.css'
 
 /**
  * The editor's default font (every text style's base), and a reset for every
- * text style at once (each also has its own, in the style menu).
+ * text style at once, back to the chosen theme pack's (each also has its own,
+ * in the style menu).
  */
 export function EditorSettings({
   pageTheme,
 }: {
   pageTheme: ReturnType<typeof usePageTheme>
 }) {
-  const { editorFont, textStyles, changeFonts, resetTextStyles } = pageTheme
+  const { editorFont, changeFonts, canResetTextStyles, resetTextStyles } =
+    pageTheme
   const rowsRef = useRef<HTMLDivElement>(null)
-  const isAllDefault = areTextStylesEqual(textStyles, DEFAULT_TEXT_STYLES)
   return (
     <div ref={rowsRef} className={styles.rows}>
       <LabeledRow label="Default font" control="button">
@@ -30,7 +30,7 @@ export function EditorSettings({
       </LabeledRow>
       <ResetMenuItem
         label="Reset text styles"
-        canReset={!isAllDefault}
+        canReset={canResetTextStyles}
         onReset={resetTextStyles}
         // The reset turns off once used, so focus moves to the section's first control.
         refocus={() => rowsRef.current?.querySelector('button')?.focus()}

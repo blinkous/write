@@ -10,7 +10,6 @@ import {
 } from '../../design-system'
 import type { FontValue } from '../../fonts'
 import {
-  DEFAULT_TEXT_STYLES,
   TextStylePreview,
   type TextStyleName,
   type TextStyleSettings,
@@ -50,6 +49,8 @@ type TextStyleMenuProps = TextStyleContext & {
     name: TextStyleName,
     changes: Partial<TextStyleSettings>,
   ) => void
+  /** Whether a style differs from what its reset goes back to (the chosen theme's). */
+  canResetTextStyle: (name: TextStyleName) => boolean
   onResetTextStyle: (name: TextStyleName) => void
 }
 
@@ -99,6 +100,7 @@ export function TextStyleMenu({
   editor,
   editorFont,
   onChangeTextStyle,
+  canResetTextStyle,
   onResetTextStyle,
   ...textStyleContext
 }: TextStyleMenuProps) {
@@ -156,10 +158,7 @@ export function TextStyleMenu({
             }}
             size={textStyles[name].size}
             onSizeChange={(size) => onChangeTextStyle(name, { size })}
-            canReset={
-              JSON.stringify(textStyles[name]) !==
-              JSON.stringify(DEFAULT_TEXT_STYLES[name])
-            }
+            canReset={canResetTextStyle(name)}
             onReset={() => onResetTextStyle(name)}
           />
         )

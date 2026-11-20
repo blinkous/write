@@ -8,7 +8,7 @@ import {
 } from '../../lib/pageColorSuggestions'
 import { getSystemColorScheme, type ColorScheme } from '../../utils/colorScheme'
 import {
-  DEFAULT_TEXT_STYLES,
+  areTextStylesEqual,
   type TextStyleName,
   type TextStyleSettings,
 } from '../../text-styles'
@@ -51,6 +51,7 @@ export function usePageTheme(
     backgroundColor,
     textColor,
     textStyles,
+    themeTextStyles,
     tabTitle,
     backgroundBlur,
     backgroundOpacity,
@@ -67,6 +68,7 @@ export function usePageTheme(
     backgroundColor,
     textColor,
     textStyles,
+    themeTextStyles,
     tabTitle,
     backgroundBlur,
     backgroundOpacity,
@@ -181,27 +183,34 @@ export function usePageTheme(
     changeSidebarBorder(nextHasSidebarBorder: boolean) {
       change({ hasSidebarBorder: nextHasSidebarBorder }, true)
     },
-    /** One text style back to its defaults, as one undo step. */
+    /** Whether a text style differs from the chosen theme pack's (or the default, with none). */
+    canResetTextStyle: (name: TextStyleName) =>
+      JSON.stringify(textStyles[name]) !==
+      JSON.stringify(themeTextStyles[name]),
+    canResetTextStyles: !areTextStylesEqual(textStyles, themeTextStyles),
+    /** One text style back to the chosen theme pack's (or the default), as one undo step. */
     resetTextStyle(name: TextStyleName) {
       change(
-        { textStyles: { ...textStyles, [name]: DEFAULT_TEXT_STYLES[name] } },
+        { textStyles: { ...textStyles, [name]: themeTextStyles[name] } },
         true,
       )
     },
-    /** Every text style back to its default (the editor's default font stays). */
+    /** Every text style back to the chosen theme pack's (or the defaults); the editor's default font stays. */
     resetTextStyles() {
-      change({ textStyles: DEFAULT_TEXT_STYLES }, true)
+      change({ textStyles: themeTextStyles }, true)
     },
     /**
      * A theme pack's whole look (colors, fonts, text styles) and its
-     * background (a file with its effects, or none), as one undo step.
+     * background (a file with its effects, or none), as one undo step. A copy
+     * of its text styles becomes what resets go back to, however the styles
+     * or the pack change after.
      */
     applyThemeLook(
       look: ThemeLook &
         Partial<BackgroundEffects> &
         Pick<PageTheme, 'backgroundFileId'>,
     ) {
-      change(look, true)
+      change({ ...look, themeTextStyles: look.textStyles }, true)
     },
     /** Ends the current edit (e.g. a finished drag) as one undo step. */
     commit() {

@@ -77,6 +77,7 @@ const appearanceSchema = z.object({
   customTextColors: customTextColorsSchema,
   customThemePacks: customThemePacksSchema,
   textStyles: textStylesSchema,
+  themeTextStyles: textStylesSchema,
   tabTitle: z
     .string()
     .max(TAB_TITLE_MAX_LENGTH)

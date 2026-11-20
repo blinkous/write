@@ -76,6 +76,11 @@ function createHistorySchema(current: CurrentSettings) {
         ? current.textStyles
         : textStylesSchema.parse(textStyles),
     ),
+    themeTextStyles: optionalUnknown.transform((themeTextStyles) =>
+      themeTextStyles === undefined
+        ? current.themeTextStyles
+        : textStylesSchema.parse(themeTextStyles),
+    ),
     backgroundColor: z.string().refine(isOpaqueHexColor),
     textColor: z.string().refine(isHexColor),
     tabTitle: valueOrCurrent(tabTitleSchema, current.tabTitle),

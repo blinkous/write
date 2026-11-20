@@ -19,6 +19,7 @@ function renderMenu(isTitle: boolean) {
       isTitle={isTitle}
       textStyles={DEFAULT_TEXT_STYLES}
       onChangeTextStyle={onChangeTextStyle}
+      canResetTextStyle={() => false}
       onResetTextStyle={vi.fn()}
     />,
   )

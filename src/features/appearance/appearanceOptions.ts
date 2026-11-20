@@ -90,6 +90,12 @@ export type Appearance = {
   customThemePacks: readonly CustomThemePack[]
   /** How each text style looks (size, weight, font, color). */
   textStyles: TextStyles
+  /**
+   * The text styles of the theme pack last chosen, as they were then (the
+   * defaults until one is): what resetting text styles goes back to. Edits,
+   * updating or deleting the pack never change it; choosing a pack does.
+   */
+  themeTextStyles: TextStyles
   /** The browser tab's title; empty for APP_NAME. */
   tabTitle: string
   /** Blur on the background picture or video (px, BACKGROUND_BLUR_RANGE). */
@@ -133,6 +139,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   ),
   customThemePacks: [],
   textStyles: DEFAULT_TEXT_STYLES,
+  themeTextStyles: DEFAULT_TEXT_STYLES,
   tabTitle: '',
   backgroundBlur: 0,
   // Half the page color showing through a busy picture, so writing stays readable.
