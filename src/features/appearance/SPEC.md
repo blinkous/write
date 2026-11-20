@@ -104,7 +104,8 @@ and works the same on every platform:
 - **Suggested colors** for that use, then the **custom slots**, then the **picker**, always
   shown: a color square, hue and opacity sliders (all keyboard-operable), the color as text
   to read or type (hex, rgb(), hsl(), names) and a **dropper**.
-- Choosing a tile keeps the menu open, so a choice can be fine-tuned in the picker.
+- Choosing a suggested color or a filled custom slot is a finished choice, so the menu
+  closes. Using the picker keeps it open, for fine-tuning.
 - An empty custom slot saves the current color; a filled one is chosen, and its × (shown on
   hover or focus) empties it.
 - A typed color applies on Enter or on leaving the field; text that isn't a color goes back
