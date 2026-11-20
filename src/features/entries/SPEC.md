@@ -67,7 +67,8 @@ everywhere; its styling is dropped if invalid or if the text changed elsewhere.
   Choices are remembered (first time: everything as JSON). Tab then Enter exports.
 - **Markdown** is one file, oldest first so it reads like a journal: each entry's name as
   `#`, an italic line saying when it was written, `---` between entries; empty entries left
-  out.
+  out. With pictures it's a `.zip` of that file and an `images` folder its pictures link
+  to, so it opens whole in any markdown app.
 - **Saving** asks where with the system Save dialog where it exists; elsewhere (Safari,
   Firefox) it downloads and the toast says so.
 - **JSON carries the pictures** the exported entries show (those on this device), so a

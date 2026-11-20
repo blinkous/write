@@ -20,8 +20,7 @@ import {
 import { readEntryImages, restoreEntryImages } from './entryImages'
 import type { JournalEntry } from './journalEntry'
 import {
-  getJournalMarkdownFileName,
-  journalToMarkdown,
+  journalMarkdownExport,
   type ContentToMarkdown,
 } from './journalMarkdown'
 
@@ -38,8 +37,6 @@ type UseEntryTransferOptions = {
   addEntries: (newEntries: readonly JournalEntry[]) => void
   onStatus: (message: ToastMessage) => void
 }
-
-const MARKDOWN_MIME_TYPE = 'text/markdown'
 
 /**
  * Reads settings found in an imported journal file (opaque to entries):
@@ -163,13 +160,9 @@ export function useEntryTransfer({
         jsonExport(await getAllEntries(), getJournalFileName(), settings),
       ),
     exportAllAsMarkdown: () =>
-      saveExport(async () => ({
-        suggestedName: getJournalMarkdownFileName(),
-        contents: journalToMarkdown(await getAllEntries(), contentToMarkdown),
-        mimeType: MARKDOWN_MIME_TYPE,
-        description: 'Markdown',
-        extension: '.md',
-      })),
+      saveExport(async () =>
+        journalMarkdownExport(await getAllEntries(), contentToMarkdown),
+      ),
 
     /**
      * Accepts a single-entry or whole-journal export; both use the same
