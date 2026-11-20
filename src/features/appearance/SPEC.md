@@ -46,20 +46,17 @@ background picture or video, with one shared undo/redo.
   number), shown only in tooltips. Kept on the device and in settings files like custom
   colors, outside undo; Reset all removes them and their backgrounds.
 - **Choosing a saved pack** brings back its look and background, picture and effects, as
-  one undo step, at once. A pack without a background (saved with none, too big to keep,
-  saved before packs kept them, or imported from a settings file) removes the current one,
-  since a pack is a whole look. If its file is gone from this browser, the look applies
-  and a toast says the background was removed.
-- A pack shows as chosen while its look and background are what's showing; **+**
-  (and a pack's Update) is off while some pack would bring back exactly that.
-- **Pack backgrounds are strictly limited; entries come first.** One pack keeps a file
-  of up to 25 MB (a picture or a short loop), and all packs' files together take up to
-  100 MB. Where the browser reports its room, a pack keeps no new file once the site uses
-  over half of it. Over any limit, the pack is still saved, without its background, and a
-  toast says why and what to do (delete a pack with a background, or use a smaller
-  file). Nothing is ever deleted to make room, and entries are never touched.
-- A file is stored once however many packs, undo steps and the current background use it,
-  and deleted once nothing does. Settings files never carry background files.
+  one undo step, at once. A pack without a background (saved with none, saved before
+  packs kept them, or imported from a settings file) removes the current one,
+  since a pack is a whole look. If its file is gone from this browser (e.g. the browser
+  cleared storage), the look applies and the Background tile says it's not found.
+- A pack shows as chosen while its look and background are what's showing. **+** is
+  always on, even when a pack already has that look (a greyed-out + reads as broken); a
+  pack's Update is off while it already is what's showing.
+- Saving a pack always keeps its background: the current one already counts toward the
+  room backgrounds have (see Background picture or video).
+- A file is stored once however many packs and the current background use it, and
+  deleted once neither does. Settings files never carry background files.
 - **Readable baselines:** the default packs keep every text color at
   4.5:1 (tested), since people rely on them to read comfortably. The others are vibes,
   chosen on sight like any color someone picks, and may be as soft as their look asks.
@@ -129,20 +126,26 @@ Derived from the background, never harsh:
 
 ## Background picture or video
 
-- Chosen on the Background row: any image (GIFs included) or video under a size limit
-  (so it doesn't strain browser storage); other files get a toast and the current
-  background stays. Once set, the tile shows a still of it, and an × (hover or focus)
-  removes it.
+- Chosen on the Background row: any image (GIFs included) or video; other files get a
+  toast and the current background stays. Once set, the tile shows a still of it, and an
+  × (hover or focus) removes it.
+- **One rule for room; entries come first.** All backgrounds together, the current one
+  and every pack's (a shared file counted once), use up to 250 MB. Writing takes a few MB
+  at most, so browsers always keep room for it. A new background that won't fit beside
+  the packs' files isn't used: a dialog says why and what to do (delete a pack with a
+  background, or try a smaller file). Nothing is deleted to make room.
 - While set, you can blur it and set its opacity over the page color (half by default,
   so writing stays readable). A video can also be paused and sped up or slowed down.
   These share the settings undo and travel in settings files.
 - Choosing, replacing or removing it is one undo step. The file is saved before it's
   shown, so what's shown is what comes back after a refresh. Settings files don't carry
   it, and importing one never changes which background is showing.
-- **Undo keeps replaced backgrounds within what the packs' budget leaves** (100 MB minus
-  the packs' own files), the most recent first. Older ones are deleted, so undoing that
-  far brings back the rest of the settings and a toast says that background is gone.
-  Packs always come first, and entries before both.
+- **Only backgrounds in use are kept:** a replaced one is deleted unless a pack keeps it.
+  Undoing back to it brings back the rest of the settings, and the page shows just its
+  color. The setting still points to the missing file, so undo and redo stay true: the
+  Background tile turns a filled grey with a file-and-question-mark icon (screen readers
+  hear "not found"), and changes or removes as usual. Nothing more in the sidebar or on
+  the page.
 - It covers the whole window: the sidebar and header turn transparent, while the settings
   drawer, menus, dialogs and the narrow-screen sidebar stay solid so they're readable.
   Videos loop silently. On a first visit a video starts paused if the system asks for
@@ -151,8 +154,9 @@ Derived from the background, never harsh:
 
 ## Decisions
 
-- Pack background limits sit well below the room browsers give a site, so packs can never
-  crowd out writing; the current background alone may be bigger, since there's only one.
+- One fixed budget for all backgrounds, not per-file limits or a setting: one rule is
+  easy to understand, and 250 MB is a small slice of what browsers give a site, so
+  writing always has room. The dialog shows the numbers, so the limit isn't a mystery.
 - No contrast warnings: people can see whether their colors read. Theme packs are
   starting points, not modes: everything they set stays editable.
 - Page colors live apart from the toolbar's text color so the two aren't confused.

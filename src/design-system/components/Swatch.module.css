@@ -86,6 +86,11 @@
   }
 }
 
+/* The chosen file is gone: filled, like a missing thumbnail. */
+.fileSwatch[data-missing='true'] {
+  background: var(--color-shade);
+}
+
 .fileSwatch svg {
   width: var(--size-icon);
   height: var(--size-icon);

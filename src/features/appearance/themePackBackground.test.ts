@@ -1,9 +1,7 @@
 import {
-  checkPackBackground,
-  getUndoBackgroundBudgetBytes,
+  BACKGROUNDS_BUDGET_MEGABYTES,
+  checkBackgroundRoom,
   matchesPackBackground,
-  PACK_BACKGROUND_MAX_MEGABYTES,
-  PACK_BACKGROUNDS_BUDGET_MEGABYTES,
   toPackBackground,
   type BackgroundEffects,
   type PackBackground,
@@ -26,73 +24,36 @@ const kept = (fileId: string, megabytes: number): PackBackground => ({
   ...file(fileId, megabytes),
   effects: EFFECTS,
 })
-const noEstimate = { storageEstimate: null }
-
-describe('checkPackBackground', () => {
-  it('lets a pack keep a file within the limits', () => {
-    expect(
-      checkPackBackground(file('a', 5), { otherPacks: [], ...noEstimate }),
-    ).toEqual({ fits: true })
+describe('checkBackgroundRoom', () => {
+  it('takes a file that fits beside the packs’ files', () => {
+    expect(checkBackgroundRoom(file('a', 5), [kept('b', 100)])).toEqual({
+      fits: true,
+    })
   })
 
-  it('refuses a file over the per-pack limit, saying what to do', () => {
-    const check = checkPackBackground(
-      file('a', PACK_BACKGROUND_MAX_MEGABYTES + 1),
-      { otherPacks: [], ...noEstimate },
+  it('turns down a file bigger than all backgrounds may use, saying what to do', () => {
+    const check = checkBackgroundRoom(
+      file('a', BACKGROUNDS_BUDGET_MEGABYTES + 1),
+      [],
     )
-    expect(check).toMatchObject({ fits: false })
     expect(check.fits || check.problem).toMatch(/smaller picture/)
   })
 
-  it('refuses a file that would take the packs past their budget together', () => {
-    const otherPacks = Array.from(
-      { length: PACK_BACKGROUNDS_BUDGET_MEGABYTES / 20 },
-      (_, index) => kept(`f${index}`, 20),
-    )
-    const check = checkPackBackground(file('new', 1), {
-      otherPacks,
-      ...noEstimate,
-    })
+  it('turns down a file that won’t fit beside the packs’ files, pointing to them', () => {
+    const check = checkBackgroundRoom(file('new', 60), [
+      kept('a', BACKGROUNDS_BUDGET_MEGABYTES - 50),
+    ])
     expect(check.fits || check.problem).toMatch(/Delete a pack/)
   })
 
-  it('counts a file shared by several packs once, and a file already kept as free', () => {
-    const shared = kept('shared', 20)
-    const otherPacks = [shared, shared, shared, shared, shared, shared]
-    expect(
-      checkPackBackground(file('new', 20), { otherPacks, ...noEstimate }),
-    ).toEqual({ fits: true })
-    expect(
-      checkPackBackground(file('shared', 20), {
-        otherPacks: [kept('x', 90), shared],
-        ...noEstimate,
-      }),
-    ).toEqual({ fits: true })
-  })
-
-  it('puts entries first when the browser reports the site is using over half its room', () => {
-    const check = checkPackBackground(file('a', 1), {
-      otherPacks: [],
-      storageEstimate: { usage: 60, quota: 100 },
+  it('counts a file shared by several packs once, and one a pack keeps as free', () => {
+    const shared = kept('shared', 100)
+    expect(checkBackgroundRoom(file('new', 100), [shared, shared])).toEqual({
+      fits: true,
     })
-    expect(check.fits || check.problem).toMatch(/entries come first/)
     expect(
-      checkPackBackground(file('a', 1), {
-        otherPacks: [],
-        storageEstimate: { usage: 40, quota: 100 },
-      }),
+      checkBackgroundRoom(file('shared', 100), [kept('x', 200), shared]),
     ).toEqual({ fits: true })
-  })
-})
-
-describe('getUndoBackgroundBudgetBytes', () => {
-  it('leaves undo what the packs’ own files don’t use, each file counted once', () => {
-    expect(getUndoBackgroundBudgetBytes([kept('a', 10), kept('a', 10)])).toBe(
-      (PACK_BACKGROUNDS_BUDGET_MEGABYTES - 10) * MEGABYTE,
-    )
-    expect(getUndoBackgroundBudgetBytes([{ state: 'none' }])).toBe(
-      PACK_BACKGROUNDS_BUDGET_MEGABYTES * MEGABYTE,
-    )
   })
 })
 

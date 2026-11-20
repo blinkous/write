@@ -89,13 +89,8 @@
   color: var(--color-muted);
 }
 
-.addTile:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
 @media (hover: hover) {
-  .addTile:hover:not(:disabled) {
+  .addTile:hover {
     background: var(--color-shade);
     color: var(--color-text);
   }

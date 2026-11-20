@@ -1,6 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { ToastMessage } from '../../design-system'
 import type { CustomThemePack } from './customThemePacks'
 import type { BackgroundEffects } from './themePackBackground'
 import { THEME_PACKS, type ThemeLook } from './themePacks'
@@ -38,7 +37,6 @@ type PickerHarnessProps = {
   customPacks: CustomThemePack[]
   onCustomPacksChange: (packs: CustomThemePack[]) => void
   applyThemeLook: ReturnType<typeof usePageTheme>['applyThemeLook']
-  onStatus: (message: ToastMessage) => void
 }
 
 function PickerHarness({
@@ -47,7 +45,6 @@ function PickerHarness({
   customPacks,
   onCustomPacksChange,
   applyThemeLook,
-  onStatus,
 }: PickerHarnessProps) {
   const packActions = useCustomThemePacks({
     pageTheme: {
@@ -59,7 +56,6 @@ function PickerHarness({
     backgroundMedia: { media },
     customPacks,
     onCustomPacksChange,
-    onStatus,
   })
   return <ThemePackPicker customPacks={customPacks} packActions={packActions} />
 }
@@ -72,7 +68,6 @@ function renderPicker({
   const handlers = {
     onCustomPacksChange: vi.fn(),
     applyThemeLook: vi.fn(),
-    onStatus: vi.fn(),
   }
   render(
     <PickerHarness
@@ -154,30 +149,30 @@ describe('ThemePackPicker', () => {
     ])
   })
 
-  it('saves a pack without a background too big to keep, and says what to do', async () => {
+  it('keeps even a big background: it already counts toward the room backgrounds have', async () => {
     const user = userEvent.setup()
-    const { onCustomPacksChange, onStatus } = renderPicker({
-      media: picture('huge', 200),
+    const { onCustomPacksChange } = renderPicker({
+      media: picture('big', 200),
     })
     await user.click(saveButton())
     expect(onCustomPacksChange).toHaveBeenCalledWith([
-      expect.objectContaining({ background: { state: 'none' } }),
-    ])
-    expect(onStatus).toHaveBeenCalledWith(
       expect.objectContaining({
-        text: expect.stringMatching(/without its background.*smaller/),
+        background: expect.objectContaining({ state: 'file', fileId: 'big' }),
       }),
-    )
+    ])
   })
 
-  it('can’t save what a pack already brings back', () => {
-    renderPicker({ look: savedLook, customPacks: [savedPack] })
-    expect(saveButton()).toBeDisabled()
-  })
-
-  it('can save a curated look with a background picture, since curated packs have none', () => {
-    renderPicker({ media: picture('pic') })
-    expect(saveButton()).toBeEnabled()
+  it('always lets the current look be saved, even one a pack already has', async () => {
+    const user = userEvent.setup()
+    const { onCustomPacksChange } = renderPicker({
+      look: savedLook,
+      customPacks: [savedPack],
+    })
+    await user.click(saveButton())
+    expect(onCustomPacksChange).toHaveBeenCalledWith([
+      savedPack,
+      expect.objectContaining({ label: 'Custom 2', look: savedLook }),
+    ])
   })
 
   it('shows a pack as chosen only with its background showing', () => {

@@ -86,25 +86,6 @@ export function deleteCustomThemePack(
   return packs.filter((pack) => pack.id !== id)
 }
 
-/** The backgrounds every pack but `exceptId` keeps (e.g. while that one is updated). */
-export function getOtherPackBackgrounds(
-  packs: readonly CustomThemePack[],
-  exceptId?: string,
-): PackBackground[] {
-  return packs
-    .filter(({ id }) => id !== exceptId)
-    .map(({ background }) => background)
-}
-
-/** Every background file the packs keep. */
-export function getPackBackgroundFileIds(
-  packs: readonly CustomThemePack[],
-): string[] {
-  return packs.flatMap(({ background }) =>
-    background.state === 'file' ? [background.fileId] : [],
-  )
-}
-
 /** For settings files, which don't carry background files: packs come back without theirs. */
 export function withoutPackBackgroundFiles(
   packs: readonly CustomThemePack[],

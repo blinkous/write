@@ -1,10 +1,5 @@
 import type { ToastMessage } from '../../design-system'
-import {
-  getPackBackgroundFileIds,
-  getOtherPackBackgrounds,
-  type CustomThemePack,
-} from './customThemePacks'
-import { getUndoBackgroundBudgetBytes } from './themePackBackground'
+import type { CustomThemePack } from './customThemePacks'
 import { useBackgroundMedia } from './useBackgroundMedia'
 import { useCustomThemePacks } from './useCustomThemePacks'
 import type { usePageTheme } from './usePageTheme'
@@ -20,8 +15,8 @@ type ThemeBackgroundOptions = {
 
 /**
  * The background picture or video and the theme packs, which keep their own:
- * files are shared, packs come first, and undo keeps recent backgrounds with
- * what's left of the packs' budget.
+ * files are shared, and all of them together fit one budget so entries come
+ * first.
  */
 export function useThemeBackground({
   pageTheme,
@@ -34,11 +29,7 @@ export function useThemeBackground({
     fileId: pageTheme.backgroundFileId,
     onFileChange: pageTheme.changeBackgroundFile,
     onFileReplaced: onBackgroundFileReplaced,
-    packFileIds: getPackBackgroundFileIds(customPacks),
-    undoFileIds: pageTheme.undoBackgroundFileIds,
-    undoBudgetBytes: getUndoBackgroundBudgetBytes(
-      getOtherPackBackgrounds(customPacks),
-    ),
+    packBackgrounds: customPacks.map(({ background }) => background),
     onStatus,
   })
   const packActions = useCustomThemePacks({
@@ -46,7 +37,6 @@ export function useThemeBackground({
     backgroundMedia,
     customPacks,
     onCustomPacksChange,
-    onStatus,
   })
   return { backgroundMedia, packActions }
 }

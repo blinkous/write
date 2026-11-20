@@ -66,14 +66,13 @@ export function ThemePackPicker({
             onDelete={() => setPackIdToDelete(pack.id)}
           />
         ))}
-        {/* Off while a pack already brings back what's showing. */}
+        {/* Always on: saving a look a pack already has is still saving. */}
         <button
           ref={addTileRef}
           type="button"
           className={`${styles.tile} ${styles.addTile}`}
           aria-label={ADD_PACK_LABEL}
           title={ADD_PACK_LABEL}
-          disabled={!packActions.canSaveCurrent}
           onClick={packActions.saveCurrent}
         >
           <Plus aria-hidden="true" />
