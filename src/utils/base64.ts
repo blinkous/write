@@ -23,9 +23,7 @@ export function bytesToBase64(bytes: Uint8Array): string {
 export function base64ToBytes(base64: string): Uint8Array<ArrayBuffer> | null {
   try {
     if (Uint8Array.fromBase64) return Uint8Array.fromBase64(base64)
-    return Uint8Array.from(atob(base64), (character) =>
-      character.charCodeAt(0),
-    )
+    return Uint8Array.from(atob(base64), (character) => character.charCodeAt(0))
   } catch {
     return null
   }
