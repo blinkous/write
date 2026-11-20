@@ -252,7 +252,7 @@ describe('ThemePackPicker', () => {
     await user.click(
       // Popovers' contents count as hidden in jsdom (see TextStyleMenu.test).
       screen.getByRole('button', {
-        name: 'Update pack to match current look',
+        name: 'Update pack to match',
         hidden: true,
       }),
     )

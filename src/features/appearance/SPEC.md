@@ -41,7 +41,7 @@ background picture or video, with one shared undo/redo.
   sets) **and the background**: the picture or video with its blur, opacity and
   playback, or that there is none. Saved packs come after the curated ones and any saved
   before. Each shows a ⋯ in its corner, always visible, which marks it as one you added
-  and works the same with or without hover: **Update pack to match current look** or
+  and works the same with or without hover: **Update pack to match** or
   **Delete** (asks first). They're named in the background ("Custom 1", the lowest free
   number), shown only in tooltips. Kept on the device and in settings files like custom
   colors, outside undo; Reset all removes them and their backgrounds.

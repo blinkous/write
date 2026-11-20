@@ -47,7 +47,7 @@ export function CustomThemePackTile({
                 close()
               }}
             >
-              Update pack to match current look
+              Update pack to match
             </MenuItem>
             <MenuItem
               icon={Trash2}
