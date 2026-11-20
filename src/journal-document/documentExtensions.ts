@@ -1,6 +1,7 @@
 import StarterKit from '@tiptap/starter-kit'
 import './documentDisplay.css'
 import { JournalHeading } from './journalHeading'
+import { JournalImage } from './journalImage'
 import { MarkdownSafeParagraph } from './markdownSafeParagraph'
 import { ParagraphSize } from './paragraphSize'
 import { TextCaseMark } from './textCase'
@@ -23,4 +24,5 @@ export const documentExtensions = [
   ...textStyleExtensions,
   TextCaseMark,
   ParagraphSize,
+  JournalImage,
 ]

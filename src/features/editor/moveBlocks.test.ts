@@ -21,6 +21,21 @@ function placeCursorIn(editor: Editor, text: string) {
 }
 
 describe('moveBlocks', () => {
+  it('moves a selected picture, keeping it selected', () => {
+    const imageId = `${'a'.repeat(64)}.png`
+    const editor = createTestEditor({
+      extensions: editorExtensions,
+      content: `<p>first</p><img data-image-id="${imageId}" alt=""><p>last</p>`,
+    })
+    editor.commands.setNodeSelection(7)
+    editor.commands.moveBlocks('up')
+    editor.commands.moveBlocks('up')
+    expect(editor.getMarkdown().trim()).toBe(
+      `![](images/${imageId})\n\nfirst\n\nlast`,
+    )
+    expect(editor.state.selection.empty).toBe(false)
+  })
+
   it('moves a paragraph down and back up, keeping the cursor in it', () => {
     const editor = createEditor('first\n\nsecond\n\nthird')
     placeCursorIn(editor, 'first')

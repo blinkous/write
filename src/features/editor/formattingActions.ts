@@ -4,6 +4,7 @@ import type { ShortcutCommandId } from '../../keyboard-shortcuts'
 import {
   Bold,
   Code,
+  ImagePlus,
   Italic,
   List,
   ListOrdered,
@@ -77,7 +78,7 @@ export const TEXT_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   },
 ]
 
-/** Markup: lists, quotes and code (inline beside blocks, since both mean "this is code"). */
+/** Markup: lists, quotes and code (inline beside blocks, since both mean "this is code"), then pictures. */
 export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
   {
     name: 'bullet-list',
@@ -123,6 +124,14 @@ export const MARKUP_FORMATTING_ACTIONS: readonly FormattingAction[] = [
     requires: 'codeBlock',
     isActive: (editor) => editor.isActive('codeBlock'),
     run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
+  },
+  {
+    name: 'image',
+    label: 'Insert picture',
+    shortcutId: 'insert-image',
+    icon: ImagePlus,
+    requires: 'image',
+    run: (editor) => editor.chain().focus().chooseImages().run(),
   },
 ]
 

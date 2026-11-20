@@ -284,6 +284,8 @@
   /* Lighter lines for small icons beside text (chevrons), so they read as the same weight. */
   --stroke-width-icon-light: 1.5;
   --size-icon-large: 1.5rem;
+  /* A picture in the writing that isn't on this device. */
+  --size-missing-image: 6rem;
   --size-divider: 1.25rem;
   /* Theme pack tiles: a little page with its title's look ("Aa") and color dots. */
   /* How far a scrolling area's edge fades while there's more to see that way. */

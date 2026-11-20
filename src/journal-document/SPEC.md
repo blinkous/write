@@ -8,12 +8,16 @@ stores, imports and exports it).
 - Paragraphs, headings 2–6, lists, quotes, code and links, with bold, italic, underline,
   strikethrough, plus per-text color, font, glow, letter spacing and case, and Small
   paragraphs (plain paragraphs in markdown).
+- **Pictures**, each on its own line, stored by content name with a description (alt text);
+  see journal-images. Only the journal's own pictures are read from pasted HTML. In
+  markdown a picture is `![alt](images/<name>)`, its file in the export's images folder.
 - **Heading 1 is the entry's title**, which lives outside the document. Pasted `#` headings
   become level 2.
 
 ## Rules
 
-- **Untrusted content is rebuilt from the schema:** unknown nodes and marks reject it,
+- **Untrusted content is rebuilt from the schema:** unknown nodes and marks reject it, as
+  does a picture named any other way than by content,
   unknown attributes are dropped, and values outside their allowed forms are ignored.
 - **Equality includes formatting** and ignores JSON noise like key order (used to skip
   duplicate imports).

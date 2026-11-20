@@ -39,3 +39,9 @@ export {
   resolveTextLetterSpacing,
 } from './textLetterSpacing'
 export { titleExtensions } from './titleExtensions'
+export {
+  collectImageIds,
+  IMAGE_NODE_NAME,
+  MARKDOWN_IMAGE_FOLDER,
+  type ImageAttributes,
+} from './journalImage'

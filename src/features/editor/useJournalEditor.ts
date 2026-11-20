@@ -1,5 +1,5 @@
 import { useEditor, type JSONContent } from '@tiptap/react'
-import { editorExtensions } from './editorExtensions'
+import { createEditorExtensions } from './editorExtensions'
 import { WRITING_ASSISTANT_OPT_OUT } from '../../lib/writingAssistants'
 import { KEYBOARD_HINT_ID } from './tabIndent'
 import styles from './JournalPage.module.css'
@@ -9,6 +9,8 @@ type UseJournalEditorOptions = {
   entryId: string
   initialContent: JSONContent
   onChange: (entryId: string, content: JSONContent) => void
+  /** Says why a picture wasn't added (too big, not a picture, storage full). */
+  onImageProblem: (problem: string) => void
 }
 
 /**
@@ -19,10 +21,11 @@ export function useJournalEditor({
   entryId,
   initialContent,
   onChange,
+  onImageProblem,
 }: UseJournalEditorOptions) {
   return useEditor(
     {
-      extensions: editorExtensions,
+      extensions: createEditorExtensions({ onImageProblem }),
       content: initialContent,
       autofocus: 'end',
       // Loaded from tiptapBase.css instead; the CSP blocks inline <style> tags.
