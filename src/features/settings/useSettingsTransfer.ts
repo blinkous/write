@@ -1,5 +1,5 @@
 import type { ToastMessage } from '../../design-system'
-import { describeSaveResult, saveTextFile } from '../../lib/saveFile'
+import { describeSaveResult, saveFile } from '../../lib/saveFile'
 import {
   getSettingsFileName,
   parseSettingsRecord,
@@ -26,9 +26,9 @@ export function useSettingsTransfer({
     async exportSettings() {
       try {
         const message = describeSaveResult(
-          await saveTextFile({
+          await saveFile({
             suggestedName: getSettingsFileName(),
-            text: serializeSettings(settings),
+            contents: serializeSettings(settings),
             mimeType: 'application/json',
             description: 'Write settings',
             extension: '.json',

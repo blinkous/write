@@ -69,9 +69,12 @@ everywhere; its styling is dropped if invalid or if the text changed elsewhere.
   out.
 - **Saving** asks where with the system Save dialog where it exists; elsewhere (Safari,
   Firefox) it downloads and the toast says so.
-- **Import is untrusted and all-or-nothing:** read locally, capped at 20 MB and 10,000
-  entries, every entry validated against the document schema; one bad entry rejects the
-  file. It never replaces or deletes: entries already in the journal (same title and
+- **JSON carries the pictures** the exported entries show (those on this device), so a
+  backup restores them; the journal is read once the Save dialog is open, since pictures
+  can take a while.
+- **Import is untrusted and all-or-nothing:** read locally, every entry validated against
+  the document schema and every picture against its content name; one bad entry or
+  picture rejects the file. No cap on size or entries: whatever exports, imports. It never replaces or deletes: entries already in the journal (same title and
   content, formatting included) are skipped, a taken id gets a new one, so importing twice
   changes nothing. Attached settings apply only once the whole file proves valid.
 - Results and errors are reported in a toast.

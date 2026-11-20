@@ -1,6 +1,11 @@
-type SaveFileOptions = {
+export type SaveFileOptions = {
   suggestedName: string
-  text: string
+  /**
+   * What to save: text, a file, or a way to read it. Read only once the save
+   * dialog has opened, since the dialog needs a recent click or key press and
+   * reading a big journal (pictures included) can take a while.
+   */
+  contents: string | Blob | (() => Promise<string | Blob>)
   mimeType: string
   /** Shown in the save dialog's file type list, e.g. "Journal export". */
   description: string
@@ -31,40 +36,45 @@ function isCancellation(error: unknown): boolean {
  * back to a regular download, reported as such so the user can be told.
  * Must be called directly from a user action (the dialog requires it).
  */
-export async function saveTextFile({
-  suggestedName,
-  text,
-  mimeType,
-  description,
-  extension,
-}: SaveFileOptions): Promise<SaveFileResult> {
+function readContents({ contents }: SaveFileOptions): Promise<string | Blob> {
+  return typeof contents === 'function' ? contents() : Promise.resolve(contents)
+}
+
+export async function saveFile(
+  options: SaveFileOptions,
+): Promise<SaveFileResult> {
+  const { suggestedName, mimeType, description, extension } = options
   const { showSaveFilePicker } = window
   if (!showSaveFilePicker) {
-    downloadTextFile(suggestedName, text, mimeType)
+    downloadFile(suggestedName, await readContents(options), mimeType)
     return { status: 'downloaded', fileName: suggestedName }
   }
 
+  let fileHandle
   try {
-    const fileHandle = await showSaveFilePicker.call(window, {
+    fileHandle = await showSaveFilePicker.call(window, {
       suggestedName,
       types: [{ description, accept: { [mimeType]: [extension] } }],
     })
-    const writable = await fileHandle.createWritable()
-    await writable.write(text)
-    await writable.close()
-    return { status: 'saved', fileName: fileHandle.name }
   } catch (error) {
     if (isCancellation(error)) return { status: 'cancelled' }
     throw error
   }
+  const contents = await readContents(options)
+  const writable = await fileHandle.createWritable()
+  await writable.write(contents)
+  await writable.close()
+  return { status: 'saved', fileName: fileHandle.name }
 }
 
-function downloadTextFile(
+function downloadFile(
   fileName: string,
-  text: string,
+  contents: string | Blob,
   mimeType: string,
 ): void {
-  const objectUrl = URL.createObjectURL(new Blob([text], { type: mimeType }))
+  const objectUrl = URL.createObjectURL(
+    new Blob([contents], { type: mimeType }),
+  )
   const link = document.createElement('a')
   link.href = objectUrl
   link.download = fileName
