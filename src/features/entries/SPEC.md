@@ -11,7 +11,8 @@ import.
   then shows "Edited <date>"), or Name A–Z (natural order, ignoring case and accents;
   unnamed last). The order holds after every change, so the list, keyboard order and what
   opens after a delete agree.
-- **Names:** the custom title if set, else the first non-empty line, else "Untitled".
+- **Names:** the custom title if set, else the first non-empty line, else the first
+  picture's alt text ("Picture" without one), else "Untitled".
 - **Opening** an entry selects it at once and opens it once its writing loads; the previous
   one stays meanwhile. If it can't be read, the selection goes back and a toast says so.
 - **Renaming:** clicking the open entry turns its name into a field in place (nothing

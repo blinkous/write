@@ -73,3 +73,23 @@ describe('isEntryEmpty', () => {
     expect(isEntryEmpty(createWrittenEntry('Text'))).toBe(false)
   })
 })
+
+describe('naming an entry with only pictures', () => {
+  const withPictures = (...alts: string[]) =>
+    summarizeEntry({
+      ...createJournalEntry(),
+      content: {
+        type: 'doc',
+        content: alts.map((alt) => ({
+          type: 'image',
+          attrs: { imageId: `${'a'.repeat(64)}.gif`, alt },
+        })),
+      },
+    })
+
+  it('names it by its first picture, so it isn’t blank', () => {
+    expect(withPictures('A sleepy cat', 'A dog').firstLine).toBe('A sleepy cat')
+    expect(withPictures('').firstLine).toBe('Picture')
+    expect(isEntryEmpty(withPictures(''))).toBe(false)
+  })
+})
