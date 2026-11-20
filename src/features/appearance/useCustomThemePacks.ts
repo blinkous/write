@@ -22,7 +22,10 @@ type CustomThemePacksOptions = {
   pageTheme: ThemeLook &
     BackgroundEffects &
     Pick<ReturnType<typeof usePageTheme>, 'applyThemeLook' | 'backgroundFileId'>
-  backgroundMedia: Pick<ReturnType<typeof useBackgroundMedia>, 'media'>
+  backgroundMedia: Pick<
+    ReturnType<typeof useBackgroundMedia>,
+    'media' | 'getShownFile'
+  >
   customPacks: readonly CustomThemePack[]
   onCustomPacksChange: (customPacks: CustomThemePack[]) => void
 }
@@ -76,6 +79,14 @@ export function useCustomThemePacks({
       reproducesCurrent(pack, NO_BACKGROUND),
     isChosen: (pack: CustomThemePack) =>
       reproducesCurrent(pack, pack.background),
+    /** A saved pack's picture or video for its tile, with how opaque it's shown, once it's read. */
+    getTileBackground: ({ background }: CustomThemePack) => {
+      if (background.state !== 'file') return null
+      const shown = backgroundMedia.getShownFile(background.fileId)
+      return (
+        shown && { media: shown, opacity: background.effects.backgroundOpacity }
+      )
+    },
     canUpdate: (pack: CustomThemePack) =>
       !reproducesCurrent(pack, pack.background),
     /** A curated pack's look, with no background: one undo step. */

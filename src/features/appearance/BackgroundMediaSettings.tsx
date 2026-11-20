@@ -22,7 +22,7 @@ import type { usePageTheme } from './usePageTheme'
 type BackgroundMediaControls = ReturnType<typeof useBackgroundMedia>
 
 /** A small still of the background: the picture itself, or a video's first moment. */
-function BackgroundMediaPreview({
+export function BackgroundMediaPreview({
   media: { url, kind },
 }: {
   media: NonNullable<BackgroundMediaControls['media']>

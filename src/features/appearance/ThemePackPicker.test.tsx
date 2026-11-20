@@ -53,7 +53,8 @@ function PickerHarness({
       backgroundFileId: media?.fileId ?? null,
       applyThemeLook,
     },
-    backgroundMedia: { media },
+    // Every pack's file has been read (see useBackgroundMedia).
+    backgroundMedia: { media, getShownFile: (fileId) => picture(fileId) },
     customPacks,
     onCustomPacksChange,
   })
@@ -213,6 +214,24 @@ describe('ThemePackPicker', () => {
       backgroundBlur: 4,
       backgroundFileId: 'pic',
     })
+  })
+
+  it('draws a saved pack’s picture behind its tile, at its page opacity', () => {
+    const withPicture: CustomThemePack = {
+      ...savedPack,
+      background: {
+        state: 'file',
+        fileId: 'pic',
+        kind: 'image',
+        bytes: 1,
+        effects: { ...EFFECTS, backgroundOpacity: 70 },
+      },
+    }
+    renderPicker({ customPacks: [withPicture] })
+    const tile = screen.getByRole('button', { name: 'Custom 1' })
+    const picture = tile.querySelector('img')
+    expect(picture).toHaveAttribute('src', 'blob:pic')
+    expect(picture?.parentElement).toHaveStyle({ opacity: '0.7' })
   })
 
   it('removes the background when choosing a pack saved without one', async () => {

@@ -11,6 +11,7 @@ function controls({ isMissing = false, roomProblem = null as string | null }) {
     isMissing,
     chooseFile: vi.fn(async () => {}),
     remove: vi.fn(),
+    getShownFile: () => null,
     roomProblem,
     dismissRoomProblem: vi.fn(),
   }

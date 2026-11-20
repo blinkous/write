@@ -31,6 +31,8 @@ background picture or video, with one shared undo/redo.
 - **Named only in tooltips** and for screen readers; the tiles are the vibe. Each is a
   little page in the pack's background color showing "Aa" in its title style (font,
   color, glow, case) and dots of its text color, then its glows, then its style colors.
+  A saved pack with a background shows it behind all that (a video's first moment, still)
+  at the pack's opacity, like a tiny copy of the page.
 - **Choosing one replaces the whole look:** page colors, the interface and default fonts,
   every text style and the background, as one undo step. Curated packs have no background,
   so choosing one removes the current picture or video (undo brings it back). Custom color

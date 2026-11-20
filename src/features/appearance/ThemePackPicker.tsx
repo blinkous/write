@@ -59,6 +59,7 @@ export function ThemePackPicker({
           <CustomThemePackTile
             key={pack.id}
             pack={pack}
+            background={packActions.getTileBackground(pack)}
             isChosen={packActions.isChosen(pack)}
             canUpdate={packActions.canUpdate(pack)}
             onSelect={() => packActions.choose(pack)}

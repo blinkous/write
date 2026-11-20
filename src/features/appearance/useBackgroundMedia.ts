@@ -61,9 +61,10 @@ export function useBackgroundMedia({
   onStatus,
 }: BackgroundMediaOptions) {
   /*
-   * Each file shown this visit, by content name, so showing it again (undo,
-   * or switching back to a pack) reuses its URL and the browser's decoded
-   * copy instead of reading and decoding it all over again.
+   * The current file and the packs' (for their tiles), read once each visit
+   * and by content name, so showing one again (undo, or switching to a pack)
+   * reuses its URL and the browser's decoded copy instead of reading and
+   * decoding it all over again.
    */
   const [shownFiles, setShownFiles] = useState<ShownFiles>(() => new Map())
   // Files the settings point to that aren't in this browser anymore (e.g. a replaced one, after undo).
@@ -78,37 +79,53 @@ export function useBackgroundMedia({
   const media = (fileId && shownFiles.get(fileId)) || null
   const keptFileIds = [...packFileIds, ...(fileId ? [fileId] : [])]
   // The latest, for async work and the sweep to read without restarting.
-  const latestRef = useRef({ onFileReplaced, keptFileIds, shownFiles })
+  const latestRef = useRef({
+    onFileReplaced,
+    keptFileIds,
+    shownFiles,
+    missingFileIds,
+  })
   const keptFileIdsKey = keptFileIds.toSorted().join()
 
   useEffect(() => {
-    latestRef.current = { onFileReplaced, keptFileIds, shownFiles }
+    latestRef.current = {
+      onFileReplaced,
+      keptFileIds,
+      shownFiles,
+      missingFileIds,
+    }
   })
 
   function addShownFile(shown: BackgroundMedia) {
     setShownFiles((files) => new Map(files).set(shown.fileId, shown))
   }
 
-  // Reads the current file the first time it's shown.
+  // Settings from before the shared files may still point to a file saved the old way.
   useEffect(() => {
+    if (fileId) return
     const load = new AbortController()
-    if (!fileId) {
-      // Settings from before the shared files may still point to a file saved the old way.
-      moveLegacyBackgroundFile().then((movedFileId) => {
-        if (movedFileId && !load.signal.aborted)
-          latestRef.current.onFileReplaced(movedFileId)
-      })
-      return () => load.abort()
-    }
-    if (latestRef.current.shownFiles.has(fileId)) return
-    readBackgroundFile(fileId).then((loaded) => {
-      if (load.signal.aborted) return
-      if (loaded) return addShownFile(toShownMedia(loaded))
-      // Kept as the setting, so undo and redo stay true; the tile says it's gone.
-      setMissingFileIds((fileIds) => new Set(fileIds).add(fileId))
+    moveLegacyBackgroundFile().then((movedFileId) => {
+      if (movedFileId && !load.signal.aborted)
+        latestRef.current.onFileReplaced(movedFileId)
     })
     return () => load.abort()
   }, [fileId])
+
+  // Reads each kept file (the current one and the packs') the first time it's needed.
+  useEffect(() => {
+    const load = new AbortController()
+    const { shownFiles: shown, missingFileIds: missing } = latestRef.current
+    for (const keptFileId of latestRef.current.keptFileIds) {
+      if (shown.has(keptFileId) || missing.has(keptFileId)) continue
+      readBackgroundFile(keptFileId).then((loaded) => {
+        if (load.signal.aborted) return
+        if (loaded) return addShownFile(toShownMedia(loaded))
+        // Kept as the setting, so undo and redo stay true; the tile says it's gone.
+        setMissingFileIds((fileIds) => new Set(fileIds).add(keptFileId))
+      })
+    }
+    return () => load.abort()
+  }, [keptFileIdsKey])
 
   // After any change of which files are used: drop the rest, then free what can't be shown.
   useEffect(() => {
@@ -156,6 +173,8 @@ export function useBackgroundMedia({
     isMissing: !media && fileId !== null && missingFileIds.has(fileId),
     chooseFile,
     remove: () => onFileChange(null),
+    /** A kept file (e.g. a pack's) to show, once it's read. */
+    getShownFile: (shownFileId: string) => shownFiles.get(shownFileId) ?? null,
     /** Why the last chosen file couldn't be the background, until acknowledged. */
     roomProblem,
     dismissRoomProblem: () => setRoomProblem(null),

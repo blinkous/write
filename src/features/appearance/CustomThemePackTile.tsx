@@ -1,11 +1,17 @@
 import { RefreshCw, Trash2 } from 'lucide-react'
 import { ActionList, MenuItem, OptionsMenu } from '../../design-system'
 import type { CustomThemePack } from './customThemePacks'
-import { ThemePackTile, type StyleWithVariables } from './ThemePackTile'
+import {
+  ThemePackTile,
+  type StyleWithVariables,
+  type TileBackground,
+} from './ThemePackTile'
 import styles from './ThemePackPicker.module.css'
 
 type CustomThemePackTileProps = {
   pack: CustomThemePack
+  /** Its picture or video, once read. */
+  background: TileBackground | null
   isChosen: boolean
   /** Off while the pack already is what's showing. */
   canUpdate: boolean
@@ -22,6 +28,7 @@ type CustomThemePackTileProps = {
  */
 export function CustomThemePackTile({
   pack,
+  background,
   isChosen,
   canUpdate,
   onSelect,
@@ -35,7 +42,12 @@ export function CustomThemePackTile({
   }
   return (
     <div className={styles.customTile} style={optionsColor}>
-      <ThemePackTile pack={pack} isChosen={isChosen} onSelect={onSelect} />
+      <ThemePackTile
+        pack={pack}
+        background={background}
+        isChosen={isChosen}
+        onSelect={onSelect}
+      />
       <OptionsMenu label={`${label} options`} className={styles.packOptions}>
         {(close) => (
           <ActionList>
