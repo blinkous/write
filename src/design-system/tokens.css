@@ -230,6 +230,8 @@
   /* Motion: small UI changes only (color changes stay instant). */
   --duration-quick: 180ms;
   --duration-medium: 260ms;
+  /* Long enough to catch the eye: a button flashing when its shortcut is used. */
+  --duration-flash: 700ms;
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
 
   /* Layout */

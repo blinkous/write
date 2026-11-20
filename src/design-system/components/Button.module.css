@@ -46,15 +46,15 @@
 }
 
 /*
- * A flash (see Button's flashCount): the hover look, fading back. With less
- * motion it holds, then goes, without fading.
+ * A flash (see Button's flashCount): the hover look, held a moment, then
+ * fading back. With less motion it holds, then goes, without fading.
  */
 .button[data-flash='odd'] {
-  animation: flash-odd var(--duration-medium) var(--easing-standard);
+  animation: flash-odd var(--duration-flash) var(--easing-standard);
 }
 
 .button[data-flash='even'] {
-  animation: flash-even var(--duration-medium) var(--easing-standard);
+  animation: flash-even var(--duration-flash) var(--easing-standard);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -64,14 +64,16 @@
 }
 
 @keyframes flash-odd {
-  from {
+  0%,
+  40% {
     background: var(--color-shade);
     color: var(--color-text);
   }
 }
 
 @keyframes flash-even {
-  from {
+  0%,
+  40% {
     background: var(--color-shade);
     color: var(--color-text);
   }
