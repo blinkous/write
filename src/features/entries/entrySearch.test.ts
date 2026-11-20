@@ -51,6 +51,25 @@ describe('searchEntries', () => {
     expect(searchEntries(entries, 'sunday')[0].snippet).toBeNull()
   })
 
+  it('finds pictures by their alt text, shown in the snippet', () => {
+    const withPicture: JournalEntry = {
+      ...entryWith('Lazy day.', 'Sunday'),
+      content: {
+        type: 'doc',
+        content: [
+          { type: 'paragraph', content: [{ type: 'text', text: 'Lazy day.' }] },
+          {
+            type: 'image',
+            attrs: { imageId: `${'a'.repeat(64)}.gif`, alt: 'A sleepy cat' },
+          },
+        ],
+      },
+    }
+    const [match] = searchEntries([...entries, withPicture], 'cat')
+    expect(match.entry).toBe(withPicture)
+    expect(match.snippet?.text).toBe('Lazy day. A sleepy cat')
+  })
+
   it('trims long snippets with ellipses around the match', () => {
     const long = entryWith(
       `${'a'.repeat(100)} needle ${'b'.repeat(100)}`,

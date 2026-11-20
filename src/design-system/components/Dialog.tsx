@@ -36,6 +36,12 @@ type DialogProps = {
    * action. Nothing is focused until that Tab either way.
    */
   firstTabStopRef?: RefObject<HTMLElement | null>
+  /**
+   * For a dialog that's there to type in (e.g. alt text): its field, focused
+   * on open so typing starts at once. Enter there is the dialog's own action,
+   * so nothing can be pressed by mistake.
+   */
+  initialFocusRef?: RefObject<HTMLElement | null>
 }
 
 /** Whether a pointer event landed on the backdrop, outside the dialog's box. */
@@ -75,7 +81,8 @@ function cycleFocusWithin(
  *
  * It takes focus itself rather than its first button: nothing looks chosen
  * until Tab, and a stray Enter or Space can't press anything before the
- * dialog is read. Screen readers still announce it, by its title.
+ * dialog is read. Screen readers still announce it, by its title. A dialog
+ * that's there to type in focuses its field instead (initialFocusRef).
  */
 export function Dialog({
   isOpen,
@@ -86,6 +93,7 @@ export function Dialog({
   onClose,
   opensUnprompted = false,
   firstTabStopRef,
+  initialFocusRef,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
@@ -97,10 +105,11 @@ export function Dialog({
     if (!dialog) return
     if (isOpen && !dialog.open) {
       dialog.showModal()
-      dialog.focus()
+      const firstFocus = initialFocusRef?.current ?? dialog
+      firstFocus.focus()
     }
     if (!isOpen && dialog.open) dialog.close()
-  }, [isOpen])
+  }, [isOpen, initialFocusRef])
 
   return (
     <dialog

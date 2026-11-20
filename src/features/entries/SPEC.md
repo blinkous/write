@@ -23,7 +23,7 @@ import.
   shown on hover, focus or while open (always on touch). Delete always confirms; deleting
   another entry keeps the open one open; deleting the open one opens the one that took its
   place.
-- **Search** filters as you type by name and text, ignoring case and accents; every word
+- **Search** filters as you type by name and text (pictures' alt text included), ignoring case and accents; every word
   must match, in any order. Matches are highlighted, with a snippet in place of the date
   when the match is in the text. The count is announced. Escape clears; a new entry clears
   the search (it wouldn't match). While focused, the field takes the whole bar.

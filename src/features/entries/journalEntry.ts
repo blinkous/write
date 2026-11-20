@@ -116,9 +116,26 @@ function getBlockTexts({ content = [] }: JSONContent): string[] {
   return content.map((block) => collectText(block).trim()).filter(Boolean)
 }
 
-/** All of an entry's text, one space between blocks, for searching. */
+/** A block's text with its pictures' descriptions in place (set apart by spaces), so searching finds them. */
+function collectSearchText({
+  type,
+  attrs,
+  text = '',
+  content = [],
+}: JSONContent): string {
+  const alt =
+    type === IMAGE_NODE_NAME && typeof attrs?.alt === 'string'
+      ? ` ${attrs.alt} `
+      : ''
+  return text + alt + content.map(collectSearchText).join('')
+}
+
+/** All of an entry's text, pictures' alt text included, one space between blocks, for searching. */
 export function getEntryText({ content }: JournalEntry): string {
-  return getBlockTexts(content).join(' ')
+  return (content.content ?? [])
+    .map((block) => collectSearchText(block).trim())
+    .filter(Boolean)
+    .join(' ')
 }
 
 /** The first picture's description ("Picture" without one), or null if there are no pictures. */

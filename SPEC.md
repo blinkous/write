@@ -100,7 +100,8 @@ Fields added later must load from older data without them.
   re-render made WebKit's memory climb by hundreds of MB. Panels are anchored only while
   open: WebKit hangs when a menu closes with closed, still-anchored menus inside it.
 - **Dialogs** are native `<dialog>`s and take focus themselves, so a stray Enter can't press
-  anything. One you opened has a × in its top right corner and also closes on a click
+  anything. One that's there to type in (alt text) focuses its field instead, where Enter
+  is its own action. One you opened has a × in its top right corner and also closes on a click
   outside or Escape; one that opened by itself (Save failed) has no × and needs a button,
   so it can't be dismissed unread. Confirmations put Cancel first.
   Tab wraps through every control in every browser. No browser popups.

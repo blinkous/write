@@ -41,7 +41,7 @@ export function AltTextDialog({
       isOpen={isOpen}
       title="Alt text"
       onClose={onClose}
-      firstTabStopRef={inputRef}
+      initialFocusRef={inputRef}
       actions={
         <>
           <Button variant="subtle" onClick={onClose}>

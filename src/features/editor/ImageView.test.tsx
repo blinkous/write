@@ -57,13 +57,14 @@ describe('pictures in the writing', () => {
     await user.click(
       screen.getByRole('button', { name: 'Alt text', hidden: true }),
     )
-    await user.type(
+    // Typing starts at once: the field has focus.
+    expect(
       screen.getByRole('textbox', {
         name: 'Describe the picture',
         hidden: true,
       }),
-      'A sleepy cat{Enter}',
-    )
+    ).toHaveFocus()
+    await user.keyboard('A sleepy cat{Enter}')
     await waitFor(() =>
       expect(screen.getByRole('img', { name: 'A sleepy cat' })).toBeVisible(),
     )
