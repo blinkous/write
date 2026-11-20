@@ -1,8 +1,8 @@
-import { saveTextFile } from './saveFile'
+import { saveFile } from './saveFile'
 
 const options = {
   suggestedName: 'journal.json',
-  text: '{}',
+  contents: '{}',
   mimeType: 'application/json',
   description: 'Journal export',
   extension: '.json',
@@ -13,7 +13,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('saveTextFile', () => {
+describe('saveFile', () => {
   it('asks where to save and writes to the chosen file', async () => {
     const write = vi.fn()
     const showSaveFilePicker = vi.fn().mockResolvedValue({
@@ -21,7 +21,7 @@ describe('saveTextFile', () => {
       createWritable: async () => ({ write, close: vi.fn() }),
     })
     window.showSaveFilePicker = showSaveFilePicker
-    await expect(saveTextFile(options)).resolves.toEqual({
+    await expect(saveFile(options)).resolves.toEqual({
       status: 'saved',
       fileName: 'chosen-name.json',
     })
@@ -31,11 +31,26 @@ describe('saveTextFile', () => {
     expect(write).toHaveBeenCalledWith('{}')
   })
 
+  it('reads what to save only once the dialog has opened', async () => {
+    const write = vi.fn()
+    const showSaveFilePicker = vi.fn().mockResolvedValue({
+      name: 'journal.json',
+      createWritable: async () => ({ write, close: vi.fn() }),
+    })
+    window.showSaveFilePicker = showSaveFilePicker
+    const contents = vi.fn(async () => {
+      expect(showSaveFilePicker).toHaveBeenCalled()
+      return '{"read":"late"}'
+    })
+    await saveFile({ ...options, contents })
+    expect(write).toHaveBeenCalledWith('{"read":"late"}')
+  })
+
   it('saves nothing when the dialog is cancelled', async () => {
     window.showSaveFilePicker = vi
       .fn()
       .mockRejectedValue(new DOMException('', 'AbortError'))
-    await expect(saveTextFile(options)).resolves.toEqual({
+    await expect(saveFile(options)).resolves.toEqual({
       status: 'cancelled',
     })
   })
@@ -44,7 +59,7 @@ describe('saveTextFile', () => {
     window.showSaveFilePicker = vi
       .fn()
       .mockRejectedValue(new DOMException('', 'NotAllowedError'))
-    await expect(saveTextFile(options)).rejects.toThrow()
+    await expect(saveFile(options)).rejects.toThrow()
   })
 
   it('falls back to a download where the dialog is unavailable', async () => {
@@ -53,7 +68,7 @@ describe('saveTextFile', () => {
       .mockImplementation(() => {})
     URL.createObjectURL = vi.fn(() => 'blob:test')
     URL.revokeObjectURL = vi.fn()
-    await expect(saveTextFile(options)).resolves.toEqual({
+    await expect(saveFile(options)).resolves.toEqual({
       status: 'downloaded',
       fileName: 'journal.json',
     })

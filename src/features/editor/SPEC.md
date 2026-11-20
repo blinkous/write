@@ -8,7 +8,7 @@ The rich-text writing surface for one entry, and its toolbar.
   it centers between the sidebar toggle and the ⋯, then scrolls sideways with faded ends.
 - **Three groups**, broadest first. **Text:** style, font, color, bold, italic, underline,
   strikethrough, then glow, case and letter spacing. **Markup:** lists, quote, code and
-  code block (together, since both mean "this is code"). **Page:** margins, spacing.
+  code block (together, since both mean "this is code"), then Insert picture. **Page:** margins, spacing.
 - **Every control shows what's in effect, the text style's included:** bold is pressed in
   a bold style, and pressing it turns bold off for that text.
 - **Choosing what the style already gives removes the text's own**, so it follows its style
@@ -33,6 +33,26 @@ The rich-text writing surface for one entry, and its toolbar.
   change are separate undo steps (settings' undo and the editor's).
 - **Update text to match style** clears the selected paragraphs' own look; links and code
   stay.
+
+## Pictures
+
+- **Adding:** Insert picture (toolbar, or a shortcut someone sets) opens the file picker;
+  pasting one (a screenshot, a copied file) or dropping files adds them too, where the
+  cursor is or where they're dropped. Several at once go in order. Off in the title.
+- A file that can't go in (wrong format, over 20 MB, storage full) is left out and a toast
+  says why. Pictures pasted from a web page are left out (the journal never goes online),
+  and the toast says so; the rest of the paste goes in.
+- **On the page:** its own line, at its own size up to the text's width. Click or arrow to
+  select it (ringed); Backspace deletes, ⌥↑ / ⌥↓ move it like any block.
+- **Its ⋯** (on hover, focus, or while selected) has **Alt text** (a dialog to describe it,
+  for screen readers and markdown) and **Delete picture**; a GIF's also has **Pause GIF** /
+  **Play GIF**, kept with the picture.
+- **GIFs follow the system until someone chooses:** still when it asks for less motion. A
+  paused GIF shows its first frame (browsers can't pause one in place).
+- A picture not on this device (site data cleared) shows as a not-found tile, still
+  described by its alt text.
+- Copying between entries keeps pictures. Other apps get the alt text, since they can't
+  read the journal's storage; markdown copies link to `images/<name>`.
 
 ## Colors and glow
 

@@ -1,8 +1,12 @@
 import '@testing-library/jest-dom/vitest'
 
+// Tests that don't need a DOM can run in Node (`@vitest-environment node`), so
+// DOM stand-ins are added only where there's a DOM.
+const hasDom = typeof HTMLElement !== 'undefined'
+
 // jsdom lacks the Popover API: popovers open and close as browsers do (a
 // popovertarget click toggles them, firing beforetoggle then toggle), minus layout.
-if (!('showPopover' in HTMLElement.prototype)) {
+if (hasDom && !('showPopover' in HTMLElement.prototype)) {
   const openPopovers = new WeakSet<HTMLElement>()
   function fireToggle(popover: HTMLElement, type: string, newState: string) {
     popover.dispatchEvent(Object.assign(new Event(type), { newState }))
@@ -45,7 +49,7 @@ if (!('showPopover' in HTMLElement.prototype)) {
 }
 
 // jsdom lacks modal dialogs: opening shows the dialog; closing hides it and fires "close", as browsers do.
-if (!('showModal' in HTMLDialogElement.prototype)) {
+if (hasDom && !('showModal' in HTMLDialogElement.prototype)) {
   Object.defineProperties(HTMLDialogElement.prototype, {
     showModal: {
       value(this: HTMLDialogElement) {

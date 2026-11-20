@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { createDocumentComparer, parseDocument } from '../../journal-document'
+import { isImageId } from '../../journal-images'
+import { base64ToBytes } from '../../utils/base64'
 import { migrateEntryFromFormat1 } from './entryMigration'
 import {
   entryTitleSchema,
@@ -17,9 +19,7 @@ const EXPORT_FORMAT = 'write-journal'
 const EXPORT_VERSION = 2
 const FORMAT_1_VERSION = 1
 
-/** Large enough for years of writing, small enough not to freeze the tab. */
-const MAX_IMPORT_FILE_BYTES = 20 * 1024 * 1024
-const MAX_IMPORT_ENTRIES = 10_000
+/* No cap on a file's size or entries: whatever the app exports, it can import. */
 const MAX_ENTRY_ID_LENGTH = 100
 
 export const JOURNAL_FILE_MIME_TYPE = 'application/json'
@@ -28,18 +28,18 @@ export const JOURNAL_FILE_MIME_TYPE = 'application/json'
 const exportFileSchema = z.object({
   format: z.literal(EXPORT_FORMAT),
   version: z.union([z.literal(FORMAT_1_VERSION), z.literal(EXPORT_VERSION)]),
-  entries: z
-    .array(
-      z.object({
-        id: z.string().min(1).max(MAX_ENTRY_ID_LENGTH),
-        createdAt: z.iso.datetime(),
-        updatedAt: z.iso.datetime(),
-        title: entryTitleSchema,
-        titleContent: z.unknown().optional(),
-        content: z.unknown(),
-      }),
-    )
-    .max(MAX_IMPORT_ENTRIES),
+  entries: z.array(
+    z.object({
+      id: z.string().min(1).max(MAX_ENTRY_ID_LENGTH),
+      createdAt: z.iso.datetime(),
+      updatedAt: z.iso.datetime(),
+      title: entryTitleSchema,
+      titleContent: z.unknown().optional(),
+      content: z.unknown(),
+    }),
+  ),
+  /** The pictures the entries show, by content name, as base64 (checked against their names when restored). */
+  images: z.record(z.string(), z.string()).optional(),
   /** Settings saved alongside (see serializeEntries); read by whoever imports settings. */
   settings: z.unknown().optional(),
 })
@@ -52,25 +52,48 @@ type SerializeOptions = {
    * import the entries.
    */
   settings?: unknown
+  /** The entries' pictures, by content name, as base64 (see readEntryImages). */
+  images?: Readonly<Record<string, string>>
 }
 
 export function serializeEntries(
   entries: readonly JournalEntry[],
-  { exportedAt = new Date(), settings }: SerializeOptions = {},
+  { exportedAt = new Date(), settings, images = {} }: SerializeOptions = {},
 ): string {
   const exportFile = {
     format: EXPORT_FORMAT,
     version: EXPORT_VERSION,
     exportedAt: exportedAt.toISOString(),
     entries,
+    ...(Object.keys(images).length > 0 && { images }),
     ...(settings !== undefined && { settings }),
   }
   return `${JSON.stringify(exportFile, null, 2)}\n`
 }
 
+/** Pictures by content name, as read from a file (not yet checked against their names). */
+export type ImportedImages = Map<string, Uint8Array<ArrayBuffer>>
+
 type ParseResult =
-  | { ok: true; entries: JournalEntry[]; settings?: unknown }
+  | {
+      ok: true
+      entries: JournalEntry[]
+      images: ImportedImages
+      settings?: unknown
+    }
   | { ok: false; reason: string }
+
+function parseImages(
+  rawImages: Record<string, string> = {},
+): ImportedImages | null {
+  const images: ImportedImages = new Map()
+  for (const [imageId, base64] of Object.entries(rawImages)) {
+    const bytes = base64ToBytes(base64)
+    if (!isImageId(imageId) || !bytes) return null
+    images.set(imageId, bytes)
+  }
+  return images
+}
 
 /** Validates an export file. All-or-nothing: one bad entry rejects the whole file. */
 export function parseEntriesFile(fileText: string): ParseResult {
@@ -100,17 +123,18 @@ export function parseEntriesFile(fileText: string): ParseResult {
       content,
     })
   }
+  const images = parseImages(fileResult.data.images)
+  if (!images) return { ok: false, reason: 'A picture in it is damaged.' }
   const isFormat1 = fileResult.data.version === FORMAT_1_VERSION
   return {
     ok: true,
     entries: isFormat1 ? entries.map(migrateEntryFromFormat1) : entries,
+    images,
     settings: fileResult.data.settings,
   }
 }
 
 export async function readEntriesFile(file: File): Promise<ParseResult> {
-  if (file.size > MAX_IMPORT_FILE_BYTES)
-    return { ok: false, reason: 'The file is too large.' }
   return parseEntriesFile(await file.text())
 }
 

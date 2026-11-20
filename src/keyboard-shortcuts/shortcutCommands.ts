@@ -87,6 +87,13 @@ export const SHORTCUT_COMMANDS = [
     scope: 'editor',
   },
   {
+    id: 'insert-image',
+    label: 'Insert picture',
+    group: 'Markup',
+    defaultShortcut: null,
+    scope: 'editor',
+  },
+  {
     id: 'text-style-body',
     label: TEXT_STYLE_LABELS['body'],
     group: 'Text styles',

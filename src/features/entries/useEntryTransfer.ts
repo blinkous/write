@@ -3,7 +3,11 @@ import {
   copyRichTextToClipboard,
   type RichClipboardContent,
 } from '../../lib/clipboard'
-import { describeSaveResult, saveTextFile } from '../../lib/saveFile'
+import {
+  describeSaveResult,
+  saveFile,
+  type SaveFileOptions,
+} from '../../lib/saveFile'
 import {
   describeImport,
   getEntryFileName,
@@ -13,10 +17,10 @@ import {
   readEntriesFile,
   serializeEntries,
 } from './entryTransfer'
+import { readEntryImages, restoreEntryImages } from './entryImages'
 import type { JournalEntry } from './journalEntry'
 import {
-  getJournalMarkdownFileName,
-  journalToMarkdown,
+  journalMarkdownExport,
   type ContentToMarkdown,
 } from './journalMarkdown'
 
@@ -34,8 +38,6 @@ type UseEntryTransferOptions = {
   onStatus: (message: ToastMessage) => void
 }
 
-const MARKDOWN_MIME_TYPE = 'text/markdown'
-
 /**
  * Reads settings found in an imported journal file (opaque to entries):
  * null if there are none it can use; otherwise how to apply them and what to
@@ -45,18 +47,43 @@ export type AttachedSettingsImporter = (
   rawSettings: unknown,
 ) => { apply?: () => void; status: string } | null
 
+/** The entries with the pictures they show (read once saving starts), so the file restores them whole. */
 function jsonExport(
   entriesToExport: readonly JournalEntry[],
   suggestedName: string,
   settings?: unknown,
-) {
+): SaveFileOptions {
   return {
     suggestedName,
-    text: serializeEntries(entriesToExport, { settings }),
+    contents: async () =>
+      serializeEntries(entriesToExport, {
+        settings,
+        images: await readEntryImages(entriesToExport),
+      }),
     mimeType: JOURNAL_FILE_MIME_TYPE,
     description: 'Journal export',
     extension: '.json',
-  } as const
+  }
+}
+
+/** Reading the journal failed (rather than saving the file). */
+class JournalReadError extends Error {}
+
+/** What to save, with any failure to read it told apart from failing to save. */
+function readingAsJournal({
+  contents,
+  ...file
+}: SaveFileOptions): SaveFileOptions {
+  return {
+    ...file,
+    contents: async () => {
+      try {
+        return typeof contents === 'function' ? await contents() : contents
+      } catch {
+        throw new JournalReadError()
+      }
+    },
+  }
 }
 
 export function useEntryTransfer({
@@ -67,29 +94,33 @@ export function useEntryTransfer({
   addEntries,
   onStatus,
 }: UseEntryTransferOptions) {
+  const READ_FAILED: ToastMessage = {
+    text: 'Couldn’t read the journal to export.',
+    tone: 'warning',
+  }
+
   /**
-   * Called straight from the menu click: the save dialog needs a user action
-   * (reading the entries first is quick enough to still count as one).
+   * Called straight from the menu click: the save dialog needs a user action.
+   * Reading the entries first is quick enough to still count as one; anything
+   * slow (pictures) is read once the dialog is open (see SaveFileOptions).
    */
-  async function saveExport(
-    readFile: () => Promise<Parameters<typeof saveTextFile>[0]>,
-  ) {
+  async function saveExport(readFile: () => Promise<SaveFileOptions>) {
     let file
     try {
-      file = await readFile()
+      file = readingAsJournal(await readFile())
     } catch {
-      onStatus({
-        text: 'Couldn’t read the journal to export.',
-        tone: 'warning',
-      })
+      onStatus(READ_FAILED)
       return
     }
     try {
-      const result = await saveTextFile(file)
-      const message = describeSaveResult(result)
+      const message = describeSaveResult(await saveFile(file))
       if (message) onStatus(message)
-    } catch {
-      onStatus({ text: 'Couldn’t save the file.', tone: 'warning' })
+    } catch (error) {
+      onStatus(
+        error instanceof JournalReadError
+          ? READ_FAILED
+          : { text: 'Couldn’t save the file.', tone: 'warning' },
+      )
     }
   }
 
@@ -129,13 +160,9 @@ export function useEntryTransfer({
         jsonExport(await getAllEntries(), getJournalFileName(), settings),
       ),
     exportAllAsMarkdown: () =>
-      saveExport(async () => ({
-        suggestedName: getJournalMarkdownFileName(),
-        text: journalToMarkdown(await getAllEntries(), contentToMarkdown),
-        mimeType: MARKDOWN_MIME_TYPE,
-        description: 'Markdown',
-        extension: '.md',
-      })),
+      saveExport(async () =>
+        journalMarkdownExport(await getAllEntries(), contentToMarkdown),
+      ),
 
     /**
      * Accepts a single-entry or whole-journal export; both use the same
@@ -159,6 +186,14 @@ export function useEntryTransfer({
       } catch {
         onStatus({
           text: 'Couldn’t read the journal to import into.',
+          tone: 'warning',
+        })
+        return
+      }
+      // Pictures first, so no entry is added showing one that isn't there.
+      if (!(await restoreEntryImages(parseResult.images))) {
+        onStatus({
+          text: 'Couldn’t import: a picture in it is damaged or couldn’t be saved.',
           tone: 'warning',
         })
         return

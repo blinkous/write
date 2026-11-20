@@ -1,11 +1,12 @@
 # Write
 
 A minimal, private web journal: a clean writing page with adjustable fonts, text styles,
-margins, spacing and colors, per-text color, glow and case, and export as markdown or JSON.
+margins, spacing and colors, per-text color, glow and case, pictures and GIFs, and export as
+markdown or JSON.
 
 ## Hard rules
 
-- **Local only.** Entries and the background file live in IndexedDB, settings in
+- **Local only.** Entries, their pictures and background files live in IndexedDB, settings in
   `localStorage`. No accounts, servers or analytics.
 - **No network at runtime.** Fonts are bundled, so the app works offline.
 - **Locked-down origin.** Builds ship a Content Security Policy allowing only the app's own
@@ -56,8 +57,8 @@ style changes. Revisit if it's missed in practice.
 
 ## Out of scope
 
-Sync, sharing, images or attachments in entries, page breaks and print layout (the page
-scrolls endlessly).
+Sync, sharing, attachments other than pictures, pictures from the web, page breaks and
+print layout (the page scrolls endlessly).
 
 ## Storage
 
@@ -79,7 +80,8 @@ scrolls endlessly).
 
 IndexedDB `write-journal`: `entry` (one record per entry, format 2), `meta` (when entries
 moved from localStorage) and `backup` (unreadable records, with when and where).
-IndexedDB `write-files`: background pictures and videos, the current one's and theme packs', 250 MB together.
+IndexedDB `write-files`: background pictures and videos, the current one's and theme packs', 250 MB together;
+and entries' pictures, 20 MB each (see journal-images).
 
 Bump a key's `vN` when its format changes incompatibly and migrate from the old key once.
 Fields added later must load from older data without them.
@@ -146,6 +148,6 @@ Fields added later must load from older data without them.
 ## Layout
 
 `src/app` composes features; `src/features/*` are user-facing capabilities, each with a
-`SPEC.md`; `src/journal-document`, `src/text-styles`, `src/fonts` and
+`SPEC.md`; `src/journal-document`, `src/journal-images`, `src/text-styles`, `src/fonts` and
 `src/keyboard-shortcuts` are shared by several features; `src/design-system` holds tokens and base components; `src/lib` and `src/utils`
 hold framework-free helpers.

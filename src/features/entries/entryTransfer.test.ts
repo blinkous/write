@@ -31,6 +31,31 @@ describe('serializeEntries / parseEntriesFile', () => {
     expect('settings' in JSON.parse(serializeEntries(entries))).toBe(false)
   })
 
+  it('carries the entries’ pictures, and none when there are none', () => {
+    const imageId = `${'a'.repeat(64)}.gif`
+    const entries = [createWrittenEntry('with a picture')]
+    const result = parseEntriesFile(
+      serializeEntries(entries, { images: { [imageId]: 'Y2F0' } }),
+    )
+    const images = result.ok ? [...result.images] : []
+    expect(
+      images.map(([id, bytes]) => [id, new TextDecoder().decode(bytes)]),
+    ).toEqual([[imageId, 'cat']])
+    expect('images' in JSON.parse(serializeEntries(entries))).toBe(false)
+  })
+
+  it('rejects a file with a damaged or misnamed picture', () => {
+    const entries = [createWrittenEntry('with a picture')]
+    for (const images of [
+      { [`${'a'.repeat(64)}.gif`]: 'not base64!' },
+      { 'https://example.com/cat.gif': 'Y2F0' },
+    ])
+      expect(parseEntriesFile(serializeEntries(entries, { images }))).toEqual({
+        ok: false,
+        reason: 'A picture in it is damaged.',
+      })
+  })
+
   it('round-trips entries', () => {
     const entries = [createWrittenEntry('one'), createWrittenEntry('two')]
     const result = parseEntriesFile(serializeEntries(entries))

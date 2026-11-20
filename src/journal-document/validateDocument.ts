@@ -1,6 +1,7 @@
 import { getSchema, type JSONContent } from '@tiptap/core'
 import { Node as ProseMirrorNode, type Schema } from '@tiptap/pm/model'
 import { documentExtensions } from './documentExtensions'
+import { hasValidImageAttributes, IMAGE_NODE_NAME } from './journalImage'
 import { titleExtensions } from './titleExtensions'
 
 const documentSchema = getSchema(documentExtensions)
@@ -16,8 +17,23 @@ function toNode(schema: Schema, content: unknown): ProseMirrorNode | null {
   }
 }
 
+/* Pictures are named by their content; a document naming one any other way is rejected. */
+function hasOnlyValidImages(document: ProseMirrorNode): boolean {
+  let isValid = true
+  document.descendants((node) => {
+    if (
+      node.type.name === IMAGE_NODE_NAME &&
+      !hasValidImageAttributes(node.attrs)
+    )
+      isValid = false
+    return isValid
+  })
+  return isValid
+}
+
 function toDocumentNode(content: unknown): ProseMirrorNode | null {
-  return toNode(documentSchema, content)
+  const document = toNode(documentSchema, content)
+  return document && hasOnlyValidImages(document) ? document : null
 }
 
 /** A clean copy of a styled title if it is valid for the title schema, otherwise null. */

@@ -96,10 +96,14 @@ export function App({ journal }: AppProps) {
   // The app follows only which entry is open and the sort, never the writing (see Journal).
   const openEntry = useJournalState(journal, (state) => state.openEntry)
   const sort = useJournalState(journal, (state) => state.sort)
+  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
+  const dismissToast = useCallback(() => setToastMessage(null), [])
   const editor = useJournalEditor({
     entryId: openEntry.id,
     initialContent: openEntry.initialContent,
     onChange: journal.updateEntryContent,
+    onImageProblem: (problem) =>
+      setToastMessage({ text: problem, tone: 'warning' }),
   })
   const titleEditor = useTitleEditor({
     journal,
@@ -119,8 +123,6 @@ export function App({ journal }: AppProps) {
   }
   useTextStyleBlocks(editor, pageTheme.textStyles, false)
   useTextStyleBlocks(titleEditor, pageTheme.textStyles, true)
-  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
-  const dismissToast = useCallback(() => setToastMessage(null), [])
   const { backgroundMedia, packActions } = useThemeBackground({
     pageTheme,
     customPacks: customThemePacks,

@@ -1,6 +1,6 @@
 import type { JSONContent } from '@tiptap/react'
 import { z } from 'zod'
-import { parseTitleContent } from '../../journal-document'
+import { IMAGE_NODE_NAME, parseTitleContent } from '../../journal-document'
 
 export type JournalEntry = {
   id: string
@@ -112,10 +112,26 @@ export function getEntryText({ content }: JournalEntry): string {
   return getBlockTexts(content).join(' ')
 }
 
-/** The first line of text, which names an untitled entry. */
+/** The first picture's description ("Picture" without one), or null if there are no pictures. */
+function describeFirstPicture(node: JSONContent): string | null {
+  if (node.type === IMAGE_NODE_NAME) {
+    const alt = node.attrs?.alt
+    return (typeof alt === 'string' && alt.trim()) || 'Picture'
+  }
+  for (const child of node.content ?? []) {
+    const description = describeFirstPicture(child)
+    if (description) return description
+  }
+  return null
+}
+
+/**
+ * The first line of text, which names an untitled entry. One with only
+ * pictures is named by the first (so it's never mistaken for a blank one).
+ */
 export function getFirstLine(content: JSONContent): string | null {
   const [firstBlockText] = getBlockTexts(content)
-  return firstBlockText ?? null
+  return firstBlockText ?? describeFirstPicture(content)
 }
 
 export function summarizeEntry({

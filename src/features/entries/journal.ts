@@ -5,6 +5,7 @@ import {
   saveEntrySort,
   saveSelectedEntryId,
 } from './entriesStorage'
+import { deleteImagesNoEntryShows } from './entryImages'
 import type { EntryStore } from './entryStore'
 import { sortEntryIds, type EntrySort } from './entrySort'
 import {
@@ -71,6 +72,10 @@ export async function openJournal({ entryStore }: JournalOptions) {
   let state: JournalState = { entryIds, selectedEntryId, openEntry, sort }
   const listeners = new Set<() => void>()
   saveSelectedEntryId(selectedEntryId)
+  // In the background; if the entries can't be read, nothing is deleted.
+  deleteImagesNoEntryShows(() => entryStore.getAllEntries()).catch(
+    () => undefined,
+  )
 
   async function loadOpenEntry(entryId: string): Promise<OpenEntry> {
     const entry = await entryStore.getEntry(entryId)

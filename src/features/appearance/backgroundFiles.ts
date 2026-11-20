@@ -1,11 +1,9 @@
 import { z } from 'zod'
+import { deleteBlob, readBlob } from '../../lib/blobStore'
 import {
-  deleteBlob,
-  hasBlob,
-  listBlobKeys,
-  readBlob,
-  writeBlob,
-} from '../../lib/blobStore'
+  createContentFileStore,
+  getContentFileId,
+} from '../../lib/contentFileStore'
 import { readStoredValue } from '../../lib/localStore'
 import {
   BACKGROUND_MEDIA_STORAGE_KEY,
@@ -18,9 +16,7 @@ import {
  * background and theme packs point to the same stored bytes, named by their
  * content. A file is deleted once neither does (undo doesn't keep files).
  */
-
-/** Stored files are named by this plus their content's SHA-256. */
-const BACKGROUND_FILE_KEY_PREFIX = 'background-file:'
+const backgroundFileStore = createContentFileStore('background-file:')
 
 /**
  * Briefly, which stored file was the current background (localStorage). It's
@@ -38,29 +34,8 @@ export type StoredBackgroundFile = {
   bytes: number
 }
 
-function toFileKey(fileId: string): string {
-  return `${BACKGROUND_FILE_KEY_PREFIX}${fileId}`
-}
-
 /** A file's content name: the same file always gets the same one. */
-export async function getBackgroundFileId(file: Blob): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
-  return Array.from(new Uint8Array(digest), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('')
-}
-
-/*
- * One change at a time: a file is written before anything points to it, and
- * unused files are only swept between changes, never in the middle of one.
- */
-let pendingChange: Promise<unknown> = Promise.resolve()
-
-function inOrder<Result>(change: () => Promise<Result>): Promise<Result> {
-  const result = pendingChange.then(change, change)
-  pendingChange = result.catch(() => undefined)
-  return result
-}
+export const getBackgroundFileId = getContentFileId
 
 /** Keeps the file (once, however often it's stored). Null if it isn't a picture or video or can't be saved. */
 async function storeFile(
@@ -69,10 +44,9 @@ async function storeFile(
 ): Promise<StoredBackgroundFile | null> {
   const kind = getBackgroundMediaKind(file.type)
   if (!kind) return null
-  fileId ??= await getBackgroundFileId(file)
-  const key = toFileKey(fileId)
-  if (!(await hasBlob(key)) && !(await writeBlob(key, file))) return null
-  return { fileId, kind, bytes: file.size }
+  const storedFileId = await backgroundFileStore.write(file, fileId)
+  if (!storedFileId) return null
+  return { fileId: storedFileId, kind, bytes: file.size }
 }
 
 /** Stores a background file under its content name. Null if it isn't a picture or video or couldn't be saved. */
@@ -80,7 +54,7 @@ export function storeBackgroundFile(
   file: Blob,
   fileId: string,
 ): Promise<StoredBackgroundFile | null> {
-  return inOrder(() => storeFile(file, fileId))
+  return backgroundFileStore.inOrder(() => storeFile(file, fileId))
 }
 
 /** The current background as briefly saved on its own, for settings saved before it was one of them. */
@@ -98,7 +72,7 @@ export function readLegacyCurrentBackgroundFileId(): string | null {
  * an interrupted move simply runs again. The caller makes it the current one.
  */
 export function moveLegacyBackgroundFile(): Promise<string | null> {
-  return inOrder(async () => {
+  return backgroundFileStore.inOrder(async () => {
     const legacyFile = await readBlob(BACKGROUND_MEDIA_STORAGE_KEY)
     if (!legacyFile) return null
     const stored = await storeFile(legacyFile)
@@ -114,8 +88,7 @@ export type LoadedBackgroundFile = StoredBackgroundFile & { file: Blob }
 export function readBackgroundFile(
   fileId: string,
 ): Promise<LoadedBackgroundFile | null> {
-  return inOrder(async () => {
-    const file = await readBlob(toFileKey(fileId))
+  return backgroundFileStore.read(fileId).then((file) => {
     const kind = file && getBackgroundMediaKind(file.type)
     if (!file || !kind) return null
     return { fileId, kind, bytes: file.size, file }
@@ -130,10 +103,5 @@ export function readBackgroundFile(
 export function deleteUnusedBackgroundFiles(
   keptFileIds: readonly string[],
 ): Promise<void> {
-  return inOrder(async () => {
-    const keys = await listBlobKeys(BACKGROUND_FILE_KEY_PREFIX)
-    if (!keys) return
-    const keptKeys = new Set(keptFileIds.map(toFileKey))
-    for (const key of keys) if (!keptKeys.has(key)) await deleteBlob(key)
-  })
+  return backgroundFileStore.deleteAllBut(keptFileIds)
 }

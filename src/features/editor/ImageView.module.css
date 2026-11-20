@@ -1,0 +1,60 @@
+/* Its own line: as wide as the picture, never wider than the text. */
+.image {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-block: var(--space-paragraph);
+  border-radius: var(--radius-small);
+}
+
+.image img,
+.image canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+/* Selected (clicked or arrowed to): ringed, like a focused control. */
+.image[data-selected='true'] {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+}
+
+/* Gone from this device: the same not-found tile as a missing background. */
+.missing {
+  display: grid;
+  place-items: center;
+  width: var(--size-missing-image);
+  aspect-ratio: 1;
+  border-radius: inherit;
+  background: var(--color-shade);
+  color: var(--color-muted);
+}
+
+.missing svg {
+  width: var(--size-icon-large);
+  height: var(--size-icon-large);
+}
+
+/* The ⋯ over the top corner, on the page's color so it shows on any picture. */
+.options {
+  position: absolute;
+  inset-block-start: var(--space-1);
+  inset-inline-end: var(--space-1);
+  visibility: hidden;
+}
+
+.options > button {
+  background: var(--color-background);
+}
+
+.image[data-selected='true'] .options,
+.image:focus-within .options {
+  visibility: visible;
+}
+
+@media (hover: hover) {
+  .image:hover .options {
+    visibility: visible;
+  }
+}

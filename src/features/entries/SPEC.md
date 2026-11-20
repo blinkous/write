@@ -11,7 +11,8 @@ import.
   then shows "Edited <date>"), or Name A–Z (natural order, ignoring case and accents;
   unnamed last). The order holds after every change, so the list, keyboard order and what
   opens after a delete agree.
-- **Names:** the custom title if set, else the first non-empty line, else "Untitled".
+- **Names:** the custom title if set, else the first non-empty line, else the first
+  picture's alt text ("Picture" without one), else "Untitled".
 - **Opening** an entry selects it at once and opens it once its writing loads; the previous
   one stays meanwhile. If it can't be read, the selection goes back and a toast says so.
 - **Renaming:** clicking the open entry turns its name into a field in place (nothing
@@ -66,12 +67,16 @@ everywhere; its styling is dropped if invalid or if the text changed elsewhere.
   Choices are remembered (first time: everything as JSON). Tab then Enter exports.
 - **Markdown** is one file, oldest first so it reads like a journal: each entry's name as
   `#`, an italic line saying when it was written, `---` between entries; empty entries left
-  out.
+  out. With pictures it's a `.zip` of that file and an `images` folder its pictures link
+  to, so it opens whole in any markdown app.
 - **Saving** asks where with the system Save dialog where it exists; elsewhere (Safari,
   Firefox) it downloads and the toast says so.
-- **Import is untrusted and all-or-nothing:** read locally, capped at 20 MB and 10,000
-  entries, every entry validated against the document schema; one bad entry rejects the
-  file. It never replaces or deletes: entries already in the journal (same title and
+- **JSON carries the pictures** the exported entries show (those on this device), so a
+  backup restores them; the journal is read once the Save dialog is open, since pictures
+  can take a while.
+- **Import is untrusted and all-or-nothing:** read locally, every entry validated against
+  the document schema and every picture against its content name; one bad entry or
+  picture rejects the file. No cap on size or entries: whatever exports, imports. It never replaces or deletes: entries already in the journal (same title and
   content, formatting included) are skipped, a taken id gets a new one, so importing twice
   changes nothing. Attached settings apply only once the whole file proves valid.
 - Results and errors are reported in a toast.

@@ -1,9 +1,9 @@
-import type { InputHTMLAttributes } from 'react'
+import type { ComponentProps } from 'react'
 import styles from './TextInput.module.css'
 
 type TextInputVariant = 'boxed' | 'inline'
 
-type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+type TextInputProps = Omit<ComponentProps<'input'>, 'type'> & {
   /** "inline" edits text in place: same font and box as the text it replaces, so nothing shifts. */
   variant?: TextInputVariant
 }
