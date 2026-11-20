@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ButtonHTMLAttributes, PointerEvent } from 'react'
 import { formatShortcut, toAriaKeyShortcut } from '../../utils/shortcuts'
+import { showFullTextIfCut } from './fullTextIfCut'
 import styles from './MenuItem.module.css'
 
 type MenuItemProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
@@ -16,16 +17,10 @@ type MenuItemProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
   shortcut?: string | null
 }
 
-/**
- * Shows the whole label as a tooltip only when it's cut short, so rows that
- * fit don't get one.
- */
+/** The row's whole label as its tooltip, only while the label is cut short. */
 function showFullLabelIfCut({ currentTarget }: PointerEvent<HTMLElement>) {
   const label = currentTarget.querySelector<HTMLElement>(`.${styles.label}`)
-  if (!label) return
-  const isCut = label.scrollWidth > label.clientWidth
-  if (isCut) currentTarget.title = label.textContent ?? ''
-  else currentTarget.removeAttribute('title')
+  if (label) showFullTextIfCut(currentTarget, label)
 }
 
 /**

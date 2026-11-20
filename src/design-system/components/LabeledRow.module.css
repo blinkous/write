@@ -6,10 +6,34 @@
   min-height: var(--size-control);
 }
 
-/* Setting names are short: never wrapped or squeezed by the control beside them. */
+/* Among menu rows (MenuItem), padded like them. */
+.withIcon {
+  padding-inline: var(--menu-item-padding-inline);
+}
+
+/*
+ * The name gives way when room runs out (a narrow sidebar): cut short with
+ * "…" rather than pushing its control past the row's edge. Never wrapped.
+ */
 .label {
-  flex-shrink: 0;
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: var(--space-icon-label);
+  min-width: 0;
   white-space: nowrap;
+}
+
+.labelText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.labelIcon {
+  flex-shrink: 0;
+  width: var(--size-icon);
+  height: var(--size-icon);
 }
 
 /*
@@ -21,6 +45,13 @@
 .icon,
 .text {
   margin-inline-end: calc(var(--inset-icon-button) * -1);
+}
+
+/* Controls keep their size; only the name gives way. */
+.button,
+.icon,
+.swatch {
+  flex-shrink: 0;
 }
 
 .text {
@@ -37,8 +68,8 @@
   width: var(--size-control);
 }
 
-/* Editable text, filling the room after the name. */
+/* Editable text, filling the room after the name (which keeps its room first). */
 .text {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
 }

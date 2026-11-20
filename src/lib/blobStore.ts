@@ -92,3 +92,22 @@ export async function deleteBlob(key: string): Promise<boolean> {
     return false
   }
 }
+
+/** The keys of every stored file starting with `prefix`, or null if storage can't be read. */
+export async function listBlobKeys(prefix: string): Promise<string[] | null> {
+  try {
+    const keys = await (await getFileDatabase()).getAllKeys('files')
+    return keys.filter((key) => key.startsWith(prefix))
+  } catch {
+    return null
+  }
+}
+
+/** Whether a file is stored under the key (false if storage can't be read). */
+export async function hasBlob(key: string): Promise<boolean> {
+  try {
+    return (await (await getFileDatabase()).count('files', key)) > 0
+  } catch {
+    return false
+  }
+}

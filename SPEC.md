@@ -107,6 +107,8 @@ Fields added later must load from older data without them.
   the text color too, since browsers fill them white.
 - **Switches for settings that apply at once** (Sidebar border, Show shortcuts);
   **checkboxes for choices a form applies later** (what an export includes).
+- **The sidebar never scrolls sideways**, however narrow: a setting's name gives way ("…",
+  whole on hover) before its control does. Only rows meant to scroll (theme packs) do.
 - **Color tiles are buttons** that open the system color picker, because WebKit never lets
   the keyboard reach color inputs. Text colors (toolbar and text styles) share one menu:
   theme tones, then seven custom slots; a filled slot's × (hover or focus) empties it.
@@ -128,6 +130,8 @@ Fields added later must load from older data without them.
 - **Rows with something at the end** (a shortcut, a control) never scroll or push it out of
   view: the label is cut short with "…", and the full label shows on hover and is read in
   full.
+- **No ellipses in menu titles or labels** (e.g. "Export", not "Export…"): an ellipsis
+  reads as a label cut short.
 - **A crash or unopenable journal** shows a message page with the error and Reload, never a
   blank page.
 - **Phones and touch screens** get the same layout adapted by CSS: the toolbar scrolls

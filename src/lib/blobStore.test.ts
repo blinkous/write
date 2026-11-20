@@ -49,4 +49,17 @@ describe('blobStore', () => {
     const { readBlob } = await importBlobStore()
     expect(await readBlob('picture')).toBeNull()
   })
+
+  it('lists stored keys by prefix and tells whether one is stored', async () => {
+    const { hasBlob, listBlobKeys, writeBlob } = await importBlobStore()
+    await writeBlob('pack:a', new Blob(['a']))
+    await writeBlob('pack:b', new Blob(['b']))
+    await writeBlob('other', new Blob(['c']))
+    expect((await listBlobKeys('pack:'))?.toSorted()).toEqual([
+      'pack:a',
+      'pack:b',
+    ])
+    expect(await hasBlob('pack:a')).toBe(true)
+    expect(await hasBlob('pack:c')).toBe(false)
+  })
 })

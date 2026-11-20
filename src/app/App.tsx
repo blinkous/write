@@ -12,7 +12,7 @@ import {
   MarginsMenu,
   AppSettings,
   BackgroundMediaLayer,
-  useBackgroundMedia,
+  useThemeBackground,
   EditorSettings,
   TabTitleSetting,
   ThemeHistoryButtons,
@@ -85,6 +85,7 @@ export function App({ journal }: AppProps) {
     hasParagraphSpacing,
     hasParagraphIndent,
     customTextColors,
+    customThemePacks,
   } = appearance
   // Custom colors are shared by every color menu (the toolbar's and the page colors).
   const changeCustomTextColors = (colors: (string | null)[]) =>
@@ -117,7 +118,15 @@ export function App({ journal }: AppProps) {
   useTextStyleBlocks(titleEditor, pageTheme.textStyles, true)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const dismissToast = useCallback(() => setToastMessage(null), [])
-  const backgroundMedia = useBackgroundMedia(setToastMessage)
+  const { backgroundMedia, packActions } = useThemeBackground({
+    pageTheme,
+    customPacks: customThemePacks,
+    onCustomPacksChange: (packs) =>
+      updateAppearance({ customThemePacks: packs }),
+    onBackgroundFileReplaced: (fileId) =>
+      updateAppearance({ backgroundFileId: fileId }),
+    onStatus: setToastMessage,
+  })
   const {
     copySelectionAsMarkdown,
     copyEntryAsMarkdown,
@@ -139,14 +148,13 @@ export function App({ journal }: AppProps) {
   const [isResetSettingsOpen, setIsResetSettingsOpen] = useState(false)
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
 
-  /** Every look back to a first visit's: settings, their undo history, shortcuts and the background file. */
+  /** Every look back to a first visit's: settings (the background and packs included), their undo history and shortcuts. */
   function resetSettings() {
     resetAppearance()
     pageTheme.clearHistory()
     resetAllShortcuts()
     resetShortcutsShown()
     resetSidebarWidth()
-    backgroundMedia.remove()
     setIsResetSettingsOpen(false)
     setToastMessage({ text: 'Settings and styles reset.', tone: 'neutral' })
   }
@@ -252,6 +260,8 @@ export function App({ journal }: AppProps) {
                     backgroundMedia={backgroundMedia}
                     customColors={customTextColors}
                     onCustomColorsChange={changeCustomTextColors}
+                    customThemePacks={customThemePacks}
+                    packActions={packActions}
                   />
                 ),
               },
@@ -264,16 +274,15 @@ export function App({ journal }: AppProps) {
                 id: 'data',
                 title: 'Data',
                 content: (
-                  <>
+                  <DataSettings
+                    onExport={() => setIsExportOpen(true)}
+                    onChooseImportFile={openImportPicker}
+                    onShowShortcuts={() => setIsShortcutsOpen(true)}
+                    onShowAbout={privacyNotice.open}
+                    onResetSettings={() => setIsResetSettingsOpen(true)}
+                  >
                     <TabTitleSetting pageTheme={pageTheme} />
-                    <DataSettings
-                      onExport={() => setIsExportOpen(true)}
-                      onChooseImportFile={openImportPicker}
-                      onShowShortcuts={() => setIsShortcutsOpen(true)}
-                      onShowAbout={privacyNotice.open}
-                      onResetSettings={() => setIsResetSettingsOpen(true)}
-                    />
-                  </>
+                  </DataSettings>
                 ),
               },
             ]}
@@ -433,7 +442,7 @@ export function App({ journal }: AppProps) {
       <ConfirmDialog
         isOpen={isResetSettingsOpen}
         title="Reset all settings and styles?"
-        message="Fonts, colors, text styles, spacing, the tab title, keyboard shortcuts, the background and the sidebar's width go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
+        message="Fonts, colors, text styles, your theme packs, spacing, the tab title, keyboard shortcuts, the background and the sidebar's width go back to how they were on your first visit. Your entries stay as they are. Export your settings first if you might want them back."
         confirmLabel="Reset all"
         onConfirm={resetSettings}
         onCancel={() => setIsResetSettingsOpen(false)}

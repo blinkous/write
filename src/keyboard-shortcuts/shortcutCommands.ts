@@ -183,7 +183,7 @@ export const SHORTCUT_COMMANDS = [
   },
   {
     id: 'open-export',
-    label: 'Export…',
+    label: 'Export',
     group: 'Entry',
     defaultShortcut: 'Mod-Shift-s',
     scope: 'page',

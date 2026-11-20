@@ -21,7 +21,7 @@ describe('ShortcutsDialog', () => {
       screen.getByRole('button', { name: 'Underline shortcut: Ctrl+U' }),
     )
     const recorder = screen.getByRole('button', {
-      name: 'Underline shortcut: press keys…',
+      name: 'Underline shortcut: press keys',
     })
     fireEvent.keyDown(recorder, { key: 'Control', ctrlKey: true })
     fireEvent.keyDown(recorder, { key: 'b', keyCode: 66, ctrlKey: true })
@@ -41,7 +41,7 @@ describe('ShortcutsDialog', () => {
       screen.getByRole('button', { name: 'Bold shortcut: Ctrl+B' }),
     )
     const recorder = screen.getByRole('button', {
-      name: 'Bold shortcut: press keys…',
+      name: 'Bold shortcut: press keys',
     })
     fireEvent.keyDown(recorder, { key: 'k', keyCode: 75 })
     expect(
@@ -57,7 +57,7 @@ describe('ShortcutsDialog', () => {
       screen.getByRole('button', { name: 'Bold shortcut: Ctrl+B' }),
     )
     fireEvent.keyDown(
-      screen.getByRole('button', { name: 'Bold shortcut: press keys…' }),
+      screen.getByRole('button', { name: 'Bold shortcut: press keys' }),
       { key: 'Backspace' },
     )
     expect(getShortcut('bold')).toBeNull()
@@ -103,7 +103,7 @@ describe('ShortcutsDialog', () => {
       screen.getByRole('button', { name: 'Bold shortcut: Ctrl+B' }),
     )
     fireEvent.keyDown(
-      screen.getByRole('button', { name: 'Bold shortcut: press keys…' }),
+      screen.getByRole('button', { name: 'Bold shortcut: press keys' }),
       { key: 'Backspace' },
     )
     await userEvent.click(

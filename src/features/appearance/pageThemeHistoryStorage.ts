@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { backgroundFileIdSchema } from './backgroundFiles'
 import { isFontValue, type FontValue } from '../../fonts'
 import {
   hasStoredValue,
@@ -95,6 +96,10 @@ function createHistorySchema(current: CurrentSettings) {
       current.backgroundVideoSpeed,
     ),
     hasSidebarBorder: valueOrCurrent(z.boolean(), current.hasSidebarBorder),
+    backgroundFileId: valueOrCurrent(
+      backgroundFileIdSchema,
+      current.backgroundFileId,
+    ),
   })
 
   /* Drops unreadable steps rather than the whole history, and never keeps more than the limit. */

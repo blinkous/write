@@ -2,6 +2,7 @@ import { DEFAULT_TEXT_STYLES, type TextStyles } from '../../text-styles'
 import type { ColorScheme } from '../../utils/colorScheme'
 import { createOptionGuard } from '../../utils/options'
 import type { FontValue } from '../../fonts'
+import type { CustomThemePack } from './customThemePacks'
 
 /** Each margin maps to a `--width-page-<value>` design token; the page scrolls endlessly. */
 export const MARGIN_OPTIONS = [
@@ -85,6 +86,8 @@ export type Appearance = {
   backgroundColor: string
   textColor: string
   customTextColors: CustomTextColors
+  /** Looks saved as theme packs, shown after the curated ones (not part of undo, like custom colors). */
+  customThemePacks: readonly CustomThemePack[]
   /** How each text style looks (size, weight, font, color). */
   textStyles: TextStyles
   /** The browser tab's title; empty for APP_NAME. */
@@ -99,6 +102,8 @@ export type Appearance = {
   backgroundVideoSpeed: number
   /** The line between the sidebar and the page. */
   hasSidebarBorder: boolean
+  /** The background picture or video: its stored file's content name, or null for none (see backgroundFiles). */
+  backgroundFileId: string | null
 }
 
 /**
@@ -126,6 +131,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   customTextColors: Array<string | null>(CUSTOM_TEXT_COLOR_SLOT_COUNT).fill(
     null,
   ),
+  customThemePacks: [],
   textStyles: DEFAULT_TEXT_STYLES,
   tabTitle: '',
   backgroundBlur: 0,
@@ -134,4 +140,5 @@ export const DEFAULT_APPEARANCE: Appearance = {
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
   hasSidebarBorder: true,
+  backgroundFileId: null,
 }

@@ -63,7 +63,7 @@ function VideoBlur({ blur }: BlurProps) {
   )
 }
 
-type BackgroundMediaLayerProps = BackgroundMedia &
+type BackgroundMediaLayerProps = Pick<BackgroundMedia, 'url' | 'kind'> &
   BlurProps & {
     isVideoPaused: boolean
     /** × normal speed. */

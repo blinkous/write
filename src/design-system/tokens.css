@@ -264,6 +264,8 @@
   /* Menus: inset of the panel, and of each item's content, so all menus align. */
   --menu-padding: var(--space-1);
   --menu-item-padding-inline: var(--space-2);
+  /* Between a row's leading icon and its label (menu items, settings rows), so every icon row reads alike. */
+  --space-icon-label: var(--space-2);
   /* Swatch grids share one column count so tiles are the same size in every menu. */
   --swatch-columns: 7;
   --space-control-inline: var(--space-3);
@@ -286,6 +288,8 @@
   --size-theme-tile-height: 3rem;
   --font-size-theme-tile: 0.75rem;
   --size-theme-tile-dot: 0.375rem;
+  /* A custom pack's ⋯, in its tile's corner: small enough to leave the preview showing. */
+  --size-theme-tile-options: 1.25rem;
 }
 
 /*

@@ -1,65 +1,151 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ToastMessage } from '../../design-system'
-import { deleteBlob, readBlob, writeBlob } from '../../lib/blobStore'
 import {
-  BACKGROUND_MEDIA_STORAGE_KEY,
-  checkBackgroundFile,
-  getBackgroundMediaKind,
-  type BackgroundMediaKind,
-} from './backgroundMedia'
+  deleteUnusedBackgroundFiles,
+  moveLegacyBackgroundFile,
+  readBackgroundFile,
+  storeBackgroundFile,
+  type BackgroundFileUses,
+  type LoadedBackgroundFile,
+  type StoredBackgroundFile,
+} from './backgroundFiles'
+import { checkBackgroundFile } from './backgroundMedia'
 
-export type BackgroundMedia = { url: string; kind: BackgroundMediaKind }
+export type BackgroundMedia = StoredBackgroundFile & { url: string }
 
-function toBackgroundMedia(
-  file: Blob,
-  kind: BackgroundMediaKind,
-): BackgroundMedia {
-  return { url: URL.createObjectURL(file), kind }
+type ShownFiles = ReadonlyMap<string, BackgroundMedia>
+
+function toShownMedia({ file, ...stored }: LoadedBackgroundFile) {
+  return { ...stored, url: URL.createObjectURL(file) }
 }
 
-/** The saved background picture or video, loaded once, with ways to change or remove it. */
-export function useBackgroundMedia(onStatus: (message: ToastMessage) => void) {
-  const [media, setMedia] = useState<BackgroundMedia | null>(null)
-
-  useEffect(() => {
-    let isCurrent = true
-    readBlob(BACKGROUND_MEDIA_STORAGE_KEY).then((storedFile) => {
-      const kind = storedFile && getBackgroundMediaKind(storedFile.type)
-      if (isCurrent && storedFile && kind)
-        setMedia(toBackgroundMedia(storedFile, kind))
-    })
-    return () => {
-      isCurrent = false
+/** Frees the URLs of files nothing can show anymore. */
+function freeShownFiles(
+  shownFiles: ShownFiles,
+  keptIds: ReadonlySet<string>,
+): ShownFiles {
+  const kept = new Map(shownFiles)
+  for (const [fileId, { url }] of shownFiles)
+    if (!keptIds.has(fileId)) {
+      URL.revokeObjectURL(url)
+      kept.delete(fileId)
     }
-  }, [])
+  return kept
+}
 
-  // Each file's URL is freed once it's replaced or removed.
+type BackgroundMediaOptions = Omit<BackgroundFileUses, 'keptFileIds'> & {
+  /** The current background's stored file (a setting), or null for none. */
+  fileId: string | null
+  /** A new background, or none, as one undo step. */
+  onFileChange: (fileId: string | null) => void
+  /** Corrects the setting without an undo step (a moved old file, or one that's gone). */
+  onFileReplaced: (fileId: string | null) => void
+  /** Files theme packs keep. */
+  packFileIds: readonly string[]
+  onStatus: (message: ToastMessage) => void
+}
+
+/**
+ * Shows the background the settings point to, and changes it: a new file is
+ * stored first, so what's shown is always what comes back. Files that neither
+ * it, the packs nor recent undo steps (within their budget) use are deleted.
+ */
+export function useBackgroundMedia({
+  fileId,
+  onFileChange,
+  onFileReplaced,
+  packFileIds,
+  undoFileIds,
+  undoBudgetBytes,
+  onStatus,
+}: BackgroundMediaOptions) {
+  /*
+   * Each file shown this visit, by content name, so showing it again (undo,
+   * or switching back to a pack) reuses its URL and the browser's decoded
+   * copy instead of reading and decoding it all over again.
+   */
+  const [shownFiles, setShownFiles] = useState<ShownFiles>(() => new Map())
+  const media = (fileId && shownFiles.get(fileId)) || null
+  const uses: BackgroundFileUses = {
+    keptFileIds: [...packFileIds, ...(fileId ? [fileId] : [])],
+    undoFileIds,
+    undoBudgetBytes,
+  }
+  // The latest, for async work and the sweep to read without restarting.
+  const latestRef = useRef({ onFileReplaced, onStatus, uses, shownFiles })
+  const usesKey = JSON.stringify([
+    uses.keptFileIds.toSorted(),
+    undoFileIds,
+    undoBudgetBytes,
+  ])
+
   useEffect(() => {
-    if (!media) return
-    return () => URL.revokeObjectURL(media.url)
-  }, [media])
+    latestRef.current = { onFileReplaced, onStatus, uses, shownFiles }
+  })
 
-  /** Saves the file first, so the background shown is always the one that will come back. */
+  function addShownFile(shown: BackgroundMedia) {
+    setShownFiles((files) => new Map(files).set(shown.fileId, shown))
+  }
+
+  // Reads the current file the first time it's shown.
+  useEffect(() => {
+    const load = new AbortController()
+    if (!fileId) {
+      // Settings from before the shared files may still point to a file saved the old way.
+      moveLegacyBackgroundFile().then((movedFileId) => {
+        if (movedFileId && !load.signal.aborted)
+          latestRef.current.onFileReplaced(movedFileId)
+      })
+      return () => load.abort()
+    }
+    if (latestRef.current.shownFiles.has(fileId)) return
+    readBackgroundFile(fileId).then((loaded) => {
+      if (load.signal.aborted) return
+      if (loaded) return addShownFile(toShownMedia(loaded))
+      latestRef.current.onStatus({
+        text: 'That background isn’t in this browser anymore, so it’s been removed.',
+        tone: 'warning',
+      })
+      latestRef.current.onFileReplaced(null)
+    })
+    return () => load.abort()
+  }, [fileId])
+
+  // After any change of what uses which file: drop what nothing keeps, then free what can't be shown.
+  useEffect(() => {
+    const { uses: latestUses } = latestRef.current
+    const keptIds = new Set([
+      ...latestUses.keptFileIds,
+      ...latestUses.undoFileIds,
+    ])
+    deleteUnusedBackgroundFiles(latestUses).then(() =>
+      setShownFiles((files) => freeShownFiles(files, keptIds)),
+    )
+  }, [usesKey])
+
+  // Every URL is freed when the app goes away.
+  useEffect(
+    () => () => {
+      freeShownFiles(latestRef.current.shownFiles, new Set())
+    },
+    [],
+  )
+
+  /** Stores the file first, so the background shown is always the one that will come back. */
   async function chooseFile(file: File) {
     const check = checkBackgroundFile(file)
     if (!check.isUsable)
       return onStatus({ text: check.problem, tone: 'warning' })
-    if (!(await writeBlob(BACKGROUND_MEDIA_STORAGE_KEY, file)))
+    const stored = await storeBackgroundFile(file)
+    if (!stored)
       return onStatus({
         text: 'Couldn’t save that background in this browser.',
         tone: 'warning',
       })
-    setMedia(toBackgroundMedia(file, check.kind))
+    if (!shownFiles.has(stored.fileId))
+      addShownFile(toShownMedia({ ...stored, file }))
+    onFileChange(stored.fileId)
   }
 
-  async function remove() {
-    if (!(await deleteBlob(BACKGROUND_MEDIA_STORAGE_KEY)))
-      return onStatus({
-        text: 'Couldn’t remove the background in this browser.',
-        tone: 'warning',
-      })
-    setMedia(null)
-  }
-
-  return { media, chooseFile, remove }
+  return { media, chooseFile, remove: () => onFileChange(null) }
 }

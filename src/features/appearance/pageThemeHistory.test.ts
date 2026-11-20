@@ -22,6 +22,7 @@ const colors = (backgroundColor: string): PageTheme => ({
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
   hasSidebarBorder: true,
+  backgroundFileId: null,
 })
 
 /** One committed edit from `from` to `to`, like a finished drag in the picker. */

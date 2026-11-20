@@ -16,18 +16,22 @@ export type ThemeLook = Pick<
   'appFont' | 'editorFont' | 'backgroundColor' | 'textColor' | 'textStyles'
 >
 
-export type ThemePack = {
-  /** Stable name, e.g. for tests; never shown. */
+/** A look with its names: the curated packs' and the ones people save. */
+export type NamedThemeLook = {
+  /** Stable name, e.g. for tests and React keys; never shown. */
   id: string
   /** Shown only as the tile's tooltip and accessible name. */
   label: string
+  look: ThemeLook
+}
+
+export type ThemePack = NamedThemeLook & {
   /**
    * A look people rely on to read comfortably (the defaults):
    * its writing must read at 4.5:1 (tested). Other packs are vibes, chosen on
    * sight, and may be as soft as their look asks.
    */
   isReadingBaseline: boolean
-  look: ThemeLook
 }
 
 const HEADING_NAMES = [
@@ -163,7 +167,10 @@ export const THEME_PACKS: readonly ThemePack[] = CURATED_THEME_PACKS.toSorted(
 )
 
 /** Whether the current settings are exactly this pack's look (it shows as chosen). */
-export function hasThemeLook(current: ThemeLook, { look }: ThemePack): boolean {
+export function hasThemeLook(
+  current: ThemeLook,
+  { look }: Pick<NamedThemeLook, 'look'>,
+): boolean {
   return (
     current.appFont === look.appFont &&
     current.editorFont === look.editorFont &&
@@ -181,7 +188,9 @@ const TILE_COLOR_COUNT = 5
  * then its styles' glows (the most telling, e.g. neon), then their colors,
  * without repeats.
  */
-export function getThemePackColors({ look }: ThemePack): string[] {
+export function getThemePackColors({
+  look,
+}: Pick<NamedThemeLook, 'look'>): string[] {
   const styles = Object.values(look.textStyles)
   const colors = [
     look.textColor,
