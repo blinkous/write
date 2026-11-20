@@ -109,15 +109,6 @@ export function usePageTheme(
     hasSidebarBorder,
     backgroundFileId,
     /**
-     * Background files undo can bring back, the nearest steps first, so
-     * they're kept while they fit (see backgroundFiles).
-     */
-    undoBackgroundFileIds: [
-      ...(history.editStart ? [history.editStart] : []),
-      ...history.past.toReversed(),
-      ...history.future,
-    ].flatMap((step) => (step.backgroundFileId ? [step.backgroundFileId] : [])),
-    /**
      * Changes one text style. Picks are one undo step each; a color drag
      * (isFinal false) becomes one step when committed.
      */

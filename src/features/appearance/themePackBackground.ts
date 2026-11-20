@@ -62,20 +62,11 @@ export type CurrentBackground = {
 const MEGABYTE = 1024 * 1024
 
 /**
- * Entries come first: pack backgrounds are capped well below what could crowd
- * them out. One pack keeps a file up to this size (a picture, or a short
- * looping video); the current background alone may be bigger.
+ * Entries come first: every background together (the current one and each
+ * pack's, a shared file counted once) takes up to this much. Writing takes a
+ * few MB at most, so browsers always keep room for it.
  */
-export const PACK_BACKGROUND_MAX_MEGABYTES = 25
-
-/** Every pack's background together, counting a file shared by several packs once. */
-export const PACK_BACKGROUNDS_BUDGET_MEGABYTES = 100
-
-/**
- * Where the browser says how much room this site has, a pack only keeps a new
- * file while the site uses less than this share of it.
- */
-export const PACK_BACKGROUNDS_MAX_STORAGE_SHARE = 0.5
+export const BACKGROUNDS_BUDGET_MEGABYTES = 250
 
 const rangeSchema = ({ min, max }: { min: number; max: number }) =>
   z.number().min(min).max(max)
@@ -101,23 +92,12 @@ export const packBackgroundSchema = z
   ])
   .catch({ state: 'none' })
 
-export type PackBackgroundRoom = {
-  /** Backgrounds the other packs keep (a pack being updated isn't one of them). */
-  otherPacks: readonly PackBackground[]
-  /** What the browser reports, when it does. */
-  storageEstimate: { usage: number; quota: number } | null
-}
-
-type PackBackgroundCheck = { fits: true } | { fits: false; problem: string }
-
 function megabytes(bytes: number): string {
   return `${Math.ceil(bytes / MEGABYTE)} MB`
 }
 
-/** The files the packs keep, each once. */
-export function getPackFiles(
-  packs: readonly PackBackground[],
-): Map<string, number> {
+/** The files the packs keep, each once, with their sizes. */
+function getPackFiles(packs: readonly PackBackground[]): Map<string, number> {
   const files = new Map<string, number>()
   for (const background of packs)
     if (background.state === 'file')
@@ -125,51 +105,34 @@ export function getPackFiles(
   return files
 }
 
-/**
- * What's left of the pack budget once the packs' own files are counted: undo
- * keeps recent backgrounds within it, so packs always come first.
- */
-export function getUndoBackgroundBudgetBytes(
-  packs: readonly PackBackground[],
-): number {
-  const packBytes = [...getPackFiles(packs).values()].reduce(
-    (total, size) => total + size,
-    0,
-  )
-  return Math.max(0, PACK_BACKGROUNDS_BUDGET_MEGABYTES * MEGABYTE - packBytes)
-}
+export type BackgroundRoomCheck =
+  { fits: true } | { fits: false; problem: string }
 
-/** Whether a pack may keep this file, and if not, why (shown to the person). */
-export function checkPackBackground(
-  { fileId, bytes }: StoredBackgroundFile,
-  { otherPacks, storageEstimate }: PackBackgroundRoom,
-): PackBackgroundCheck {
-  const keptFiles = getPackFiles(otherPacks)
-  // Already kept for another pack: it takes no more room.
-  if (keptFiles.has(fileId)) return { fits: true }
-  if (bytes > PACK_BACKGROUND_MAX_MEGABYTES * MEGABYTE)
+/**
+ * Whether a new background fits beside the packs' files (the one it replaces
+ * isn't kept, unless a pack keeps it), and if not, why and what to do.
+ */
+export function checkBackgroundRoom(
+  { fileId, bytes }: Pick<StoredBackgroundFile, 'fileId' | 'bytes'>,
+  packs: readonly PackBackground[],
+): BackgroundRoomCheck {
+  const packFiles = getPackFiles(packs)
+  // Already kept for a pack: it takes no more room.
+  if (packFiles.has(fileId)) return { fits: true }
+  const budget = BACKGROUNDS_BUDGET_MEGABYTES * MEGABYTE
+  if (bytes > budget)
     return {
       fits: false,
-      problem: `The background is ${megabytes(bytes)}, and a theme pack keeps one up to ${PACK_BACKGROUND_MAX_MEGABYTES} MB. Try a smaller picture or a shorter video.`,
+      problem: `It’s ${megabytes(bytes)}, and backgrounds can use up to ${BACKGROUNDS_BUDGET_MEGABYTES} MB together, so your entries always have room. Try a smaller picture or a shorter video.`,
     }
-  const keptBytes = [...keptFiles.values()].reduce(
+  const packBytes = [...packFiles.values()].reduce(
     (total, size) => total + size,
     0,
   )
-  if (keptBytes + bytes > PACK_BACKGROUNDS_BUDGET_MEGABYTES * MEGABYTE)
+  if (packBytes + bytes > budget)
     return {
       fits: false,
-      problem: `Theme pack backgrounds can take up to ${PACK_BACKGROUNDS_BUDGET_MEGABYTES} MB together, so your entries always have room. Delete a pack with a background, or use a smaller file.`,
-    }
-  if (
-    storageEstimate &&
-    storageEstimate.usage >
-      storageEstimate.quota * PACK_BACKGROUNDS_MAX_STORAGE_SHARE
-  )
-    return {
-      fits: false,
-      problem:
-        'This browser is running low on room, and your entries come first. Delete a pack with a background to make room.',
+      problem: `It’s ${megabytes(bytes)}, and your theme packs’ backgrounds already use ${megabytes(packBytes)} of the ${BACKGROUNDS_BUDGET_MEGABYTES} MB backgrounds can use together, so your entries always have room. Delete a pack with a background, or try a smaller file.`,
     }
   return { fits: true }
 }

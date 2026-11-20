@@ -1,6 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { ToastMessage } from '../../design-system'
 import type { CustomThemePack } from './customThemePacks'
 import type { BackgroundEffects } from './themePackBackground'
 import { THEME_PACKS, type ThemeLook } from './themePacks'
@@ -38,7 +37,6 @@ type PickerHarnessProps = {
   customPacks: CustomThemePack[]
   onCustomPacksChange: (packs: CustomThemePack[]) => void
   applyThemeLook: ReturnType<typeof usePageTheme>['applyThemeLook']
-  onStatus: (message: ToastMessage) => void
 }
 
 function PickerHarness({
@@ -47,7 +45,6 @@ function PickerHarness({
   customPacks,
   onCustomPacksChange,
   applyThemeLook,
-  onStatus,
 }: PickerHarnessProps) {
   const packActions = useCustomThemePacks({
     pageTheme: {
@@ -56,10 +53,10 @@ function PickerHarness({
       backgroundFileId: media?.fileId ?? null,
       applyThemeLook,
     },
-    backgroundMedia: { media },
+    // Every pack's file has been read (see useBackgroundMedia).
+    backgroundMedia: { media, getShownFile: (fileId) => picture(fileId) },
     customPacks,
     onCustomPacksChange,
-    onStatus,
   })
   return <ThemePackPicker customPacks={customPacks} packActions={packActions} />
 }
@@ -72,7 +69,6 @@ function renderPicker({
   const handlers = {
     onCustomPacksChange: vi.fn(),
     applyThemeLook: vi.fn(),
-    onStatus: vi.fn(),
   }
   render(
     <PickerHarness
@@ -154,30 +150,30 @@ describe('ThemePackPicker', () => {
     ])
   })
 
-  it('saves a pack without a background too big to keep, and says what to do', async () => {
+  it('keeps even a big background: it already counts toward the room backgrounds have', async () => {
     const user = userEvent.setup()
-    const { onCustomPacksChange, onStatus } = renderPicker({
-      media: picture('huge', 200),
+    const { onCustomPacksChange } = renderPicker({
+      media: picture('big', 200),
     })
     await user.click(saveButton())
     expect(onCustomPacksChange).toHaveBeenCalledWith([
-      expect.objectContaining({ background: { state: 'none' } }),
-    ])
-    expect(onStatus).toHaveBeenCalledWith(
       expect.objectContaining({
-        text: expect.stringMatching(/without its background.*smaller/),
+        background: expect.objectContaining({ state: 'file', fileId: 'big' }),
       }),
-    )
+    ])
   })
 
-  it('can’t save what a pack already brings back', () => {
-    renderPicker({ look: savedLook, customPacks: [savedPack] })
-    expect(saveButton()).toBeDisabled()
-  })
-
-  it('can save a curated look with a background picture, since curated packs have none', () => {
-    renderPicker({ media: picture('pic') })
-    expect(saveButton()).toBeEnabled()
+  it('always lets the current look be saved, even one a pack already has', async () => {
+    const user = userEvent.setup()
+    const { onCustomPacksChange } = renderPicker({
+      look: savedLook,
+      customPacks: [savedPack],
+    })
+    await user.click(saveButton())
+    expect(onCustomPacksChange).toHaveBeenCalledWith([
+      savedPack,
+      expect.objectContaining({ label: 'Custom 2', look: savedLook }),
+    ])
   })
 
   it('shows a pack as chosen only with its background showing', () => {
@@ -220,6 +216,24 @@ describe('ThemePackPicker', () => {
     })
   })
 
+  it('draws a saved pack’s picture behind its tile, at its page opacity', () => {
+    const withPicture: CustomThemePack = {
+      ...savedPack,
+      background: {
+        state: 'file',
+        fileId: 'pic',
+        kind: 'image',
+        bytes: 1,
+        effects: { ...EFFECTS, backgroundOpacity: 70 },
+      },
+    }
+    renderPicker({ customPacks: [withPicture] })
+    const tile = screen.getByRole('button', { name: 'Custom 1' })
+    const picture = tile.querySelector('img')
+    expect(picture).toHaveAttribute('src', 'blob:pic')
+    expect(picture?.parentElement).toHaveStyle({ opacity: '0.7' })
+  })
+
   it('removes the background when choosing a pack saved without one', async () => {
     const user = userEvent.setup()
     const { applyThemeLook } = renderPicker({
@@ -257,7 +271,7 @@ describe('ThemePackPicker', () => {
     await user.click(
       // Popovers' contents count as hidden in jsdom (see TextStyleMenu.test).
       screen.getByRole('button', {
-        name: 'Update pack to match current look',
+        name: 'Update pack to match',
         hidden: true,
       }),
     )

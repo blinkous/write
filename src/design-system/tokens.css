@@ -284,6 +284,8 @@
   --size-icon-large: 1.5rem;
   --size-divider: 1.25rem;
   /* Theme pack tiles: a little page with its title's look ("Aa") and color dots. */
+  /* How far a scrolling area's edge fades while there's more to see that way. */
+  --size-scroll-fade: var(--space-8);
   --size-theme-tile-width: 3.5rem;
   --size-theme-tile-height: 3rem;
   --font-size-theme-tile: 0.75rem;

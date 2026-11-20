@@ -12,10 +12,6 @@ export const BACKGROUND_MEDIA_STORAGE_KEY = 'background-media.v1'
 /** For the file picker. */
 export const BACKGROUND_MEDIA_ACCEPT = 'image/*,video/*'
 
-/** Generous for a looping video, small enough not to strain the browser's storage. */
-export const BACKGROUND_MEDIA_MAX_MEGABYTES = 150
-const BACKGROUND_MEDIA_MAX_BYTES = BACKGROUND_MEDIA_MAX_MEGABYTES * 1024 * 1024
-
 /** Pictures (including GIFs) and videos; null for anything else. */
 export function getBackgroundMediaKind(
   mimeType: string,
@@ -29,21 +25,15 @@ type BackgroundFileCheck =
   | { isUsable: true; kind: BackgroundMediaKind }
   | { isUsable: false; problem: string }
 
-/** Whether a chosen file can be the background, and if not, why (shown to the person). */
+/** Whether a chosen file can be the background (a picture or video), and if not, why (shown to the person). Its size is checked against the room backgrounds have (see themePackBackground). */
 export function checkBackgroundFile({
   type,
-  size,
-}: Pick<File, 'type' | 'size'>): BackgroundFileCheck {
+}: Pick<File, 'type'>): BackgroundFileCheck {
   const kind = getBackgroundMediaKind(type)
   if (!kind)
     return {
       isUsable: false,
       problem: 'That file isn’t a picture or video.',
-    }
-  if (size > BACKGROUND_MEDIA_MAX_BYTES)
-    return {
-      isUsable: false,
-      problem: `That file is over ${BACKGROUND_MEDIA_MAX_MEGABYTES} MB. Try a smaller or shorter one.`,
     }
   return { isUsable: true, kind }
 }

@@ -1,0 +1,33 @@
+/*
+ * Fades an edge of a scrolling element while there's more to see that way
+ * (see useScrollFades). An alpha mask (only its opacity counts), so it works
+ * over any background, a picture included.
+ */
+.horizontal,
+.vertical {
+  --fade-start: 0rem;
+  --fade-end: 0rem;
+  mask-image: linear-gradient(
+    var(--fade-direction),
+    transparent,
+    black var(--fade-start),
+    black calc(100% - var(--fade-end)),
+    transparent
+  );
+}
+
+.horizontal {
+  --fade-direction: to right;
+}
+
+.vertical {
+  --fade-direction: to bottom;
+}
+
+:is(.horizontal, .vertical)[data-more-start] {
+  --fade-start: var(--size-scroll-fade);
+}
+
+:is(.horizontal, .vertical)[data-more-end] {
+  --fade-end: var(--size-scroll-fade);
+}

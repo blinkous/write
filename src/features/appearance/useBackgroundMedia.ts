@@ -3,13 +3,14 @@ import type { ToastMessage } from '../../design-system'
 import {
   deleteUnusedBackgroundFiles,
   moveLegacyBackgroundFile,
+  getBackgroundFileId,
   readBackgroundFile,
   storeBackgroundFile,
-  type BackgroundFileUses,
   type LoadedBackgroundFile,
   type StoredBackgroundFile,
 } from './backgroundFiles'
 import { checkBackgroundFile } from './backgroundMedia'
+import { checkBackgroundRoom, type PackBackground } from './themePackBackground'
 
 export type BackgroundMedia = StoredBackgroundFile & { url: string }
 
@@ -33,95 +34,108 @@ function freeShownFiles(
   return kept
 }
 
-type BackgroundMediaOptions = Omit<BackgroundFileUses, 'keptFileIds'> & {
+type BackgroundMediaOptions = {
   /** The current background's stored file (a setting), or null for none. */
   fileId: string | null
   /** A new background, or none, as one undo step. */
   onFileChange: (fileId: string | null) => void
   /** Corrects the setting without an undo step (a moved old file, or one that's gone). */
   onFileReplaced: (fileId: string | null) => void
-  /** Files theme packs keep. */
-  packFileIds: readonly string[]
+  /** The packs' backgrounds: their files are kept, and new ones must fit beside them. */
+  packBackgrounds: readonly PackBackground[]
   onStatus: (message: ToastMessage) => void
 }
 
 /**
- * Shows the background the settings point to, and changes it: a new file is
- * stored first, so what's shown is always what comes back. Files that neither
- * it, the packs nor recent undo steps (within their budget) use are deleted.
+ * Shows the background the settings point to, and changes it: a new file must
+ * fit the room backgrounds have, and is stored first, so what's shown is
+ * always what comes back. Files neither it nor the packs use are deleted; a
+ * setting that points to one of those (e.g. after undo) says so (`isMissing`)
+ * rather than changing, so undo and redo stay true.
  */
 export function useBackgroundMedia({
   fileId,
   onFileChange,
   onFileReplaced,
-  packFileIds,
-  undoFileIds,
-  undoBudgetBytes,
+  packBackgrounds,
   onStatus,
 }: BackgroundMediaOptions) {
   /*
-   * Each file shown this visit, by content name, so showing it again (undo,
-   * or switching back to a pack) reuses its URL and the browser's decoded
-   * copy instead of reading and decoding it all over again.
+   * The current file and the packs' (for their tiles), read once each visit
+   * and by content name, so showing one again (undo, or switching to a pack)
+   * reuses its URL and the browser's decoded copy instead of reading and
+   * decoding it all over again.
    */
   const [shownFiles, setShownFiles] = useState<ShownFiles>(() => new Map())
+  // Files the settings point to that aren't in this browser anymore (e.g. a replaced one, after undo).
+  const [missingFileIds, setMissingFileIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
+  // Why the last chosen file wasn't used (no room), until it's acknowledged.
+  const [roomProblem, setRoomProblem] = useState<string | null>(null)
+  const packFileIds = packBackgrounds.flatMap((background) =>
+    background.state === 'file' ? [background.fileId] : [],
+  )
   const media = (fileId && shownFiles.get(fileId)) || null
-  const uses: BackgroundFileUses = {
-    keptFileIds: [...packFileIds, ...(fileId ? [fileId] : [])],
-    undoFileIds,
-    undoBudgetBytes,
-  }
+  const keptFileIds = [...packFileIds, ...(fileId ? [fileId] : [])]
   // The latest, for async work and the sweep to read without restarting.
-  const latestRef = useRef({ onFileReplaced, onStatus, uses, shownFiles })
-  const usesKey = JSON.stringify([
-    uses.keptFileIds.toSorted(),
-    undoFileIds,
-    undoBudgetBytes,
-  ])
+  const latestRef = useRef({
+    onFileReplaced,
+    keptFileIds,
+    shownFiles,
+    missingFileIds,
+  })
+  const keptFileIdsKey = keptFileIds.toSorted().join()
 
   useEffect(() => {
-    latestRef.current = { onFileReplaced, onStatus, uses, shownFiles }
+    latestRef.current = {
+      onFileReplaced,
+      keptFileIds,
+      shownFiles,
+      missingFileIds,
+    }
   })
 
   function addShownFile(shown: BackgroundMedia) {
     setShownFiles((files) => new Map(files).set(shown.fileId, shown))
   }
 
-  // Reads the current file the first time it's shown.
+  // Settings from before the shared files may still point to a file saved the old way.
   useEffect(() => {
+    if (fileId) return
     const load = new AbortController()
-    if (!fileId) {
-      // Settings from before the shared files may still point to a file saved the old way.
-      moveLegacyBackgroundFile().then((movedFileId) => {
-        if (movedFileId && !load.signal.aborted)
-          latestRef.current.onFileReplaced(movedFileId)
-      })
-      return () => load.abort()
-    }
-    if (latestRef.current.shownFiles.has(fileId)) return
-    readBackgroundFile(fileId).then((loaded) => {
-      if (load.signal.aborted) return
-      if (loaded) return addShownFile(toShownMedia(loaded))
-      latestRef.current.onStatus({
-        text: 'That background isn’t in this browser anymore, so it’s been removed.',
-        tone: 'warning',
-      })
-      latestRef.current.onFileReplaced(null)
+    moveLegacyBackgroundFile().then((movedFileId) => {
+      if (movedFileId && !load.signal.aborted)
+        latestRef.current.onFileReplaced(movedFileId)
     })
     return () => load.abort()
   }, [fileId])
 
-  // After any change of what uses which file: drop what nothing keeps, then free what can't be shown.
+  // Reads each kept file (the current one and the packs') the first time it's needed.
   useEffect(() => {
-    const { uses: latestUses } = latestRef.current
-    const keptIds = new Set([
-      ...latestUses.keptFileIds,
-      ...latestUses.undoFileIds,
-    ])
-    deleteUnusedBackgroundFiles(latestUses).then(() =>
-      setShownFiles((files) => freeShownFiles(files, keptIds)),
+    const load = new AbortController()
+    const { shownFiles: shown, missingFileIds: missing } = latestRef.current
+    for (const keptFileId of latestRef.current.keptFileIds) {
+      if (shown.has(keptFileId) || missing.has(keptFileId)) continue
+      readBackgroundFile(keptFileId).then((loaded) => {
+        if (load.signal.aborted) return
+        if (loaded) return addShownFile(toShownMedia(loaded))
+        // Kept as the setting, so undo and redo stay true; the tile says it's gone.
+        setMissingFileIds((fileIds) => new Set(fileIds).add(keptFileId))
+      })
+    }
+    return () => load.abort()
+  }, [keptFileIdsKey])
+
+  // After any change of which files are used: drop the rest, then free what can't be shown.
+  useEffect(() => {
+    const { keptFileIds: latestKeptFileIds } = latestRef.current
+    deleteUnusedBackgroundFiles(latestKeptFileIds).then(() =>
+      setShownFiles((files) =>
+        freeShownFiles(files, new Set(latestKeptFileIds)),
+      ),
     )
-  }, [usesKey])
+  }, [keptFileIdsKey])
 
   // Every URL is freed when the app goes away.
   useEffect(
@@ -131,12 +145,18 @@ export function useBackgroundMedia({
     [],
   )
 
-  /** Stores the file first, so the background shown is always the one that will come back. */
+  /** Checks there's room, then stores the file first, so the background shown is always the one that comes back. */
   async function chooseFile(file: File) {
     const check = checkBackgroundFile(file)
     if (!check.isUsable)
       return onStatus({ text: check.problem, tone: 'warning' })
-    const stored = await storeBackgroundFile(file)
+    const newFileId = await getBackgroundFileId(file)
+    const room = checkBackgroundRoom(
+      { fileId: newFileId, bytes: file.size },
+      packBackgrounds,
+    )
+    if (!room.fits) return setRoomProblem(room.problem)
+    const stored = await storeBackgroundFile(file, newFileId)
     if (!stored)
       return onStatus({
         text: 'Couldn’t save that background in this browser.',
@@ -147,5 +167,16 @@ export function useBackgroundMedia({
     onFileChange(stored.fileId)
   }
 
-  return { media, chooseFile, remove: () => onFileChange(null) }
+  return {
+    media,
+    /** The settings point to a background that isn't in this browser anymore. */
+    isMissing: !media && fileId !== null && missingFileIds.has(fileId),
+    chooseFile,
+    remove: () => onFileChange(null),
+    /** A kept file (e.g. a pack's) to show, once it's read. */
+    getShownFile: (shownFileId: string) => shownFiles.get(shownFileId) ?? null,
+    /** Why the last chosen file couldn't be the background, until acknowledged. */
+    roomProblem,
+    dismissRoomProblem: () => setRoomProblem(null),
+  }
 }

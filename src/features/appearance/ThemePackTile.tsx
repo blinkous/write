@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react'
 import { getFontOption } from '../../fonts'
 import { getTextStyleVariables, TextStylePreview } from '../../text-styles'
+import { BackgroundMediaPreview } from './BackgroundMediaSettings'
 import { getThemePackColors, type NamedThemeLook } from './themePacks'
+import type { BackgroundMedia } from './useBackgroundMedia'
 import styles from './ThemePackPicker.module.css'
 
 /** Inline styles that also set CSS variables. */
@@ -21,16 +23,25 @@ function getTileStyle({ look }: NamedThemeLook): StyleWithVariables {
   }
 }
 
+/** A pack's picture or video behind its tile, at the opacity it has on the page. */
+export type TileBackground = { media: BackgroundMedia; opacity: number }
+
 type ThemePackTileProps = {
   pack: NamedThemeLook
+  /** A saved pack's background, drawn behind its "Aa" like a tiny page. */
+  background?: TileBackground | null
   /** The settings are exactly this pack's look. */
   isChosen: boolean
   onSelect: () => void
 }
 
-/** A little page in the pack's look, named only in its tooltip: its title's "Aa" and a few of its colors. */
+/**
+ * A little page in the pack's look, named only in its tooltip: its title's
+ * "Aa" and a few of its colors, over its picture or video (a still) if it has one.
+ */
 export function ThemePackTile({
   pack,
+  background,
   isChosen,
   onSelect,
 }: ThemePackTileProps) {
@@ -45,6 +56,15 @@ export function ThemePackTile({
       aria-pressed={isChosen}
       onClick={onSelect}
     >
+      {background && (
+        <span
+          aria-hidden="true"
+          className={styles.tileBackground}
+          style={{ opacity: `${background.opacity}%` }}
+        >
+          <BackgroundMediaPreview media={background.media} />
+        </span>
+      )}
       <span aria-hidden="true" className={styles.sample}>
         <TextStylePreview name="title">Aa</TextStylePreview>
       </span>

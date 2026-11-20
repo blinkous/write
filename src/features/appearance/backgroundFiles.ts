@@ -15,8 +15,8 @@ import {
 
 /*
  * Background files, each kept once however many places use it: the current
- * background, theme packs and recent undo steps point to the same stored
- * bytes, named by their content. A file is deleted once nothing points to it.
+ * background and theme packs point to the same stored bytes, named by their
+ * content. A file is deleted once neither does (undo doesn't keep files).
  */
 
 /** Stored files are named by this plus their content's SHA-256. */
@@ -42,7 +42,8 @@ function toFileKey(fileId: string): string {
   return `${BACKGROUND_FILE_KEY_PREFIX}${fileId}`
 }
 
-async function hashFile(file: Blob): Promise<string> {
+/** A file's content name: the same file always gets the same one. */
+export async function getBackgroundFileId(file: Blob): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
   return Array.from(new Uint8Array(digest), (byte) =>
     byte.toString(16).padStart(2, '0'),
@@ -62,20 +63,24 @@ function inOrder<Result>(change: () => Promise<Result>): Promise<Result> {
 }
 
 /** Keeps the file (once, however often it's stored). Null if it isn't a picture or video or can't be saved. */
-async function storeFile(file: Blob): Promise<StoredBackgroundFile | null> {
+async function storeFile(
+  file: Blob,
+  fileId?: string,
+): Promise<StoredBackgroundFile | null> {
   const kind = getBackgroundMediaKind(file.type)
   if (!kind) return null
-  const fileId = await hashFile(file)
+  fileId ??= await getBackgroundFileId(file)
   const key = toFileKey(fileId)
   if (!(await hasBlob(key)) && !(await writeBlob(key, file))) return null
   return { fileId, kind, bytes: file.size }
 }
 
-/** Stores a background file. Null if it isn't a picture or video or couldn't be saved. */
+/** Stores a background file under its content name. Null if it isn't a picture or video or couldn't be saved. */
 export function storeBackgroundFile(
   file: Blob,
+  fileId: string,
 ): Promise<StoredBackgroundFile | null> {
-  return inOrder(() => storeFile(file))
+  return inOrder(() => storeFile(file, fileId))
 }
 
 /** The current background as briefly saved on its own, for settings saved before it was one of them. */
@@ -117,38 +122,18 @@ export function readBackgroundFile(
   })
 }
 
-export type BackgroundFileUses = {
-  /** Always kept: the current background and the theme packs'. */
-  keptFileIds: readonly string[]
-  /** Kept for undo, most recent first, while they fit `undoBudgetBytes`. */
-  undoFileIds: readonly string[]
-  undoBudgetBytes: number
-}
-
 /**
- * Deletes every stored background file nothing keeps. Files only undo steps
- * point to stay while they fit the undo budget, the most recent first; older
- * ones go, so undoing that far brings back the rest of the settings without
- * them. Nothing is deleted if the stored files can't be listed.
+ * Deletes every stored background file but `keptFileIds` (the current
+ * background and the packs'). Nothing is deleted if the stored files can't be
+ * listed.
  */
-export function deleteUnusedBackgroundFiles({
-  keptFileIds,
-  undoFileIds,
-  undoBudgetBytes,
-}: BackgroundFileUses): Promise<void> {
+export function deleteUnusedBackgroundFiles(
+  keptFileIds: readonly string[],
+): Promise<void> {
   return inOrder(async () => {
     const keys = await listBlobKeys(BACKGROUND_FILE_KEY_PREFIX)
     if (!keys) return
-    const usedKeys = new Set(keptFileIds.map(toFileKey))
-    let undoBytes = 0
-    for (const fileId of new Set(undoFileIds)) {
-      const key = toFileKey(fileId)
-      if (usedKeys.has(key)) continue
-      const file = await readBlob(key)
-      if (!file || undoBytes + file.size > undoBudgetBytes) continue
-      undoBytes += file.size
-      usedKeys.add(key)
-    }
-    for (const key of keys) if (!usedKeys.has(key)) await deleteBlob(key)
+    const keptKeys = new Set(keptFileIds.map(toFileKey))
+    for (const key of keys) if (!keptKeys.has(key)) await deleteBlob(key)
   })
 }

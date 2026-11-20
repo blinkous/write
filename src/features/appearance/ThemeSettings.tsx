@@ -3,6 +3,8 @@ import { Button, ColorMenu, LabeledRow, SwatchFace } from '../../design-system'
 import {
   BackgroundMediaEffects,
   BackgroundMediaTile,
+  BackgroundRoomDialog,
+  MISSING_BACKGROUND_MESSAGE,
 } from './BackgroundMediaSettings'
 import type { useBackgroundMedia } from './useBackgroundMedia'
 import type { usePageTheme } from './usePageTheme'
@@ -111,6 +113,11 @@ export function PageColorSettings({
           {...customColorProps}
         />
       </LabeledRow>
+      {/* Announces it when it happens (the tile says it too, with nothing more in the sidebar). */}
+      <span className="visually-hidden" role="status">
+        {backgroundMedia.isMissing && MISSING_BACKGROUND_MESSAGE}
+      </span>
+      <BackgroundRoomDialog backgroundMedia={backgroundMedia} />
       {backgroundMedia.media && (
         <BackgroundMediaEffects
           pageTheme={pageTheme}
@@ -121,7 +128,7 @@ export function PageColorSettings({
   )
 }
 
-/** One undo/redo for every setting except the background file (see pageThemeHistory). */
+/** One undo/redo for every setting in the drawer's look, the background included (see pageThemeHistory). */
 export function ThemeHistoryButtons({ pageTheme }: PageThemeProps) {
   const { canUndo, canRedo, undo, redo } = pageTheme
   return (

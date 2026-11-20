@@ -1,6 +1,7 @@
 import { Pause, Play } from 'lucide-react'
 import {
   Button,
+  Dialog,
   FileSwatch,
   LabeledRow,
   NestedRows,
@@ -21,7 +22,7 @@ import type { usePageTheme } from './usePageTheme'
 type BackgroundMediaControls = ReturnType<typeof useBackgroundMedia>
 
 /** A small still of the background: the picture itself, or a video's first moment. */
-function BackgroundMediaPreview({
+export function BackgroundMediaPreview({
   media: { url, kind },
 }: {
   media: NonNullable<BackgroundMediaControls['media']>
@@ -34,9 +35,16 @@ function BackgroundMediaPreview({
   )
 }
 
-/** A tile beside the background color: add a picture, GIF or video, or (once there's one) change or remove it. */
+/** Said when the settings point to a background that's no longer stored (e.g. a replaced one, after undo). */
+export const MISSING_BACKGROUND_MESSAGE = 'Background not found.'
+
+/**
+ * A tile beside the background color: add a picture, GIF or video, or (once
+ * there's one) change or remove it. One that isn't in this browser anymore
+ * shows as not found, still changeable or removable.
+ */
 export function BackgroundMediaTile({
-  backgroundMedia: { media, chooseFile, remove },
+  backgroundMedia: { media, isMissing, chooseFile, remove },
 }: {
   backgroundMedia: BackgroundMediaControls
 }) {
@@ -45,9 +53,33 @@ export function BackgroundMediaTile({
       label="Background picture or video"
       accept={BACKGROUND_MEDIA_ACCEPT}
       preview={media && <BackgroundMediaPreview media={media} />}
+      isMissing={isMissing}
       onFileSelected={chooseFile}
       onClear={remove}
     />
+  )
+}
+
+/** Why a chosen background wasn't used: there's no room for it (see checkBackgroundRoom). */
+export function BackgroundRoomDialog({
+  backgroundMedia: { roomProblem, dismissRoomProblem },
+}: {
+  backgroundMedia: BackgroundMediaControls
+}) {
+  return (
+    <Dialog
+      isOpen={roomProblem !== null}
+      title="Not enough room for this background"
+      tone="warning"
+      onClose={dismissRoomProblem}
+      actions={
+        <Button variant="subtle" onClick={dismissRoomProblem}>
+          OK
+        </Button>
+      }
+    >
+      <p>{roomProblem}</p>
+    </Dialog>
   )
 }
 
