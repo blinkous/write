@@ -42,7 +42,7 @@ const PREFERRED_SIDES: Record<
 
 /**
  * The fonts, page colors, text styles, tab title and background effects
- * (blur, opacity, video playback) and the sidebar border, with one shared undo/redo over recent changes (kept across refreshes).
+ * (blur, opacity, video playback), with one shared undo/redo over recent changes (kept across refreshes).
  */
 export function usePageTheme(
   {
@@ -57,7 +57,6 @@ export function usePageTheme(
     backgroundOpacity,
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
-    hasSidebarBorder,
     backgroundFileId,
   }: Appearance,
   updateAppearance: (changes: Partial<Appearance>) => void,
@@ -74,7 +73,6 @@ export function usePageTheme(
     backgroundOpacity,
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
-    hasSidebarBorder,
     backgroundFileId,
   }
   const [history, setHistory] = useState(() => loadPageThemeHistory(current))
@@ -108,7 +106,6 @@ export function usePageTheme(
     backgroundOpacity,
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
-    hasSidebarBorder,
     backgroundFileId,
     /**
      * Changes one text style. Picks are one undo step each; a color drag
@@ -178,10 +175,6 @@ export function usePageTheme(
     /** A new background picture or video (already stored), or none: one undo step. */
     changeBackgroundFile(nextBackgroundFileId: string | null) {
       change({ backgroundFileId: nextBackgroundFileId }, true)
-    },
-    /** Showing or hiding the sidebar border is one undo step. */
-    changeSidebarBorder(nextHasSidebarBorder: boolean) {
-      change({ hasSidebarBorder: nextHasSidebarBorder }, true)
     },
     /** Whether a text style differs from the chosen theme pack's (or the default, with none). */
     canResetTextStyle: (name: TextStyleName) =>

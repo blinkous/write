@@ -100,7 +100,6 @@ function createHistorySchema(current: CurrentSettings) {
       backgroundVideoSpeedSchema,
       current.backgroundVideoSpeed,
     ),
-    hasSidebarBorder: valueOrCurrent(z.boolean(), current.hasSidebarBorder),
     backgroundFileId: valueOrCurrent(
       backgroundFileIdSchema,
       current.backgroundFileId,

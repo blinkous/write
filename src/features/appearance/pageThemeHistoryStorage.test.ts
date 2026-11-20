@@ -15,7 +15,6 @@ const CURRENT_SETTINGS = {
   backgroundOpacity: 60,
   isBackgroundVideoPaused: true,
   backgroundVideoSpeed: 0.5,
-  hasSidebarBorder: false,
   backgroundFileId: 'current-file',
 } as const
 const STORAGE_KEY = 'write.pageThemeHistory.v1'
@@ -31,7 +30,6 @@ const colors = (backgroundColor: string) => ({
   backgroundOpacity: 50,
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
-  hasSidebarBorder: true,
   backgroundFileId: null,
 })
 
@@ -132,7 +130,6 @@ describe('page theme history storage', () => {
             backgroundBlur: 99,
             isBackgroundVideoPaused: undefined,
             backgroundVideoSpeed: 9,
-            hasSidebarBorder: undefined,
             backgroundFileId: undefined,
           },
         ],
@@ -145,7 +142,6 @@ describe('page theme history storage', () => {
       backgroundOpacity: 50,
       isBackgroundVideoPaused: true,
       backgroundVideoSpeed: 0.5,
-      hasSidebarBorder: false,
       backgroundFileId: 'current-file',
     })
   })

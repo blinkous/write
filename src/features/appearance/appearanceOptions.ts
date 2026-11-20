@@ -107,7 +107,6 @@ export type Appearance = {
   /** A background video's speed (× normal, BACKGROUND_VIDEO_SPEED_RANGE). */
   backgroundVideoSpeed: number
   /** The line between the sidebar and the page. */
-  hasSidebarBorder: boolean
   /** The background picture or video: its stored file's content name, or null for none (see backgroundFiles). */
   backgroundFileId: string | null
 }
@@ -146,6 +145,5 @@ export const DEFAULT_APPEARANCE: Appearance = {
   backgroundOpacity: 50,
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
-  hasSidebarBorder: true,
   backgroundFileId: null,
 }

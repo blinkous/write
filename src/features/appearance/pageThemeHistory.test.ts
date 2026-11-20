@@ -22,7 +22,6 @@ const colors = (backgroundColor: string): PageTheme => ({
   backgroundOpacity: 50,
   isBackgroundVideoPaused: false,
   backgroundVideoSpeed: 1,
-  hasSidebarBorder: true,
   backgroundFileId: null,
 })
 

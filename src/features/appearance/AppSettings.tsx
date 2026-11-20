@@ -1,6 +1,5 @@
 import { LabeledRow } from '../../design-system'
 import { FontMenu } from '../../fonts'
-import { SidebarBorderSetting } from './SidebarBorderSetting'
 import type { CustomThemePack } from './customThemePacks'
 import type { useCustomThemePacks } from './useCustomThemePacks'
 import { PageColorSettings } from './ThemeSettings'
@@ -20,7 +19,7 @@ type AppSettingsProps = {
   packActions: ReturnType<typeof useCustomThemePacks>
 }
 
-/** The theme packs, then everything around the page: its font, the page's foreground and background, and the sidebar border. */
+/** The theme packs, then everything around the page: its font and the page's foreground and background. */
 export function AppSettings({
   pageTheme,
   backgroundMedia,
@@ -49,7 +48,6 @@ export function AppSettings({
         backgroundMedia={backgroundMedia}
         {...customColorProps}
       />
-      <SidebarBorderSetting pageTheme={pageTheme} />
     </>
   )
 }

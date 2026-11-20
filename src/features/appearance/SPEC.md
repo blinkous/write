@@ -7,9 +7,7 @@ background picture or video, with one shared undo/redo.
 
 - **Theme:** the theme packs, the interface font (default Inter), then the page colors,
   **Foreground** (the default text color, named so it isn't mistaken for a text setting)
-  and **Background**, with the background picture or video, then the **Sidebar border**
-  (shown by default; hidden, a background picture runs unbroken from sidebar to page,
-  and the resize line still shows on hover, drag and focus).
+  and **Background**, with the background picture or video.
 - **Editor:** the **Default font** (default Lora), the base for every text style, then
   **Reset text styles** (back to the chosen theme pack's). Text styles themselves are edited from the toolbar's style menu
   (see editor).
@@ -36,7 +34,7 @@ background picture or video, with one shared undo/redo.
 - **Choosing one replaces the whole look:** page colors, the interface and default fonts,
   every text style and the background, as one undo step. Curated packs have no background,
   so choosing one removes the current picture or video (undo brings it back). Custom color
-  slots, margins, spacing, the tab title and the sidebar border stay.
+  slots, margins, spacing and the tab title stay.
 - A tile shows as chosen only while the settings are exactly its look; after any edit,
   none does. Choosing a pack just sets those settings.
 - **The chosen pack is the base for text styles:** resetting text styles (all, or one
@@ -88,7 +86,7 @@ background picture or video, with one shared undo/redo.
   richness and hue the way the theme colors do, so the row varies like they do. A
   suggestion or custom color is one undo step.
 - **Undo/redo** covers fonts, colors, text styles, the tab title, the background (which
-  picture or video, its blur, opacity and playback) and the sidebar border: the last 50
+  picture or video, its blur, opacity and playback): the last 50
   steps, surviving a refresh. A pick, a stepper press, a typed value, a tab title once the field
   is left, or a whole color-picker drag is one step.
 - Each stored setting loads on its own, so one stale value doesn't reset the others, and
