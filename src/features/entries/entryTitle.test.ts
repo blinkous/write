@@ -48,7 +48,8 @@ describe('title documents', () => {
   })
 
   it('drops stored styling that is invalid or no longer matches the title', () => {
-    expect(reconcileTitleContent('Sunday', bold('Sunday'))).toEqual(
+    // Validation fills in defaults (e.g. no alignment of its own), so compare content.
+    expect(reconcileTitleContent('Sunday', bold('Sunday'))).toMatchObject(
       bold('Sunday'),
     )
     expect(reconcileTitleContent('Monday', bold('Sunday'))).toBeNull()

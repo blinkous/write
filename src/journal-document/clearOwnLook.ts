@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core'
+import { setBlockAlignment } from './textAlignment'
 import { EMPHASES } from './textEmphasis'
 
 /** The marks that give text a look of its own; links and code stay. */
@@ -9,7 +10,7 @@ declare module '@tiptap/core' {
     clearOwnLook: {
       /**
        * Removes the selected text's own look (font, color, glow, case, letter
-       * spacing, emphasis), so it looks like its text style; without a
+       * spacing, emphasis, alignment), so it looks like its text style; without a
        * selection, the cursor's whole block.
        */
       clearOwnLook: () => ReturnType
@@ -34,6 +35,7 @@ export const ClearOwnLook = Extension.create({
             const markType = tr.doc.type.schema.marks[markName]
             if (markType) tr.removeMark(rangeFrom, rangeTo, markType)
           }
+          setBlockAlignment(tr, null, [rangeFrom, rangeTo])
           // Text typed next follows the style too.
           tr.setStoredMarks([])
           return true

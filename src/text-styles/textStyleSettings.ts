@@ -1,11 +1,13 @@
 import { z } from 'zod'
 import { getFontOption, isFontValue, type FontValue } from '../fonts'
 import {
+  isTextAlignment,
   isTextCase,
   LETTER_SPACING_RANGE,
   resolveTextColor,
   resolveTextGlow,
   resolveTextLetterSpacing,
+  type TextAlignment,
   type TextCase,
 } from '../journal-document'
 import { pxToRem } from '../utils/units'
@@ -63,6 +65,8 @@ export type TextStyleSettings = {
   color: string | null
   /** A glow behind the letters in this color (a theme color name or #rrggbb(aa)), or null for none. */
   glow: string | null
+  /** How its lines line up (start, center or end; start is left in left-to-right writing). */
+  alignment: TextAlignment
 }
 
 export type TextStyles = Record<TextStyleName, TextStyleSettings>
@@ -79,6 +83,7 @@ function style(size: number, bold: boolean): TextStyleSettings {
     font: null,
     color: null,
     glow: null,
+    alignment: 'start',
   }
 }
 
@@ -134,6 +139,9 @@ function createStyleSchema(name: TextStyleName) {
       font: z.custom<FontValue>(isFontValue).nullable().catch(null),
       color: optionalTextColorSchema,
       glow: optionalTextColorSchema,
+      alignment: z
+        .custom<TextAlignment>(isTextAlignment)
+        .catch(defaults.alignment),
     })
     .catch(defaults)
 }
@@ -180,7 +188,7 @@ function getTextDecoration(underline: boolean, strike: boolean): string {
  * The CSS variables for every style: size (rem), scale (relative to body, for
  * previews at another size), weight, style (italic), decoration (underline,
  * strikethrough), letter spacing, case (text-transform, and one for previews),
- * font, color and glow (a text-shadow). Defaults resolve to the editor font and the
+ * font, color, glow (a text-shadow) and alignment. Defaults resolve to the editor font and the
  * page text color.
  */
 export function getTextStyleVariables(
@@ -200,6 +208,7 @@ export function getTextStyleVariables(
         font,
         color,
         glow,
+        alignment,
       } = textStyles[name]
       const caseTransforms = CASE_TRANSFORMS[textCase ?? 'as-typed']
       const prefix = `--text-style-${name}`
@@ -224,6 +233,7 @@ export function getTextStyleVariables(
         ],
         [`${prefix}-color`, resolveTextColor(color) ?? 'var(--color-text)'],
         [`${prefix}-glow`, resolveTextGlow(glow) ?? 'none'],
+        [`${prefix}-align`, alignment],
       ]
     }),
   )

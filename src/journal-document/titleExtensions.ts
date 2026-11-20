@@ -1,5 +1,6 @@
 import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
+import { TextAlignmentAttribute } from './textAlignment'
 import { TextCaseMark } from './textCase'
 import { textStyleExtensions } from './textStyleMark'
 
@@ -8,7 +9,8 @@ const TitleDocument = Document.extend({ content: 'paragraph' })
 
 /**
  * What an entry's title can contain: one line of text with the same inline
- * styles as the writing (bold, italic, underline, strike, color, font, glow, case),
+ * styles as the writing (bold, italic, underline, strike, color, font, glow, case)
+ * and alignment,
  * but no blocks, links or code.
  */
 export const titleExtensions = [
@@ -30,4 +32,5 @@ export const titleExtensions = [
   TitleDocument,
   ...textStyleExtensions,
   TextCaseMark,
+  TextAlignmentAttribute,
 ]

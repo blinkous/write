@@ -35,6 +35,7 @@ import {
   TextColorPicker,
   TextGlowPicker,
   TextLetterSpacingPicker,
+  TextAlignmentPicker,
   TextStyleMenu,
   useJournalEditor,
   useTextStyleBlocks,
@@ -364,6 +365,10 @@ export function App({ journal }: AppProps) {
               />
               <TextCasePicker editor={activeEditor} {...textStyleContext} />
               <TextLetterSpacingPicker
+                editor={activeEditor}
+                {...textStyleContext}
+              />
+              <TextAlignmentPicker
                 editor={activeEditor}
                 {...textStyleContext}
               />

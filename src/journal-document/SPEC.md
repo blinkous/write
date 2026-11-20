@@ -12,6 +12,9 @@ stores, imports and exports it).
   and, for GIFs, whether it's paused or playing (unset follows the system);
   see journal-images. Only the journal's own pictures are read from pasted HTML. In
   markdown a picture is `![alt](images/<name>)`, its file in the export's images folder.
+- **Alignment** of paragraphs, headings, the title and pictures: start, center or end (left,
+  center, right in left-to-right writing), or none to follow the text style's. A picture
+  without its own follows Body's. Dropped from markdown, which can't say it.
 - **Heading 1 is the entry's title**, which lives outside the document. Pasted `#` headings
   become level 2.
 

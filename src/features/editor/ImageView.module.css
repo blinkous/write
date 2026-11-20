@@ -1,10 +1,18 @@
-/* Its own line: as wide as the picture, never wider than the text. */
+/* Its own line, lined up like text (see the page's alignment rules). */
+.line {
+  margin-block: var(--space-paragraph);
+  /* Not indented as a paragraph after a paragraph would be. */
+  text-indent: 0;
+}
+
+/* As wide as the picture, never wider than the text. */
 .image {
   position: relative;
-  width: fit-content;
+  display: inline-block;
   max-width: 100%;
-  margin-block: var(--space-paragraph);
+  vertical-align: top;
   border-radius: var(--radius-small);
+  text-align: start;
 }
 
 .image img,

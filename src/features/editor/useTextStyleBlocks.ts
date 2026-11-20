@@ -7,6 +7,7 @@ import {
   type TextStyleName,
   type TextStyles,
 } from '../../text-styles'
+import { shareTextStylesWithShortcuts } from './editorShortcuts'
 import { getBlockTextStyleName } from './textStyles'
 
 /**
@@ -14,7 +15,7 @@ import { getBlockTextStyleName } from './textStyles'
  * editor applies itself: title and sentence case capitalize the right letters
  * (CSS can't), and bold, italic, underline and strikethrough follow what text
  * turns off. The title editor's text is all Title; the writing's follows each
- * paragraph.
+ * paragraph. Also tells the editor's shortcuts the current styles.
  */
 export function useTextStyleBlocks(
   editor: Editor,
@@ -51,4 +52,10 @@ export function useTextStyleBlocks(
   useEffect(() => {
     if (!editor.isDestroyed) applyStyles()
   }, [editor, isTitle, blocksKey])
+
+  // Shortcuts that follow the styles (alignment) read them from the editor.
+  useEffect(
+    () => shareTextStylesWithShortcuts(editor, textStyles),
+    [editor, textStyles],
+  )
 }

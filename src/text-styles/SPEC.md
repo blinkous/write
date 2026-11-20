@@ -7,8 +7,8 @@ entry title, and the style menu.
 
 Each style has a **size** (10–48 px, in rem so browser zoom works), **bold**, **italic**,
 **underline**, **strikethrough**, **letter spacing** (% of size, −5 to 30), **case** (or as
-typed), **font** (or the editor font), **color** (or the page text color) and **glow** (or
-none). Defaults match the original look (headings and title bold). Each setting of each
+typed), **font** (or the editor font), **color** (or the page text color), **glow** (or
+none) and **alignment** (left, center or right). Defaults match the original look (headings and title bold). Each setting of each
 style loads on its own, falling back to its default.
 
 ## Decisions

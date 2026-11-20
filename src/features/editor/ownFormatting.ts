@@ -1,11 +1,14 @@
+import { NodeSelection } from '@tiptap/pm/state'
 import type { Editor } from '@tiptap/react'
 import { isFontValue, type FontValue } from '../../fonts'
 import {
   isOwnTextCase,
+  isTextAlignment,
   isOwnTextGlow,
   resolveTextColor,
   resolveTextLetterSpacing,
   type OwnTextCase,
+  type TextAlignment,
 } from '../../journal-document'
 
 /*
@@ -41,4 +44,13 @@ export function readOwnLetterSpacing(editor: Editor): number | null {
   return resolveTextLetterSpacing(letterSpacing) === null
     ? null
     : Number(letterSpacing)
+}
+
+/** The alignment of the selection's first block (a picture's, when one is selected). */
+export function readOwnAlignment(editor: Editor): TextAlignment | null {
+  const { selection } = editor.state
+  const block =
+    selection instanceof NodeSelection ? selection.node : selection.$from.parent
+  const { alignment } = block.attrs
+  return isTextAlignment(alignment) ? alignment : null
 }

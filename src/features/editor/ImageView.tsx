@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { ActionList, MenuItem, OptionsMenu } from '../../design-system'
-import { isImagePlayback } from '../../journal-document'
+import { isImagePlayback, isTextAlignment } from '../../journal-document'
 import { isAnimatedImage, isImageId } from '../../journal-images'
 import { prefersReducedMotion } from '../../utils/motion'
 import { AltTextDialog } from './AltTextDialog'
@@ -29,7 +29,7 @@ export function ImageView({
   updateAttributes,
   deleteNode,
 }: NodeViewProps) {
-  const { imageId, alt, playback } = node.attrs
+  const { imageId, alt, playback, alignment } = node.attrs
   const validImageId = isImageId(imageId) ? imageId : ''
   const shown = useImageUrl(validImageId)
   const description = typeof alt === 'string' ? alt : ''
@@ -42,69 +42,75 @@ export function ImageView({
   const [isAltTextOpen, setIsAltTextOpen] = useState(false)
 
   return (
-    <NodeViewWrapper className={styles.image} data-selected={selected}>
-      {shown.state === 'shown' &&
-        (isPaused ? (
-          <StillFrame url={shown.url} alt={description} />
-        ) : (
-          <img src={shown.url} alt={description} draggable={false} />
-        ))}
-      {shown.state === 'missing' && (
-        <div
-          className={styles.missing}
-          role="img"
-          aria-label={
-            description
-              ? `${description} (picture not found)`
-              : 'Picture not found'
-          }
-        >
-          <FileQuestionMark aria-hidden="true" />
-        </div>
-      )}
-      <OptionsMenu label="Picture options" className={styles.options}>
-        {(close) => (
-          <ActionList>
-            {isAnimated && (
+    // Its line lines up the picture: its own alignment, or Body's.
+    <NodeViewWrapper
+      className={styles.line}
+      data-align={isTextAlignment(alignment) ? alignment : undefined}
+    >
+      <div className={styles.image} data-selected={selected}>
+        {shown.state === 'shown' &&
+          (isPaused ? (
+            <StillFrame url={shown.url} alt={description} />
+          ) : (
+            <img src={shown.url} alt={description} draggable={false} />
+          ))}
+        {shown.state === 'missing' && (
+          <div
+            className={styles.missing}
+            role="img"
+            aria-label={
+              description
+                ? `${description} (picture not found)`
+                : 'Picture not found'
+            }
+          >
+            <FileQuestionMark aria-hidden="true" />
+          </div>
+        )}
+        <OptionsMenu label="Picture options" className={styles.options}>
+          {(close) => (
+            <ActionList>
+              {isAnimated && (
+                <MenuItem
+                  icon={isPaused ? Play : Pause}
+                  onClick={() => {
+                    close()
+                    updateAttributes({
+                      playback: isPaused ? 'playing' : 'paused',
+                    })
+                  }}
+                >
+                  {isPaused ? 'Play GIF' : 'Pause GIF'}
+                </MenuItem>
+              )}
               <MenuItem
-                icon={isPaused ? Play : Pause}
+                icon={TextCursorInput}
                 onClick={() => {
                   close()
-                  updateAttributes({
-                    playback: isPaused ? 'playing' : 'paused',
-                  })
+                  setIsAltTextOpen(true)
                 }}
               >
-                {isPaused ? 'Play GIF' : 'Pause GIF'}
+                Alt text
               </MenuItem>
-            )}
-            <MenuItem
-              icon={TextCursorInput}
-              onClick={() => {
-                close()
-                setIsAltTextOpen(true)
-              }}
-            >
-              Alt text
-            </MenuItem>
-            <MenuItem
-              icon={Trash2}
-              onClick={() => {
-                close()
-                deleteNode()
-              }}
-            >
-              Delete picture
-            </MenuItem>
-          </ActionList>
-        )}
-      </OptionsMenu>
-      <AltTextDialog
-        isOpen={isAltTextOpen}
-        alt={description}
-        onSave={(nextAlt) => updateAttributes({ alt: nextAlt })}
-        onClose={() => setIsAltTextOpen(false)}
-      />
+              <MenuItem
+                icon={Trash2}
+                onClick={() => {
+                  close()
+                  deleteNode()
+                }}
+              >
+                Delete picture
+              </MenuItem>
+            </ActionList>
+          )}
+        </OptionsMenu>
+        <AltTextDialog
+          isOpen={isAltTextOpen}
+          alt={description}
+          onSave={(nextAlt) => updateAttributes({ alt: nextAlt })}
+          onClose={() => setIsAltTextOpen(false)}
+        />
+      </div>
     </NodeViewWrapper>
   )
 }

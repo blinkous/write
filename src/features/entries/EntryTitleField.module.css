@@ -8,6 +8,7 @@
   letter-spacing: var(--text-style-title-letter-spacing);
   text-transform: var(--text-style-title-transform);
   text-shadow: var(--text-style-title-glow);
+  text-align: var(--text-style-title-align);
   line-height: 1.2;
   overflow-wrap: break-word;
   outline: none;
@@ -16,4 +17,17 @@
 
 .title p {
   margin: 0;
+}
+
+/* The title's own alignment wins over the Title style's (see JournalPage's). */
+.title [data-align='start'] {
+  text-align: start;
+}
+
+.title [data-align='center'] {
+  text-align: center;
+}
+
+.title [data-align='end'] {
+  text-align: end;
 }
