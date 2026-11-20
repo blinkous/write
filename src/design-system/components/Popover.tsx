@@ -35,6 +35,8 @@ type PopoverProps = {
    */
   isShownWhole?: boolean
   onClose?: () => void
+  /** Places the trigger and its panel's anchor, e.g. over a corner of what it acts on. */
+  className?: string
 }
 
 /**
@@ -79,6 +81,7 @@ export function Popover({
   isDisabled = false,
   isShownWhole = false,
   onClose,
+  className = '',
 }: PopoverProps) {
   const popoverId = useId()
   const [isOpen, setIsOpen] = useState(false)
@@ -115,7 +118,7 @@ export function Popover({
   }
 
   return (
-    <div className={styles.anchor}>
+    <div className={`${styles.anchor} ${className}`}>
       <Button
         ref={triggerRef}
         iconOnly={isTriggerIconOnly}

@@ -39,6 +39,7 @@ describe('loadAppearance', () => {
       hasParagraphSpacing: DEFAULT_APPEARANCE.hasParagraphSpacing,
       hasParagraphIndent: DEFAULT_APPEARANCE.hasParagraphIndent,
       customTextColors: Array(7).fill(null),
+      customThemePacks: [],
       textStyles: DEFAULT_APPEARANCE.textStyles,
       tabTitle: DEFAULT_APPEARANCE.tabTitle,
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
@@ -46,6 +47,7 @@ describe('loadAppearance', () => {
       isBackgroundVideoPaused: DEFAULT_APPEARANCE.isBackgroundVideoPaused,
       backgroundVideoSpeed: DEFAULT_APPEARANCE.backgroundVideoSpeed,
       hasSidebarBorder: DEFAULT_APPEARANCE.hasSidebarBorder,
+      backgroundFileId: DEFAULT_APPEARANCE.backgroundFileId,
     })
   })
 
@@ -156,6 +158,23 @@ describe('loadAppearance', () => {
     expect(loadAppearance().hasSidebarBorder).toBe(false)
     save('nope')
     expect(loadAppearance().hasSidebarBorder).toBe(true)
+  })
+
+  it('keeps the background setting, and reads the briefly separate one for older settings', () => {
+    window.localStorage.setItem(
+      'write.currentBackgroundFile.v1',
+      JSON.stringify('older'),
+    )
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ ...DEFAULT_APPEARANCE, backgroundFileId: undefined }),
+    )
+    expect(loadAppearance().backgroundFileId).toBe('older')
+    window.localStorage.setItem(
+      'write.appearance.v1',
+      JSON.stringify({ ...DEFAULT_APPEARANCE, backgroundFileId: null }),
+    )
+    expect(loadAppearance().backgroundFileId).toBeNull()
   })
 
   describe('background video pause', () => {

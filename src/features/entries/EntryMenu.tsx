@@ -1,5 +1,5 @@
-import { Copy, Download, Ellipsis, Trash2 } from 'lucide-react'
-import { ActionList, MenuItem, Popover } from '../../design-system'
+import { Copy, Download, Trash2 } from 'lucide-react'
+import { ActionList, MenuItem, OptionsMenu } from '../../design-system'
 import { useShownShortcuts } from '../../keyboard-shortcuts'
 import { ImportAction } from './ImportAction'
 
@@ -23,7 +23,7 @@ export function EntryMenu({
 }: EntryMenuProps) {
   const getShortcut = useShownShortcuts()
   return (
-    <Popover label={label} trigger={<Ellipsis aria-hidden="true" />}>
+    <OptionsMenu label={label}>
       {(closeMenu) => (
         <ActionList>
           <MenuItem
@@ -61,6 +61,6 @@ export function EntryMenu({
           </MenuItem>
         </ActionList>
       )}
-    </Popover>
+    </OptionsMenu>
   )
 }

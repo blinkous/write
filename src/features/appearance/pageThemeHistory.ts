@@ -3,9 +3,8 @@ import type { TextStyles } from '../../text-styles'
 
 /**
  * The settings that share one undo/redo: fonts, colors, text styles, the tab
- * title, the background's blur, opacity and video playback, and the sidebar
- * line. The background file itself
- * isn't kept, so choosing or removing one isn't undoable.
+ * title, the background picture or video (which stored file) with its blur,
+ * opacity and video playback, and the sidebar border.
  */
 export type PageTheme = {
   appFont: FontValue
@@ -19,6 +18,8 @@ export type PageTheme = {
   isBackgroundVideoPaused: boolean
   backgroundVideoSpeed: number
   hasSidebarBorder: boolean
+  /** The background's stored file, or null for none (see backgroundFiles). */
+  backgroundFileId: string | null
 }
 
 /** Undo steps kept; older ones are dropped. */
@@ -54,6 +55,7 @@ function isSameTheme(first: PageTheme, second: PageTheme): boolean {
     first.isBackgroundVideoPaused === second.isBackgroundVideoPaused &&
     first.backgroundVideoSpeed === second.backgroundVideoSpeed &&
     first.hasSidebarBorder === second.hasSidebarBorder &&
+    first.backgroundFileId === second.backgroundFileId &&
     JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles)
   )
 }

@@ -100,7 +100,7 @@ export function ShortcutRow({ command }: ShortcutRowProps) {
         <Button
           aria-label={
             isRecording
-              ? `${label} shortcut: press keys…`
+              ? `${label} shortcut: press keys`
               : `${label} shortcut: ${describeShortcut(shortcut)}`
           }
           aria-pressed={isRecording}
@@ -120,7 +120,7 @@ export function ShortcutRow({ command }: ShortcutRowProps) {
           onBlur={() => setIsRecording(false)}
         >
           {isRecording ? (
-            'Press keys…'
+            'Press keys'
           ) : (
             <kbd className={styles.keys}>{describeShortcut(shortcut)}</kbd>
           )}

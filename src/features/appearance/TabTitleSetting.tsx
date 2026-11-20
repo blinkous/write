@@ -1,3 +1,4 @@
+import { AppWindow } from 'lucide-react'
 import { EditableText, LabeledRow } from '../../design-system'
 import { APP_NAME, TAB_TITLE_MAX_LENGTH } from './appearanceOptions'
 import type { usePageTheme } from './usePageTheme'
@@ -13,7 +14,7 @@ export function TabTitleSetting({
 }) {
   const { tabTitle, changeTabTitle } = pageTheme
   return (
-    <LabeledRow label="Tab title" control="text">
+    <LabeledRow label="Tab title" control="text" icon={AppWindow}>
       <EditableText
         label="Tab title"
         value={tabTitle}

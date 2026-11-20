@@ -39,7 +39,8 @@
   /* Hidden (transparent) by a setting; the resizer still shows it on hover, drag and focus. */
   border-right: var(--border-width) solid var(--color-sidebar-border);
   background: var(--color-surface);
-  overflow: hidden;
+  /* Clip (not hidden), so nothing, not even focusing something near its edge, can shift it sideways. */
+  overflow: clip;
 }
 
 .backdrop {

@@ -24,6 +24,7 @@ import {
   undoPageTheme,
   type PageTheme,
 } from './pageThemeHistory'
+import type { BackgroundEffects } from './themePackBackground'
 import type { ThemeLook } from './themePacks'
 import {
   loadPageThemeHistory,
@@ -56,6 +57,7 @@ export function usePageTheme(
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
     hasSidebarBorder,
+    backgroundFileId,
   }: Appearance,
   updateAppearance: (changes: Partial<Appearance>) => void,
 ) {
@@ -71,6 +73,7 @@ export function usePageTheme(
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
     hasSidebarBorder,
+    backgroundFileId,
   }
   const [history, setHistory] = useState(() => loadPageThemeHistory(current))
   const systemColorScheme = getSystemColorScheme()
@@ -104,6 +107,16 @@ export function usePageTheme(
     isBackgroundVideoPaused,
     backgroundVideoSpeed,
     hasSidebarBorder,
+    backgroundFileId,
+    /**
+     * Background files undo can bring back, the nearest steps first, so
+     * they're kept while they fit (see backgroundFiles).
+     */
+    undoBackgroundFileIds: [
+      ...(history.editStart ? [history.editStart] : []),
+      ...history.past.toReversed(),
+      ...history.future,
+    ].flatMap((step) => (step.backgroundFileId ? [step.backgroundFileId] : [])),
     /**
      * Changes one text style. Picks are one undo step each; a color drag
      * (isFinal false) becomes one step when committed.
@@ -169,6 +182,10 @@ export function usePageTheme(
     ) {
       change(effects, true)
     },
+    /** A new background picture or video (already stored), or none: one undo step. */
+    changeBackgroundFile(nextBackgroundFileId: string | null) {
+      change({ backgroundFileId: nextBackgroundFileId }, true)
+    },
     /** Showing or hiding the sidebar border is one undo step. */
     changeSidebarBorder(nextHasSidebarBorder: boolean) {
       change({ hasSidebarBorder: nextHasSidebarBorder }, true)
@@ -184,8 +201,15 @@ export function usePageTheme(
     resetTextStyles() {
       change({ textStyles: DEFAULT_TEXT_STYLES }, true)
     },
-    /** A theme pack's whole look (colors, fonts, text styles) as one undo step. */
-    applyThemeLook(look: ThemeLook) {
+    /**
+     * A theme pack's whole look (colors, fonts, text styles) and its
+     * background (a file with its effects, or none), as one undo step.
+     */
+    applyThemeLook(
+      look: ThemeLook &
+        Partial<BackgroundEffects> &
+        Pick<PageTheme, 'backgroundFileId'>,
+    ) {
       change(look, true)
     },
     /** Ends the current edit (e.g. a finished drag) as one undo step. */

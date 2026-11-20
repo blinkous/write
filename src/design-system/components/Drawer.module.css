@@ -46,6 +46,11 @@
   flex-direction: column;
   gap: var(--space-6);
   min-height: 0;
+  /*
+   * Scrolls up and down only, never sideways: what reaches past the content
+   * (rows' pulled-out controls, focus rings) stays within its padding.
+   */
+  overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-4) var(--drawer-reach) var(--space-2);
   /* The top divider, drawn only across the content's width (not the wider scroll area). */

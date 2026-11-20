@@ -1,4 +1,8 @@
-import { parseAppearance, type Appearance } from '../appearance'
+import {
+  parseAppearance,
+  withoutPackBackgroundFiles,
+  type Appearance,
+} from '../appearance'
 import { isEntrySort, type EntrySort } from '../entries'
 import {
   parseShortcutOverrides,
@@ -17,8 +21,11 @@ const SETTINGS_VERSION = 1
 /** Settings files are tiny; anything bigger isn't one. */
 const MAX_SETTINGS_FILE_BYTES = 1024 * 1024
 
+/** Background files stay in this browser, so settings files never say which one is showing. */
+type SettingsAppearance = Omit<Appearance, 'backgroundFileId'>
+
 export type Settings = {
-  appearance: Appearance
+  appearance: SettingsAppearance
   entrySort: EntrySort
   shortcuts: ShortcutOverrides
 }
@@ -32,7 +39,11 @@ export function toSettingsRecord({
   return {
     format: SETTINGS_FORMAT,
     version: SETTINGS_VERSION,
-    appearance,
+    // Background files stay in this browser: no current one, and packs come back without theirs.
+    appearance: {
+      ...withoutBackgroundFile(appearance),
+      customThemePacks: withoutPackBackgroundFiles(appearance.customThemePacks),
+    },
     entrySort,
     shortcuts,
   }
@@ -59,6 +70,14 @@ type SettingsFileResult =
   /** Not a settings file (e.g. a journal backup): someone else's to import. */
   | { kind: 'other' }
 
+function withoutBackgroundFile({
+  backgroundFileId: _backgroundFileId,
+  ...appearance
+}: SettingsAppearance &
+  Partial<Pick<Appearance, 'backgroundFileId'>>): SettingsAppearance {
+  return appearance
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -82,7 +101,8 @@ export function parseSettingsRecord(rawFile: unknown): SettingsFileResult {
       kind: 'invalid',
       reason: 'These settings are from a newer version.',
     }
-  const appearance = parseAppearance(rawFile.appearance)
+  const parsedAppearance = parseAppearance(rawFile.appearance)
+  const appearance = parsedAppearance && withoutBackgroundFile(parsedAppearance)
   const entrySort = isEntrySort(rawFile.entrySort)
     ? rawFile.entrySort
     : undefined

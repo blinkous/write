@@ -22,7 +22,7 @@ Every action that has a shortcut, the keys it's on, and the settings to change t
 
 ## Changing them
 
-- **Settings › Data › Keyboard shortcuts…** opens a dialog (the list is long and needs
+- **Settings › Data › Keyboard shortcuts** opens a dialog (the list is long and needs
   room) with every action under its group, its keys on a button. Press the button, then
   the new keys. Escape cancels (without closing the dialog), Backspace or Delete leaves it
   with none, Tab moves on (no keyboard trap).

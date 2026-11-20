@@ -21,6 +21,11 @@ import {
   type MarginValue,
 } from './appearanceOptions'
 import { isFontValue, type FontValue } from '../../fonts'
+import {
+  backgroundFileIdSchema,
+  readLegacyCurrentBackgroundFileId,
+} from './backgroundFiles'
+import { customThemePacksSchema } from './customThemePacks'
 
 const APPEARANCE_STORAGE_KEY = 'write.appearance.v1'
 
@@ -70,6 +75,7 @@ const appearanceSchema = z.object({
     .catch(undefined),
   textColor: z.string().refine(isHexColor).optional().catch(undefined),
   customTextColors: customTextColorsSchema,
+  customThemePacks: customThemePacksSchema,
   textStyles: textStylesSchema,
   tabTitle: z
     .string()
@@ -91,6 +97,8 @@ const appearanceSchema = z.object({
     .max(BACKGROUND_VIDEO_SPEED_RANGE.max)
     .catch(DEFAULT_APPEARANCE.backgroundVideoSpeed),
   hasSidebarBorder: z.boolean().catch(DEFAULT_APPEARANCE.hasSidebarBorder),
+  // Resolved below: settings saved before it was one of them point to it on their own.
+  backgroundFileId: backgroundFileIdSchema.optional().catch(undefined),
 })
 
 /*
@@ -161,6 +169,7 @@ function toAppearance(
     backgroundOpacity,
     backgroundFade,
     isBackgroundVideoPaused,
+    backgroundFileId,
     ...stored
   }: z.infer<typeof appearanceSchema>,
   colorScheme: ColorScheme,
@@ -170,6 +179,10 @@ function toAppearance(
     ...resolvePageColors(backgroundColor, textColor, colorScheme),
     editorFont: migrateEditorFont(editorFont, entryFont, font),
     isBackgroundVideoPaused: isBackgroundVideoPaused ?? prefersReducedMotion(),
+    backgroundFileId:
+      backgroundFileId === undefined
+        ? readLegacyCurrentBackgroundFileId()
+        : backgroundFileId,
     backgroundOpacity: migrateBackgroundOpacity(
       backgroundOpacity,
       backgroundFade,

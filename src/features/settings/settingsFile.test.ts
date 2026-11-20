@@ -6,8 +6,11 @@ import {
   toSettingsRecord,
 } from './settingsFile'
 
+// Settings files never say which background is showing (its file stays in this browser).
+const { backgroundFileId: _backgroundFileId, ...appearance } =
+  DEFAULT_APPEARANCE
 const settings = {
-  appearance: { ...DEFAULT_APPEARANCE, appFont: 'nunito', margins: 'wide' },
+  appearance: { ...appearance, appFont: 'nunito', margins: 'wide' },
   entrySort: 'name',
   shortcuts: { bold: 'Mod-k', italic: null },
 } as const
@@ -25,6 +28,20 @@ describe('settings files', () => {
       kind: 'settings',
       settings,
     })
+  })
+
+  it('leaves the current background out, both ways', () => {
+    const showing = {
+      ...settings,
+      appearance: { ...settings.appearance, backgroundFileId: 'abc' },
+    }
+    const file = JSON.parse(serializeSettings(showing))
+    expect(file.appearance).not.toHaveProperty('backgroundFileId')
+    file.appearance.backgroundFileId = 'abc'
+    const result = parseSettingsFile(JSON.stringify(file))
+    expect(
+      result.kind === 'settings' && result.settings.appearance,
+    ).not.toHaveProperty('backgroundFileId')
   })
 
   it('leaves journal backups and other files to the journal import', () => {

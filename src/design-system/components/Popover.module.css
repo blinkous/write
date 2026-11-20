@@ -26,6 +26,13 @@
 }
 
 .panel {
+  /*
+   * A menu looks the same wherever it opens: it drops the row adjustments of
+   * the section it opens from (e.g. a settings section pulls its rows out and
+   * sets them regular weight), so its rows sit inside its own padding.
+   */
+  --row-outdent: 0rem;
+  --row-font-weight: var(--font-weight-medium);
   margin: var(--space-2) 0;
   width: max-content;
   max-width: min(var(--width-popover), calc(100vw - var(--space-8)));

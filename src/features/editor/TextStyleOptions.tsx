@@ -1,10 +1,9 @@
-import { Ellipsis } from 'lucide-react'
 import {
   ActionList,
   LabeledRow,
   MenuItem,
   NumberStepper,
-  Popover,
+  OptionsMenu,
   PopoverPanel,
   ResetMenuItem,
 } from '../../design-system'
@@ -41,11 +40,7 @@ export function TextStyleOptions({
   onReset,
 }: TextStyleOptionsProps) {
   return (
-    <Popover
-      label={`${label} options`}
-      placement="beside"
-      trigger={<Ellipsis aria-hidden="true" />}
-    >
+    <OptionsMenu label={`${label} options`} placement="beside">
       {(_close, refocus) => (
         <>
           <ActionList>
@@ -74,6 +69,6 @@ export function TextStyleOptions({
           />
         </>
       )}
-    </Popover>
+    </OptionsMenu>
   )
 }

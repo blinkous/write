@@ -1,6 +1,8 @@
 import { LabeledRow } from '../../design-system'
 import { FontMenu } from '../../fonts'
 import { SidebarBorderSetting } from './SidebarBorderSetting'
+import type { CustomThemePack } from './customThemePacks'
+import type { useCustomThemePacks } from './useCustomThemePacks'
 import { PageColorSettings } from './ThemeSettings'
 import { ThemePackPicker } from './ThemePackPicker'
 import type { useBackgroundMedia } from './useBackgroundMedia'
@@ -12,34 +14,26 @@ type AppSettingsProps = {
   /** The custom color slots shared by every color menu. */
   customColors: readonly (string | null)[]
   onCustomColorsChange: (customColors: (string | null)[]) => void
+  /** Looks saved as theme packs, with their backgrounds. */
+  customThemePacks: readonly CustomThemePack[]
+  /** Choosing, saving, updating and deleting packs, curated ones included. */
+  packActions: ReturnType<typeof useCustomThemePacks>
 }
 
 /** The theme packs, then everything around the page: its font, the page's foreground and background, and the sidebar border. */
 export function AppSettings({
   pageTheme,
   backgroundMedia,
+  customThemePacks,
+  packActions,
   ...customColorProps
 }: AppSettingsProps) {
-  const {
-    appFont,
-    editorFont,
-    backgroundColor,
-    textColor,
-    textStyles,
-    changeFonts,
-    applyThemeLook,
-  } = pageTheme
+  const { appFont, changeFonts } = pageTheme
   return (
     <>
       <ThemePackPicker
-        current={{
-          appFont,
-          editorFont,
-          backgroundColor,
-          textColor,
-          textStyles,
-        }}
-        onSelect={applyThemeLook}
+        customPacks={customThemePacks}
+        packActions={packActions}
       />
       <LabeledRow label="Font" control="button">
         <FontMenu

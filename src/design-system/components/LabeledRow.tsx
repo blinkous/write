@@ -1,4 +1,6 @@
+import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { showFullTextIfCut } from './fullTextIfCut'
 import styles from './LabeledRow.module.css'
 
 type LabeledRowProps = {
@@ -11,14 +13,38 @@ type LabeledRowProps = {
    * (editable in place) takes the room the name leaves, lined up like a button.
    */
   control: 'button' | 'icon' | 'swatch' | 'text'
+  /**
+   * Shown before the label. A row with one sits among MenuItems (in an
+   * ActionList) and is padded like them, so icons, labels and ends line up.
+   */
+  icon?: LucideIcon
   children: ReactNode
 }
 
-/** A setting's name with its control at the end of the row, e.g. "Font   Inter ⌄" or "Foreground   ■". */
-export function LabeledRow({ label, control, children }: LabeledRowProps) {
+/**
+ * A setting's name with its control at the end of the row, e.g. "Font   Inter ⌄"
+ * or "Foreground   ■". When room runs out the name gives way ("…", whole on
+ * hover), never the control.
+ */
+export function LabeledRow({
+  label,
+  control,
+  icon: Icon,
+  children,
+}: LabeledRowProps) {
   return (
-    <div className={styles.row}>
-      <span className={styles.label}>{label}</span>
+    <div className={`${styles.row} ${Icon ? styles.withIcon : ''}`}>
+      <span className={styles.label}>
+        {Icon && <Icon aria-hidden="true" className={styles.labelIcon} />}
+        <span
+          className={styles.labelText}
+          onPointerEnter={({ currentTarget }) =>
+            showFullTextIfCut(currentTarget, currentTarget)
+          }
+        >
+          {label}
+        </span>
+      </span>
       <div className={styles[control]}>{children}</div>
     </div>
   )

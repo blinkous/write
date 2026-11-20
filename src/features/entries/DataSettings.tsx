@@ -1,9 +1,12 @@
 import { Download, Info, Keyboard, RotateCcw } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { ActionList, MenuItem } from '../../design-system'
 import { useShownShortcuts } from '../../keyboard-shortcuts'
 import { ImportAction } from './ImportAction'
 
 type DataSettingsProps = {
+  /** Setting rows listed first, among the actions (e.g. the tab title). */
+  children?: ReactNode
   /** Opens the Export dialog (journal and/or settings, JSON or markdown). */
   onExport: () => void
   /** Opens the import file picker. */
@@ -20,6 +23,7 @@ type DataSettingsProps = {
  * settings (which asks first) and About (which is mostly about where data lives).
  */
 export function DataSettings({
+  children,
   onExport,
   onChooseImportFile,
   onShowShortcuts,
@@ -29,17 +33,18 @@ export function DataSettings({
   const getShortcut = useShownShortcuts()
   return (
     <ActionList>
+      {children}
       <MenuItem
         icon={Download}
         shortcut={getShortcut('open-export')}
         onClick={onExport}
       >
-        Export…
+        Export
       </MenuItem>
       {/* Takes journal backups and settings files alike. */}
       <ImportAction onChooseFile={onChooseImportFile} />
       <MenuItem icon={Keyboard} onClick={onShowShortcuts}>
-        Keyboard shortcuts…
+        Keyboard shortcuts
       </MenuItem>
       <MenuItem icon={RotateCcw} onClick={onResetSettings}>
         Reset all settings and styles
