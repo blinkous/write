@@ -19,6 +19,7 @@ import {
   SpacingMenu,
   useAppearance,
   usePageTheme,
+  useThemeHistoryKeys,
 } from '../features/appearance'
 import {
   documentToMarkdown,
@@ -75,6 +76,8 @@ type AppProps = {
 export function App({ journal }: AppProps) {
   const { appearance, updateAppearance, resetAppearance } = useAppearance()
   const pageTheme = usePageTheme(appearance, updateAppearance)
+  // ⌘Z / ⇧⌘Z in the settings, flashing the undo or redo button.
+  const themeHistoryKeys = useThemeHistoryKeys(pageTheme)
   const privacyNotice = usePrivacyNotice()
   // The entry awaiting delete confirmation, from the page's menu or a list row's.
   const [entryIdToDelete, setEntryIdToDelete] = useState<string | null>(null)
@@ -247,7 +250,14 @@ export function App({ journal }: AppProps) {
             onDone={() => editor.commands.focus()}
           />
           <SettingsDrawer
-            headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
+            headerActions={
+              <ThemeHistoryButtons
+                pageTheme={pageTheme}
+                flashCounts={themeHistoryKeys.flashCounts}
+              />
+            }
+            onUndo={themeHistoryKeys.undo}
+            onRedo={themeHistoryKeys.redo}
             sections={[
               {
                 // Kept as 'app': which sections are folded is saved by id.

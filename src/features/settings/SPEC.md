@@ -11,6 +11,12 @@ The settings drawer at the bottom of the sidebar.
   settings stay readable over a background picture. The bar shows one undo/redo for every
   setting but the background file, beside the ⚙. No header (it saves a row); it's still
   named "Settings" for screen readers.
+- **⌘Z / ⇧⌘Z undo and redo settings while focus is in the drawer** (Ctrl+Z, Ctrl+Shift+Z or
+  Ctrl+Y elsewhere), like its buttons. Text fields in it keep their own undo; outside the
+  drawer (the writing, anywhere else) the keys never touch settings, so a change can't be
+  undone where its buttons aren't showing. A click anywhere in it counts as being in it
+  (WebKit doesn't focus clicked buttons). The undo or redo button flashes its hover look
+  when its key does something, so it's clear what happened.
 - **Sections fold** under their titles: Theme and Editor (appearance), then Data (tab title,
   export, import, keyboard shortcuts, reset, About). Open ones are remembered. An open section's chevron shows
   only on hover or focus (as in macOS sidebars), so it isn't mistaken for a dropdown's.

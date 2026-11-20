@@ -13,6 +13,8 @@
   min-height: 0;
   margin: 0 calc(var(--bleed) * -1) calc(var(--bleed-bottom) * -1);
   padding: 0 var(--bleed) var(--bleed-bottom);
+  /* Focused only from a click (see SettingsDrawer); the controls inside show focus. */
+  outline: none;
 }
 
 .settings[data-open='true'] {

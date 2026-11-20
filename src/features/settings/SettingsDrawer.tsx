@@ -1,6 +1,14 @@
 import { Settings } from 'lucide-react'
-import { useEffect, useId, useState, type ReactNode } from 'react'
+import {
+  useEffect,
+  useId,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react'
 import { Button, Drawer, DrawerSection } from '../../design-system'
+import { isTextEntry } from '../../utils/textEntry'
+import { getUndoKey } from '../../utils/undoKeys'
 import {
   loadIsSettingsOpen,
   loadOpenSectionIds,
@@ -21,6 +29,10 @@ export type SettingsSection = {
 type SettingsDrawerProps = {
   /** Small controls shown in the bottom bar while open, e.g. undo/redo. */
   headerActions?: ReactNode
+  /** The platform's undo key (⌘Z) while focus is in the settings, outside a text field. */
+  onUndo: () => void
+  /** The platform's redo key (⇧⌘Z) while focus is in the settings, outside a text field. */
+  onRedo: () => void
   /** Each folds away under its title. */
   sections: readonly SettingsSection[]
 }
@@ -30,9 +42,13 @@ type SettingsDrawerProps = {
  * above it. It starts open and stays open (across visits too) until toggled closed, sharing
  * the sidebar with the entries; folded sections are remembered too. The bar
  * holds the drawer's controls: while open, undo/redo sit by the highlighted toggle.
+ * While focus is in it, the undo and redo keys undo settings; text fields keep
+ * their own.
  */
 export function SettingsDrawer({
   headerActions,
+  onUndo,
+  onRedo,
   sections,
 }: SettingsDrawerProps) {
   const drawerId = useId()
@@ -56,8 +72,27 @@ export function SettingsDrawer({
     )
   }
 
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.defaultPrevented || isTextEntry(event.target)) return
+    const undoKey = getUndoKey(event.nativeEvent)
+    if (!undoKey) return
+    event.preventDefault()
+    if (undoKey === 'undo') onUndo()
+    else onRedo()
+  }
+
   return (
-    <div className={styles.settings} data-open={isOpen}>
+    <div
+      className={styles.settings}
+      data-open={isOpen}
+      /*
+       * Focusable from a click, never a Tab stop: WebKit doesn't focus a
+       * clicked button, so a click anywhere in the settings still puts focus
+       * here, where the undo keys apply.
+       */
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
       <Drawer id={drawerId} label="Settings" isOpen={isOpen}>
         {sections.map(({ id, title, content }) => (
           <DrawerSection

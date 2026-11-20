@@ -11,12 +11,27 @@ type ButtonProps = ComponentProps<'button'> & {
    * sidebar: it doesn't look on while open. Screen readers still hear "expanded".
    */
   plainWhenExpanded?: boolean
+  /**
+   * Flashes the button's hover look each time this goes up, so something done
+   * another way (e.g. its keyboard shortcut) shows where it happened.
+   */
+  flashCount?: number
+}
+
+/*
+ * Two identical flashes, alternated, so each new one starts over (a CSS
+ * animation restarts only when its name changes).
+ */
+function getFlash(flashCount: number): 'odd' | 'even' | undefined {
+  if (flashCount === 0) return undefined
+  return flashCount % 2 === 1 ? 'odd' : 'even'
 }
 
 export function Button({
   variant,
   iconOnly,
   plainWhenExpanded,
+  flashCount = 0,
   className,
   type = 'button',
   ...buttonProps
@@ -30,6 +45,7 @@ export function Button({
         plainWhenExpanded,
         className,
       })}
+      data-flash={getFlash(flashCount)}
       {...buttonProps}
     />
   )
