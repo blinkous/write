@@ -39,6 +39,12 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+  /*
+   * The top divider, drawn only across the content's width (not the wider
+   * scroll area); here rather than on the content, whose edges fade.
+   */
+  background: linear-gradient(var(--color-border), var(--color-border)) top /
+    calc(100% - var(--drawer-reach) * 2) var(--border-width) no-repeat;
 }
 
 .content {
@@ -53,7 +59,4 @@
   overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-4) var(--drawer-reach) var(--space-2);
-  /* The top divider, drawn only across the content's width (not the wider scroll area). */
-  background: linear-gradient(var(--color-border), var(--color-border)) top /
-    calc(100% - var(--drawer-reach) * 2) var(--border-width) no-repeat;
 }

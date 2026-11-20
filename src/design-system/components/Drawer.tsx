@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { Disclosure } from './Disclosure'
 import styles from './Drawer.module.css'
+import { useScrollFades } from './useScrollFades'
 
 type DrawerProps = {
   id: string
@@ -16,6 +17,9 @@ type DrawerProps = {
  * stay usable. Opened by a separate toggle with `aria-controls={id}`.
  */
 export function Drawer({ id, label, isOpen, children }: DrawerProps) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  // Its top and bottom fade while there's more to scroll to.
+  const fadeClassName = useScrollFades(contentRef, 'vertical')
   return (
     <section
       id={id}
@@ -25,7 +29,9 @@ export function Drawer({ id, label, isOpen, children }: DrawerProps) {
       inert={!isOpen}
     >
       <div className={styles.clip}>
-        <div className={styles.content}>{children}</div>
+        <div ref={contentRef} className={`${styles.content} ${fadeClassName}`}>
+          {children}
+        </div>
       </div>
     </section>
   )

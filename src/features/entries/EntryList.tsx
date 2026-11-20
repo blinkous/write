@@ -1,6 +1,11 @@
 import { SquarePen } from 'lucide-react'
-import { useId, useState, type ReactNode } from 'react'
-import { Button, SearchField, type ToastMessage } from '../../design-system'
+import { useId, useRef, useState, type ReactNode } from 'react'
+import {
+  Button,
+  SearchField,
+  useScrollFades,
+  type ToastMessage,
+} from '../../design-system'
 import { EntryListItem } from './EntryListItem'
 import { EntrySortMenu } from './EntrySortMenu'
 import type { EntryMatch } from './entrySearch'
@@ -31,6 +36,9 @@ export function EntryList({
   entryActions,
 }: EntryListProps) {
   const renameHintId = useId()
+  const itemsRef = useRef<HTMLUListElement>(null)
+  // Its top and bottom fade while there's more to scroll to.
+  const itemsFadeClassName = useScrollFades(itemsRef, 'vertical')
   const [query, setQuery] = useState('')
   const entryIds = useJournalState(journal, (state) => state.entryIds)
   const sort = useJournalState(journal, (state) => state.sort)
@@ -81,7 +89,7 @@ export function EntryList({
             ? 'No matching entries'
             : `${shownEntryIds.length} matching ${shownEntryIds.length === 1 ? 'entry' : 'entries'}`)}
       </p>
-      <ul className={styles.items}>
+      <ul ref={itemsRef} className={`${styles.items} ${itemsFadeClassName}`}>
         {shownEntryIds.map((entryId) => (
           <EntryRow
             key={entryId}

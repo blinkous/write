@@ -109,6 +109,9 @@ Fields added later must load from older data without them.
   **checkboxes for choices a form applies later** (what an export includes).
 - **The sidebar never scrolls sideways**, however narrow: a setting's name gives way ("…",
   whole on hover) before its control does. Only rows meant to scroll (theme packs) do.
+- **Scrolling areas fade their edges while there's more to see that way:** sideways rows
+  (the toolbar, theme packs) at their ends, and the sidebar's entries list and settings
+  at their top and bottom.
 - **Color tiles are buttons** that open the system color picker, because WebKit never lets
   the keyboard reach color inputs. Text colors (toolbar and text styles) share one menu:
   theme tones, then seven custom slots; a filled slot's × (hover or focus) empties it.
