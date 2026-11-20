@@ -248,6 +248,8 @@ export function App({ journal }: AppProps) {
           />
           <SettingsDrawer
             headerActions={<ThemeHistoryButtons pageTheme={pageTheme} />}
+            onUndo={pageTheme.undo}
+            onRedo={pageTheme.redo}
             sections={[
               {
                 // Kept as 'app': which sections are folded is saved by id.
