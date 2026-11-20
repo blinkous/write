@@ -3,7 +3,9 @@ import {
   suggestBackgroundColors,
   suggestTextColors,
 } from '../../lib/pageColorSuggestions'
-import { DEFAULT_APPEARANCE } from './appearanceOptions'
+import { DEFAULT_TEXT_STYLES } from '../../text-styles'
+import { DEFAULT_APPEARANCE, type Appearance } from './appearanceOptions'
+import { THEME_PACKS } from './themePacks'
 import { usePageTheme } from './usePageTheme'
 
 const appearance = {
@@ -12,10 +14,10 @@ const appearance = {
   textColor: '#123456',
 }
 
-function renderPageTheme() {
+function renderPageTheme(changes: Partial<Appearance> = {}) {
   const updateAppearance = vi.fn()
   const { result } = renderHook(() =>
-    usePageTheme(appearance, updateAppearance),
+    usePageTheme({ ...appearance, ...changes }, updateAppearance),
   )
   return { result, updateAppearance }
 }
@@ -48,5 +50,70 @@ describe('usePageTheme colors', () => {
     expect(result.current.backgroundColorSuggestions).toEqual(
       suggestBackgroundColors('#123456', 'lighter', 7),
     )
+  })
+})
+
+describe('usePageTheme text style resets', () => {
+  beforeEach(() => localStorage.clear())
+
+  function getPack(id: string) {
+    const pack = THEME_PACKS.find((themePack) => themePack.id === id)
+    if (!pack) throw new Error(`No ${id} pack`)
+    return pack
+  }
+  const blinkousStyles = getPack('blinkous').look.textStyles
+  const editedStyles = {
+    ...DEFAULT_TEXT_STYLES,
+    title: { ...DEFAULT_TEXT_STYLES.title, color: '#00ff00' },
+  }
+
+  it('resets to the chosen theme pack’s styles, not the app’s defaults', () => {
+    const { result, updateAppearance } = renderPageTheme({
+      themeTextStyles: blinkousStyles,
+      textStyles: editedStyles,
+    })
+    expect(result.current.canResetTextStyles).toBe(true)
+    act(() => result.current.resetTextStyles())
+    expect(updateAppearance).toHaveBeenCalledWith({
+      textStyles: blinkousStyles,
+    })
+  })
+
+  it('resets one style to the chosen theme pack’s', () => {
+    const { result, updateAppearance } = renderPageTheme({
+      themeTextStyles: blinkousStyles,
+      textStyles: { ...blinkousStyles, body: editedStyles.title },
+    })
+    expect(result.current.canResetTextStyle('title')).toBe(false)
+    expect(result.current.canResetTextStyle('body')).toBe(true)
+    act(() => result.current.resetTextStyle('body'))
+    expect(updateAppearance).toHaveBeenCalledWith({
+      textStyles: blinkousStyles,
+    })
+  })
+
+  it('has nothing to reset while the styles are the theme’s', () => {
+    const { result } = renderPageTheme({
+      themeTextStyles: blinkousStyles,
+      textStyles: blinkousStyles,
+    })
+    expect(result.current.canResetTextStyles).toBe(false)
+  })
+
+  it('makes a copy of a chosen pack’s styles what resets go back to, in the same undo step', () => {
+    const { result, updateAppearance } = renderPageTheme()
+    const unicorn = getPack('unicorn')
+    act(() =>
+      result.current.applyThemeLook({
+        ...unicorn.look,
+        backgroundFileId: null,
+      }),
+    )
+    expect(updateAppearance).toHaveBeenCalledWith(
+      expect.objectContaining({
+        themeTextStyles: unicorn.look.textStyles,
+      }),
+    )
+    expect(result.current.canUndo).toBe(true)
   })
 })

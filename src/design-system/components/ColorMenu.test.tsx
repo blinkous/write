@@ -49,14 +49,22 @@ async function openMenu() {
 }
 
 describe('ColorMenu', () => {
-  it('picks a suggestion and stays open to fine-tune it', async () => {
+  const picker = () =>
+    screen.queryByRole('group', { name: 'Foreground picker', hidden: true })
+
+  it('picks a suggestion and closes', async () => {
     const { onSelectSuggestion } = renderColorMenu([null])
     const user = await openMenu()
     await user.click(button('Suggested color 1'))
     expect(onSelectSuggestion).toHaveBeenCalledOnce()
-    expect(
-      screen.getByRole('group', { name: 'Foreground picker', hidden: true }),
-    ).toBeInTheDocument()
+    expect(picker()).not.toBeInTheDocument()
+  })
+
+  it('stays open while saving into an empty slot', async () => {
+    renderColorMenu([null])
+    const user = await openMenu()
+    await user.click(button('Save the current color as custom color 1'))
+    expect(picker()).toBeInTheDocument()
   })
 
   it('marks the custom slot holding the current color as chosen', async () => {
@@ -93,6 +101,7 @@ describe('ColorMenu', () => {
     const user = await openMenu()
     await user.click(button('Custom color 2'))
     expect(onSelectCustom).toHaveBeenCalledWith('#fedcba80')
+    expect(picker()).not.toBeInTheDocument()
   })
 
   it('uses a see-through custom color opaque where transparency is off', async () => {

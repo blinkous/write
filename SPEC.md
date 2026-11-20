@@ -89,7 +89,8 @@ Fields added later must load from older data without them.
 - **Menus** open from a toolbar or ⋯ button and share one look. No titles: a menu is named
   by its trigger; parts that could be confused get self-describing items and a divider.
   **A menu's reset is its last row** (↺ and what it resets), off while there's nothing to
-  reset. "Reset" means back to defaults only. A pick-one menu closes on a choice; arrow
+  reset. "Reset" means back to defaults only; for text styles, the chosen theme pack's are
+  the defaults. A pick-one menu closes on a choice; arrow
   keys preview without closing. Menus open with focus on the current choice, or on the
   panel itself when there is none, so nothing looks chosen until Tab. A row's own panel
   opens beside the row, lined up with its top.

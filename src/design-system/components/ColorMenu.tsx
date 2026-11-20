@@ -41,9 +41,10 @@ type ColorMenuProps = {
 
 /**
  * A color menu: suggested tiles, the person's custom slots, then the picker,
- * always shown. Choosing stays in the menu, so a choice can be fine-tuned in
- * the picker. An empty slot saves the current color; a filled one is chosen,
- * and its × (shown on hover or focus) empties it.
+ * always shown. Choosing a tile or a filled slot is done, so the menu closes;
+ * the picker stays open while it's used, for fine-tuning. An empty slot saves
+ * the current color (staying open); its × (shown on hover or focus) empties a
+ * filled one.
  */
 export function ColorMenu({
   label,
@@ -70,53 +71,58 @@ export function ColorMenu({
 
   return (
     <Popover label={label} trigger={trigger} isShownWhole onClose={onClose}>
-      <PopoverPanel>
-        <SwatchRow label={suggestionsLabel}>
-          {suggestions.map(
-            ({ color, label: suggestionLabel, isSelected, onSelect }) => (
-              <SwatchButton
-                key={suggestionLabel}
-                color={color}
-                label={suggestionLabel}
-                isSelected={isSelected}
-                onClick={onSelect}
+      {(close) => (
+        <PopoverPanel>
+          <SwatchRow label={suggestionsLabel}>
+            {suggestions.map(
+              ({ color, label: suggestionLabel, isSelected, onSelect }) => (
+                <SwatchButton
+                  key={suggestionLabel}
+                  color={color}
+                  label={suggestionLabel}
+                  isSelected={isSelected}
+                  onClick={() => {
+                    onSelect()
+                    close()
+                  }}
+                />
+              ),
+            )}
+          </SwatchRow>
+          <SwatchRow label="Custom colors">
+            {customColors.map((slotColor, index) => (
+              <SwatchSlot
+                // Slots are fixed positions, so the index is a stable key.
+                key={index}
+                value={slotColor}
+                label={
+                  slotColor
+                    ? `Custom color ${index + 1}`
+                    : `Save the current color as custom color ${index + 1}`
+                }
+                isSelected={slotColor !== null && value === slotColor}
+                onClick={() => {
+                  if (!slotColor) return setCustomSlot(index, pickerColor)
+                  onSelectCustom(
+                    allowsTransparency
+                      ? slotColor
+                      : removeTransparency(slotColor),
+                  )
+                  close()
+                }}
+                onClear={() => setCustomSlot(index, null)}
               />
-            ),
-          )}
-        </SwatchRow>
-        <SwatchRow label="Custom colors">
-          {customColors.map((slotColor, index) => (
-            <SwatchSlot
-              // Slots are fixed positions, so the index is a stable key.
-              key={index}
-              value={slotColor}
-              label={
-                slotColor
-                  ? `Custom color ${index + 1}`
-                  : `Save the current color as custom color ${index + 1}`
-              }
-              isSelected={slotColor !== null && value === slotColor}
-              onClick={() =>
-                slotColor
-                  ? onSelectCustom(
-                      allowsTransparency
-                        ? slotColor
-                        : removeTransparency(slotColor),
-                    )
-                  : setCustomSlot(index, pickerColor)
-              }
-              onClear={() => setCustomSlot(index, null)}
-            />
-          ))}
-        </SwatchRow>
-        <ColorPicker
-          label={label}
-          color={pickerColor}
-          allowsTransparency={allowsTransparency}
-          onChange={onPick}
-          onChangeEnd={onPickEnd}
-        />
-      </PopoverPanel>
+            ))}
+          </SwatchRow>
+          <ColorPicker
+            label={label}
+            color={pickerColor}
+            allowsTransparency={allowsTransparency}
+            onChange={onPick}
+            onChangeEnd={onPickEnd}
+          />
+        </PopoverPanel>
+      )}
     </Popover>
   )
 }

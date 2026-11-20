@@ -2,7 +2,8 @@ import type { FontValue } from '../../fonts'
 import type { TextStyles } from '../../text-styles'
 
 /**
- * The settings that share one undo/redo: fonts, colors, text styles, the tab
+ * The settings that share one undo/redo: fonts, colors, text styles (and the
+ * theme pack they reset to), the tab
  * title, the background picture or video (which stored file) with its blur,
  * opacity and video playback, and the sidebar border.
  */
@@ -10,6 +11,8 @@ export type PageTheme = {
   appFont: FontValue
   editorFont: FontValue
   textStyles: TextStyles
+  /** The chosen theme pack's text styles, what resets go back to (see Appearance). */
+  themeTextStyles: TextStyles
   backgroundColor: string
   textColor: string
   tabTitle: string
@@ -56,7 +59,9 @@ function isSameTheme(first: PageTheme, second: PageTheme): boolean {
     first.backgroundVideoSpeed === second.backgroundVideoSpeed &&
     first.hasSidebarBorder === second.hasSidebarBorder &&
     first.backgroundFileId === second.backgroundFileId &&
-    JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles)
+    JSON.stringify(first.textStyles) === JSON.stringify(second.textStyles) &&
+    JSON.stringify(first.themeTextStyles) ===
+      JSON.stringify(second.themeTextStyles)
   )
 }
 

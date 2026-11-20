@@ -41,6 +41,7 @@ describe('loadAppearance', () => {
       customTextColors: Array(7).fill(null),
       customThemePacks: [],
       textStyles: DEFAULT_APPEARANCE.textStyles,
+      themeTextStyles: DEFAULT_APPEARANCE.themeTextStyles,
       tabTitle: DEFAULT_APPEARANCE.tabTitle,
       backgroundBlur: DEFAULT_APPEARANCE.backgroundBlur,
       backgroundOpacity: DEFAULT_APPEARANCE.backgroundOpacity,

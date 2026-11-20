@@ -24,8 +24,8 @@ The rich-text writing surface for one entry, and its toolbar.
 - Small, Body and Heading 2–6 mirror markdown (`##`–`######`). Heading 1 is the entry's
   title, so `# ` stays text. Small is mostly used like a caption.
 - The menu previews each name in its style. Each row's ⋯ has **Update style to match text**,
-  **Update text to match style**, **Size** and **Reset style**. In the title the menu lists
-  only Title, to edit it.
+  **Update text to match style**, **Size** and **Reset style** (back to the chosen theme
+  pack's, see appearance). In the title the menu lists only Title, to edit it.
 - **Update style to match text** gives the style the selected text's look (not size). Text
   of that style in the selection keeps its exact look, rewritten relative to the new style:
   what the style now gives stops being the text's own, and what still differs stays (a

@@ -11,7 +11,7 @@ background picture or video, with one shared undo/redo.
   (shown by default; hidden, a background picture runs unbroken from sidebar to page,
   and the resize line still shows on hover, drag and focus).
 - **Editor:** the **Default font** (default Lora), the base for every text style, then
-  **Reset text styles**. Text styles themselves are edited from the toolbar's style menu
+  **Reset text styles** (back to the chosen theme pack's). Text styles themselves are edited from the toolbar's style menu
   (see editor).
 - **Data:** the **tab title** ("Write" while empty, up to 60 characters).
 - **Toolbar:** **Margins** (Wide, Normal, Narrow, None) and **Spacing**: line spacing as
@@ -39,6 +39,12 @@ background picture or video, with one shared undo/redo.
   slots, margins, spacing, the tab title and the sidebar border stay.
 - A tile shows as chosen only while the settings are exactly its look; after any edit,
   none does. Choosing a pack just sets those settings.
+- **The chosen pack is the base for text styles:** resetting text styles (all, or one
+  from the style menu) goes back to its styles as they were when it was chosen, not the
+  app's, since you picked it as your starting point. Edits, Update pack to match and
+  Delete never move the base, so a reset always has the original to go back to; only
+  choosing a pack does. **+** saves edits as a new pack. Until a pack is chosen, the
+  app's defaults. Part of undo, so undoing a choice also puts back the old base.
 - **Custom packs:** a **+** after the packs saves the current look (the same things a pack
   sets) **and the background**: the picture or video with its blur, opacity and
   playback, or that there is none. Saved packs come after the curated ones and any saved
@@ -98,7 +104,8 @@ and works the same on every platform:
 - **Suggested colors** for that use, then the **custom slots**, then the **picker**, always
   shown: a color square, hue and opacity sliders (all keyboard-operable), the color as text
   to read or type (hex, rgb(), hsl(), names) and a **dropper**.
-- Choosing a tile keeps the menu open, so a choice can be fine-tuned in the picker.
+- Choosing a suggested color or a filled custom slot is a finished choice, so the menu
+  closes. Using the picker keeps it open, for fine-tuning.
 - An empty custom slot saves the current color; a filled one is chosen, and its × (shown on
   hover or focus) empties it.
 - A typed color applies on Enter or on leaving the field; text that isn't a color goes back

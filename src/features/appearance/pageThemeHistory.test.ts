@@ -14,6 +14,7 @@ const colors = (backgroundColor: string): PageTheme => ({
   appFont: 'inter',
   editorFont: 'lora',
   textStyles: DEFAULT_TEXT_STYLES,
+  themeTextStyles: DEFAULT_TEXT_STYLES,
   backgroundColor,
   textColor: '#111111',
   tabTitle: '',

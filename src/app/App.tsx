@@ -323,6 +323,7 @@ export function App({ journal }: AppProps) {
                 editor={activeEditor}
                 editorFont={editorFont}
                 onChangeTextStyle={pageTheme.changeTextStyle}
+                canResetTextStyle={pageTheme.canResetTextStyle}
                 onResetTextStyle={pageTheme.resetTextStyle}
                 {...textStyleContext}
               />
