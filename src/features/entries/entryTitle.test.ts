@@ -34,6 +34,24 @@ describe('title documents', () => {
     })
   })
 
+  it('keeps a plain title’s alignment, and stays text only without one', () => {
+    const aligned = (alignment: string | null): JSONContent => ({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { alignment },
+          content: [{ type: 'text', text: 'Sunday' }],
+        },
+      ],
+    })
+    expect(readTitleDocument(aligned('center'))).toEqual({
+      title: 'Sunday',
+      titleContent: aligned('center'),
+    })
+    expect(readTitleDocument(aligned(null)).titleContent).toBeNull()
+  })
+
   it('stores nothing for a blank title, so the first line names the entry', () => {
     expect(readTitleDocument(titleDocument())).toEqual({
       title: null,
