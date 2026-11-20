@@ -18,10 +18,15 @@
 }
 
 .content {
+  /* A little more than between rows, so a section's title reads as heading what's below. */
+  --disclosure-title-gap: var(--space-3);
+  /* Room after an open section's last row, so it doesn't run into the next section. */
+  --disclosure-end-gap: var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding-top: var(--space-2);
+  padding-top: var(--disclosure-title-gap);
+  padding-bottom: var(--disclosure-end-gap);
 }
 
 /* The title: quiet, like a label; what's inside is what matters. */
@@ -46,8 +51,8 @@
 
 /* Nested inside another, its contents sit indented under its title, so it's clear what belongs to it. */
 .disclosure .disclosure > .content {
+  --disclosure-end-gap: var(--space-2);
   padding-inline-start: var(--space-3);
-  padding-bottom: var(--space-2);
 }
 
 /* Down to unfold, up to fold (flipping as soon as folding starts). */
@@ -103,17 +108,14 @@
   /*
    * Clipped only top to bottom, so rows' hover backgrounds and focus rings
    * still reach out sideways. Room above and below for the first and last
-   * rows' focus rings, pulled back so nothing moves.
+   * rows' focus rings (on top of the title's gap), pulled back so nothing moves.
    */
   .content {
     min-height: 0;
     overflow-x: visible;
     overflow-y: clip;
-    padding-block: var(--focus-ring-room);
+    padding-block: calc(var(--disclosure-title-gap) + var(--focus-ring-room))
+      calc(var(--disclosure-end-gap) + var(--focus-ring-room));
     margin-block: calc(var(--focus-ring-room) * -1);
-  }
-
-  .disclosure .disclosure > .content {
-    padding-bottom: calc(var(--space-2) + var(--focus-ring-room));
   }
 }
