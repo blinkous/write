@@ -25,6 +25,7 @@
   --text-style-title-font: var(--font-editor);
   --text-style-title-color: var(--color-text);
   --text-style-title-glow: none;
+  --text-style-title-align: start;
   --text-style-heading-2-size: 1.5rem;
   --text-style-heading-2-scale: 1.5;
   --text-style-heading-2-weight: var(--font-weight-bold);
@@ -36,6 +37,7 @@
   --text-style-heading-2-font: var(--font-editor);
   --text-style-heading-2-color: var(--color-text);
   --text-style-heading-2-glow: none;
+  --text-style-heading-2-align: start;
   --text-style-heading-3-size: 1.3125rem;
   --text-style-heading-3-scale: 1.3125;
   --text-style-heading-3-weight: var(--font-weight-bold);
@@ -47,6 +49,7 @@
   --text-style-heading-3-font: var(--font-editor);
   --text-style-heading-3-color: var(--color-text);
   --text-style-heading-3-glow: none;
+  --text-style-heading-3-align: start;
   --text-style-heading-4-size: 1.125rem;
   --text-style-heading-4-scale: 1.125;
   --text-style-heading-4-weight: var(--font-weight-bold);
@@ -58,6 +61,7 @@
   --text-style-heading-4-font: var(--font-editor);
   --text-style-heading-4-color: var(--color-text);
   --text-style-heading-4-glow: none;
+  --text-style-heading-4-align: start;
   --text-style-heading-5-size: 1.0625rem;
   --text-style-heading-5-scale: 1.0625;
   --text-style-heading-5-weight: var(--font-weight-bold);
@@ -69,6 +73,7 @@
   --text-style-heading-5-font: var(--font-editor);
   --text-style-heading-5-color: var(--color-text);
   --text-style-heading-5-glow: none;
+  --text-style-heading-5-align: start;
   --text-style-heading-6-size: 1rem;
   --text-style-heading-6-scale: 1;
   --text-style-heading-6-weight: var(--font-weight-bold);
@@ -80,6 +85,7 @@
   --text-style-heading-6-font: var(--font-editor);
   --text-style-heading-6-color: var(--color-text);
   --text-style-heading-6-glow: none;
+  --text-style-heading-6-align: start;
   --text-style-body-size: 1rem;
   --text-style-body-scale: 1;
   --text-style-body-weight: var(--font-weight-regular);
@@ -91,6 +97,7 @@
   --text-style-body-font: var(--font-editor);
   --text-style-body-color: var(--color-text);
   --text-style-body-glow: none;
+  --text-style-body-align: start;
   --text-style-small-size: 0.875rem;
   --text-style-small-scale: 0.875;
   --text-style-small-weight: var(--font-weight-regular);
@@ -102,6 +109,7 @@
   --text-style-small-font: var(--font-editor);
   --text-style-small-color: var(--color-text);
   --text-style-small-glow: none;
+  --text-style-small-align: start;
   --width-page: var(--width-page-normal);
   --share-page: var(--share-page-normal);
   --line-height-editor: var(--line-height-normal);

@@ -60,7 +60,7 @@ everywhere; its styling is dropped if invalid or if the text changed elsewhere.
 
 ## Export and import
 
-- **⌘S** saves the open entry as JSON; **⇧⌘S** (also ⇧⌘E, unlisted) opens Export; **⌘O**
+- **⌘S** saves the open entry as JSON; **⇧⌘S** opens Export; **⌘O**
   opens Import. They replace the browser's save page and open file.
 - **Export** offers Journal and/or Settings, as JSON or Markdown. JSON can hold both in one
   file (a full backup). Markdown is for reading elsewhere, so it holds only the journal.

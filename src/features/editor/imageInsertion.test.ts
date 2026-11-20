@@ -33,6 +33,7 @@ describe('inserting pictures', () => {
       imageId: expect.stringMatching(/^[0-9a-f]{64}\.gif$/),
       alt: '',
       playback: null,
+      alignment: null,
     })
     expect(images[0].attrs?.imageId).not.toBe(images[1].attrs?.imageId)
     expect(blockTypes(editor)[0]).toBe('paragraph')

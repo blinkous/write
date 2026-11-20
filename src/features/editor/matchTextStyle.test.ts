@@ -56,6 +56,13 @@ describe('matchTextStyle', () => {
     expect(editor.getHTML()).toBe('<h2>neon</h2><p></p>')
   })
 
+  it('takes the alignment, which the style’s blocks then follow', () => {
+    const editor = createEditor('<h2 data-align="center">rainy</h2>')
+    editor.commands.setTextSelection(3)
+    expect(match(editor)).toMatchObject({ alignment: 'center' })
+    expect(editor.getHTML()).toBe('<h2>rainy</h2><p></p>')
+  })
+
   it("keeps text in other styles' blocks as it is", () => {
     const editor = createEditor('<h2>title</h2><p><em>body</em></p>')
     editor.commands.setTextSelection({ from: 1, to: 12 })

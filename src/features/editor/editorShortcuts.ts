@@ -10,7 +10,17 @@ import {
   TEXT_FORMATTING_ACTIONS,
   type FormattingAction,
 } from './formattingActions'
-import { applyTextStyle, stepTextStyle, TEXT_STYLES } from './textStyles'
+import { DEFAULT_TEXT_STYLES, type TextStyles } from '../../text-styles'
+import {
+  chooseTextAlignment,
+  TEXT_ALIGNMENT_OPTIONS,
+} from './textAlignmentOptions'
+import {
+  applyTextStyle,
+  getTextStyleNameAt,
+  stepTextStyle,
+  TEXT_STYLES,
+} from './textStyles'
 
 /** An editor action run by its shortcut; false if it didn't apply, so the key goes on. */
 export type EditorShortcutCommand = {
@@ -33,13 +43,29 @@ function fromFormattingAction({
   }
 }
 
-/** The title's: emphasis only (it has no blocks or styles to change). */
-export const TITLE_SHORTCUT_COMMANDS: readonly EditorShortcutCommand[] =
-  TEXT_FORMATTING_ACTIONS.map(fromFormattingAction)
+/** Alignment follows the menu's rule: the style's alignment removes the text's own. */
+function alignmentCommands(isTitle: boolean): EditorShortcutCommand[] {
+  return TEXT_ALIGNMENT_OPTIONS.map(({ value, shortcutId }) => ({
+    id: shortcutId,
+    run: (editor) => {
+      const { textStyles } = editor.storage.editorShortcuts
+      const styleName = getTextStyleNameAt(editor, isTitle)
+      chooseTextAlignment(editor, value, textStyles[styleName].alignment)
+      return true
+    },
+  }))
+}
+
+/** The title's: emphasis and alignment (it has no blocks or styles to change). */
+export const TITLE_SHORTCUT_COMMANDS: readonly EditorShortcutCommand[] = [
+  ...TEXT_FORMATTING_ACTIONS.map(fromFormattingAction),
+  ...alignmentCommands(true),
+]
 
 /** The writing's: every editor action. */
 export const WRITING_SHORTCUT_COMMANDS: readonly EditorShortcutCommand[] = [
-  ...TITLE_SHORTCUT_COMMANDS,
+  ...TEXT_FORMATTING_ACTIONS.map(fromFormattingAction),
+  ...alignmentCommands(false),
   ...MARKUP_FORMATTING_ACTIONS.map(fromFormattingAction),
   ...TEXT_STYLES.flatMap((textStyle) =>
     textStyle.shortcutId
@@ -62,17 +88,42 @@ export const WRITING_SHORTCUT_COMMANDS: readonly EditorShortcutCommand[] = [
 
 type EditorShortcutsOptions = { commands: readonly EditorShortcutCommand[] }
 
+type EditorShortcutsStorage = {
+  /** The text styles as they are now, for shortcuts that follow them (see useTextStyleBlocks). */
+  textStyles: TextStyles
+}
+
+declare module '@tiptap/core' {
+  interface Storage {
+    editorShortcuts: EditorShortcutsStorage
+  }
+}
+
+/** Tells an editor's shortcuts the text styles as they are now (editors without them are left alone). */
+export function shareTextStylesWithShortcuts(
+  editor: Editor,
+  textStyles: TextStyles,
+): void {
+  const { editorShortcuts } = editor.storage
+  if (editorShortcuts) editorShortcuts.textStyles = textStyles
+}
+
 /**
  * Runs the editor's actions on their shortcuts, as set in settings. Ahead of
  * other extensions' keys, so a shortcut someone chose wins over Tiptap's.
  */
-export const EditorShortcuts = Extension.create<EditorShortcutsOptions>({
+export const EditorShortcuts = Extension.create<
+  EditorShortcutsOptions,
+  EditorShortcutsStorage
+>({
   name: 'editorShortcuts',
   priority: 1000,
 
   addOptions() {
     return { commands: [] }
   },
+
+  addStorage: () => ({ textStyles: DEFAULT_TEXT_STYLES }),
 
   addProseMirrorPlugins() {
     const { editor, options } = this

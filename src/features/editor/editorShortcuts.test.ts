@@ -2,6 +2,7 @@ import {
   assignShortcut,
   resetAllShortcuts,
 } from '../../keyboard-shortcuts/shortcutStore'
+import { DEFAULT_TEXT_STYLES } from '../../text-styles'
 import { createTestEditor } from '../../test/createTestEditor'
 import { editorExtensions } from './editorExtensions'
 
@@ -36,5 +37,21 @@ describe('EditorShortcuts', () => {
     editor.commands.keyboardShortcut('Mod-b')
     editor.commands.keyboardShortcut('Mod-Shift-b')
     expect(editor.getHTML()).toBe('<p>rainy</p>')
+  })
+
+  it('aligns on ⇧⌘L and ⇧⌘E, back to following the style when it matches', () => {
+    const editor = createEditor('<h2>rainy</h2>')
+    editor.commands.setTextSelection(2)
+    editor.commands.keyboardShortcut('Mod-Shift-e')
+    expect(editor.getHTML()).toBe('<h2 data-align="center">rainy</h2><p></p>')
+    editor.commands.keyboardShortcut('Mod-Shift-l')
+    expect(editor.getHTML()).toBe('<h2>rainy</h2><p></p>')
+    // With a centered Heading 2, left is the heading's own.
+    editor.storage.editorShortcuts.textStyles = {
+      ...DEFAULT_TEXT_STYLES,
+      'heading-2': { ...DEFAULT_TEXT_STYLES['heading-2'], alignment: 'center' },
+    }
+    editor.commands.keyboardShortcut('Mod-Shift-l')
+    expect(editor.getHTML()).toBe('<h2 data-align="start">rainy</h2><p></p>')
   })
 })

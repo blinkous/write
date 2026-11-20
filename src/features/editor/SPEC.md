@@ -7,7 +7,7 @@ The rich-text writing surface for one entry, and its toolbar.
 - Sits over the page, lined up with the start of the text; when the header is too narrow
   it centers between the sidebar toggle and the ⋯, then scrolls sideways with faded ends.
 - **Three groups**, broadest first. **Text:** style, font, color, bold, italic, underline,
-  strikethrough, then glow, case and letter spacing. **Markup:** lists, quote, code and
+  strikethrough, then glow, case, letter spacing and alignment. **Markup:** lists, quote, code and
   code block (together, since both mean "this is code"), then Insert picture. **Page:** margins, spacing.
 - **Every control shows what's in effect, the text style's included:** bold is pressed in
   a bold style, and pressing it turns bold off for that text.
@@ -17,7 +17,8 @@ The rich-text writing surface for one entry, and its toolbar.
 - It acts on the last-focused editor (the writing or the title); controls the focused
   editor can't use (e.g. lists in the title) are off.
 - Font, color, glow, case and letter spacing apply to the selection, or to the text about
-  to be typed. Closing the color menu returns focus to the text.
+  to be typed. **Alignment** applies to the selected blocks (or the cursor's), a selected
+  picture included; code blocks stay as typed. Closing the color menu returns focus to the text.
 
 ## Text styles
 
@@ -66,7 +67,9 @@ The rich-text writing surface for one entry, and its toolbar.
 
 - **Shortcuts show in their control's tooltip or menu,** and all of them, shortcut-only ones
   too, are listed and changeable in the Keyboard shortcuts dialog (see keyboard-shortcuts). Defaults: ⌘B, ⌘I, ⌘U, ⇧⌘X strikethrough,
-  ⌘E code, ⇧⌘8 / ⇧⌘7 lists, ⇧⌘B quote, ⌥⌘C code block, ⌥⌘0 Body, ⌥⌘2–6 headings.
+  ⌘E code, ⇧⌘8 / ⇧⌘7 lists, ⇧⌘B quote, ⌥⌘C code block, ⌥⌘0 Body, ⌥⌘2–6 headings, ⇧⌘L align left, ⇧⌘E center.
+  Align right has none until someone sets one: ⇧⌘R, other editors' choice, reloads the
+  page and can't be taken.
 - ⇧⌘. / ⇧⌘, (⇧⌘> / ⇧⌘<) step Small → Body → H6 … H2 and back. ⇧⌘+ stays the browser's zoom.
 - ⌥↑ / ⌥↓ move blocks, like VS Code; list items move whole, and a container moves when the
   selection fills it.

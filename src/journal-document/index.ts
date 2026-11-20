@@ -47,3 +47,9 @@ export {
   type ImageAttributes,
   type ImagePlayback,
 } from './journalImage'
+export {
+  ALIGNMENT_ATTRIBUTE,
+  isTextAlignment,
+  TEXT_ALIGNMENTS,
+  type TextAlignment,
+} from './textAlignment'

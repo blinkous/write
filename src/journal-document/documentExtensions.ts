@@ -4,6 +4,7 @@ import { JournalHeading } from './journalHeading'
 import { JournalImage } from './journalImage'
 import { MarkdownSafeParagraph } from './markdownSafeParagraph'
 import { ParagraphSize } from './paragraphSize'
+import { TextAlignmentAttribute } from './textAlignment'
 import { TextCaseMark } from './textCase'
 import { textStyleExtensions } from './textStyleMark'
 
@@ -25,4 +26,5 @@ export const documentExtensions = [
   TextCaseMark,
   ParagraphSize,
   JournalImage,
+  TextAlignmentAttribute,
 ]

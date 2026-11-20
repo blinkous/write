@@ -34,6 +34,24 @@ describe('title documents', () => {
     })
   })
 
+  it('keeps a plain title’s alignment, and stays text only without one', () => {
+    const aligned = (alignment: string | null): JSONContent => ({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { alignment },
+          content: [{ type: 'text', text: 'Sunday' }],
+        },
+      ],
+    })
+    expect(readTitleDocument(aligned('center'))).toEqual({
+      title: 'Sunday',
+      titleContent: aligned('center'),
+    })
+    expect(readTitleDocument(aligned(null)).titleContent).toBeNull()
+  })
+
   it('stores nothing for a blank title, so the first line names the entry', () => {
     expect(readTitleDocument(titleDocument())).toEqual({
       title: null,
@@ -48,7 +66,8 @@ describe('title documents', () => {
   })
 
   it('drops stored styling that is invalid or no longer matches the title', () => {
-    expect(reconcileTitleContent('Sunday', bold('Sunday'))).toEqual(
+    // Validation fills in defaults (e.g. no alignment of its own), so compare content.
+    expect(reconcileTitleContent('Sunday', bold('Sunday'))).toMatchObject(
       bold('Sunday'),
     )
     expect(reconcileTitleContent('Monday', bold('Sunday'))).toBeNull()

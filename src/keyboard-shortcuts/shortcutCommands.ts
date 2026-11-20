@@ -52,6 +52,28 @@ export const SHORTCUT_COMMANDS = [
     scope: 'editor',
   },
   {
+    id: 'align-left',
+    label: 'Align left',
+    group: 'Text',
+    defaultShortcut: 'Mod-Shift-l',
+    scope: 'editor',
+  },
+  {
+    id: 'align-center',
+    label: 'Align center',
+    group: 'Text',
+    defaultShortcut: 'Mod-Shift-e',
+    scope: 'editor',
+  },
+  {
+    // ⇧⌘R, what other editors use, reloads the page and can't be taken.
+    id: 'align-right',
+    label: 'Align right',
+    group: 'Text',
+    defaultShortcut: null,
+    scope: 'editor',
+  },
+  {
     id: 'bullet-list',
     label: 'Bulleted list',
     group: 'Markup',

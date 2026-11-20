@@ -16,6 +16,7 @@ import type { FontValue } from '../../fonts'
 import type { TextStyleName, TextStyleSettings } from '../../text-styles'
 import type { TextStyleContext } from './ownOrStyleValue'
 import {
+  readOwnAlignment,
   readOwnColor,
   readOwnFont,
   readOwnGlow,
@@ -26,6 +27,9 @@ import { getBlockTextStyleName, getTextStyleNameAt } from './textStyles'
 
 /** What matching sets: everything but size, which only a style has. */
 export type TextStyleLook = Omit<TextStyleSettings, 'size'>
+
+/** The part of a look text carries itself; alignment is its block's. */
+type TextLook = Omit<TextStyleLook, 'alignment'>
 
 const [PAGE_TEXT_THEME_COLOR] = THEME_TEXT_COLORS
 
@@ -61,6 +65,7 @@ export function readShownLook(
     italic: isEmphasisShown(editor, 'italic'),
     underline: isEmphasisShown(editor, 'underline'),
     strike: isEmphasisShown(editor, 'strike'),
+    alignment: readOwnAlignment(editor) ?? style.alignment,
   }
 }
 
@@ -71,10 +76,7 @@ const isLookMark = ({ type }: Mark) =>
   EMPHASES.some((emphasis) => emphasis === type.name)
 
 /** How text with these marks looks in a block of this style. */
-function readLook(
-  marks: readonly Mark[],
-  style: TextStyleSettings,
-): TextStyleLook {
+function readLook(marks: readonly Mark[], style: TextStyleSettings): TextLook {
   const attributes =
     marks.find(({ type }) => type.name === 'textStyle')?.attrs ?? {}
   const ownCase = marks.find(({ type }) => type.name === 'textCase')?.attrs
@@ -111,7 +113,7 @@ function readLook(
  * differs from the style is its own ("none" values included, e.g. no glow).
  */
 function marksForLook(
-  look: TextStyleLook,
+  look: TextLook,
   style: TextStyleSettings,
   schema: Schema,
   editorFont: FontValue,
@@ -171,6 +173,12 @@ function keepLookUnderNewStyle(
     if (!block.isTextblock) return true
     const blockStyleName = isTitle ? 'title' : getBlockTextStyleName(block)
     if (blockStyleName !== name) return false
+    // Its alignment, too: own only where it still differs from the style's.
+    const shownAlignment = block.attrs.alignment ?? oldStyle.alignment
+    const ownAlignment =
+      shownAlignment === newStyle.alignment ? null : shownAlignment
+    if ((block.attrs.alignment ?? null) !== ownAlignment)
+      tr.setNodeAttribute(position, 'alignment', ownAlignment)
     block.forEach((child, offset) => {
       // Code keeps its own look; it takes no other marks.
       if (!child.isText || child.marks.some(({ type }) => type.name === 'code'))

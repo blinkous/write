@@ -80,6 +80,7 @@ describe('serializeEntries / parseEntriesFile', () => {
     const result = parseEntriesFile(serializeEntries([entry]))
     expect(result.ok && result.entries[0].content.content?.[0].attrs).toEqual({
       size: 'small',
+      alignment: null,
     })
   })
 

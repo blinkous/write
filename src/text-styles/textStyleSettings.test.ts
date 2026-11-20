@@ -21,9 +21,11 @@ describe('text style settings', () => {
         font: 'inter',
         color: 'theme-3',
         glow: '#ff2fa0',
+        alignment: 'center',
       },
       body: {
         size: 999,
+        alignment: 'justify',
         textCase: 'shouting',
         font: 'comic-sans',
         color: 'red; x',
@@ -41,6 +43,7 @@ describe('text style settings', () => {
       font: 'inter',
       color: 'theme-3',
       glow: '#ff2fa0',
+      alignment: 'center',
     })
     expect(parsed.body).toEqual(DEFAULT_TEXT_STYLES.body)
   })
@@ -59,8 +62,11 @@ describe('text style settings', () => {
         font: 'inter',
         color: 'theme-3',
         glow: 'theme-5',
+        alignment: 'end',
       },
     })
+    expect(variables['--text-style-heading-2-align']).toBe('end')
+    expect(variables['--text-style-body-align']).toBe('start')
     expect(variables['--text-style-heading-2-size']).toBe('2rem')
     expect(variables['--text-style-heading-2-scale']).toBe('2')
     expect(variables['--text-style-heading-2-weight']).toBe(

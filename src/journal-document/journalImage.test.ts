@@ -20,7 +20,12 @@ const doc = (...content: JSONContent[]): JSONContent => ({
 describe('journal images', () => {
   it('stores a picture by its content name, with a description', () => {
     const content = doc(
-      image({ imageId: IMAGE_ID, alt: 'A cat', playback: 'paused' }),
+      image({
+        imageId: IMAGE_ID,
+        alt: 'A cat',
+        playback: 'paused',
+        alignment: 'center',
+      }),
     )
     expect(parseDocument(content)).toEqual(content)
   })
@@ -42,7 +47,12 @@ describe('journal images', () => {
     })
     const blocks = editor.getJSON().content ?? []
     expect(blocks.filter(({ type }) => type === 'image')).toEqual([
-      image({ imageId: IMAGE_ID, alt: 'A cat', playback: null }),
+      image({
+        imageId: IMAGE_ID,
+        alt: 'A cat',
+        playback: null,
+        alignment: null,
+      }),
     ])
   })
 

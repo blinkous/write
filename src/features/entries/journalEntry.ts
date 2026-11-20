@@ -66,8 +66,17 @@ export function getTitleDocument({
   }
 }
 
-function hasMarks({ marks = [], content = [] }: JSONContent): boolean {
-  return marks.length > 0 || content.some(hasMarks)
+/** Whether anything is styled: marks on text, or a block's own setting (e.g. its alignment). */
+function hasStyling({
+  marks = [],
+  attrs = {},
+  content = [],
+}: JSONContent): boolean {
+  return (
+    marks.length > 0 ||
+    Object.values(attrs).some((value) => value !== null) ||
+    content.some(hasStyling)
+  )
 }
 
 /**
@@ -81,7 +90,7 @@ export function readTitleDocument(
   return {
     title,
     titleContent:
-      title !== null && hasMarks(titleDocument) ? titleDocument : null,
+      title !== null && hasStyling(titleDocument) ? titleDocument : null,
   }
 }
 
