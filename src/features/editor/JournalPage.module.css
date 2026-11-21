@@ -31,6 +31,15 @@
   overflow-wrap: break-word;
 }
 
+/*
+ * A selected picture shows its ring, not the browser's highlight. Tiptap's base
+ * rule hides the highlight inside the editor only; WebKit also paints it over
+ * the editor's own empty space below the picture, so hide it there too.
+ */
+.prose:global(.ProseMirror-hideselection)::selection {
+  background: transparent;
+}
+
 .prose :where(p, h2, h3, h4, h5, h6, ul, ol, blockquote, pre) {
   margin-block: 0;
 }
